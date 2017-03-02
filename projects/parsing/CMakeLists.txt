@@ -1,2 +1,2 @@
 create_library(parsing)
-require(lexical)
+require(runic)

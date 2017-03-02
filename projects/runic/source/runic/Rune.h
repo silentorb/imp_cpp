@@ -3,7 +3,7 @@
 #include "Whisper.h"
 #include <string>
 
-namespace lexical {
+namespace runic {
 
   class Rune {
       unsigned int index;

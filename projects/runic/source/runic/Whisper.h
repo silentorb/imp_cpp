@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lexical {
+namespace runic {
 
   class Whisper {
 

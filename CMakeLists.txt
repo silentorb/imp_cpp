@@ -32,9 +32,11 @@ endmacro()
 initialize_boost_library(filesystem)
 initialize_boost_library(system)
 
-add_subdirectory(projects/lexical)
+add_subdirectory(projects/runic)
+add_subdirectory(projects/runic_cpp)
 add_subdirectory(projects/parsing)
-add_subdirectory(projects/imp_lexical)
-add_subdirectory(projects/imp_lexical/test)
+
+add_subdirectory(projects/runic_imp)
+add_subdirectory(projects/runic_imp/test)
 
 finish_cmake()
