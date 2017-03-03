@@ -1,0 +1,10 @@
+
+Pizza {
+
+    add_topping() {
+        var x = 12
+        var y = "Hello World"
+        if (true)
+            return
+    }
+}

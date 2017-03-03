@@ -1,16 +1,17 @@
 #include <runic_imp/Imp_Lexer.h>
+#include <runic/File_Text_Source.h>
 #include "gtest/gtest.h"
 
 using namespace std;
+using namespace runic_imp;
 
 TEST(Lexing_Test, test_test) {
 
-//
-//  EXPECT_EQ(pitches::C5, pitches::G4.traverse(keys, 3, 1));
-//  EXPECT_EQ(pitches::E5, pitches::G4.traverse(keys, 3, 2));
-//  EXPECT_EQ(pitches::E5, pitches::G5.traverse(keys, 3, -1));
-//  EXPECT_EQ(pitches::G4, pitches::C5.traverse(keys, 3, -1));
-
-  EXPECT_EQ(30, 1);
-//  EXPECT_EQ(60, third->get_cache().y.near);
+  Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
+//  Token token;
+//  lexer.next_token(token);
+  vector<Token> tokens;
+  lexer.get_all_tokens(tokens);
+  auto &lexicon = Lexicon::get_instance();
+  EXPECT_EQ(&lexicon.patterns.If, tokens[19].get_match().get_type());
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Text_Source.h"
+#include "Position.h"
 #include <memory>
 
 namespace runic {
@@ -8,19 +9,35 @@ namespace runic {
   template<typename Character>
   class Lexer {
       std::unique_ptr<Text_Source<Character>> source;
-      unsigned long index = 0;
+      Character character = 0;
+      Position position;
 
   public:
       Lexer(std::unique_ptr<Text_Source<Character>> &source) :
         source(std::move(source)) {}
 
-      unsigned long get_index() const {
-        return index;
+      Lexer(Text_Source<Character> *source) :
+        source(source) {
+        character = source->next_character();
       }
 
-      Character next_character(){
-        ++index;
-        return source->next_character();
+      const Position &get_position() const {
+        return position;
+      }
+
+      const Character &get_character() const {
+        return character;
+      }
+
+      const Character &next_character() {
+        if (character == '\n') {
+          position.newline();
+        }
+        else {
+          position.step();
+        }
+
+        return character = source->next_character();
       }
   };
 }
