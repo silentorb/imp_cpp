@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include "Portal.h"
+#include "professions.h"
 
 namespace underworld {
 
@@ -21,7 +22,7 @@ namespace underworld {
 
   public:
       Minion &create_minion(const std::string &name);
-      Portal &create_portal(const std::string &name);
+      Portal &create_portal(const std::string &name, const  Profession & profession);
 
   };
 }

@@ -20,9 +20,11 @@ namespace summoning {
         return lexer.next_token(token);
       }
 
-      bool require_next(Token &token, const runic_imp::Whisper &whisper);
+      void require_next(Token &token);
+      bool require_until(Token &token, const runic_imp::Whisper &whisper);
       void expect(Token &token, const runic_imp::Whisper &whisper);
 
+      void process_expression(Context &context);
       void process_variable_declaration(Context &context);
       void process_dungeon_member(Token &token, Context &context);
       void process_root_identifier(const std::string &name, Context &context);

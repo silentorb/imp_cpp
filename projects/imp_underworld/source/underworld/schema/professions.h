@@ -1,9 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "Dungeon.h"
 
 namespace underworld {
+
+  class Dungeon;
 
   class Profession {
   public:

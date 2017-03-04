@@ -68,6 +68,7 @@ namespace runic_imp {
   };
 
   struct Special_Symbols {
+      Whisper end_of_file = "EOF";
       Whisper terminator = ";";
       Whisper does_not_equal = "!="; // Since there is no single symbol for exclamation point, this whisper is handled specially.
 

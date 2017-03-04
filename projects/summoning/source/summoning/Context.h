@@ -17,6 +17,10 @@ namespace summoning {
       underworld::Dungeon &get_dungeon() const {
         return dungeon;
       }
+
+      underworld::Scope &get_scope() const {
+        return scope;
+      }
   };
 
   class Root_Context : public Context {

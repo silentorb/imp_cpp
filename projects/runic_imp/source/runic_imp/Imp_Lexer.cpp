@@ -195,7 +195,7 @@ namespace runic_imp {
     token.get_range().set_start(lexer.get_position());
     auto &result = token.get_match();
     if (!match_any(result)) {
-      token.get_match().set_type(nullptr);
+      token.get_match().set_type(lexicon.patterns.end_of_file);
       return false;
     }
 

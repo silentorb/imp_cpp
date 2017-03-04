@@ -14,21 +14,26 @@ namespace summoning {
 
   };
 
-  class Syntax_Error : public Token_Exception {
+  class Syntax_Exception : public Token_Exception {
       inline static const std::string format_message(const runic_imp::Token &token) {
         auto info = token.get_info_string();
         return info != ""
                ? "Unexpected token \"" + info + "\" at line " + token.get_start().get_string()
-               : "Syntax error at line " + token.get_start().get_string();
+               : "Syntax Exception at line " + token.get_start().get_string();
       }
 
   public:
-      Syntax_Error(runic_imp::Token &token) :
+      Syntax_Exception(runic_imp::Token &token) :
         Token_Exception(token, format_message(token)) {}
   };
 
+  class End_Of_File_Exception : public Token_Exception {
+  public:
+      End_Of_File_Exception(const Token &token) :
+        Token_Exception(token, "Unexpected end of file at line " + token.get_start().get_string()) {}
+  };
 
-  class Expected_Error : public Token_Exception {
+  class Expected_Exception : public Token_Exception {
       inline static const std::string format_message(const runic_imp::Token &token, const std::string &expected) {
         auto info = token.get_info_string();
         auto first_part = "Expected " + expected + " at line " + token.get_start().get_string();
@@ -38,13 +43,13 @@ namespace summoning {
       }
 
   public:
-      Expected_Error(const std::string &expected, runic_imp::Token &token) :
+      Expected_Exception(const std::string &expected, runic_imp::Token &token) :
         Token_Exception(token, format_message(token, expected)) {}
   };
 
-  class Expected_Whisper_Error : public Expected_Error {
+  class Expected_Whisper_Exception : public Expected_Exception {
   public:
-      Expected_Whisper_Error(const runic_imp::Whisper &whisper, Token &token) :
-        Expected_Error("\"" + whisper.get_name() + "\"", token) {}
+      Expected_Whisper_Exception(const runic_imp::Whisper &whisper, Token &token) :
+        Expected_Exception("" + whisper.get_name() + "", token) {}
   };
 }

@@ -25,7 +25,7 @@ namespace runic_imp {
         auto &text = get_match().get_text();
         auto type = get_match().get_type();
         return text != ""
-               ? "id: " + text
+               ? text
                : type ? type->get_name(): "";
       }
   };

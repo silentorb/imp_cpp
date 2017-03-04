@@ -11,22 +11,27 @@ namespace summoning {
     lexicon(runic_imp::Lexicon::get_instance().patterns),
     profession_library(profession_library) {}
 
-  bool Summoner::require_next(Token &token, const runic_imp::Whisper &whisper) {
+  void Summoner::require_next(Token &token) {
     if (!lexer.next_token(token))
-      throw Expected_Whisper_Error(whisper, token);
+      throw End_Of_File_Exception(token);
+  }
 
-    return token.is(whisper);
+  bool Summoner::require_until(Token &token, const runic_imp::Whisper &whisper) {
+    if (!lexer.next_token(token))
+      throw Expected_Whisper_Exception(whisper, token);
+
+    return !token.is(whisper);
   }
 
   void Summoner::expect(Token &token, const runic_imp::Whisper &whisper) {
-    if (!lexer.next_token(token) || token.is(whisper))
-      throw Expected_Whisper_Error(whisper, token);
+    if (!lexer.next_token(token) || !token.is(whisper))
+      throw Expected_Whisper_Exception(whisper, token);
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
     Token token;
     if (!get_next(token) || token.follows_terminator()) {
-      throw Syntax_Error(token);
+      throw Syntax_Exception(token);
     }
     else if (token.is(lexicon.left_brace)) {
       process_dungeon(name, context);
@@ -35,7 +40,7 @@ namespace summoning {
       process_minion(name, context);
     }
     else {
-      throw Syntax_Error(token);
+      throw Syntax_Exception(token);
     }
   }
 
@@ -44,14 +49,14 @@ namespace summoning {
       process_root_identifier(token.get_text(), context);
     }
     else {
-      throw Syntax_Error(token);
+      throw Syntax_Exception(token);
     }
   }
 
   void Summoner::process_minion_parameters(underworld::Minion &minion, Context &context) {
     Token token;
     while (get_next(token) && !token.is(lexicon.right_paren)) {
-      throw Syntax_Error(token);
+      throw Syntax_Exception(token);
     }
   }
 
@@ -62,27 +67,36 @@ namespace summoning {
     Token token;
     get_next(token);
     if (!token.is(lexicon.left_brace))
-      throw Expected_Whisper_Error(lexicon.left_brace, token);
+      throw Expected_Whisper_Exception(lexicon.left_brace, token);
 
     Child_Context new_context(context, minion.get_scope());
     process_statements(minion.get_block(), new_context);
   }
 
+  void Summoner::process_expression(Context &context) {
+    Token token;
+    require_next(token);
+  }
+
   void Summoner::process_variable_declaration(Context &context) {
     Token token;
     expect(token, lexicon.identifier);
-
+    context.get_scope().create_portal(token.get_text(), profession_library.get_unknown());
+    if (get_next(token) && token.is(lexicon.assignment)) {
+      process_expression(context);
+    }
   }
 
   void Summoner::process_statements(underworld::Block &block, Context &context) {
     Token token;
+    require_next(token);
 
-    while (require_next(token, lexicon.right_brace)) {
+    while (!token.is(lexicon.right_brace)) {
       if (token.is(lexicon.Var)) {
         process_variable_declaration(context);
       }
       else {
-        throw Syntax_Error(token);
+        throw Syntax_Exception(token);
       }
     }
   }
@@ -92,7 +106,7 @@ namespace summoning {
     Child_Context new_context(context, dungeon);
 
     Token token;
-    while (require_next(token, lexicon.right_brace)) {
+    while (require_until(token, lexicon.right_brace)) {
       process_dungeon_member(token, new_context);
     }
   }

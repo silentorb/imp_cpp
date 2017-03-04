@@ -26,10 +26,10 @@ namespace underworld {
     return *minion;
   }
 
-  Portal &Scope::create_portal(const std::string &name) {
+  Portal &Scope::create_portal(const std::string &name, const Profession & profession) {
     check_has_member(name);
 
-    auto portal = new Portal(name);
+    auto portal = new Portal(name, profession);
     members[name] = unique_ptr<Portal>(portal);
     return *portal;
   }
