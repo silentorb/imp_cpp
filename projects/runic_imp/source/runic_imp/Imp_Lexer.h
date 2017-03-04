@@ -4,26 +4,33 @@
 #include <runic/Rune.h>
 #include "Whisper.h"
 #include "Lexicon.h"
+#include "Token.h"
 #include <vector>
 
 namespace runic_imp {
 
   using Char = char;
-  using Token = runic::Rune<Whisper>;
   using Match = runic::Match<Whisper>;
+
+//  enum class Match_Result {
+//      success,
+//      end_of_file
+//  };
 
   class Imp_Lexer {
       runic::Lexer<Char> lexer;
       Lexicon &lexicon;
+      bool follows_whitespace = false;
 
-      bool match_whitespace(Match &result);
-      bool match_non_whitespace(Match &result);
-      bool match_identifier(Match &result);
-      bool match_number(Match &result);
-      bool match_string(Match &result);
-      bool match_comment(Match &result);
-      bool match_comment_or_division(Match &result);
-      bool match_special_symbols(Match & result);
+      void consume_whitespace();
+      void match_non_whitespace(Match &result);
+      void match_identifier(Match &result);
+      void match_number(Match &result);
+      void match_string(Match &result);
+      void consumer_to_end_of_line();
+      void match_comment_or_division(Match &result);
+
+      bool match_special_symbols(Match &result);
       bool match_any(Match &result);
 
   public:

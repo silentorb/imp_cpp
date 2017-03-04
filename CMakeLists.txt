@@ -34,9 +34,12 @@ initialize_boost_library(system)
 
 add_subdirectory(projects/runic)
 add_subdirectory(projects/runic_cpp)
-add_subdirectory(projects/parsing)
-
 add_subdirectory(projects/runic_imp)
+add_subdirectory(projects/imp_underworld)
+add_subdirectory(projects/imp_overworld)
+add_subdirectory(projects/summoning)
+
 add_subdirectory(projects/runic_imp/test)
+add_subdirectory(projects/summoning/test)
 
 finish_cmake()

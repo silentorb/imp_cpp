@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include "Text_Source.h"
+#include <stdexcept>
 
 namespace runic {
 

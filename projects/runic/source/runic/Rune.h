@@ -18,6 +18,10 @@ namespace runic {
         return match;
       }
 
+      const Match<Whisper> &get_match() const{
+        return match;
+      }
+
       void set_match(const Match<Whisper> &value) {
         match = value;
       }
@@ -26,8 +30,20 @@ namespace runic {
         return range;
       }
 
+      const Range &get_range() const{
+        return range;
+      }
+
       void set_range(const Range &value) {
         range = value;
+      }
+
+      inline bool is(const Whisper &whisper) const {
+        return match.get_type() == &whisper;
+      }
+
+      const std::string &get_text() const {
+        return match.get_text();
       }
   };
 

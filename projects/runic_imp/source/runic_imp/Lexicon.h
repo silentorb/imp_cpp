@@ -97,8 +97,8 @@ namespace runic_imp {
 
       struct Internal_Symbols {
           Keywords keywords;
-          Single_Symbols single_symbols;
           Double_Symbols double_symbols;
+          Single_Symbols single_symbols;
           Special_Symbols special_symbols;
           Dynamic_Whispers dynamic;
       };

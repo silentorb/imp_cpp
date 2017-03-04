@@ -1,6 +1,8 @@
 #include <runic_cpp/matching.h>
 #include "Imp_Lexer.h"
 
+using namespace std;
+
 namespace runic_imp {
 
   static const char End_Of_File = 0;
@@ -22,25 +24,17 @@ namespace runic_imp {
     return runic_cpp::matching::is_whitespace(value) || value == ';';
   }
 
-  bool Imp_Lexer::match_whitespace(Match &result) {
+  void Imp_Lexer::consume_whitespace() {
     Char value = lexer.get_character();
-    std::string text(1, value);
-    bool is_terminator = value == '\n' || value == ';';
+    if (value == '\n' || value == ';')
+      follows_whitespace = true;
 
     while (is_whitespace_or_semicolon(value = lexer.next_character())) {
-      text += value;
-
       // This could be optimized with more flow control to not check this once is_terminator is true
       if (value == '\n' || value == ';')
-        is_terminator = true;
-    }
-
-    if (is_terminator) {
-      result.set_type(lexicon.patterns.terminator);
-      return true;
-    }
-    else {
-      return false;
+        follows_whitespace = true;
+      else if (value == End_Of_File)
+        return;
     }
   }
 
@@ -67,10 +61,9 @@ namespace runic_imp {
     }
 
     return false;
-
   }
 
-  bool Imp_Lexer::match_identifier(Match &result) {
+  void Imp_Lexer::match_identifier(Match &result) {
     std::string text(1, lexer.get_character());
     Char value;
 
@@ -79,14 +72,13 @@ namespace runic_imp {
     }
 
     if (lookup(lexicon.lookup.keywords, text, result))
-      return true;
+      return;
 
     result.set_type(lexicon.patterns.identifier);
     result.set_text(text);
-    return true;
   }
 
-  bool Imp_Lexer::match_number(Match &result) {
+  void Imp_Lexer::match_number(Match &result) {
     std::string text(1, lexer.get_character());
     Char value;
     bool has_dot = false;
@@ -95,25 +87,28 @@ namespace runic_imp {
       text += value;
       if (value == '.') {
         if (has_dot)
-          return false;
+          throw runtime_error("Number can only have one dot.");
 
         has_dot = true;
       }
       if (value == 'f') {
+        if (runic_cpp::matching::is_identifier_continuing(lexer.next_character()))
+          throw runtime_error("Invalid numeric character.");
+
+        result.set_type(lexicon.patterns.literal_float);
         result.set_text(text);
-        return true;
+        return;
       }
     }
 
     if (has_dot) {
-      result.set_type(lexicon.patterns.literal_float);
+      result.set_type(lexicon.patterns.literal_double);
     }
     else {
       result.set_type(lexicon.patterns.literal_int);
     }
 
     result.set_text(text);
-    return true;
   }
 
   bool is_string_continuing(char value, char last_value) {
@@ -123,7 +118,7 @@ namespace runic_imp {
     return value != '"' || last_value == '\\';
   }
 
-  bool Imp_Lexer::match_string(Match &result) {
+  void Imp_Lexer::match_string(Match &result) {
     std::string text;
     Char value = '"';
 
@@ -136,27 +131,19 @@ namespace runic_imp {
     result.set_text(text);
 
     lexer.next_character(); // Consume closing quotation mark.
-    return true;
   }
 
   bool is_comment_continuing(char value) {
     return value != '\n' && value != End_Of_File;
   }
 
-  bool Imp_Lexer::match_comment(Match &result) {
-    while (lexer.next_character()) {
-    }
-    // Since aside for EOF, comments rely on newlines for scope, I can fall back to returning terminating whitespace.
-    // Otherwise this part of the control flow would need to wrap back around to the start of matching anything.
-    if (lexer.get_character() != End_Of_File)
-      return match_whitespace(result);
-
-    return false;
+  void Imp_Lexer::consumer_to_end_of_line() {
+    while (lexer.next_character() != End_Of_File && lexer.get_character() != '\n');
   }
 
-  bool Imp_Lexer::match_comment_or_division(Match &result) {
+  void Imp_Lexer::match_comment_or_division(Match &result) {
     if (lexer.next_character() == '/') {
-      return match_comment(result);
+      consumer_to_end_of_line();
     }
     else if (lexer.get_character() == '=') {
       result.set_type(lexicon.patterns.divide_equals);
@@ -164,57 +151,56 @@ namespace runic_imp {
     else {
       result.set_type(lexicon.patterns.divide);
     }
-
-    return true;
   }
 
-  bool Imp_Lexer::match_non_whitespace(Match &result) {
+  void Imp_Lexer::match_non_whitespace(Match &result) {
     auto &value = lexer.get_character();
 
-    if (runic_cpp::matching::is_identifier_start(value))
-      return match_identifier(result);
+    if (runic_cpp::matching::is_identifier_start(value)) {
+      match_identifier(result);
+    }
+    else if (runic_cpp::matching::is_number_start(value)) {
+      match_number(result);
+    }
+    else if (value == '/') {
+      match_comment_or_division(result);
+    }
+    else if (value == '"')
+      match_string(result);
 
-    if (runic_cpp::matching::is_number_start(value))
-      return match_identifier(result);
-
-    if (value == '/')
-      return match_comment_or_division(result);
-
-    if (value == '"')
-      return match_string(result);
-
-    if (match_special_symbols(result))
-      return true;
-
-    return false;
+    else if (match_special_symbols(result))
+      return;
+    else {
+      throw std::runtime_error("Bad syntax at " + lexer.get_position().get_string() + ".");
+    }
   }
 
   bool Imp_Lexer::match_any(Match &result) {
     auto &value = lexer.get_character();
 
+    if (is_whitespace_or_semicolon(value))
+      consume_whitespace();
+
     if (value == End_Of_File)
       return false;
 
-    if (match_non_whitespace(result))
-      return true;
+    match_non_whitespace(result);
 
-    if (is_whitespace_or_semicolon(value)) {
-      if (match_whitespace(result))
-        return true;
-
-      return match_non_whitespace(result);
-    }
-
-    throw std::runtime_error("Bad syntax at " + lexer.get_position().get_string() + ".");
+    return true;
   }
 
   bool Imp_Lexer::next_token(Token &token) {
+    follows_whitespace = false;
+    token.get_match().set_text("");
     token.get_range().set_start(lexer.get_position());
     auto &result = token.get_match();
-    if (!match_any(result))
+    if (!match_any(result)) {
+      token.get_match().set_type(nullptr);
       return false;
+    }
 
     token.get_range().set_end(lexer.get_position());
+    token.set_follows_terminator(follows_whitespace);
 
     if (lexer.get_position().get_index() == token.get_range().get_start().get_index())
       lexer.next_character();

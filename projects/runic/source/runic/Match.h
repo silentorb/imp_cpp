@@ -28,5 +28,6 @@ namespace runic {
       void set_text(const std::string &value) {
        text = value;
       }
+
   };
 }
