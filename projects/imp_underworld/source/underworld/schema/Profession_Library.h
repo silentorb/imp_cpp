@@ -6,7 +6,7 @@ namespace underworld {
 
   class Profession_Library {
       Unknown unknown;
-      Primitive primitives[Primitive_Type_Count];
+      static Primitive primitives[Primitive_Type_Count];
 
   public:
       Profession_Library();
@@ -15,8 +15,6 @@ namespace underworld {
         return unknown;
       }
 
-      const Primitive &get_primitive(Primitive_Type type) const {
-        return primitives[static_cast<int>(type)];
-      }
+      static Primitive &get_primitive(Primitive_Type type);
   };
 }

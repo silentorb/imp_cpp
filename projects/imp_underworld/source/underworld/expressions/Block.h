@@ -6,6 +6,6 @@
 namespace underworld {
 
   class Block {
-      std::vector<Expression_Pointer> expressions;
+      std::vector<Expression_Owner> expressions;
   };
 }

@@ -23,14 +23,8 @@ namespace summoning {
       }
 
   public:
-      Syntax_Exception(runic_imp::Token &token) :
+      Syntax_Exception(const runic_imp::Token &token) :
         Token_Exception(token, format_message(token)) {}
-  };
-
-  class End_Of_File_Exception : public Token_Exception {
-  public:
-      End_Of_File_Exception(const Token &token) :
-        Token_Exception(token, "Unexpected end of file at line " + token.get_start().get_string()) {}
   };
 
   class Expected_Exception : public Token_Exception {
@@ -43,13 +37,13 @@ namespace summoning {
       }
 
   public:
-      Expected_Exception(const std::string &expected, runic_imp::Token &token) :
+      Expected_Exception(const std::string &expected, const runic_imp::Token &token) :
         Token_Exception(token, format_message(token, expected)) {}
   };
 
   class Expected_Whisper_Exception : public Expected_Exception {
   public:
-      Expected_Whisper_Exception(const runic_imp::Whisper &whisper, Token &token) :
+      Expected_Whisper_Exception(const runic_imp::Token &token, const runic_imp::Whisper &whisper) :
         Expected_Exception("" + whisper.get_name() + "", token) {}
   };
 }

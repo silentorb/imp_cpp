@@ -12,7 +12,8 @@ TEST(Summoning_Test, summoning) {
   Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
   underworld::Dungeon dungeon("");
   underworld::Profession_Library profession_library;
-  summoning::Summoner summoner(lexer, profession_library);
+  summoning:: Stream stream(lexer);
+  summoning::Summoner summoner(stream, profession_library);
   summoner.summon(dungeon);
 
 ////  Token token;

@@ -1,62 +1,45 @@
 #include "Summoner.h"
 #include "exceptions.h"
+#include "Expression_Summoner.h"
 #include <underworld/schema/Minion.h>
+#include <underworld/expressions/Literal.h>
 
 using namespace std;
+using namespace underworld;
 
 namespace summoning {
 
-  Summoner::Summoner(runic_imp::Imp_Lexer &lexer, underworld::Profession_Library &profession_library) :
-    lexer(lexer),
-    lexicon(runic_imp::Lexicon::get_instance().patterns),
-    profession_library(profession_library) {}
-
-  void Summoner::require_next(Token &token) {
-    if (!lexer.next_token(token))
-      throw End_Of_File_Exception(token);
-  }
-
-  bool Summoner::require_until(Token &token, const runic_imp::Whisper &whisper) {
-    if (!lexer.next_token(token))
-      throw Expected_Whisper_Exception(whisper, token);
-
-    return !token.is(whisper);
-  }
-
-  void Summoner::expect(Token &token, const runic_imp::Whisper &whisper) {
-    if (!lexer.next_token(token) || !token.is(whisper))
-      throw Expected_Whisper_Exception(whisper, token);
-  }
+  Summoner::Summoner(Stream &input, Profession_Library &profession_library) :
+    Base_Summoner(input, profession_library) {}
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
-    Token token;
-    if (!get_next(token) || token.follows_terminator()) {
-      throw Syntax_Exception(token);
+    input.next();
+    if (input.current().follows_terminator()) {
+      throw Syntax_Exception(input.current());
     }
-    else if (token.is(lexicon.left_brace)) {
+    else if (input.current().is(lexicon.left_brace)) {
       process_dungeon(name, context);
     }
-    else if (token.is(lexicon.left_paren)) {
+    else if (input.current().is(lexicon.left_paren)) {
       process_minion(name, context);
     }
     else {
-      throw Syntax_Exception(token);
+      throw Syntax_Exception(input.current());
     }
   }
 
-  void Summoner::process_dungeon_member(Token &token, Context &context) {
-    if (token.is(lexicon.identifier)) {
-      process_root_identifier(token.get_text(), context);
+  void Summoner::process_dungeon_member(Context &context) {
+    if (input.current().is(lexicon.identifier)) {
+      process_root_identifier(input.current().get_text(), context);
     }
     else {
-      throw Syntax_Exception(token);
+      throw Syntax_Exception(input.current());
     }
   }
 
   void Summoner::process_minion_parameters(underworld::Minion &minion, Context &context) {
-    Token token;
-    while (get_next(token) && !token.is(lexicon.right_paren)) {
-      throw Syntax_Exception(token);
+    while (!input.next().is(lexicon.right_paren)) {
+      throw Syntax_Exception(input.current());
     }
   }
 
@@ -64,58 +47,36 @@ namespace summoning {
     auto &minion = context.get_dungeon().create_minion(name);
     process_minion_parameters(minion, context);
 
-    Token token;
-    get_next(token);
-    if (!token.is(lexicon.left_brace))
-      throw Expected_Whisper_Exception(lexicon.left_brace, token);
+    input.next();
+    if (!input.current().is(lexicon.left_brace))
+      throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
 
     Child_Context new_context(context, minion.get_scope());
-    process_statements(minion.get_block(), new_context);
+    throw "Needs to be moved to Expression_Summoner";
+//    process_statements(minion.get_block(), new_context);
   }
 
-  void Summoner::process_expression(Context &context) {
-    Token token;
-    require_next(token);
-  }
-
-  void Summoner::process_variable_declaration(Context &context) {
-    Token token;
-    expect(token, lexicon.identifier);
-    context.get_scope().create_portal(token.get_text(), profession_library.get_unknown());
-    if (get_next(token) && token.is(lexicon.assignment)) {
-      process_expression(context);
-    }
-  }
-
-  void Summoner::process_statements(underworld::Block &block, Context &context) {
-    Token token;
-    require_next(token);
-
-    while (!token.is(lexicon.right_brace)) {
-      if (token.is(lexicon.Var)) {
-        process_variable_declaration(context);
-      }
-      else {
-        throw Syntax_Exception(token);
-      }
-    }
+  Expression_Owner Summoner::process_expression(Context &context) {
+    Expression_Summoner expression_summoner(input, profession_library);
+    return expression_summoner.process_expression(context);
   }
 
   void Summoner::process_dungeon(const std::string &name, Context &context) {
     auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
     Child_Context new_context(context, dungeon);
 
-    Token token;
-    while (require_until(token, lexicon.right_brace)) {
-      process_dungeon_member(token, new_context);
-    }
+    throw "Error";
+
+//    while (require_until(input.current(), lexicon.right_brace)) {
+//      process_dungeon_member(input.current(), new_context);
+//    }
   }
 
   void Summoner::process_root(Context &context) {
-    Token token;
-    while (get_next(token)) {
-      process_dungeon_member(token, context);
-    }
+    throw "Error";
+//    while (!input.next().is(lexicon.end_of_file)) {
+//      process_dungeon_member(input.current(), context);
+//    }
   }
 
   void Summoner::summon(underworld::Dungeon &root) {
