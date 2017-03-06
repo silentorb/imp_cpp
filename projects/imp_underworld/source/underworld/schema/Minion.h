@@ -17,8 +17,16 @@ namespace underworld {
       Type get_type() const override {
         return Type::portal;
       }
+
+      const std::string &get_name() const {
+        return name;
+      }
+
+      const Profession &get_profession() const {
+        return profession;
+      }
   };
 
-  using Portal_Pointer = std::unique_ptr<Minion>;
+  using Minion_Owner = std::unique_ptr<Minion>;
 
 }

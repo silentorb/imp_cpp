@@ -2,18 +2,20 @@
 
 #include <memory>
 #include <overworld/expressions/Block.h>
+#include <underworld/schema/Function.h>
 #include "Member.h"
 #include "Scope.h"
 
 namespace overworld {
 
   class Function : public virtual Member {
-      const std::string name;
+      const underworld::Function &source;
       Block block;
       Scope scope;
 
   public:
-      Function(const std::string &name) : name(name) {}
+      Function(const underworld::Function &source) :
+        source(source) {}
 
       Block &get_block() {
         return block;

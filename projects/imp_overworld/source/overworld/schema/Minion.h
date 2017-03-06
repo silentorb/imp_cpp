@@ -3,16 +3,17 @@
 #include <memory>
 #include "Member.h"
 #include "professions.h"
+#include <underworld/schema/Minion.h>
 
 namespace overworld {
 
   class Minion : public virtual Member {
-      const std::string name;
+      const underworld::Minion &source;
       const Profession &profession;
 
   public:
-      Minion(const std::string &name, const Profession &profession) :
-        name(name), profession(profession) {}
+      Minion(const underworld::Minion &source, const Profession &profession) :
+        source(source), profession(profession) {}
 
       Type get_type() const override {
         return Type::portal;

@@ -4,6 +4,7 @@
 #include <map>
 #include "Minion.h"
 #include "professions.h"
+#include <underworld/schema//Function.h>
 
 namespace overworld {
 
@@ -19,8 +20,8 @@ namespace overworld {
 //      }
 
   public:
-      Function &create_function(const std::string &name);
-      Minion &create_minion(const std::string &name, const Profession &profession);
+      Function &create_function(const underworld::Function &input);
+      Minion &create_minion(const underworld::Minion &input, const Profession &profession);
 
       std::map<std::string, Member_Pointer> &get_members() {
         return members;

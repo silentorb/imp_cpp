@@ -19,8 +19,9 @@ TEST(Mirror_Test, mirroring) {
   summoner.summon(root);
 
   overworld::Dungeon output_root(root);
-  Mirror mirror;
-  mirror.reflect(root, output_root);
+  overworld::Profession_Library profession_library2;
+  Mirror mirror(profession_library2);
+  mirror.reflect_dungeon(root, output_root);
   EXPECT_EQ(1, output_root.get_dungeons().size());
 
 }

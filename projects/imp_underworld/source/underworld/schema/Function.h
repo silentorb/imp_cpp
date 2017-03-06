@@ -26,6 +26,10 @@ namespace underworld {
       Scope &get_scope() {
         return scope;
       }
+
+      const std::string &get_name() const {
+        return name;
+      }
   };
 
   using Minion_Pointer = std::unique_ptr<Function>;

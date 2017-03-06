@@ -27,5 +27,9 @@ namespace underworld {
       std::map<std::string, Member_Pointer> &get_members() {
         return members;
       }
+
+      const std::map<std::string, Member_Pointer> &get_members() const {
+        return members;
+      }
   };
 }

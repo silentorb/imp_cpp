@@ -6,14 +6,6 @@ using namespace std;
 
 namespace underworld {
 
-//  Variable &Scope::create_variable(const std::string &name, const Profession &profession) {
-//    if (variables.count(name) != 0)
-//      throw Already_Exists_Error("Scope", "name");
-//
-//    auto variable = new Variable(name, profession);
-//    variables[name] = Variable_Pointer(variable);
-//    return *variable;;
-//  }
   void Scope::throw_already_exists(const std::string &member_name) const {
     throw std::runtime_error("Local scope already has a member named " + member_name + ".");
   }
