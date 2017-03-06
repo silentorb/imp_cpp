@@ -38,8 +38,10 @@ add_subdirectory(projects/runic_imp)
 add_subdirectory(projects/imp_underworld)
 add_subdirectory(projects/imp_overworld)
 add_subdirectory(projects/summoning)
+add_subdirectory(projects/imp_mirror)
 
 add_subdirectory(projects/runic_imp/test)
 add_subdirectory(projects/summoning/test)
+add_subdirectory(projects/imp_mirror/test)
 
 finish_cmake()
