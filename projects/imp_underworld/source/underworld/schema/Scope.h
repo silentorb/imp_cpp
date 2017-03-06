@@ -2,12 +2,12 @@
 
 #include <string>
 #include <map>
-#include "Portal.h"
+#include "Minion.h"
 #include "professions.h"
 
 namespace underworld {
 
-  class Minion;
+  class Function;
 
   class Scope {
   protected:
@@ -21,8 +21,11 @@ namespace underworld {
       virtual void throw_already_exists(const std::string &member_name) const;
 
   public:
-      Minion &create_minion(const std::string &name);
-      Portal &create_portal(const std::string &name, const  Profession & profession);
+      Function &create_function(const std::string &name);
+      Minion &create_minion(const std::string &name, const Profession &profession);
 
+      std::map<std::string, Member_Pointer> &get_members() {
+        return members;
+      }
   };
 }

@@ -9,48 +9,56 @@ namespace runic {
   class Rune_Stream {
       Lexer &lexer;
       std::list<Rune> buffer;
-      Rune& at(int index) {
-        return  *(buffer.begin() + 1);
+
+      Rune &at(int index) {
+        int i = 0;
+        for(auto &entry : buffer) {
+          if (i++ == index)
+            return entry;
+        }
+
+        throw std::runtime_error("Requested index larger than buffer.");
       }
 
   public:
-      Rune_Stream(Lexer &lexer) : lexer(lexer) {}
+      Rune_Stream(Lexer &lexer) : lexer(lexer), buffer(1) {}
 
       const Rune &next() {
-        lexer.next_token(buffer.front());
+        if (buffer.size() > 1) {
+          buffer.pop_front();
+        }
+        else {
+          lexer.next_token(buffer.front());
+        }
+
         return buffer.front();
       }
 
       const Rune &peek() {
-        lexer.next_token(buffer.front() + 1);
-        return buffer.front();
+        if (buffer.size() == 1) {
+          buffer.emplace_back();
+          auto &entry = at(1);
+          lexer.next_token(entry);
+          return entry;
+        }
+        else {
+          return at(1);
+        }
       }
 
       const Rune &current() const {
         return buffer.front();
       }
-//      bool get_next(Rune &token) {
-//        return lexer.next_token(token);
-//      }
 
-
-
-//      void require_next(Rune &token) {
-//        if (!lexer.next_token(token))
-//          throw End_Of_File_Exception<Rune>(token);
-//      }
-
-//      bool require_until(Rune &token, const Whisper &whisper) {
-//        if (!lexer.next_token(token))
-//          throw Expected_Whisper_Exception<Rune, Whisper>(token, whisper);
-//
-//        return !token.is(whisper);
-//      }
-//
-//      void expect(Rune &token, const Whisper &whisper) {
-//        if (!lexer.next_token(token) || !token.is(whisper))
-//          throw Expected_Whisper_Exception<Rune, Whisper>(token, whisper);
-//      }
+      bool until(const Whisper &whisper) {
+        if (!peek().is(whisper)) {
+          return true;
+        }
+        else {
+          next();
+          return false;
+        }
+      }
 
   public:
 

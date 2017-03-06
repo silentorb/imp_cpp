@@ -1,32 +1,24 @@
 #pragma once
 
 #include <memory>
-#include <underworld/expressions/Block.h>
 #include "Member.h"
-#include "Scope.h"
+#include "professions.h"
 
 namespace underworld {
 
   class Minion : public virtual Member {
       const std::string name;
-      Block block;
-      Scope scope;
+      const Profession &profession;
 
   public:
-      Minion(const std::string &name) : name(name) {}
-
-      Block &get_block() {
-        return block;
-      }
+      Minion(const std::string &name, const Profession &profession) :
+        name(name), profession(profession) {}
 
       Type get_type() const override {
-        return Type::minion;
-      }
-
-      Scope &get_scope() {
-        return scope;
+        return Type::portal;
       }
   };
 
-  using Minion_Pointer = std::unique_ptr<Minion>;
+  using Portal_Pointer = std::unique_ptr<Minion>;
+
 }

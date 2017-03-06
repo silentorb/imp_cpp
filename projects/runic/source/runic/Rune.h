@@ -42,6 +42,10 @@ namespace runic {
         return match.get_type() == &whisper;
       }
 
+      inline bool is_not(const Whisper &whisper) const {
+        return match.get_type() != &whisper;
+      }
+
       const std::string &get_text() const {
         return match.get_text();
       }
