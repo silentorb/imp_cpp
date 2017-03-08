@@ -6,7 +6,6 @@ get_filename_component(CPP_ROOT "../.." ABSOLUTE)
 
 include(config.cmake)
 
-#SET(CMAKE_EXE_LINKER_FLAGS "-static")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include("${CMAKE_TOOLS_PATH}/scripts/generator-key.cmake")
 
@@ -16,7 +15,7 @@ set(LOCAL_HEADER 1)
 include(local-config.cmake OPTIONAL)
 
 if (NOT MINGW)
-  project(archmage)
+  project(imp)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else ()
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
