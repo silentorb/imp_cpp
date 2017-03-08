@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include <runic_imp/Imp_Lexer.h>
-#include <summoning/Summoner.h>
+#include <imp_summoning/Summoner.h>
 #include <runic/File_Text_Source.h>
 
 using namespace std;

@@ -36,6 +36,7 @@ add_subdirectory(projects/parse/imp_summoning)
 add_subdirectory(projects/model/imp_mirror)
 add_subdirectory(projects/render/imp_artisan)
 add_subdirectory(projects/render/imp_rendering)
+add_subdirectory(projects/front/imp_taskmaster)
 add_subdirectory(projects/front/imp_wrapper)
 
 add_subdirectory(projects/parse/runic_imp/test)

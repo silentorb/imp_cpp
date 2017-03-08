@@ -1,6 +1,10 @@
 
 Pizza {
 
+    constructor() {
+
+    }
+
     add_topping() {
         var x = 12
         var y = "Hello World"

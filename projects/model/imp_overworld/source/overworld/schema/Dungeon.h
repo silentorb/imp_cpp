@@ -23,5 +23,13 @@ namespace overworld {
       Dungeons &get_dungeons() {
         return dungeons;
       }
+
+      const Dungeons &get_dungeons() const {
+        return dungeons;
+      }
+
+      const std::string &get_name() const {
+        return source.get_name();
+      }
   };
 }
