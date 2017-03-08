@@ -1,0 +1,2 @@
+create_library(imp_wrapper)
+require(imp_summoning imp_mirror imp_rendering boost_filesystem)
