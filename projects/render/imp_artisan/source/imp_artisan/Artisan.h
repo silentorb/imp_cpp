@@ -10,19 +10,15 @@ namespace imp_artisan {
   class Artisan {
       const std::string tab = "  ";
 
-      std::string render_block(const Block &block, const Indent &indent);
-      std::string render_strokes(const Strokes &strokes, const Indent &indent);
-      std::string render_stroke(const Stroke &stroke, const Indent &indent);
+      std::string render_block(const internal::Block &block, const Indent &indent);
+      std::string render_strokes(const building::Strokes &strokes, const Indent &indent);
+      std::string render_stroke(const building::Stroke_Owner &stroke, const Indent &indent);
 
-      std::string render_text(const Text &text) {
-        return text.get_value();
-      }
-
-      bool is_paragraph(const Stroke &stroke) {
-        return stroke.get_type() == Stroke::Type::group || stroke.get_type() == Stroke::Type::block;
+      bool is_paragraph(const building::Stroke_Owner &stroke) {
+        return stroke.get_type() == internal::Stroke::Type::group || stroke.get_type() == internal::Stroke::Type::block;
       }
 
   public:
-      std::string render(const Strokes &strokes);
+      std::string render(const building::Stroke_Owner &stroke);
   };
 }

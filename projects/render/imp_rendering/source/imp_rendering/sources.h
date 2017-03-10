@@ -8,6 +8,6 @@ namespace imp_rendering {
 
   namespace sources {
 
-    void render(const overworld::Dungeon &dungeon, Stream &strokes);
+    Stroke render(const overworld::Dungeon &dungeon);
   }
 }

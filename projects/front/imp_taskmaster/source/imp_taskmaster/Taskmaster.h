@@ -10,7 +10,7 @@ namespace imp_taskmaster {
       const overworld::Dungeon &root;
       const std::string output_path;
 
-      void render_and_write_strokes(const imp_artisan::Strokes &strokes, const std::string &file_path);
+      void render_and_write_strokes(const imp_artisan::building::Stroke_Owner &stroke, const std::string &file_path);
       void render_dungeon(const overworld::Dungeon &dungeon);
 
   public:

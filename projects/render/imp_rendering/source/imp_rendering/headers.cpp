@@ -1,7 +1,8 @@
 #include "headers.h"
 #include <overworld/schema/Function.h>
+#include <imp_artisan/building.h>
 
-using namespace imp_artisan;
+using namespace imp_artisan::building;
 using namespace overworld;
 
 using namespace std;
@@ -9,13 +10,13 @@ using namespace std;
 namespace imp_rendering {
   namespace headers {
 
-    imp_artisan::Stroke *render_function(const overworld::Function &function) {
-      return new Text(render_function_declaration(function) + ";");
+    Stroke render_function(const overworld::Function &function) {
+      return render_function_declaration(function) + ";";
     }
 
-    Stroke *render_dungeon_body(const overworld::Dungeon &dungeon) {
-      auto block = new imp_artisan::Block("class " + dungeon.get_name(), "};", 2);
-      *block << new Special_Text("public:");
+    Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
+      Stroke block(new imp_artisan::internal::Block("class " + dungeon.get_name(), "};", 2));
+      block << Stroke(new imp_artisan::internal::Special_Text("public:"));
 
       for (auto &variable : dungeon.get_variables()) {
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
@@ -24,14 +25,19 @@ namespace imp_rendering {
       }
 
       for (auto &function : dungeon.get_functions()) {
-        *block << render_function(*function);
+        block << render_function(*function);
       }
       return block;
     }
 
-    void render(const Dungeon &dungeon, Stream &strokes) {
-      strokes << new Group({new Text("#pragma once")})
-              << render_dungeon_body(dungeon);
+    Stroke render(const Dungeon &dungeon) {
+//      return Stroke()
+//        << (Stroke() << "#pragma once")
+//                     << render_dungeon_body(dungeon);
+      Stroke result;
+      result << wrap("#pragma once")
+             << render_dungeon_body(dungeon);
+      return result;
     }
   }
 }

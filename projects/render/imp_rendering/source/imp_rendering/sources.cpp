@@ -1,50 +1,54 @@
 #include "sources.h"
 #include <overworld/schema/Function.h>
+#include <imp_artisan/building.h>
 
-using namespace imp_artisan;
+using namespace imp_artisan::building;
 using namespace std;
 
 namespace imp_rendering {
   namespace sources {
 
-    imp_artisan::Stroke *render_statement(const overworld::Expression &expression) {
-
+    Stroke render_statement(const overworld::Expression &expression) {
+      return string();
     }
 
-    imp_artisan::Stroke *render_includes(const overworld::Dungeon &dungeon) {
-      auto result = new imp_artisan::Group();
-      *result << "#include \"" + dungeon.get_name() + ".h\"";
+    Stroke render_includes(const overworld::Dungeon &dungeon) {
+      Stroke result;
+      result << "#include \"" + dungeon.get_name() + ".h\"";
       return result;
     }
 
-    imp_artisan::Stroke *render_function(const overworld::Function &function, const overworld::Dungeon &dungeon) {
+    Stroke render_function(const overworld::Function &function, const overworld::Dungeon &dungeon) {
       auto function_signature = render_function_return_signature(function)
                                 + dungeon.get_name() + "::"
                                 + function.get_name()
                                 + render_function_parameters(function);
-      auto block = new imp_artisan::Block(function_signature, "}");
+      Stroke block(new imp_artisan::internal::Block(function_signature, "}"));
       for (auto &statement : function.get_block().get_expressions()) {
-        *block << render_statement(*statement);
+        block << render_statement(*statement);
       }
 
-      return block;
+      return move(block);
     }
 
-    imp_artisan::Stroke *render_function(const overworld::Function &function) {
+    Stroke render_function(const overworld::Function &function) {
       auto function_signature = render_function_declaration(function);
-      auto block = new imp_artisan::Block(function_signature, "}");
+      auto block = Block(function_signature, "}");
       for (auto &statement : function.get_block().get_expressions()) {
 
       }
 
-      return block;
+      return move(block);
     }
 
-    void render(const overworld::Dungeon &dungeon, Stream &strokes) {
-      strokes << render_includes(dungeon);
+    Stroke render(const overworld::Dungeon &dungeon) {
+      Stroke result;
+      result << render_includes(dungeon);
       for (auto &function : dungeon.get_functions()) {
-        strokes << render_function(*function, dungeon);
+        result << render_function(*function, dungeon);
       }
+
+      return result;
     }
   }
 }

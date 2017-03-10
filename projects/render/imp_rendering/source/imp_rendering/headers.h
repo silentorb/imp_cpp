@@ -10,6 +10,6 @@ namespace imp_rendering {
 //    imp_artisan::Stroke *render_dungeon_body(const overworld::Dungeon &dungeon);
 //    imp_artisan::Stroke *render_function(const overworld::Function &function);
 
-    void render(const overworld::Dungeon &dungeon, Stream &strokes);
+    Stroke render(const overworld::Dungeon &dungeon);
   }
 }
