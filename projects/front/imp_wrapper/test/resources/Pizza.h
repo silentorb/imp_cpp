@@ -1,7 +1,7 @@
 #pragma once
 
 class Pizza {
-
 public:
-    void add_toppings();
+    Pizza();
+    void add_topping();
 };

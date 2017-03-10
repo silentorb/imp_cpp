@@ -6,13 +6,13 @@
 
 namespace overworld {
 
-  class Block : public virtual Expression {
+  class Block : public virtual Expression, public virtual Scope_Parent {
       Scope scope;
       std::vector<Expression_Owner> expressions;
 
   public:
-      Block(const underworld::Block & source) :
-        scope(source.get_scope()) {}
+      Block(const underworld::Block &source) :
+        scope(source.get_scope(), *this) {}
 
       void add_expression(Expression_Owner &expression) {
         expressions.push_back(std::move(expression));
@@ -28,6 +28,10 @@ namespace overworld {
 
       const std::vector<Expression_Owner> &get_expressions() const {
         return expressions;
+      }
+
+      Scope_Parent_Type get_scope_parent_type() const override {
+        return Scope_Parent_Type::block;
       }
   };
 }

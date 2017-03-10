@@ -7,8 +7,9 @@
 using namespace std;
 
 namespace overworld {
-  Scope::Scope(const underworld::Scope &source) :
-    source(source) {
+
+  Scope::Scope(const underworld::Scope &source, Scope_Parent &parent) :
+    source(source), parent(parent) {
 
     for (auto &input_member : source.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::variable) {
@@ -17,19 +18,32 @@ namespace overworld {
     }
   }
 
+  Scope::~Scope() {
+
+  }
+
   Function &Scope::create_function(const underworld::Function &input) {
 //    check_has_member(name);
 
-    auto function = new Function(input);
-    members[input.get_name()] = unique_ptr<Function>(function);
+    auto function = new Function(input, *this);
+    functions.push_back(unique_ptr<Function>(function));
     return *function;
   }
 
-  Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession) {
+  Variable &Scope::create_minion(const underworld::Minion &input, const Profession &profession) {
 //    check_has_member(name);
 
-    auto minion = new Minion(input, profession);
-    members[input.get_name()] = unique_ptr<Minion>(minion);
+    auto minion = new Variable(input, profession);
+    variables.push_back(unique_ptr<Variable>(minion));
     return *minion;
+  }
+
+  Variable &Scope::get_variable(const std::string &name) {
+    for (auto &variable: variables) {
+      if (variable->get_name() == name)
+        return *variable;
+    }
+
+    throw std::runtime_error("Could not find variable named " + name);
   }
 }

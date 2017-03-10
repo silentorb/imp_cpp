@@ -2,7 +2,7 @@
 
 #include <string>
 #include <map>
-#include "Minion.h"
+#include "Variable.h"
 #include "professions.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
@@ -11,36 +11,46 @@ namespace overworld {
 
   class Function;
 
+  class Scope_Parent;
+
   class Scope {
       const underworld::Scope &source;
+      Scope_Parent &parent;
 
   protected:
-      std::map<std::string, Member_Pointer> members;
-
-//      void check_has_member(const std::string &member_name) {
-//        if (members.count(member_name) != 0)
-//          throw std::runtime_error(member_name + " already exists");
-//      }
+      std::vector<std::unique_ptr<Function>> functions;
+      std::vector<Variable_Owner> variables;
 
   public:
-      Scope(const underworld::Scope &source);
+      Scope(const underworld::Scope &source, Scope_Parent &parent);
+      ~Scope();
+
       Function &create_function(const underworld::Function &input);
-      Minion &create_minion(const underworld::Minion &input, const Profession &profession);
+      Variable &create_minion(const underworld::Minion &input, const Profession &profession);
 
-      std::map<std::string, Member_Pointer> &get_members() {
-        return members;
+      const std::vector<std::unique_ptr<Function>> &get_functions() const {
+        return functions;
       }
 
-      const std::map<std::string, Member_Pointer> &get_members() const {
-        return members;
+      const std::vector<Variable_Owner> &get_variables() const {
+        return variables;
       }
 
-      Member &get_member(const std::string &name) {
-        return *(members[name]);
-      }
+      Variable &get_variable(const std::string &name);
 
-      Minion &get_minion(const std::string &name) {
-        return *dynamic_cast<overworld::Minion *>(members[name].get());
+      Scope_Parent &get_parent() {
+        return parent;
       }
+  };
+
+
+  enum class Scope_Parent_Type {
+      block,
+      dungeon,
+  };
+
+  class Scope_Parent {
+  public:
+      virtual Scope_Parent_Type get_scope_parent_type() const = 0;
   };
 }

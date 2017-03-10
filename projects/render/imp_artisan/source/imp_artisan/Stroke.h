@@ -81,10 +81,11 @@ namespace imp_artisan {
   class Block : public virtual Stroke, public Stroke_Stream {
       std::string header;
       std::string footer;
+      int indent = 1;
 
   public:
-      Block(const std::string &header, const std::string &footer) :
-        header(header), footer(footer) {}
+      Block(const std::string &header, const std::string &footer, int indent = 1) :
+        header(header), footer(footer), indent(indent) {}
 
       void add_stroke(Stroke *stroke) {
         strokes.push_back(Stroke_Owner(stroke));
@@ -101,10 +102,13 @@ namespace imp_artisan {
       Type get_type() const override {
         return Type::block;
       }
+
+      int get_indent() const {
+        return indent;
+      }
   };
 
   class Group : public virtual Stroke, public Stroke_Stream {
-      std::vector<Stroke_Owner> strokes;
 
   public:
       Group() {}
@@ -123,5 +127,4 @@ namespace imp_artisan {
         return Type::group;
       }
   };
-
 }

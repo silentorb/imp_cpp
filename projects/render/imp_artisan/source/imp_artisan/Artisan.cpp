@@ -5,8 +5,12 @@ using namespace std;
 namespace imp_artisan {
 
   std::string Artisan::render_block(const Block &block, const Indent &indent) {
+    auto new_indent = block.get_indent() == 1
+                      ? indent + tab
+                      : indent + tab + tab;
+
     return block.get_header() + " {\n"
-           + render_strokes(block.get_strokes(), indent + tab)
+           + render_strokes(block.get_strokes(), new_indent)
            + "\n" + indent + block.get_footer();
   }
 
@@ -22,7 +26,7 @@ namespace imp_artisan {
         return indent + render_text(*dynamic_cast<const Text *>(&stroke));
 
       case Stroke::Type::special:
-        return indent.substr(tab.size()) + (*dynamic_cast<const Special_Text *>(&stroke)).get_value();
+        return indent.substr(tab.size() * 2) + (*dynamic_cast<const Special_Text *>(&stroke)).get_value();
     }
 
     throw runtime_error("Unsupported stroke type.");
@@ -36,7 +40,7 @@ namespace imp_artisan {
     string result = render_stroke(*last, indent);
     for (auto it = strokes.begin() + 1; it != strokes.end(); it++) {
       auto &stroke = *(*it);
-      if (is_paragraph(stroke) && is_paragraph(*last)) {
+      if (is_paragraph(stroke) || is_paragraph(*last)) {
         result += "\n";
       }
       result += "\n" + render_stroke(stroke, indent);

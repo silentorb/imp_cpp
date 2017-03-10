@@ -7,19 +7,23 @@
 
 namespace overworld {
 
-  class Minion : public virtual Member {
+  class Variable : public virtual Member {
       const underworld::Minion &source;
       const Profession &profession;
 
   public:
-      Minion(const underworld::Minion &source, const Profession &profession) :
+      Variable(const underworld::Minion &source, const Profession &profession) :
         source(source), profession(profession) {}
 
       Type get_type() const override {
         return Type::variable;
       }
+
+      const std::string &get_name() const {
+        return source.get_name();
+      }
   };
 
-  using Portal_Pointer = std::unique_ptr<Minion>;
+  using Variable_Owner = std::unique_ptr<Variable>;
 
 }

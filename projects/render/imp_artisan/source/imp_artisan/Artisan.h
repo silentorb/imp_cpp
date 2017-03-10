@@ -8,7 +8,7 @@ namespace imp_artisan {
   using Indent = std::string;
 
   class Artisan {
-      const std::string tab = "\t";
+      const std::string tab = "  ";
 
       std::string render_block(const Block &block, const Indent &indent);
       std::string render_strokes(const Strokes &strokes, const Indent &indent);
@@ -19,7 +19,7 @@ namespace imp_artisan {
       }
 
       bool is_paragraph(const Stroke &stroke) {
-        return stroke.get_type() != Stroke::Type::text;
+        return stroke.get_type() == Stroke::Type::group || stroke.get_type() == Stroke::Type::block;
       }
 
   public:

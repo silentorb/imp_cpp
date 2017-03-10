@@ -44,13 +44,13 @@ namespace imp_mirror {
   overworld::Expression_Owner
   Mirror::reflect_variable_declaration(const underworld::Minion_Declaration &input_declaration,
                                        overworld::Scope &scope) {
-    auto &variable = scope.get_minion(input_declaration.get_minion().get_name());
+    auto &variable = scope.get_variable(input_declaration.get_minion().get_name());
     return overworld::Expression_Owner(new overworld::Minion_Declaration(variable));
   }
 
   overworld::Expression_Owner Mirror::reflect_variable_declaration_with_assignment(
     const underworld::Minion_Declaration_And_Assignment &input_declaration, overworld::Scope &scope) {
-    auto &variable = scope.get_minion(input_declaration.get_minion().get_name());
+    auto &variable = scope.get_variable(input_declaration.get_minion().get_name());
     auto expression = reflect_expression(input_declaration.get_expression());
     return overworld::Expression_Owner(new overworld::Minion_Declaration_And_Assignment(variable, expression));
   }

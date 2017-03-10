@@ -1,6 +1,10 @@
 #include "Pizza.h"
 
-void Pizza::add_toppings() {
+Pizza::Pizza() {
+
+}
+
+void Pizza::add_topping() {
   auto x = 12;
   auto y = "Hello World";
   if (true)
