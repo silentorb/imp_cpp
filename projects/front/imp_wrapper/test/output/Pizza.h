@@ -1,1 +1,7 @@
-// Code will go here.
+
+
+class Pizza {
+public:
+	void Pizza();
+	void add_topping();
+};

@@ -25,7 +25,11 @@ namespace overworld {
       }
 
       Type get_type() const override {
-        return Type::minion;
+        return Type::function;
+      }
+
+      const std::string &get_name() const {
+        return source.get_name();
       }
 
   };

@@ -27,7 +27,6 @@ namespace underworld {
         return Type::function;
       }
 
-
       const std::string &get_name() const {
         return name;
       }

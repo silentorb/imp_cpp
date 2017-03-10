@@ -16,7 +16,7 @@ namespace overworld {
         source(source), profession(profession) {}
 
       Type get_type() const override {
-        return Type::portal;
+        return Type::variable;
       }
   };
 

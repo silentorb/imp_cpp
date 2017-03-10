@@ -31,6 +31,10 @@ namespace overworld {
         return members;
       }
 
+      const std::map<std::string, Member_Pointer> &get_members() const {
+        return members;
+      }
+
       Member &get_member(const std::string &name) {
         return *(members[name]);
       }

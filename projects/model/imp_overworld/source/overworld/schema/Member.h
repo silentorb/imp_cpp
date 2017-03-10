@@ -5,8 +5,8 @@ namespace overworld {
   class Member {
   public:
       enum class Type {
-          minion,
-          portal
+          function,
+          variable
       };
 
       virtual Type get_type() const = 0;

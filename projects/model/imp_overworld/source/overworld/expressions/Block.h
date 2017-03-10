@@ -25,5 +25,9 @@ namespace overworld {
       Type get_type() const override {
         return Type::block;
       }
+
+      const std::vector<Expression_Owner> &get_expressions() const {
+        return expressions;
+      }
   };
 }

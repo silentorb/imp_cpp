@@ -1,9 +1,7 @@
 
 Pizza {
 
-    constructor() {
-
-    }
+    Pizza() {}
 
     add_topping() {
         var x = 12
