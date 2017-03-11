@@ -19,6 +19,7 @@ namespace imp_mirror {
   class Mirror {
       overworld::Profession_Library &profession_library;
 
+      void reflect_scope(const underworld:: Scope & input_scope, overworld:: Scope & output_scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);
       overworld::Expression_Owner reflect_return_with_value(const underworld::Return_With_Value &input_return);

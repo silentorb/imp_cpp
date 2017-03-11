@@ -121,20 +121,35 @@ namespace imp_mirror {
     return profession_library.get_unknown();
   }
 
-  void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {
-    for (auto &entry: input.get_members()) {
-      auto &member = *entry.second;
-      if (member.get_type() == underworld::Member::Type::variable) {
-        auto &input_minion = *dynamic_cast<underworld::Minion *>(&member);
-        auto &profession = reflect_profession(input_minion.get_profession());
-        auto &output_minion = output.create_minion(input_minion, profession);
+  void Mirror::reflect_scope(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::variable) {
+        auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
+        output_scope.create_minion(input_variable, reflect_profession(input_variable.get_profession()));
       }
       else {
-        auto &input_function = *dynamic_cast<underworld::Function *>(&member);
-        auto &output_function = output.create_function(input_function);
+        auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
+        auto & output_function =output_scope.create_function(input_function);
+        reflect_scope(input_function.get_block().get_scope(), output_function.get_block().get_scope());
         reflect_block(input_function.get_block(), output_function.get_block());
       }
     }
+  }
+
+  void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {
+    reflect_scope(input, output);
+//    for (auto &entry: input.get_members()) {
+//      auto &member = *entry.second;
+//      if (member.get_type() == underworld::Member::Type::variable) {
+//        auto &input_minion = *dynamic_cast<underworld::Minion *>(&member);
+//        auto &profession = reflect_profession(input_minion.get_profession());
+//        auto &output_minion = output.create_minion(input_minion, profession);
+//      }
+//      else {
+//        auto &input_function = *dynamic_cast<underworld::Function *>(&member);
+//        auto &output_function = output.create_function(input_function);
+//      }
+//    }
 
     for (auto &entry: input.get_dungeons()) {
       auto &input_dungeon = *entry.second;

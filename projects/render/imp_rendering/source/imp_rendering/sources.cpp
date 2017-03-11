@@ -8,9 +8,9 @@ using namespace std;
 namespace imp_rendering {
   namespace sources {
 
-    Stroke render_statement(const overworld::Expression &expression) {
-      return string();
-    }
+//    Stroke render_statement(const overworld::Expression &expression) {
+//      return string();
+//    }
 
     Stroke render_includes(const overworld::Dungeon &dungeon) {
       Stroke result;
@@ -23,12 +23,15 @@ namespace imp_rendering {
                                 + dungeon.get_name() + "::"
                                 + function.get_name()
                                 + render_function_parameters(function);
-      Stroke block(new imp_artisan::internal::Block(function_signature, "}"));
-      for (auto &statement : function.get_block().get_expressions()) {
-        block << render_statement(*statement);
-      }
+//      Stroke block(new imp_artisan::internal::Block(function_signature, "}"));
+////      for (auto &statement : function.get_block().get_expressions()) {
+////        block << common::render_statement(*statement);
+////      }
+//      render_statements(block, function.get_block().get_expressions(), function.get_block().get_scope());
+//
+//      return block;
 
-      return move(block);
+      return render_block(function_signature, function.get_block());
     }
 
     Stroke render_function(const overworld::Function &function) {

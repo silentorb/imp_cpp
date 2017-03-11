@@ -10,14 +10,14 @@ namespace imp_artisan {
                       : indent + tab + tab;
 
     if (block.get_strokes().size() == 0) {
-      return block.get_header() + " {}";
+      return indent + block.get_header() + " {}";
     }
     else if (block.get_strokes().size() == 1) {
-      return block.get_header() + "\n"
+      return indent + block.get_header() + "\n"
              + render_strokes(block.get_strokes(), new_indent);
     }
     else {
-      return block.get_header() + " {\n"
+      return indent + block.get_header() + " {\n"
              + render_strokes(block.get_strokes(), new_indent)
              + "\n" + indent + block.get_footer();
     }

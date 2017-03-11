@@ -30,5 +30,5 @@ TEST(Main_Test, full_process) {
   wrapper.render(string(OUTPUT_PATH));
 
   compare(string(RESOURCE_PATH) + "Pizza.h", string(OUTPUT_PATH) + "Pizza.h");
-//  compare(string(RESOURCE_PATH) + "Pizza.cpp", string(OUTPUT_PATH) + "Pizza.cpp");
+  compare(string(RESOURCE_PATH) + "Pizza.cpp", string(OUTPUT_PATH) + "Pizza.cpp");
 }

@@ -11,11 +11,6 @@ namespace overworld {
   Scope::Scope(const underworld::Scope &source, Scope_Parent &parent) :
     source(source), parent(parent) {
 
-    for (auto &input_member : source.get_members()) {
-      if (input_member.second->get_type() == underworld::Member::Type::variable) {
-
-      }
-    }
   }
 
   Scope::~Scope() {

@@ -14,12 +14,9 @@ namespace imp_rendering {
 
   };
 
-  Stroke render_block(const overworld::Block &block, const std::string &header,
-                      const std::string &footer = "}") {
+  Stroke render_block(const std::string &header, const overworld::Block &block, const std::string &footer) {
     Stroke result(new imp_artisan::internal::Block(header, footer));
-    for (auto &expression : block.get_expressions()) {
-      result << render_expression(*expression);
-    }
+    render_statements(result, block.get_expressions(), block.get_scope());
     return result;
   }
 
@@ -54,7 +51,7 @@ namespace imp_rendering {
         return to_string((*dynamic_cast<const overworld::Literal_Int *>(&literal)).get_value());
 
       case overworld::Primitive_Type::String:
-        return (*dynamic_cast<const overworld::Literal_String *>(&literal)).get_value();
+        return "\"" + (*dynamic_cast<const overworld::Literal_String *>(&literal)).get_value() + "\"";
 
       default:
         throw std::runtime_error("Not implemented.");
@@ -80,19 +77,19 @@ namespace imp_rendering {
            + " = " + render_expression(declaration.get_expression()) + ";";
   }
 
-
   Stroke render_if(const overworld::If &input_if, const overworld::Scope &scope) {
     auto header = "if (" + render_expression(input_if.get_condition()) + ")";
-    Stroke result(new imp_artisan::internal::Block(header));
     auto &expression = input_if.get_expression();
     if (expression.get_type() == overworld::Expression::Type::block) {
       auto &block = *dynamic_cast<const overworld::Block *>(&expression);
-      render_statements(result, block.get_expressions(), block.get_scope());
+      return render_block(header, block);
+//      render_statements(result, block.get_expressions(), block.get_scope());
     }
     else {
-      result << render_expression(expression);
+      Stroke result(new imp_artisan::internal::Block(header));
+      result << render_statement(expression, scope);
+      return result;
     }
-    return result;
   }
 
   const std::string render_expression(const overworld::Expression &input_expression) {
@@ -106,8 +103,7 @@ namespace imp_rendering {
     }
   }
 
-  Stroke render_statement(const overworld::Expression &input_expression,
-                          const overworld::Scope &scope) {
+  Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope) {
     switch (input_expression.get_type()) {
 
       case overworld::Expression::Type::block:
