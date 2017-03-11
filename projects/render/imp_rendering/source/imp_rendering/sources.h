@@ -5,7 +5,6 @@
 #include "common.h"
 
 namespace imp_rendering {
-
   namespace sources {
 
     Stroke render(const overworld::Dungeon &dungeon);

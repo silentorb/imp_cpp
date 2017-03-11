@@ -2,6 +2,7 @@
 
 class Pizza {
 public:
-    Pizza();
+    Pizza() {}
+
     void add_topping();
 };

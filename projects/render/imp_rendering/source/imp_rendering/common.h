@@ -13,8 +13,9 @@ namespace imp_rendering {
   const std::string render_profession(const overworld::Profession &profession);
   const std::string render_expression(const overworld::Expression &input_expression);
   void render_statements(Stroke &stroke, const overworld::Expressions &statements, const overworld::Scope &scope);
-  Stroke render_block(const std::string &header, const overworld::Block &block, const std::string &footer = "}");
+  Stroke render_block(const std::string &header, const overworld::Block &block);
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope);
+  Stroke render_function_definition(const overworld::Function &function);
 
   inline Stroke wrap(const std::string &text) {
     Stroke result;

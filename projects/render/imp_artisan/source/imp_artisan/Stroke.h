@@ -61,6 +61,8 @@ namespace imp_artisan {
         Stroke_Owner &operator<<(Stroke_Owner &other);
         Stroke_Owner &operator<<(Stroke_Owner other);
 
+        inline void add(Stroke_Owner &other);
+
         const std::string &get_value() const;
     };
 
@@ -137,24 +139,35 @@ namespace imp_artisan {
     };
 
     class Block : public virtual Stroke, public Stroke_Stream {
-        std::string header;
-        std::string footer;
-        int indent = 1;
-
     public:
-        Block(const std::string &header, const std::string &footer = "}", int indent = 1) :
-          header(header), footer(footer), indent(indent) {}
-
-        const std::string &get_header() const {
-          return header;
-        }
-
-        const std::string &get_footer() const {
-          return footer;
-        }
+        virtual const std::string get_header() const = 0;
+        virtual const std::string get_start() const = 0;
+        virtual const std::string get_end() const = 0;
+        virtual int get_indent() const = 0;
 
         Type get_type() const override {
           return Type::block;
+        }
+    };
+
+    class Standard_Block : public virtual Block {
+        std::string header;
+        int indent = 1;
+
+    public:
+        Standard_Block(const std::string &header, int indent = 1) :
+          header(header), indent(indent) {}
+
+        const std::string get_header() const {
+          return header;
+        }
+
+        const std::string get_start() const {
+          return "{";
+        }
+
+        const std::string get_end() const {
+          return "}";
         }
 
         int get_indent() const {
@@ -197,16 +210,15 @@ namespace imp_artisan {
       return *this;
     }
 
+    void Stroke_Owner::add(Stroke_Owner &other) {
+      get_stream() << other;
+    }
+
     inline Stroke_Owner::Stroke_Owner(const std::string &value) :
       stroke(new internal::Text_Stroke(value)) {}
 
-     inline internal::Stroke_Stream &Stroke_Owner::get_stream() {
-      if (stroke->get_type() == internal::Stroke::Type::group) {
-        return *dynamic_cast<internal::Group *>(stroke.get());
-      }
-      else {
-        return *dynamic_cast<internal::Block *>(stroke.get());
-      }
+    inline internal::Stroke_Stream &Stroke_Owner::get_stream() {
+      return *dynamic_cast<internal::Stroke_Stream *>(stroke.get());
     }
 
     inline const std::string &Stroke_Owner::get_value() const {

@@ -33,6 +33,8 @@ namespace overworld {
       }
 
       bool is_constructor() const;
+
+      bool is_inline();
   };
 
   using Function_Owner = std::unique_ptr<Function>;

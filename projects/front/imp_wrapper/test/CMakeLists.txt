@@ -3,3 +3,4 @@ require(imp_wrapper boost_filesystem)
 
 add_definitions(-DRESOURCE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/\")
 add_definitions(-DOUTPUT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/output/\")
+add_definitions(-DDIFF_VIEWER_PATH=\"${DIFF_VIEWER_PATH}\")

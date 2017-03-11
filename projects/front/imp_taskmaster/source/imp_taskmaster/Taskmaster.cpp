@@ -10,7 +10,7 @@ namespace imp_taskmaster {
                                             const std::string &file_path) {
     imp_artisan::Artisan artisan;
     auto text = artisan.render(stroke);
-    std::ofstream output_stream(file_path);
+    std::ofstream output_stream(file_path, std::ios_base::binary | std::ios_base::out);
     if (output_stream.is_open()) {
       output_stream << text;
       output_stream.close();

@@ -14,8 +14,8 @@ namespace imp_rendering {
 
   };
 
-  Stroke render_block(const std::string &header, const overworld::Block &block, const std::string &footer) {
-    Stroke result(new imp_artisan::internal::Block(header, footer));
+  Stroke render_block(const std::string &header, const overworld::Block &block) {
+    Stroke result(new imp_artisan::internal::Standard_Block(header));
     render_statements(result, block.get_expressions(), block.get_scope());
     return result;
   }
@@ -83,10 +83,9 @@ namespace imp_rendering {
     if (expression.get_type() == overworld::Expression::Type::block) {
       auto &block = *dynamic_cast<const overworld::Block *>(&expression);
       return render_block(header, block);
-//      render_statements(result, block.get_expressions(), block.get_scope());
     }
     else {
-      Stroke result(new imp_artisan::internal::Block(header));
+      Stroke result(new imp_artisan::internal::Standard_Block(header));
       result << render_statement(expression, scope);
       return result;
     }
@@ -131,11 +130,6 @@ namespace imp_rendering {
         throw std::runtime_error(" Not implemented.");
     }
   }
-//
-//  Stroke render_statement(const overworld::Expression &input_expression,
-//                          const overworld::Scope &scope) {
-//    return render_statement_internal(input_expression, scope);
-//  }
 
   void render_statements(Stroke &stroke, const overworld::Expressions &statements, const overworld::Scope &scope) {
     for (auto &statement : statements) {
@@ -151,5 +145,14 @@ namespace imp_rendering {
     }
 
     return "void";
+  }
+
+
+  Stroke render_function_definition(const overworld::Function &function) {
+    auto function_signature = render_function_return_signature(function)
+                              + function.get_name()
+                              + render_function_parameters(function);
+
+    return render_block(function_signature, function.get_block());
   }
 }

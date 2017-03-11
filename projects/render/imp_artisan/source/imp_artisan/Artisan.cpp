@@ -5,21 +5,37 @@ using namespace std;
 namespace imp_artisan {
 
   std::string Artisan::render_block(const internal::Block &block, const Indent &indent) {
-    auto new_indent = block.get_indent() == 1
-                      ? indent + tab
-                      : indent + tab + tab;
+    auto new_indent = indent;
+    for (int i = 0; i < block.get_indent(); ++i) {
+      new_indent += tab;
+    }
 
-    if (block.get_strokes().size() == 0) {
-      return indent + block.get_header() + " {}";
-    }
-    else if (block.get_strokes().size() == 1) {
+    auto &strokes = block.get_strokes();
+
+    auto block_start = block.get_start() != ""
+                       ? " " + block.get_start() 
+                       : block.get_start();
+
+    if (strokes.size() == 1 && !is_paragraph(strokes[0])) {
       return indent + block.get_header() + "\n"
-             + render_strokes(block.get_strokes(), new_indent);
+             + render_strokes(strokes, new_indent);
     }
+    else if (strokes.size() == 0) {
+      if (block.get_start() == "")
+        return indent + block.get_header();
+      else
+        return indent + block.get_header() + block_start + block.get_end();
+    }
+
     else {
-      return indent + block.get_header() + " {\n"
-             + render_strokes(block.get_strokes(), new_indent)
-             + "\n" + indent + block.get_footer();
+
+      auto block_end = block.get_end() != ""
+                       ? "\n" + indent + block.get_end()
+                       : block.get_end();
+
+      return indent + block.get_header() + block_start + "\n"
+             + render_strokes(strokes, new_indent)
+             + block_end;
     }
   }
 
@@ -35,7 +51,7 @@ namespace imp_artisan {
         return indent + stroke.get_value();
 
       case internal::Stroke::Type::special:
-        return indent.substr(tab.size() * 2) + stroke.get_value();
+        return indent.substr(tab.size()) + stroke.get_value();
     }
 
     throw runtime_error("Unsupported stroke type.");

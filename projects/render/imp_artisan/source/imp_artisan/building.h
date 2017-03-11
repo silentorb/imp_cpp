@@ -11,11 +11,11 @@ namespace imp_artisan {
 
     };
 
-    class Block : public Stroke_Owner_Stream {
-    public:
-        Block(const std::string &header, const std::string &footer, int indent = 1)
-          : Stroke_Owner_Stream(new internal::Block(header, footer, indent)) {}
-
-    };
+//    class Block : public Stroke_Owner_Stream {
+//    public:
+//        Block(const std::string &header)
+//          : Stroke_Owner_Stream(new internal::Standard_Block(header)) {}
+//
+//    };
   }
 }
