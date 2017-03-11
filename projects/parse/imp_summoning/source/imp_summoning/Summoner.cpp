@@ -7,11 +7,34 @@
 using namespace std;
 using namespace underworld;
 
-namespace summoning {
+namespace imp_summoning {
 
-  Summoner::Summoner(Stream &input, Profession_Library &profession_library) :
-    Base_Summoner(input, profession_library),
-    expression_summoner(input, profession_library) {}
+  Summoner::Summoner(Stream &input, Lookup &lookup) :
+    Base_Summoner(input, lookup),
+    expression_summoner(input, lookup) {}
+
+  const underworld::Profession &Summoner::process_profession(Context &context) {
+    auto &primitive = lookup.get_primitive(input.current().get_match().get_type());
+    if (&primitive != &profession_library.get_unknown())
+      return primitive;
+
+    throw runtime_error("Not implemented.");
+  }
+
+  const Profession &Summoner::process_optional_profession(Context &context) {
+    if (input.next().is(lexicon.colon)) {
+      input.next();
+      return process_profession(context);
+    }
+    else {
+      return profession_library.get_unknown();
+    }
+  }
+
+  void Summoner::process_minion(const std::string &name, Context &context) {
+    auto &profession = process_optional_profession(context);
+    context.get_dungeon().create_minion(name, profession);
+  }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
     input.next();
@@ -25,7 +48,8 @@ namespace summoning {
       process_function(name, context);
     }
     else {
-      throw Syntax_Exception(input.current());
+      process_minion(name, context);
+//      throw Syntax_Exception(input.current());
     }
   }
 

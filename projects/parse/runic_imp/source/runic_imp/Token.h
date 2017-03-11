@@ -26,7 +26,11 @@ namespace runic_imp {
         auto type = get_match().get_type();
         return text != ""
                ? text
-               : type ? type->get_name(): "";
+               : type ? type->get_name() : "";
+      }
+
+      const Whisper *get_type() const {
+        return get_match().get_type();
       }
   };
 

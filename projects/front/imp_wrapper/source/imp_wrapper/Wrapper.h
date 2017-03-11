@@ -4,6 +4,7 @@
 #include <overworld/schema/Dungeon.h>
 #include <underworld/schema/Profession_Library.h>
 #include <overworld/schema/Profession_Library.h>
+#include <imp_summoning/Lookup.h>
 
 namespace imp_wrapper {
 
@@ -11,11 +12,13 @@ namespace imp_wrapper {
       underworld::Dungeon underworld_root;
       overworld::Dungeon overworld_root;
       underworld::Profession_Library underworld_profession_library;
+      imp_summoning::Lookup lookup;
       overworld::Profession_Library overworld_profession_library;
 
   public:
       Wrapper() :
         underworld_root(""),
+        lookup(underworld_profession_library),
         overworld_root(underworld_root) {}
 
       void load_file(const std::string &path);

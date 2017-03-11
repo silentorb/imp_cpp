@@ -5,7 +5,7 @@
 #include "Context.h"
 #include "Expression_Summoner.h"
 
-namespace summoning {
+namespace imp_summoning {
 
   class Summoner : public Base_Summoner {
       Expression_Summoner expression_summoner;
@@ -16,10 +16,13 @@ namespace summoning {
       void process_minion_parameters(Context &context);
       void process_root(Context &context);
       void process_root_identifier(const std::string &name, Context &context);
+      void process_minion(const std::string &name, Context &context);
+      const underworld::Profession &process_optional_profession(Context &context);
+      const underworld::Profession &process_profession(Context &context);
 
   public:
 
-      Summoner(Stream &lexer, underworld::Profession_Library &profession_library);
+      Summoner(Stream &lexer, Lookup & lookup);
       void summon(underworld::Dungeon &root);
   };
 }

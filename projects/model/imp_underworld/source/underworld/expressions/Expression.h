@@ -8,10 +8,13 @@ namespace underworld {
   public:
 
       enum class Type {
+          assignment,
           block,
           Else,
           If,
           literal,
+          minion,
+          Operator, // Infix
           return_nothing,
           return_with_value,
           variable_declaration,

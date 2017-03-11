@@ -1,6 +1,8 @@
 #pragma once
 
 class Pizza {
+    int size;
+
 public:
     Pizza() {}
 

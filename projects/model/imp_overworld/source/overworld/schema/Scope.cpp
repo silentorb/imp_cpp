@@ -25,15 +25,15 @@ namespace overworld {
     return *function;
   }
 
-  Variable &Scope::create_minion(const underworld::Minion &input, const Profession &profession) {
+  Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession) {
 //    check_has_member(name);
 
-    auto minion = new Variable(input, profession);
-    variables.push_back(unique_ptr<Variable>(minion));
+    auto minion = new Minion(input, profession);
+    variables.push_back(unique_ptr<Minion>(minion));
     return *minion;
   }
 
-  Variable &Scope::get_variable(const std::string &name) {
+  Minion &Scope::get_variable(const std::string &name) {
     for (auto &variable: variables) {
       if (variable->get_name() == name)
         return *variable;

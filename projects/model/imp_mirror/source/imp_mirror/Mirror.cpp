@@ -5,6 +5,8 @@
 #include <overworld/expressions/Return.h>
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/schema/Function.h>
+#include <overworld/expressions/Minion_Expression.h>
+#include <overworld/expressions/Operator.h>
 #include "Mirror.h"
 
 namespace imp_mirror {
@@ -33,12 +35,26 @@ namespace imp_mirror {
     }
   }
 
+  overworld::Expression_Owner
+  Mirror::reflect_minion(const underworld::Minion_Expression &input_minion_expression, overworld::Scope &scope) {
+//    return overworld::Expression_Owner(new overworld::Minion_Expression());
+    throw "Not Implemented.";
+  }
+
+  overworld::Expression_Owner
+  Mirror::reflect_operator(const underworld::Operator &input_operator, overworld::Scope &scope) {
+    auto type = (overworld::Operator_Type) (int) input_operator.get_operator_type();
+    return overworld::Expression_Owner(new overworld::Operator(type));
+  }
+
   overworld::Expression_Owner Mirror::reflect_return_nothing(const underworld::Return &input_return) {
     return overworld::Expression_Owner(new overworld::Return());
   }
 
-  overworld::Expression_Owner Mirror::reflect_return_with_value(const underworld::Return_With_Value &input_return) {
-    return overworld::Expression_Owner(new overworld::Return_With_Value(reflect_expression(input_return.get_value())));
+  overworld::Expression_Owner Mirror::reflect_return_with_value(const underworld::Return_With_Value &input_return,
+                                                                overworld::Scope &scope) {
+    return overworld::Expression_Owner(
+      new overworld::Return_With_Value(reflect_expression(input_return.get_value(), scope)));
   }
 
   overworld::Expression_Owner
@@ -51,14 +67,14 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_variable_declaration_with_assignment(
     const underworld::Minion_Declaration_And_Assignment &input_declaration, overworld::Scope &scope) {
     auto &variable = scope.get_variable(input_declaration.get_minion().get_name());
-    auto expression = reflect_expression(input_declaration.get_expression());
+    auto expression = reflect_expression(input_declaration.get_expression(), scope);
     return overworld::Expression_Owner(new overworld::Minion_Declaration_And_Assignment(variable, expression));
   }
 
   overworld::Expression_Owner Mirror::reflect_if(const underworld::If &input_if,
                                                  overworld::Scope &scope) {
     return overworld::Expression_Owner(new overworld::If(
-      reflect_expression(input_if.get_condition()),
+      reflect_expression(input_if.get_condition(), scope),
       reflect_statement(input_if.get_expression(), scope)
     ));
   }
@@ -77,11 +93,20 @@ namespace imp_mirror {
     return result;
   }
 
-  overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression) {
+  overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression,
+                                                         overworld::Scope &scope) {
     switch (input_expression.get_type()) {
 
       case underworld::Expression::Type::literal:
         return reflect_literal(*dynamic_cast<const underworld::Literal *>(&input_expression));
+
+      case underworld::Expression::Type::minion:
+        return reflect_minion(
+          *dynamic_cast<const underworld::Minion_Expression *>(&input_expression), scope);
+
+      case underworld::Expression::Type::Operator:
+        return reflect_operator(
+          *dynamic_cast<const underworld::Operator *>(&input_expression), scope);
 
       default:
         throw std::runtime_error(" Not implemented.");
@@ -102,7 +127,8 @@ namespace imp_mirror {
         return reflect_return_nothing(*dynamic_cast<const underworld::Return *>(&input_expression));
 
       case underworld::Expression::Type::return_with_value:
-        return reflect_return_with_value(*dynamic_cast<const underworld::Return_With_Value *>(&input_expression));
+        return reflect_return_with_value(*dynamic_cast<const underworld::Return_With_Value *>(&input_expression),
+                                         scope);
 
       case underworld::Expression::Type::variable_declaration:
         return reflect_variable_declaration(
@@ -129,7 +155,7 @@ namespace imp_mirror {
       }
       else {
         auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
-        auto & output_function =output_scope.create_function(input_function);
+        auto &output_function = output_scope.create_function(input_function);
         reflect_scope(input_function.get_block().get_scope(), output_function.get_block().get_scope());
         reflect_block(input_function.get_block(), output_function.get_block());
       }

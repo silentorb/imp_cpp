@@ -2,7 +2,7 @@
 
 #include <string>
 #include <map>
-#include "Variable.h"
+#include "Minion.h"
 #include "professions.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
@@ -26,7 +26,7 @@ namespace overworld {
       ~Scope();
 
       Function &create_function(const underworld::Function &input);
-      Variable &create_minion(const underworld::Minion &input, const Profession &profession);
+      Minion &create_minion(const underworld::Minion &input, const Profession &profession);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
@@ -36,7 +36,7 @@ namespace overworld {
         return variables;
       }
 
-      Variable &get_variable(const std::string &name);
+      Minion &get_variable(const std::string &name);
 
       Scope_Parent &get_parent() {
         return parent;

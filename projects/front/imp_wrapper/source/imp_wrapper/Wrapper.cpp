@@ -9,8 +9,8 @@ namespace imp_wrapper {
 
   void Wrapper::load_file(const std::string &path) {
     runic_imp::Imp_Lexer lexer(new runic::File_Text_Source<>(path));
-    summoning::Stream stream(lexer);
-    summoning::Summoner summoner(stream, underworld_profession_library);
+    imp_summoning::Stream stream(lexer);
+    imp_summoning::Summoner summoner(stream, lookup);
     summoner.summon(underworld_root);
   }
 

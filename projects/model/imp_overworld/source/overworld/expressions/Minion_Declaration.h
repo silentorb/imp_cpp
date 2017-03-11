@@ -1,22 +1,22 @@
 #pragma once
 
-#include <overworld/schema/Variable.h>
+#include <overworld/schema/Minion.h>
 #include "Expression.h"
 
 namespace overworld {
 
   class Minion_Declaration : public virtual Expression {
   protected:
-      Variable &minion;
+      Minion &minion;
 
   public:
-      Minion_Declaration(Variable &variable) : minion(variable) {}
+      Minion_Declaration(Minion &variable) : minion(variable) {}
 
       Type get_type() const override {
         return Type::variable_declaration;
       }
 
-      const Variable &get_minion() const {
+      const Minion &get_minion() const {
         return minion;
       }
   };
@@ -25,7 +25,7 @@ namespace overworld {
       Expression_Owner expression;
 
   public:
-      Minion_Declaration_And_Assignment(Variable &minion, Expression_Owner &expression) :
+      Minion_Declaration_And_Assignment(Minion &minion, Expression_Owner &expression) :
         Minion_Declaration(minion), expression(std::move(expression)) {}
 
       Type get_type() const override {

@@ -3,13 +3,13 @@
 #include <underworld/schema/Dungeon.h>
 #include <underworld/schema/Scope.h>
 
-namespace summoning {
+namespace imp_summoning {
 
   class Context {
+  protected:
       underworld::Dungeon &dungeon;
       underworld::Scope &scope;
 
-  protected:
       Context(underworld::Dungeon &dungeon, underworld::Scope &scope) :
         dungeon(dungeon), scope(scope) {}
 
@@ -21,6 +21,8 @@ namespace summoning {
       underworld::Scope &get_scope() const {
         return scope;
       }
+
+      virtual underworld::Member *find_member(const std::string &name) const = 0;
   };
 
   class Root_Context : public Context {
@@ -28,6 +30,9 @@ namespace summoning {
       Root_Context(underworld::Dungeon &dungeon) :
         Context(dungeon, dungeon) {}
 
+      underworld::Member *find_member(const std::string &name) const override {
+        return nullptr;
+      }
   };
 
   class Child_Context : public Context {
@@ -39,5 +44,7 @@ namespace summoning {
 
       Child_Context(const Context &parent, underworld::Dungeon &dungeon) :
         Context(dungeon, dungeon), parent(parent) {}
+
+      underworld::Member *find_member(const std::string &name) const override;
   };
 }

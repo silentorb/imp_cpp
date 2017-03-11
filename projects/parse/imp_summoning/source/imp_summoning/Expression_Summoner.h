@@ -4,7 +4,7 @@
 #include "Base_Summoner.h"
 #include "Context.h"
 
-namespace summoning {
+namespace imp_summoning {
 
   using Expression_Owner = underworld::Expression_Owner;
 
@@ -13,9 +13,12 @@ namespace summoning {
       Expression_Owner process_if(Context &context);
       Expression_Owner process_condition(Context &context);
       Expression_Owner process_statement(Context &context);
+      Expression_Owner process_path(Context &context);
+      underworld::Operator_Type process_assignment_operator(Context &context);
+      underworld::Operator_Type process_expression_operator(Context &context);
 
   public:
-      Expression_Summoner(Stream &input, underworld::Profession_Library &profession_library);
+      Expression_Summoner(Stream &input, Lookup & lookup);
 
       void process_block(underworld::Block &block, Context &context);
       Expression_Owner process_block_or_single_expression(Context &context);

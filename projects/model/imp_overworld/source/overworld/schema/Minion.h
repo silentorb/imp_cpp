@@ -7,12 +7,12 @@
 
 namespace overworld {
 
-  class Variable : public virtual Member {
+  class Minion : public virtual Member {
       const underworld::Minion &source;
       const Profession &profession;
 
   public:
-      Variable(const underworld::Minion &source, const Profession &profession) :
+      Minion(const underworld::Minion &source, const Profession &profession) :
         source(source), profession(profession) {}
 
       Type get_type() const override {
@@ -24,6 +24,6 @@ namespace overworld {
       }
   };
 
-  using Variable_Owner = std::unique_ptr<Variable>;
+  using Variable_Owner = std::unique_ptr<Minion>;
 
 }

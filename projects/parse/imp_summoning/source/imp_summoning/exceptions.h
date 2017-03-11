@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <runic_imp/Token.h>
 
-namespace summoning {
+namespace imp_summoning {
 
   class Token_Exception : public std::runtime_error {
       const runic_imp::Token token;

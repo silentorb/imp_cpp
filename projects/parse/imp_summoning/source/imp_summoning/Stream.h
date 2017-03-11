@@ -6,7 +6,7 @@
 #include <runic/Rune_Stream.h>
 #include "exceptions.h"
 
-namespace summoning {
+namespace imp_summoning {
 
   using Token = runic_imp::Token;
 
