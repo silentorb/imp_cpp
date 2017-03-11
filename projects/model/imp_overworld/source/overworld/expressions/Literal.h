@@ -6,45 +6,56 @@
 
 namespace overworld {
 
-  template<typename T>
   class Literal : public virtual Expression {
-      T value;
-
   public:
-      Literal(T value) : value(value) {}
-
       Type get_type() const override {
         return Type::literal;
       }
 
-      virtual Profession &get_profession() = 0;
+      virtual Primitive_Type get_primitive_type() const = 0;
+
+      Profession &get_profession() const {
+        return Profession_Library::get_primitive(get_primitive_type());
+      }
+
   };
 
-  class Literal_Int : public Literal<int> {
-  public:
-      Literal_Int(int value) : Literal(value) {}
+  template<typename T>
+  class Literal_Implementation : public virtual Literal {
+      T value;
 
-      Profession &get_profession() override {
-        return Profession_Library::get_primitive(Primitive_Type::Int);
+  public:
+      Literal_Implementation(T value) : value(value) {}
+
+      const T &get_value() const {
+        return value;
       }
   };
 
-  class Literal_String : public Literal<const std::string> {
+  class Literal_Int : public Literal_Implementation<int> {
   public:
-      Literal_String(const std::string &value) : Literal(value) {}
+      Literal_Int(int value) : Literal_Implementation(value) {}
 
-      Profession &get_profession() override {
-        return Profession_Library::get_primitive(Primitive_Type::String);
+      Primitive_Type get_primitive_type() const override {
+        return Primitive_Type::Int;
       }
   };
 
-
-  class Literal_Bool : public Literal<bool> {
+  class Literal_String : public Literal_Implementation<const std::string> {
   public:
-      Literal_Bool(const bool &value) : Literal(value) {}
+      Literal_String(const std::string &value) : Literal_Implementation(value) {}
 
-      Profession &get_profession() override {
-        return Profession_Library::get_primitive(Primitive_Type::Bool);
+      Primitive_Type get_primitive_type() const override {
+        return Primitive_Type::String;
+      }
+  };
+
+  class Literal_Bool : public Literal_Implementation<bool> {
+  public:
+      Literal_Bool(const bool &value) : Literal_Implementation(value) {}
+
+      Primitive_Type get_primitive_type() const override {
+        return Primitive_Type::Bool;
       }
   };
 }

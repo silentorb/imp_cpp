@@ -1,9 +1,5 @@
 #include "Pizza.h"
 
-Pizza::Pizza() {
+Pizza::Pizza() {}
 
-}
-
-void Pizza::add_topping() {
-
-}
+void Pizza::add_topping() {}

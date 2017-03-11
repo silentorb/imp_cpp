@@ -94,7 +94,7 @@ namespace summoning {
       throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
 
     while (input.until(lexicon.right_brace)) {
-      process_statement(new_context);
+      block.add_expression(process_statement(new_context));
     }
   }
 

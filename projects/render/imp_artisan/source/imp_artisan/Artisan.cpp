@@ -9,9 +9,18 @@ namespace imp_artisan {
                       ? indent + tab
                       : indent + tab + tab;
 
-    return block.get_header() + " {\n"
-           + render_strokes(block.get_strokes(), new_indent)
-           + "\n" + indent + block.get_footer();
+    if (block.get_strokes().size() == 0) {
+      return block.get_header() + " {}";
+    }
+    else if (block.get_strokes().size() == 1) {
+      return block.get_header() + "\n"
+             + render_strokes(block.get_strokes(), new_indent);
+    }
+    else {
+      return block.get_header() + " {\n"
+             + render_strokes(block.get_strokes(), new_indent)
+             + "\n" + indent + block.get_footer();
+    }
   }
 
   std::string Artisan::render_stroke(const building::Stroke_Owner &stroke, const Indent &indent) {

@@ -15,6 +15,10 @@ namespace overworld {
       Type get_type() const override {
         return Type::variable_declaration;
       }
+
+      const Variable &get_minion() const {
+        return minion;
+      }
   };
 
   class Minion_Declaration_And_Assignment : public virtual Minion_Declaration {
@@ -26,6 +30,10 @@ namespace overworld {
 
       Type get_type() const override {
         return Type::variable_declaration_and_assignment;
+      }
+
+      const Expression &get_expression() const {
+        return *expression;
       }
   };
 }

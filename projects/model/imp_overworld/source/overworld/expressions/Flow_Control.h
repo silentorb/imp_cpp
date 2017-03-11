@@ -14,11 +14,11 @@ namespace overworld {
       Conditional_Expression(Expression_Owner &condition, Expression_Owner &expression) :
         condition(std::move(condition)), expression(std::move(expression)) {}
 
-      Expression &get_condition() {
+      const Expression &get_condition() const {
         return *condition;
       }
 
-      Expression &get_expression() {
+      const Expression &get_expression() const {
         return *expression;
       }
   };

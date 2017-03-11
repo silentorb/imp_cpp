@@ -22,5 +22,9 @@ namespace overworld {
       Type get_type() const override {
         return Type::return_with_value;
       }
+
+      const Expression &get_value() const {
+        return *value;
+      }
   };
 }

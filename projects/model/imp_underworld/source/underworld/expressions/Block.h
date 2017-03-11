@@ -11,7 +11,7 @@ namespace underworld {
       std::vector<Expression_Owner> expressions;
 
   public:
-      void add_expression(Expression_Owner &expression) {
+      void add_expression(Expression_Owner expression) {
         expressions.push_back(std::move(expression));
       }
 

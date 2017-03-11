@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace overworld {
 
@@ -22,4 +23,5 @@ namespace overworld {
   };
 
   using Expression_Owner = std::unique_ptr<Expression>;
+  using Expressions = std::vector<Expression_Owner>;
 }

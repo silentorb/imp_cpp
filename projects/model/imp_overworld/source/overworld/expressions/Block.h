@@ -22,6 +22,10 @@ namespace overworld {
         return scope;
       }
 
+      const Scope &get_scope() const {
+        return scope;
+      }
+
       Type get_type() const override {
         return Type::block;
       }

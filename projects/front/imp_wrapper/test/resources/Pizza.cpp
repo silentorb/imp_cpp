@@ -1,8 +1,6 @@
 #include "Pizza.h"
 
-Pizza::Pizza() {
-
-}
+Pizza::Pizza() {}
 
 void Pizza::add_topping() {
   auto x = 12;

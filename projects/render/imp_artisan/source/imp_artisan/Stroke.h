@@ -142,7 +142,7 @@ namespace imp_artisan {
         int indent = 1;
 
     public:
-        Block(const std::string &header, const std::string &footer, int indent = 1) :
+        Block(const std::string &header, const std::string &footer = "}", int indent = 1) :
           header(header), footer(footer), indent(indent) {}
 
         const std::string &get_header() const {
