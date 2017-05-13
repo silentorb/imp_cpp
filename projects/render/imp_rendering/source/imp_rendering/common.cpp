@@ -5,6 +5,8 @@
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/expressions/Literal.h>
 #include <overworld/expressions/Block.h>
+#include <overworld/expressions/Assignment.h>
+#include <overworld/expressions/Minion_Expression.h>
 
 using namespace std;
 
@@ -58,6 +60,10 @@ namespace imp_rendering {
     }
   }
 
+  const std::string render_minion(const overworld::Minion_Expression &minion) {
+    return minion.get_minion().get_name();
+  }
+
   const std::string render_return_nothing(const overworld::Return &input_return) {
     return "return";
   }
@@ -69,6 +75,22 @@ namespace imp_rendering {
   const std::string render_variable_declaration(const overworld::Minion_Declaration &declaration,
                                                 const overworld::Scope &scope) {
     return "auto " + declaration.get_minion().get_name();
+  }
+
+  const std::string render_operator(overworld::Operator_Type value) {
+    static const string operator_strings[] = {
+      "=",
+    };
+
+    return operator_strings[(int) value];
+  }
+
+  const std::string render_assignment(
+    const overworld::Assignment &declaration, const overworld::Scope &scope) {
+    return render_expression(*declaration.get_target()) + ' '
+           + render_operator(declaration.get_operator())
+           + render_expression(*declaration.get_value())
+           + ";";
   }
 
   const std::string render_variable_declaration_with_assignment(
@@ -97,6 +119,9 @@ namespace imp_rendering {
       case overworld::Expression::Type::literal:
         return render_literal(*dynamic_cast<const overworld::Literal *>(&input_expression));
 
+      case overworld::Expression::Type::minion:
+        return render_minion(*dynamic_cast<const overworld::Minion_Expression *>(&input_expression));
+
       default:
         throw std::runtime_error(" Not implemented.");
     }
@@ -104,6 +129,10 @@ namespace imp_rendering {
 
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope) {
     switch (input_expression.get_type()) {
+
+      case overworld::Expression::Type::assignment:
+        return render_assignment(
+          *dynamic_cast<const overworld::Assignment *>(&input_expression), scope);
 
       case overworld::Expression::Type::block:
         throw "Not Implemented.";

@@ -15,5 +15,9 @@ namespace overworld {
       Type get_type() const override {
         return Type::minion;
       }
+
+      Minion &get_minion() const {
+        return this->minion;
+      }
   };
 }

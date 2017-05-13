@@ -7,9 +7,20 @@
 #include <overworld/schema/Function.h>
 #include <overworld/expressions/Minion_Expression.h>
 #include <overworld/expressions/Operator.h>
+#include <underworld/expressions/Assignment.h>
+#include <overworld/expressions/Assignment.h>
 #include "Mirror.h"
 
 namespace imp_mirror {
+
+  overworld::Expression_Owner
+  Mirror::reflect_assignment(const underworld::Assignment &input_assignment, overworld::Scope &scope) {
+    auto target = reflect_expression(*input_assignment.get_target(), scope);
+    auto operator_type = reflect_operator(input_assignment.get_operator());
+    auto value = reflect_expression(*input_assignment.get_value(), scope);
+
+    return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
+  }
 
   overworld::Expression_Owner Mirror::reflect_literal(const underworld::Literal &input_literal) {
 
@@ -37,14 +48,16 @@ namespace imp_mirror {
 
   overworld::Expression_Owner
   Mirror::reflect_minion(const underworld::Minion_Expression &input_minion_expression, overworld::Scope &scope) {
-//    return overworld::Expression_Owner(new overworld::Minion_Expression());
-    throw "Not Implemented.";
+    auto & input_minion =input_minion_expression.get_minion();
+    auto output_minion = element_map.find_or_null<overworld::Minion>(&input_minion);
+    if (!output_minion)
+      throw std::runtime_error("Could not find minion.");
+
+    return overworld::Expression_Owner(new overworld::Minion_Expression(*output_minion));
   }
 
-  overworld::Expression_Owner
-  Mirror::reflect_operator(const underworld::Operator &input_operator, overworld::Scope &scope) {
-    auto type = (overworld::Operator_Type) (int) input_operator.get_operator_type();
-    return overworld::Expression_Owner(new overworld::Operator(type));
+  overworld::Operator_Type Mirror::reflect_operator(const underworld::Operator &input_operator) {
+    return (overworld::Operator_Type) (int) input_operator.get_operator_type();
   }
 
   overworld::Expression_Owner Mirror::reflect_return_nothing(const underworld::Return &input_return) {
@@ -105,8 +118,9 @@ namespace imp_mirror {
           *dynamic_cast<const underworld::Minion_Expression *>(&input_expression), scope);
 
       case underworld::Expression::Type::Operator:
-        return reflect_operator(
-          *dynamic_cast<const underworld::Operator *>(&input_expression), scope);
+        return overworld::Expression_Owner(new overworld::Operator(
+          reflect_operator(*dynamic_cast<const underworld::Operator *>(&input_expression))
+        ));
 
       default:
         throw std::runtime_error(" Not implemented.");
@@ -116,6 +130,9 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_statement(const underworld::Expression &input_expression,
                                                         overworld::Scope &scope) {
     switch (input_expression.get_type()) {
+
+      case underworld::Expression::Type::assignment:
+        return reflect_assignment(*dynamic_cast<const underworld::Assignment *>(&input_expression), scope);
 
       case underworld::Expression::Type::block:
         return reflect_block(*dynamic_cast<const underworld::Block *>(&input_expression));
@@ -151,9 +168,13 @@ namespace imp_mirror {
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::variable) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
-        output_scope.create_minion(input_variable, reflect_profession(input_variable.get_profession()));
+        auto &profession = reflect_profession(input_variable.get_profession());
+        auto &output_minion = output_scope.create_minion(input_variable, profession);
+        element_map.add(&input_variable, &output_minion);
       }
-      else {
+    }
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::function) {
         auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
         auto &output_function = output_scope.create_function(input_function);
         reflect_scope(input_function.get_block().get_scope(), output_function.get_block().get_scope());

@@ -5,6 +5,7 @@
 #include <underworld/schema/Profession_Library.h>
 #include <overworld/schema/Profession_Library.h>
 #include <imp_summoning/Lookup.h>
+#include <imp_mirror/Element_Map.h>
 
 namespace imp_wrapper {
 
@@ -14,6 +15,7 @@ namespace imp_wrapper {
       underworld::Profession_Library underworld_profession_library;
       imp_summoning::Lookup lookup;
       overworld::Profession_Library overworld_profession_library;
+      imp_mirror::Element_Map element_map;
 
   public:
       Wrapper() :
