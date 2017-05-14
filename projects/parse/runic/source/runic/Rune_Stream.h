@@ -12,7 +12,7 @@ namespace runic {
 
       Rune &at(int index) {
         int i = 0;
-        for(auto &entry : buffer) {
+        for (auto &entry : buffer) {
           if (i++ == index)
             return entry;
         }
@@ -58,6 +58,10 @@ namespace runic {
           next();
           return false;
         }
+      }
+
+      const Position &get_position() const {
+        return lexer.get_position();
       }
 
   public:

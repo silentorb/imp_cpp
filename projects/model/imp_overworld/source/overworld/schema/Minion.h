@@ -19,6 +19,10 @@ namespace overworld {
         return Type::variable;
       }
 
+      const std::string get_name() override {
+        return source.get_name();
+      }
+
       const std::string &get_name() const {
         return source.get_name();
       }
@@ -33,6 +37,10 @@ namespace overworld {
 
       void set_profession(const Profession &value) override {
         profession = &value;
+      }
+
+      virtual const underworld::Source_Point &get_source_point() override {
+        return source.get_source_point();
       }
   };
 

@@ -33,7 +33,7 @@ namespace imp_summoning {
 
   void Summoner::process_minion(const std::string &name, Context &context) {
     auto &profession = process_optional_profession(context);
-    context.get_dungeon().create_minion(name, profession);
+    context.get_dungeon().create_minion(name, profession, input.get_source_point());
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {

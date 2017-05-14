@@ -28,5 +28,9 @@ namespace imp_summoning {
       const underworld::Source_File &get_source_file() const {
         return source_file;
       }
+
+      const underworld::Source_Point get_source_point() const {
+        return underworld::Source_Point(source_file, get_position().get_row(), get_position().get_column());
+      }
   };
 }

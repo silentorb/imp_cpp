@@ -39,5 +39,9 @@ namespace runic_imp {
       bool next_token(Token &token);
       void get_all_tokens(std::vector<Token> &tokens);
 
+      const runic::Position &get_position() const {
+        return lexer.get_position();
+      }
+
   };
 }

@@ -16,7 +16,7 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_variable_declaration(Context &context) {
     auto &minion = context.get_scope().create_minion(input.expect_next(lexicon.identifier).get_text(),
-                                                     profession_library.get_unknown());
+                                                     profession_library.get_unknown(), input.get_source_point());
     if (input.peek().is(lexicon.assignment)) {
       input.next();
       auto expression = process_expression(context);
