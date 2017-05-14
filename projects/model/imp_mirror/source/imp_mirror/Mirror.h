@@ -53,6 +53,8 @@ namespace imp_mirror {
                                                     overworld::Scope &scope);
       const overworld::Profession &reflect_profession(const underworld::Profession &profession);
 
+      const overworld::Profession& reflect_primitive(const underworld::Primitive &primitive);
+
   public:
       Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map) :
         profession_library(profession_library), element_map(element_map) {}

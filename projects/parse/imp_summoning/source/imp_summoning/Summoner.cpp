@@ -22,7 +22,7 @@ namespace imp_summoning {
   }
 
   const Profession &Summoner::process_optional_profession(Context &context) {
-    if (input.next().is(lexicon.colon)) {
+    if (input.current().is(lexicon.colon)) {
       input.next();
       return process_profession(context);
     }

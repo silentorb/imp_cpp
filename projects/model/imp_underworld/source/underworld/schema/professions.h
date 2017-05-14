@@ -48,6 +48,10 @@ namespace underworld {
       Type get_type() const override {
         return Type::primitive;
       }
+
+      Primitive_Type get_primitive_type()const {
+        return primitive_type;
+      }
   };
 
   class Professional_Dungeon : public virtual Profession {

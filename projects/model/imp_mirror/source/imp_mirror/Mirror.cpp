@@ -160,7 +160,17 @@ namespace imp_mirror {
     }
   }
 
+  const overworld::Profession &Mirror::reflect_primitive(const underworld::Primitive &primitive) {
+    const auto index = (int) primitive.get_primitive_type();
+    auto primitive_type = (overworld::Primitive_Type) index;
+    return profession_library.get_primitive(primitive_type);
+  }
+
   const overworld::Profession &Mirror::reflect_profession(const underworld::Profession &profession) {
+    switch (profession.get_type()) {
+      case underworld::Profession::Type::primitive:
+        return reflect_primitive(*dynamic_cast<const underworld::Primitive *>(&profession));
+    }
     return profession_library.get_unknown();
   }
 
