@@ -22,7 +22,7 @@ namespace imp_summoning {
       }),
     assignment_operator_map(
       {
-        {&lexicon.assignment, Operator_Type::equals},
+        {&lexicon.assignment, Operator_Type::assignment},
       }) {
   }
 

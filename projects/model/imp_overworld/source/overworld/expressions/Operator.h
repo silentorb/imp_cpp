@@ -4,7 +4,7 @@
 namespace overworld {
 
   enum class Operator_Type {
-      equals,
+      assignment,
   };
 
   class Operator : public virtual Expression {

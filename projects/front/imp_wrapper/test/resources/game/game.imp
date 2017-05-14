@@ -1,0 +1,17 @@
+
+World {
+  creatures
+}
+
+Creature {
+  world
+}
+
+
+Game {
+  world
+
+  Game(){
+    world = World()
+  }
+}

@@ -9,6 +9,11 @@ namespace runic_imp {
       bool _follows_terminator = false;
 
   public:
+//      Token(runic::Source *source) : runic::Rune<Whisper>(source) {}
+//      Token() : runic::Rune<Whisper>(nullptr) {}
+
+      virtual ~Token() {}
+
       bool follows_terminator() const {
         return _follows_terminator;
       }

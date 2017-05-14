@@ -85,4 +85,9 @@ namespace overworld {
       }
   };
 
+  class Profession_Reference {
+  public:
+      virtual const Profession &get_profession() = 0;
+      virtual void set_profession(const Profession & value) = 0;
+  };
 }

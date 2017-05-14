@@ -1,5 +1,21 @@
 #include "Artisan.h"
 
+//#define DEBUGNEWLINES
+
+#ifndef DEBUGNEWLINES
+static const char *newline_a = "\n";
+static const char *newline_b = "\n";
+static const char *newline_c = "\n";
+static const char *newline_d = "\n";
+static const char *newline_e = "\n";
+#else
+static const char * newline_a = "a\n";
+static const char * newline_b = "b\n";
+static const char * newline_c = "c\n";
+static const char * newline_d = "d\n";
+static const char * newline_e = "e\n";
+#endif
+
 using namespace std;
 
 namespace imp_artisan {
@@ -13,11 +29,11 @@ namespace imp_artisan {
     auto &strokes = block.get_strokes();
 
     auto block_start = block.get_start() != ""
-                       ? " " + block.get_start() 
+                       ? " " + block.get_start()
                        : block.get_start();
 
     if (strokes.size() == 1 && !is_paragraph(strokes[0])) {
-      return indent + block.get_header() + "\n"
+      return indent + block.get_header()// + newline_a
              + render_strokes(strokes, new_indent);
     }
     else if (strokes.size() == 0) {
@@ -30,10 +46,10 @@ namespace imp_artisan {
     else {
 
       auto block_end = block.get_end() != ""
-                       ? "\n" + indent + block.get_end()
+                       ? newline_b + indent + block.get_end()
                        : block.get_end();
 
-      return indent + block.get_header() + block_start + "\n"
+      return indent + block.get_header() + block_start + newline_c
              + render_strokes(strokes, new_indent)
              + block_end;
     }
@@ -66,9 +82,9 @@ namespace imp_artisan {
     for (auto it = strokes.begin() + 1; it != strokes.end(); it++) {
       auto &stroke = (*it);
       if (is_paragraph(stroke) || is_paragraph(*last)) {
-        result += "\n";
+        result += newline_d;
       }
-      result += "\n" + render_stroke(stroke, indent);
+      result += newline_e + render_stroke(stroke, indent);
       last = &stroke;
     }
 

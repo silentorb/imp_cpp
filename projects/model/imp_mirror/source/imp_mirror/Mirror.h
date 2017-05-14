@@ -14,6 +14,7 @@
 #include <underworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include "Element_Map.h"
+#include "Integrity.h"
 
 namespace overworld {
   class Block;
@@ -24,6 +25,7 @@ namespace imp_mirror {
   class Mirror {
       overworld::Profession_Library &profession_library;
       Element_Map &element_map;
+      Integrity integrity;
 
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);

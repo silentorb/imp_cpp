@@ -5,7 +5,7 @@
 namespace underworld {
 
   enum class Operator_Type {
-      equals,
+      assignment,
   };
 
   class Operator : public virtual Expression {

@@ -15,7 +15,7 @@ namespace runic_imp {
       Whisper If = "if";
       Whisper False = "false";
       Whisper For = "for";
-      Whisper New = "new";
+//      Whisper New = "new";
       Whisper Return = "return";
       Whisper True = "true";
       Whisper Var = "var";

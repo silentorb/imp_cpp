@@ -48,7 +48,7 @@ namespace imp_mirror {
 
   overworld::Expression_Owner
   Mirror::reflect_minion(const underworld::Minion_Expression &input_minion_expression, overworld::Scope &scope) {
-    auto & input_minion =input_minion_expression.get_minion();
+    auto &input_minion = input_minion_expression.get_minion();
     auto output_minion = element_map.find_or_null<overworld::Minion>(&input_minion);
     if (!output_minion)
       throw std::runtime_error("Could not find minion.");
@@ -165,14 +165,17 @@ namespace imp_mirror {
   }
 
   void Mirror::reflect_scope(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
+
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::variable) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
         auto &profession = reflect_profession(input_variable.get_profession());
         auto &output_minion = output_scope.create_minion(input_variable, profession);
+        integrity.check_reference(output_minion);
         element_map.add(&input_variable, &output_minion);
       }
     }
+
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
@@ -185,23 +188,13 @@ namespace imp_mirror {
 
   void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {
     reflect_scope(input, output);
-//    for (auto &entry: input.get_members()) {
-//      auto &member = *entry.second;
-//      if (member.get_type() == underworld::Member::Type::variable) {
-//        auto &input_minion = *dynamic_cast<underworld::Minion *>(&member);
-//        auto &profession = reflect_profession(input_minion.get_profession());
-//        auto &output_minion = output.create_minion(input_minion, profession);
-//      }
-//      else {
-//        auto &input_function = *dynamic_cast<underworld::Function *>(&member);
-//        auto &output_function = output.create_function(input_function);
-//      }
-//    }
 
     for (auto &entry: input.get_dungeons()) {
       auto &input_dungeon = *entry.second;
       auto &output_dungeon = output.create_dungeon(input_dungeon);
       reflect_dungeon(input_dungeon, output_dungeon);
     }
+
+    integrity.verify_no_unknowns();
   }
 }

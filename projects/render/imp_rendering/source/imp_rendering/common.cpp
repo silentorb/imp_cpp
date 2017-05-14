@@ -60,7 +60,7 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_minion(const overworld::Minion_Expression &minion) {
+  const std::string render_minion_expression(const overworld::Minion_Expression &minion) {
     return minion.get_minion().get_name();
   }
 
@@ -88,7 +88,7 @@ namespace imp_rendering {
   const std::string render_assignment(
     const overworld::Assignment &declaration, const overworld::Scope &scope) {
     return render_expression(*declaration.get_target()) + ' '
-           + render_operator(declaration.get_operator())
+           + render_operator(declaration.get_operator()) + ' '
            + render_expression(*declaration.get_value())
            + ";";
   }
@@ -120,7 +120,7 @@ namespace imp_rendering {
         return render_literal(*dynamic_cast<const overworld::Literal *>(&input_expression));
 
       case overworld::Expression::Type::minion:
-        return render_minion(*dynamic_cast<const overworld::Minion_Expression *>(&input_expression));
+        return render_minion_expression(*dynamic_cast<const overworld::Minion_Expression *>(&input_expression));
 
       default:
         throw std::runtime_error(" Not implemented.");

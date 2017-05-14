@@ -6,6 +6,7 @@
 #include <overworld/schema/Profession_Library.h>
 #include <imp_summoning/Lookup.h>
 #include <imp_mirror/Element_Map.h>
+#include <underworld/Source_Point.h>
 
 namespace imp_wrapper {
 
@@ -16,6 +17,7 @@ namespace imp_wrapper {
       imp_summoning::Lookup lookup;
       overworld::Profession_Library overworld_profession_library;
       imp_mirror::Element_Map element_map;
+      std::vector<std::unique_ptr<underworld::Source_File>> source_files;
 
   public:
       Wrapper() :

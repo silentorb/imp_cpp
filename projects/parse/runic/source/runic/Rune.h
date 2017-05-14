@@ -12,13 +12,13 @@ namespace runic {
       Range range;
 
   public:
-      Rune() {}
+//      Rune(Source *source) : source(source) {}
 
       Match<Whisper> &get_match() {
         return match;
       }
 
-      const Match<Whisper> &get_match() const{
+      const Match<Whisper> &get_match() const {
         return match;
       }
 
@@ -30,7 +30,7 @@ namespace runic {
         return range;
       }
 
-      const Range &get_range() const{
+      const Range &get_range() const {
         return range;
       }
 

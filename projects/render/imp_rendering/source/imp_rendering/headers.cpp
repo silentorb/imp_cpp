@@ -42,11 +42,40 @@ namespace imp_rendering {
         }
     };
 
+    class Simple_Block : public imp_artisan::internal::Block {
+
+    public:
+        Simple_Block() {}
+
+        const string get_header() const override {
+          return "";
+        }
+
+        const string get_start() const override {
+          return "";
+        }
+
+        int get_indent() const override {
+          return 2;
+        }
+
+        const string get_end() const override {
+          return "";
+        }
+    };
+
+    Stroke render_variable(const overworld::Minion &variable) {
+      return render_profession(variable.get_profession()) + ' ' + variable.get_name() + ';';
+    }
+
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
       Stroke block(new Class_Block("class " + dungeon.get_name()));
+      Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
       for (auto &variable : dungeon.get_variables()) {
+        auto stroke = render_variable(*variable);
+        private_block.add(stroke);
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
 //          auto &output_minion = output.create_minion(dungeon_minion, profession);
 
@@ -60,6 +89,8 @@ namespace imp_rendering {
           public_block << render_function_declaration(*function) + ";";
         }
       }
+
+      block.add(private_block);
       block.add(public_block);
       return block;
     }
