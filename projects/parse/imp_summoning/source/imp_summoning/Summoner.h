@@ -21,7 +21,6 @@ namespace imp_summoning {
       const underworld::Profession &process_profession(Context &context);
 
   public:
-
       Summoner(Stream &lexer, Lookup & lookup);
       void summon(underworld::Dungeon &root);
   };

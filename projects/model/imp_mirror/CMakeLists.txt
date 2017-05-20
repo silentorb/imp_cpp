@@ -1,2 +1,2 @@
 create_library(imp_mirror)
-require(imp_underworld imp_overworld)
+require(imp_underworld imp_graph)

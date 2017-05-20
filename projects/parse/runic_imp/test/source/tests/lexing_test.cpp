@@ -10,9 +10,9 @@ TEST(Lexing_Test, test_test) {
   Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
 //  Token token;
 //  parse.next_token(token);
-  runic::Simple_Source source("pizza.imp");
+  runic::File_Text_Source<> source("pizza.imp");
   vector<Token> tokens;
-  lexer.get_all_tokens(tokens, source);
+  lexer.get_all_tokens(tokens);
   auto &lexicon = Lexicon::get_instance();
   EXPECT_EQ(&lexicon.patterns.If, tokens[14].get_match().get_type());
 }
