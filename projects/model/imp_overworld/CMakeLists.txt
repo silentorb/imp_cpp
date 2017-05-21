@@ -1,2 +1,2 @@
 create_library(imp_overworld)
-require(imp_underworld solving)
+require(imp_underworld graphing)

@@ -39,5 +39,6 @@ void compile(const std::string &input_file){
   imp_wrapper::Wrapper wrapper;
   wrapper.load_file(string(RESOURCE_PATH) + input_file);
   wrapper.mirror();
+  wrapper.solve();
   wrapper.render(string(OUTPUT_PATH));
 }

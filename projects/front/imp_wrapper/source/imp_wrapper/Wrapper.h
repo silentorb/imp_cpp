@@ -29,6 +29,7 @@ namespace imp_wrapper {
 
       void load_file(const std::string &path);
       void mirror();
+      void solve();
       void render(const std::string &output_path);
   };
 }

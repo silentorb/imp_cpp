@@ -5,14 +5,8 @@
 #include <vector>
 #include <graphing/Reference_Graph.h>
 
-namespace solving {
+namespace overworld {
 
-  class Solver;
-
-  class Solver_Logic {
-  public:
-      virtual bool attempt_resolution(Node &node, Solver &graph) = 0;
-  };
 
   class Solver {
       graphing::Reference_Graph<Node, Connection> &graph;
@@ -22,7 +16,7 @@ namespace solving {
 
       std::vector<Connection *> conflicts;
 
-      Solver_Logic &resolver;
+//      Solver_Logic &resolver;
 
       enum Progress {
           none,
@@ -37,8 +31,8 @@ namespace solving {
       void node_changed(Node &node);
 
   public:
-      Solver(graphing::Reference_Graph<Node, Connection> &graph, Solver_Logic &resolver) :
-        graph(graph), resolver(resolver) {}
+      Solver(graphing::Reference_Graph<Node, Connection> &graph) :
+        graph(graph){}
 
       bool solve();
       void add_node(Node *node);

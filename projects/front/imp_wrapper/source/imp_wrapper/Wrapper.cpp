@@ -3,6 +3,7 @@
 #include <imp_summoning/Summoner.h>
 #include <imp_mirror/Mirror.h>
 #include <imp_taskmaster/Taskmaster.h>
+#include <overworld/imp_graph/Solver.h>
 #include "Wrapper.h"
 
 namespace imp_wrapper {
@@ -19,6 +20,10 @@ namespace imp_wrapper {
   void Wrapper::mirror() {
     imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph);
     mirror.reflect_dungeon(underworld_root, overworld_root);
+  }
+
+  void Wrapper::solve() {
+    overworld::Solver solver(graph.get_graph());
   }
 
   void Wrapper::render(const std::string &output_path) {

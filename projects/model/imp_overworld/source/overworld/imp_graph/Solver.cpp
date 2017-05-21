@@ -1,7 +1,7 @@
 #include "Solver.h"
 #include <algorithm>
 
-namespace solving {
+namespace overworld {
 
   void Solver::add_node(Node *node) {
 //    nodes.push_back(std::unique_ptr<Node>(node));
@@ -24,7 +24,7 @@ namespace solving {
       return;
 
     unresolved.erase(std::remove(unresolved.begin(), unresolved.end(), &node), unresolved.end());
-    Node_Modifier::set_resolved(node, true);
+    node.set_resolved(true);
   }
 
   void Solver::node_changed(Node &node) {
@@ -32,7 +32,7 @@ namespace solving {
       return;
 
     changed.push_back(&node);
-    Node_Modifier::set_changed(node, true);
+    node.set_changed(true);
   }
 
   void Solver::node_unchanged(Node &node) {
@@ -40,7 +40,7 @@ namespace solving {
       return;
 
     changed.erase(std::remove(changed.begin(), changed.end(), &node), changed.end());
-    Node_Modifier::set_changed(node, false);
+    node.set_changed(false);
 
   }
 
@@ -58,7 +58,7 @@ namespace solving {
   }
 
   bool Solver::attempt_resolution(Node &node) {
-    if (resolver.attempt_resolution(node, *this)) {
+    if (false) {
       resolve_node(node);
       ripple_changed(node);
       return true;

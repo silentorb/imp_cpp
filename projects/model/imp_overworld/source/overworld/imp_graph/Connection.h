@@ -3,7 +3,7 @@
 #include <memory>
 #include <graphing/Connection.h>
 
-namespace solving {
+namespace overworld {
 
   class Node;
 
