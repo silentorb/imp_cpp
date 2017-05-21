@@ -2,6 +2,7 @@
 
 #include <overworld/schema/professions.h>
 #include <overworld/schema/Profession_Library.h>
+#include <underworld/expressions/Literal.h>
 #include "Expression.h"
 
 namespace overworld {
@@ -21,46 +22,78 @@ namespace overworld {
   };
 
   template<typename T>
-  class Literal_Implementation : public virtual Literal {
+  class Literal_Implementation : public virtual Literal, public virtual Profession_Reference {
       T value;
       Profession_Node<Literal_Implementation> node;
+      const underworld::Literal & source;
 
   public:
-      Literal_Implementation(T value) : value(value), node(*this) {}
+      Literal_Implementation(T value, const underworld::Literal & source) :
+        value(value), node(*this), source(source) {
+        node.set_resolved(true);
+      }
 
       const T &get_value() const {
         return value;
       }
 
       Node *get_node() override {
-        return & node;
+        return &node;
       }
+
+      const Profession &get_profession() override {
+        return Literal::get_profession();
+      }
+
+      void set_profession(const Profession &value) override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const underworld::Source_Point &get_source_point() override {
+        return source.get_source_point();
+      }
+
   };
 
   class Literal_Int : public Literal_Implementation<int> {
   public:
-      Literal_Int(int value) : Literal_Implementation(value) {}
+      Literal_Int(int value, const underworld::Literal & source) :
+        Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
         return Primitive_Type::Int;
+      }
+
+      const std::string get_name() override {
+        return "int";
       }
   };
 
   class Literal_String : public Literal_Implementation<const std::string> {
   public:
-      Literal_String(const std::string &value) : Literal_Implementation(value) {}
+      Literal_String(const std::string &value, const underworld::Literal & source) :
+        Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
         return Primitive_Type::String;
+      }
+
+      const std::string get_name() override {
+        return "string";
       }
   };
 
   class Literal_Bool : public Literal_Implementation<bool> {
   public:
-      Literal_Bool(const bool &value) : Literal_Implementation(value) {}
+      Literal_Bool(const bool &value, const underworld::Literal & source) :
+        Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
         return Primitive_Type::Bool;
+      }
+
+      const std::string get_name() override {
+        return "bool";
       }
   };
 }

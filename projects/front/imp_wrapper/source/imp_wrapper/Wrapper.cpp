@@ -3,7 +3,7 @@
 #include <imp_summoning/Summoner.h>
 #include <imp_mirror/Mirror.h>
 #include <imp_taskmaster/Taskmaster.h>
-#include <overworld/imp_graph/Solver.h>
+#include <solving/Solver.h>
 #include "Wrapper.h"
 
 namespace imp_wrapper {
@@ -23,7 +23,18 @@ namespace imp_wrapper {
   }
 
   void Wrapper::solve() {
-    overworld::Solver solver(graph.get_graph());
+    solving::Solver solver(graph.get_graph());
+    solver.scan_fresh();
+    if (!solver.solve()) {
+      auto &unknowns = solver.get_unsolved_nodes();
+      if (unknowns.size() > 0) {
+        auto &unknown = *unknowns[0];
+        auto & element = unknown.get_profession_reference();
+        auto temp = this->source_files[0].get();
+        throw std::runtime_error("Could not determine type of \"" + element.get_name() +
+                                 "\" at " + element.get_source_point().to_string() + ".");
+      }
+    }
   }
 
   void Wrapper::render(const std::string &output_path) {

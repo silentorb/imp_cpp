@@ -10,12 +10,12 @@
 
 namespace overworld {
 
-  class Node : public graphing::Node<Connection> {
+  class Node : public graphing::Node<Connection, Node> {
       bool resolved;
       bool changed;
 
   public:
-      virtual const Profession &get_profession() = 0;
+      virtual Profession_Reference &get_profession_reference() = 0;
 
       bool is_resolved() const {
         return resolved;
@@ -41,11 +41,27 @@ namespace overworld {
   public:
       Profession_Node(T &element) : element(element) {}
 
-      const Profession &get_profession() override {
-        return element.get_profession();
+      Profession_Reference &get_profession_reference() override {
+        return element;
       }
+
   };
 
+//  template<typename T>
+//  class Mutable_Profession_Node : public Node {
+//      T &element;
+//
+//  public:
+//      Mutable_Profession_Node(T &element) : element(element) {}
+//
+//      const Profession &get_profession() override {
+//        return element.get_profession();
+//      }
+//
+//      void set_profession(const Profession &profession) override {
+//        element.set_profession(profession);
+//      }
+//  };
 
 //      friend class Node_Modifier;
 

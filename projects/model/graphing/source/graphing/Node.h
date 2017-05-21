@@ -5,41 +5,24 @@
 
 namespace graphing {
 
-  template <typename Connection>
-  class Node_Modifier;
-
-  template <typename Connection>
+  template<typename Connection, typename N>
   class Node {
       std::vector<Connection *> connections;
-
-      template<typename> friend class Node_Modifier;
+      std::vector<N *> nodes;
 
   public:
       std::vector<Connection *> &get_connections() {
         return connections;
       }
 
-//      void each_neighbor(const std::function<void(Node &)> &handler) {
-//        for (auto connection: connections) {
-//          auto &node = &connection->get_first() != this
-//                       ? connection->get_first()
-//                       : connection->get_second();
-//
-//          handler(node);
-//        }
-//      }
-  };
+      std::vector<N *> get_neighbors() {
+        return nodes;
+      }
 
-  // Nodes should only be modified through big-picture classes like Graph.
-  // To minimize foot shooting, all node modification functions are not
-  // immediately accessible.
-  template <typename Connection>
-  class Node_Modifier {
-  public:
-
-      static void add_connection(Node<Connection> &node, Connection &connection) {
-        node.connections.push_back(&connection);
+      void add_connection(Connection &connection) {
+        connections.push_back(&connection);
+        nodes.push_back(&connection.get_other(*this));
       }
   };
 
-  }
+}

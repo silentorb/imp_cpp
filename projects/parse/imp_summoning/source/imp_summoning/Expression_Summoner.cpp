@@ -31,16 +31,16 @@ namespace imp_summoning {
     auto &token = input.next();
     if (token.is(lexicon.literal_int)) {
       int value = std::stoi(token.get_text());
-      return Expression_Owner(new Literal_Int(value));
+      return Expression_Owner(new Literal_Int(value, input.get_source_point()));
     }
     else if (token.is(lexicon.literal_string)) {
-      return Expression_Owner(new Literal_String(token.get_text()));
+      return Expression_Owner(new Literal_String(token.get_text(), input.get_source_point()));
     }
     else if (token.is(lexicon.True)) {
-      return Expression_Owner(new Literal_Bool(true));
+      return Expression_Owner(new Literal_Bool(true, input.get_source_point()));
     }
     else if (token.is(lexicon.False)) {
-      return Expression_Owner(new Literal_Bool(false));
+      return Expression_Owner(new Literal_Bool(false, input.get_source_point()));
     }
     else {
       throw Syntax_Exception(token);

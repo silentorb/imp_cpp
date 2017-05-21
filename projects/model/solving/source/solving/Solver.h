@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Node.h"
-#include "Connection.h"
+#include "overworld/imp_graph/Node.h"
+#include "overworld/imp_graph/Connection.h"
 #include <vector>
 #include <graphing/Reference_Graph.h>
 
-namespace overworld {
+namespace solving {
 
+  using Node = overworld::Node;
+  using Connection = overworld::Connection;
 
   class Solver {
       graphing::Reference_Graph<Node, Connection> &graph;
@@ -26,19 +28,24 @@ namespace overworld {
       bool attempt_resolution(Node &node);
       Progress process_unresolved();
       Progress process_changed();
-      void resolve_node(Node &node);
+      void set_node_resolved(Node &node);
       void node_unchanged(Node &node);
       void node_changed(Node &node);
+      bool process_node(Node &node);
 
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph) :
-        graph(graph){}
+        graph(graph) {}
 
       bool solve();
-      void add_node(Node *node);
-      Connection &connect(Node &first, Node &second);
       void ripple_changed(Node &node);
       void connection_conflicts(Connection &connection);
 
+      // Assumes that this is the first scan and there is not existing scan result data.
+      void scan_fresh();
+
+      std::vector<Node *> &get_unsolved_nodes() {
+        return unresolved;
+      }
   };
 }

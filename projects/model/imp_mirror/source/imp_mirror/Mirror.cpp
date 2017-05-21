@@ -31,17 +31,17 @@ namespace imp_mirror {
 
       case underworld::Primitive_Type::Bool:
         expression = new overworld::Literal_Bool(
-          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value());
+          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value(), input_literal);
         break;
 
       case underworld::Primitive_Type::Int:
         expression = new overworld::Literal_Int(
-          (*dynamic_cast<const underworld::Literal_Int *>(&input_literal)).get_value());
+          (*dynamic_cast<const underworld::Literal_Int *>(&input_literal)).get_value(), input_literal);
         break;
 
       case underworld::Primitive_Type::String:
         expression = new overworld::Literal_String(
-          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value());
+          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value(), input_literal);
         break;
 
       default:
@@ -187,7 +187,7 @@ namespace imp_mirror {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
         auto &profession = reflect_profession(input_variable.get_profession());
         auto &output_minion = output_scope.create_minion(input_variable, profession);
-        integrity.check_reference(output_minion);
+//        integrity.check_reference(output_minion);
         element_map.add(&input_variable, &output_minion);
       }
     }
@@ -211,6 +211,6 @@ namespace imp_mirror {
       reflect_dungeon(input_dungeon, output_dungeon);
     }
 
-    integrity.verify_no_unknowns();
+//    integrity.verify_no_unknowns();
   }
 }

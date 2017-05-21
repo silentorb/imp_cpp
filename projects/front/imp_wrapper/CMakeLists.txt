@@ -1,2 +1,2 @@
 create_library(imp_wrapper)
-require(imp_summoning imp_mirror imp_taskmaster)
+require(imp_summoning imp_mirror imp_taskmaster imp_overworld solving)

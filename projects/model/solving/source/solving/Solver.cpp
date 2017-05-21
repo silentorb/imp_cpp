@@ -1,25 +1,16 @@
 #include "Solver.h"
 #include <algorithm>
 
-namespace overworld {
+namespace solving {
 
-  void Solver::add_node(Node *node) {
-//    nodes.push_back(std::unique_ptr<Node>(node));
-//    if (node->is_changed()) {
-//      changed.push_back(node);
-//    }
-//    else if (!node->is_resolved()) {
-//      unresolved.push_back(node);
-//    }
+  void Solver::scan_fresh() {
+    for (auto node : graph.get_nodes()) {
+      if (!node->is_resolved())
+        unresolved.push_back(node);
+    }
   }
 
-//  Connection &Solver::connect(Node &first, Node &second) {
-//    auto connection = new Connection(first, second);
-//    connections.push_back(std::unique_ptr<Connection>(connection));
-//    return *connection;
-//  }
-
-  void Solver::resolve_node(Node &node) {
+  void Solver::set_node_resolved(Node &node) {
     if (node.is_resolved())
       return;
 
@@ -57,9 +48,21 @@ namespace overworld {
     }
   }
 
+  bool Solver::process_node(Node &node) {
+    for(auto other : node.get_neighbors()) {
+      if(other->is_resolved()){
+        auto & reference = other->get_profession_reference();
+        reference.set_profession(reference.get_profession());
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   bool Solver::attempt_resolution(Node &node) {
-    if (false) {
-      resolve_node(node);
+    if (process_node(node)) {
+      set_node_resolved(node);
       ripple_changed(node);
       return true;
     }
