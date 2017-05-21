@@ -6,7 +6,8 @@
 
 namespace overworld {
 
-  class Literal : public virtual Expression {
+  class Literal : public Expression {
+
   public:
       Type get_type() const override {
         return Type::literal;
@@ -17,18 +18,22 @@ namespace overworld {
       Profession &get_profession() const {
         return Profession_Library::get_primitive(get_primitive_type());
       }
-
   };
 
   template<typename T>
   class Literal_Implementation : public virtual Literal {
       T value;
+      Profession_Node<Literal_Implementation> node;
 
   public:
-      Literal_Implementation(T value) : value(value) {}
+      Literal_Implementation(T value) : value(value), node(*this) {}
 
       const T &get_value() const {
         return value;
+      }
+
+      Node *get_node() override {
+        return & node;
       }
   };
 

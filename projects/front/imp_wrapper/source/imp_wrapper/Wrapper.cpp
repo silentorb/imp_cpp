@@ -17,7 +17,7 @@ namespace imp_wrapper {
   }
 
   void Wrapper::mirror() {
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map);
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph);
     mirror.reflect_dungeon(underworld_root, overworld_root);
   }
 

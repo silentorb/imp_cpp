@@ -4,16 +4,18 @@
 #include "Member.h"
 #include "professions.h"
 #include <underworld/schema/Minion.h>
+#include <overworld/imp_graph/Node.h>
 
 namespace overworld {
 
   class Minion : public virtual Member, public virtual Profession_Reference {
       const underworld::Minion &source;
       const Profession *profession;
+      Profession_Node<Minion> node;
 
   public:
       Minion(const underworld::Minion &source, const Profession &profession) :
-        source(source), profession(&profession) {}
+        source(source), profession(&profession), node(*this) {}
 
       Type get_type() const override {
         return Type::variable;
@@ -41,6 +43,10 @@ namespace overworld {
 
       virtual const underworld::Source_Point &get_source_point() override {
         return source.get_source_point();
+      }
+
+      Node &get_node() {
+        return node;
       }
   };
 

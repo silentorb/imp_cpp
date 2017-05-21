@@ -5,8 +5,8 @@
 
 namespace graphing {
 
-  template <typename Node, typename Connection>
-  class Graph {
+  template<typename Node, typename Connection>
+  class Owning_Graph {
       using Connection_Pointer = std::unique_ptr<Connection>;
       using Node_Pointer = std::unique_ptr<Node>;
 

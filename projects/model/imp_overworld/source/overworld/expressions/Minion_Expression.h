@@ -19,5 +19,9 @@ namespace overworld {
       Minion &get_minion() const {
         return this->minion;
       }
+
+      Node *get_node() override {
+        return &minion.get_node();
+      }
   };
 }

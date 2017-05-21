@@ -19,31 +19,37 @@ namespace imp_mirror {
     auto operator_type = reflect_operator(input_assignment.get_operator());
     auto value = reflect_expression(*input_assignment.get_value(), scope);
 
+    graph.connect(*target->get_node(), *value->get_node());
+
     return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
   }
 
   overworld::Expression_Owner Mirror::reflect_literal(const underworld::Literal &input_literal) {
 
+    overworld::Literal *expression;
     switch (input_literal.get_primitive_type()) {
 
       case underworld::Primitive_Type::Bool:
-        return overworld::Expression_Owner(new overworld::Literal_Bool(
-          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value())
-        );
+        expression = new overworld::Literal_Bool(
+          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value());
+        break;
 
       case underworld::Primitive_Type::Int:
-        return overworld::Expression_Owner(new overworld::Literal_Int(
-          (*dynamic_cast<const underworld::Literal_Int *>(&input_literal)).get_value())
-        );
+        expression = new overworld::Literal_Int(
+          (*dynamic_cast<const underworld::Literal_Int *>(&input_literal)).get_value());
+        break;
 
       case underworld::Primitive_Type::String:
-        return overworld::Expression_Owner(new overworld::Literal_String(
-          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value())
-        );
+        expression = new overworld::Literal_String(
+          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value());
+        break;
 
       default:
         throw std::runtime_error("Not implemented.");
     }
+
+    graph.add_node(*expression->get_node());
+    return overworld::Expression_Owner(expression);
   }
 
   overworld::Expression_Owner

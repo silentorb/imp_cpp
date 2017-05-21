@@ -23,7 +23,8 @@ TEST(Mirror_Test, mirroring) {
   overworld::Dungeon output_root(root);
   overworld::Profession_Library profession_library2;
   imp_mirror::Element_Map element_map;
-  Mirror mirror(profession_library2, element_map);
+  overworld::Graph graph;
+  Mirror mirror(profession_library2, element_map, graph);
   mirror.reflect_dungeon(root, output_root);
   EXPECT_EQ(1, output_root.get_dungeons().size());
 

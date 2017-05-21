@@ -3,7 +3,7 @@
 #include "Node.h"
 #include "Connection.h"
 #include <vector>
-#include <graphing/Graph.h>
+#include <graphing/Reference_Graph.h>
 
 namespace solving {
 
@@ -15,7 +15,7 @@ namespace solving {
   };
 
   class Solver {
-      graphing::Graph<Node, Connection> &graph;
+      graphing::Reference_Graph<Node, Connection> &graph;
 
       std::vector<Node *> unresolved;
       std::vector<Node *> changed;
@@ -37,7 +37,7 @@ namespace solving {
       void node_changed(Node &node);
 
   public:
-      Solver(graphing::Graph<Node, Connection> &graph, Solver_Logic &resolver) :
+      Solver(graphing::Reference_Graph<Node, Connection> &graph, Solver_Logic &resolver) :
         graph(graph), resolver(resolver) {}
 
       bool solve();

@@ -13,6 +13,7 @@
 #include <underworld/expressions/Minion_Expression.h>
 #include <underworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
+#include <overworld/imp_graph/Graph.h>
 #include "Element_Map.h"
 #include "Integrity.h"
 
@@ -25,6 +26,7 @@ namespace imp_mirror {
   class Mirror {
       overworld::Profession_Library &profession_library;
       Element_Map &element_map;
+      overworld::Graph &graph;
       Integrity integrity;
 
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
@@ -53,11 +55,11 @@ namespace imp_mirror {
                                                     overworld::Scope &scope);
       const overworld::Profession &reflect_profession(const underworld::Profession &profession);
 
-      const overworld::Profession& reflect_primitive(const underworld::Primitive &primitive);
+      const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
 
   public:
-      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map) :
-        profession_library(profession_library), element_map(element_map) {}
+      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph) :
+        profession_library(profession_library), element_map(element_map), graph(graph) {}
 
       void reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output);
   };
