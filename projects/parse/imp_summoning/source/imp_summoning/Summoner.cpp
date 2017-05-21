@@ -22,7 +22,7 @@ namespace imp_summoning {
   }
 
   const Profession &Summoner::process_optional_profession(Context &context) {
-    if (input.current().is(lexicon.colon)) {
+    if (input.peek().is(lexicon.colon)) {
       input.next();
       return process_profession(context);
     }
@@ -37,14 +37,16 @@ namespace imp_summoning {
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
-    input.next();
-    if (input.current().follows_terminator()) {
-      throw Syntax_Exception(input.current());
-    }
-    else if (input.current().is(lexicon.left_brace)) {
+    if (input.peek().is(lexicon.left_brace)) {
+      if (input.next().follows_terminator())
+        throw Syntax_Exception(input.current());
+
       process_dungeon(name, context);
     }
-    else if (input.current().is(lexicon.left_paren)) {
+    else if (input.peek().is(lexicon.left_paren)) {
+      if (input.next().follows_terminator())
+        throw Syntax_Exception(input.current());
+
       process_function(name, context);
     }
     else {

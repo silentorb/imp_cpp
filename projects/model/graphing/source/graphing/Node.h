@@ -21,7 +21,7 @@ namespace graphing {
 
       void add_connection(Connection &connection) {
         connections.push_back(&connection);
-        nodes.push_back(&connection.get_other(*this));
+        nodes.push_back(&connection.get_other(*static_cast<N*>(this)));
       }
   };
 

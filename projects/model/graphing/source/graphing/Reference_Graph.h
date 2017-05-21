@@ -28,6 +28,8 @@ namespace graphing {
       Connection &connect(Node &first, Node &second) {
         auto connection = new Connection(first, second);
         connections.push_back(std::unique_ptr<Connection>(connection));
+        first.add_connection(*connection);
+        second.add_connection(*connection);
         return *connection;
       }
 

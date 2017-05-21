@@ -11,10 +11,14 @@
 namespace overworld {
 
   class Node : public graphing::Node<Connection, Node> {
-      bool resolved;
-      bool changed;
+      bool resolved = false;
+      bool changed = false;
 
   public:
+      Node() {
+        
+      }
+
       virtual Profession_Reference &get_profession_reference() = 0;
 
       bool is_resolved() const {

@@ -6,6 +6,7 @@
 #include "professions.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
+#include <overworld/imp_graph/Graph.h>
 
 namespace overworld {
 
@@ -26,7 +27,7 @@ namespace overworld {
       ~Scope();
 
       Function &create_function(const underworld::Function &input);
-      Minion &create_minion(const underworld::Minion &input, const Profession &profession);
+      Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;

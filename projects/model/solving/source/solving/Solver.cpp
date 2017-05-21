@@ -51,8 +51,8 @@ namespace solving {
   bool Solver::process_node(Node &node) {
     for(auto other : node.get_neighbors()) {
       if(other->is_resolved()){
-        auto & reference = other->get_profession_reference();
-        reference.set_profession(reference.get_profession());
+        auto & profession = other->get_profession_reference().get_profession();
+        node.get_profession_reference().set_profession(profession);
         return true;
       }
     }

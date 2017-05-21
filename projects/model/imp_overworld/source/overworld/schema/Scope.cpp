@@ -25,11 +25,12 @@ namespace overworld {
     return *function;
   }
 
-  Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession) {
+  Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph) {
 //    check_has_member(name);
 
     auto minion = new Minion(input, profession);
     variables.push_back(unique_ptr<Minion>(minion));
+    graph.add_node(minion->get_node());
     return *minion;
   }
 

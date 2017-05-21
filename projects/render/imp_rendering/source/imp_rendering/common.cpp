@@ -13,7 +13,11 @@ using namespace std;
 namespace imp_rendering {
 
   static const std::string primitive_names[] = {
-
+    "bool",
+    "double",
+    "float",
+    "int",
+    "std::string",
   };
 
   Stroke render_block(const std::string &header, const overworld::Block &block) {

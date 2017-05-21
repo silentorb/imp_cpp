@@ -1,7 +1,7 @@
 #pragma once
 
 class Pizza {
-    void size;
+    int size;
 
 public:
     Pizza() {}
