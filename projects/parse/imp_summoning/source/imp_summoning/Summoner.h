@@ -13,7 +13,7 @@ namespace imp_summoning {
       void process_dungeon(const std::string &name, Context &context);
       void process_dungeon_member(Context &context);
       void process_function(const std::string &name, Context &context);
-      void process_minion_parameters(Context &context);
+      void process_function_parameters(Context &context, underworld::Function &func);
       void process_root(Context &context);
       void process_root_identifier(const std::string &name, Context &context);
       void process_minion(const std::string &name, Context &context);

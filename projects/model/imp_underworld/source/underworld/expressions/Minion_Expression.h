@@ -11,7 +11,7 @@ namespace underworld {
   public:
       Minion_Expression(Minion &minion) : minion(minion) {}
 
-      Type get_type() const override {
+      virtual Type get_type() const override {
         return Type::minion;
       }
 

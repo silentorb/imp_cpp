@@ -13,6 +13,7 @@ namespace overworld {
           assignment,
           block,
           Else,
+          function_call,
           If,
           literal,
           minion,

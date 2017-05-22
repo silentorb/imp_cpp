@@ -66,15 +66,22 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_minion_parameters(Context &context) {
+  void Summoner::process_function_parameters(Context &context, Function &func) {
     while (!input.next().is(lexicon.right_paren)) {
-      throw Syntax_Exception(input.current());
+//     throw Syntax_Exception(input.current());
+      auto source_point = input.get_source_point();
+      auto &name = input.current().get_text();
+      auto &profession = process_optional_profession(context);
+      auto &minion = func.add_parameter(name, profession, source_point);
     }
+//    input.next();
   }
 
   void Summoner::process_function(const std::string &name, Context &context) {
-    process_minion_parameters(context);
     auto &function = context.get_dungeon().create_function(name);
+    process_function_parameters(context, function);
+//    input.current().get_text();
+//    input.next();
     expression_summoner.process_block(function.get_block(), context);
 
 //    if (!input.current().is(lexicon.left_brace))

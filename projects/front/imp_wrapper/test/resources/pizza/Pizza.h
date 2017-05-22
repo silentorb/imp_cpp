@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Pizza {
     int size;
@@ -6,5 +7,8 @@ class Pizza {
 public:
     Pizza() {}
 
-    void add_topping();
+    std::string add_topping(int value);
+    void crazy() {
+      add_topping(12);
+    }
 };

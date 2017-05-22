@@ -1,9 +1,11 @@
 #include "Pizza.h"
 
-void Pizza::add_topping() {
-  size = 12;
+std::string Pizza::add_topping(int value) {
+  size = value;
   auto y = "Hello World";
 
   if (true)
-    return;
+    return y;
+
+  return "";
 }

@@ -14,6 +14,7 @@
 #include <underworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include <overworld/imp_graph/Graph.h>
+#include <overworld/expressions/Function_Call.h>
 #include "Element_Map.h"
 #include "Integrity.h"
 
@@ -56,6 +57,7 @@ namespace imp_mirror {
       const overworld::Profession &reflect_profession(const underworld::Profession &profession);
 
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
+      overworld::Expression_Owner reflect_function_call(const underworld::Function_Call &function_call, overworld::Scope &scope);
 
   public:
       Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph) :

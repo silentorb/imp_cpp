@@ -4,6 +4,7 @@
 #include <underworld/expressions/Return.h>
 #include <underworld/expressions/Assignment.h>
 #include <underworld/expressions/Minion_Expression.h>
+#include <underworld/expressions/Function_Call.h>
 #include "Expression_Summoner.h"
 #include "exceptions.h"
 
@@ -42,6 +43,9 @@ namespace imp_summoning {
     else if (token.is(lexicon.False)) {
       return Expression_Owner(new Literal_Bool(false, input.get_source_point()));
     }
+    else if (token.is(lexicon.identifier)) {
+      return process_path(context);
+    }
     else {
       throw Syntax_Exception(token);
     }
@@ -71,6 +75,24 @@ namespace imp_summoning {
     return Expression_Owner(new Minion_Expression(*dynamic_cast<underworld::Minion *>(member)));
   }
 
+  Expression_Owner Expression_Summoner::process_function_call(Context &context) {
+    auto member = context.find_member(input.current().get_text());
+    if (!member)
+      throw Syntax_Exception(input.current());
+
+    auto source_point = input.get_source_point();
+
+    std::vector<Expression_Owner> arguments;
+    while (!input.next().is(lexicon.right_paren)) {
+      auto source_point = input.get_source_point();
+      arguments.push_back(process_expression(context));
+    }
+
+    return Expression_Owner(new underworld::Function_Call(
+      *dynamic_cast<underworld::Function *>(member), arguments, source_point
+    ));
+  }
+
   Expression_Owner Expression_Summoner::process_statement(Context &context) {
     auto &token = input.next();
     if (token.is(lexicon.Var)) {
@@ -91,9 +113,14 @@ namespace imp_summoning {
     }
     else if (token.is(lexicon.identifier)) {
       auto path = process_path(context);
-      auto operator_type = process_assignment_operator(context);
-      auto value = process_expression(context);
-      return Expression_Owner(new Assignment(path, operator_type, value));
+      if (input.peek().is(lexicon.left_paren)) {
+        return process_function_call(context);
+      }
+      else {
+        auto operator_type = process_assignment_operator(context);
+        auto value = process_expression(context);
+        return Expression_Owner(new Assignment(path, operator_type, value));
+      }
     }
     else {
       throw Syntax_Exception(input.current());

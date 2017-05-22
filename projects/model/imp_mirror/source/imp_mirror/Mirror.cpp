@@ -113,6 +113,11 @@ namespace imp_mirror {
     return result;
   }
 
+  overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Function_Call &function_call,
+                                                            overworld::Scope &scope) {
+    return overworld::Expression_Owner(new overworld::Function_Call(function_call));
+  }
+
   overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression,
                                                          overworld::Scope &scope) {
     switch (input_expression.get_type()) {
@@ -161,6 +166,10 @@ namespace imp_mirror {
       case underworld::Expression::Type::variable_declaration_and_assignment:
         return reflect_variable_declaration_with_assignment(
           *dynamic_cast<const underworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
+
+      case underworld::Expression::Type::function_call:
+        return reflect_function_call(*dynamic_cast<const underworld::Function_Call *>(&input_expression),
+                                     scope);
 
       default:
         throw std::runtime_error(" Not implemented.");

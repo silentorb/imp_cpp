@@ -10,6 +10,7 @@ namespace underworld {
   class Function : public virtual Member {
       const std::string name;
       Block block;
+      std::vector<Minion *> parameters;
 
   public:
       Function(const std::string &name) :
@@ -30,6 +31,8 @@ namespace underworld {
       const std::string &get_name() const {
         return name;
       }
+
+      Minion &add_parameter(const std::string &name, const Profession &profession, const Source_Point &source);
   };
 
   using Function_Owner = std::unique_ptr<Function>;

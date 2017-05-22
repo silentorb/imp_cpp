@@ -11,6 +11,7 @@ namespace underworld {
           assignment,
           block,
           Else,
+          function_call,
           If,
           literal,
           minion,

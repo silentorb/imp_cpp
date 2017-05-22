@@ -5,10 +5,16 @@ Pizza {
 
     Pizza() {}
 
-    add_topping() {
-        size = 12
+    add_topping(value) {
+        size = value
         var y = "Hello World"
         if (true)
-            return
+            return y
+
+        return ""
+    }
+
+    crazy() {
+      add_topping(12)
     }
 }
