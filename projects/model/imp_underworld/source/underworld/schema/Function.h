@@ -11,10 +11,12 @@ namespace underworld {
       const std::string name;
       Block block;
       std::vector<Minion *> parameters;
+      Source_Point source;
+      const Profession &return_type;
 
   public:
-      Function(const std::string &name) :
-        name(name) {}
+      Function(const std::string &name, const Profession &return_type, const Source_Point &source) :
+        name(name), return_type(return_type), source(source) {}
 
       Block &get_block() {
         return block;
@@ -36,6 +38,14 @@ namespace underworld {
 
       const std::vector<Minion *> &get_parameters() const {
         return parameters;
+      }
+
+      const Source_Point &get_source_point() const {
+        return source;
+      }
+
+      const Profession &get_return_type() const {
+        return return_type;
       }
   };
 

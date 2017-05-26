@@ -29,5 +29,9 @@ namespace overworld {
       const std::vector<Expression_Owner> &get_arguments() const {
         return arguments;
       }
+
+      Node *get_node() override {
+        return &function.get_node();
+      }
   };
 }

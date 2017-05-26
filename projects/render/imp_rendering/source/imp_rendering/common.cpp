@@ -27,14 +27,29 @@ namespace imp_rendering {
     return result;
   }
 
+  Stroke render_shrinking_block(const std::string &header, const overworld::Block &block) {
+    Stroke result(new imp_artisan::internal::Standard_Block(header));
+    render_statements(result, block.get_expressions(), block.get_scope());
+    return result;
+  }
+
+
+  const std::string render_minion_with_signature(const overworld::Minion &minion) {
+    return render_profession(minion.get_profession()) + ' ' + minion.get_name();
+  }
+
   const std::string render_function_parameters(const overworld::Function &function) {
-    return "()";
+    return "(" +
+           join(function.get_parameters(), Joiner<overworld::Minion *>(
+             [](const overworld::Minion *minion) {
+               return render_minion_with_signature(*minion);
+             }), ", ") + ")";
   }
 
   const std::string render_function_return_signature(const overworld::Function &function) {
     string return_text = function.is_constructor()
                          ? ""
-                         : "void ";
+                         : render_profession(function.get_profession()) + " ";
 
     return return_text;
   }
@@ -70,11 +85,11 @@ namespace imp_rendering {
   }
 
   const std::string render_return_nothing(const overworld::Return &input_return) {
-    return "return";
+    return "return;";
   }
 
   const std::string render_return_with_value(const overworld::Return_With_Value &input_return) {
-    return "return " + render_expression(input_return.get_value());
+    return "return " + render_expression(input_return.get_value()) + ";";
   }
 
   const std::string render_variable_declaration(const overworld::Minion_Declaration &declaration,
@@ -82,8 +97,7 @@ namespace imp_rendering {
     return "auto " + declaration.get_minion().get_name();
   }
 
-  const std::string render_function_call(const overworld::Function_Call &function_call,
-                                         const overworld::Scope &scope) {
+  const std::string render_function_call(const overworld::Function_Call &function_call) {
 
     return function_call.get_function().get_name() + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
@@ -137,6 +151,10 @@ namespace imp_rendering {
       case overworld::Expression::Type::minion:
         return render_minion_expression(*dynamic_cast<const overworld::Minion_Expression *>(&input_expression));
 
+      case overworld::Expression::Type::function_call:
+        return render_function_call(
+          *dynamic_cast<const overworld::Function_Call *>(&input_expression));
+
       default:
         throw std::runtime_error(" Not implemented.");
     }
@@ -170,11 +188,8 @@ namespace imp_rendering {
         return render_variable_declaration_with_assignment(
           *dynamic_cast<const overworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
 
-      case overworld::Expression::Type::function_call:
-        return render_function_call(
-          *dynamic_cast<const overworld::Function_Call *>(&input_expression), scope);
-
       default:
+        return render_expression(input_expression) + ";";
         throw std::runtime_error(" Not implemented.");
     }
   }

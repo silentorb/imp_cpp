@@ -78,7 +78,8 @@ namespace imp_summoning {
   }
 
   void Summoner::process_function(const std::string &name, Context &context) {
-    auto &function = context.get_dungeon().create_function(name);
+    auto &profession = process_optional_profession(context);
+    auto &function = context.get_dungeon().create_function(name, profession, input.get_source_point());
     process_function_parameters(context, function);
 //    input.current().get_text();
 //    input.next();

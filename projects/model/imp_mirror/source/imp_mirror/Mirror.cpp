@@ -72,8 +72,10 @@ namespace imp_mirror {
 
   overworld::Expression_Owner Mirror::reflect_return_with_value(const underworld::Return_With_Value &input_return,
                                                                 overworld::Scope &scope) {
+    auto expression = reflect_expression(input_return.get_value(), scope);
+    graph.connect(scope.get_function().get_node(), *expression->get_node());
     return overworld::Expression_Owner(
-      new overworld::Return_With_Value(reflect_expression(input_return.get_value(), scope)));
+      new overworld::Return_With_Value(std::move(expression)));
   }
 
   overworld::Expression_Owner
@@ -107,7 +109,7 @@ namespace imp_mirror {
   }
 
   overworld::Expression_Owner Mirror::reflect_block(const underworld::Block &input_block) {
-    auto output_block = new overworld::Block(input_block);
+    auto output_block = new overworld::Basic_Block(input_block);
     auto result = overworld::Expression_Owner(output_block);
     reflect_block(input_block, *output_block);
     return result;
@@ -152,6 +154,19 @@ namespace imp_mirror {
         ));
 
       default:
+        return reflect_statement_expression(input_expression, scope);
+    }
+  }
+
+  overworld::Expression_Owner Mirror::reflect_statement_expression(const underworld::Expression &input_expression,
+                                                                   overworld::Scope &scope) {
+    switch (input_expression.get_type()) {
+
+      case underworld::Expression::Type::function_call:
+        return reflect_function_call(*dynamic_cast<const underworld::Function_Call *>(&input_expression),
+                                     scope);
+
+      default:
         throw std::runtime_error(" Not implemented.");
     }
   }
@@ -184,12 +199,8 @@ namespace imp_mirror {
         return reflect_variable_declaration_with_assignment(
           *dynamic_cast<const underworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
 
-      case underworld::Expression::Type::function_call:
-        return reflect_function_call(*dynamic_cast<const underworld::Function_Call *>(&input_expression),
-                                     scope);
-
       default:
-        throw std::runtime_error(" Not implemented.");
+        return reflect_statement_expression(input_expression, scope);
     }
   }
 
@@ -222,7 +233,8 @@ namespace imp_mirror {
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
-        auto &output_function = output_scope.create_function(input_function, graph);
+        auto &profession = reflect_profession(input_function.get_return_type());
+        auto &output_function = output_scope.create_function(input_function, profession, graph);
 
         reflect_scope(input_function.get_block().get_scope(), output_function.get_block().get_scope());
 

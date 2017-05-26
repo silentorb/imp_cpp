@@ -32,11 +32,12 @@ namespace imp_artisan {
                        ? " " + block.get_start()
                        : block.get_start();
 
-    if (strokes.size() == 1 && !is_paragraph(strokes[0])) {
-      return indent + block.get_header()// + newline_a
-             + render_strokes(strokes, new_indent);
-    }
-    else if (strokes.size() == 0) {
+//    if (strokes.size() == 1 && !is_paragraph(strokes[0])) {
+//      return indent + block.get_header()// + newline_a
+//             + render_strokes(strokes, new_indent);
+//    }
+//    else
+    if (strokes.size() == 0) {
       if (block.get_start() == "")
         return indent + block.get_header();
       else

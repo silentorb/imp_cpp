@@ -13,16 +13,23 @@ namespace overworld {
 
   }
 
+  Function_Scope::Function_Scope(const underworld::Scope &source, Scope_Parent &parent, Function &function) :
+    Scope(source, parent), function(&function) {
+
+  }
+
   Scope::~Scope() {
 
   }
 
-  Function &Scope::create_function(const underworld::Function &input, overworld::Graph &graph) {
+  Function &
+  Scope::create_function(const underworld::Function &input, const Profession &profession, overworld::Graph &graph) {
 //    check_has_member(name);
-
-    auto function = new Function(input, *this);
-
+    auto function = new Function(input, profession, *this);
     functions.push_back(unique_ptr<Function>(function));
+    if (!function->is_constructor())
+      graph.add_node(function->get_node());
+
     return *function;
   }
 

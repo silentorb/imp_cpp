@@ -64,17 +64,13 @@ namespace imp_rendering {
         }
     };
 
-    Stroke render_variable(const overworld::Minion &variable) {
-      return render_profession(variable.get_profession()) + ' ' + variable.get_name() + ';';
-    }
-
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
       Stroke block(new Class_Block("class " + dungeon.get_name()));
       Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
       for (auto &variable : dungeon.get_variables()) {
-        auto stroke = render_variable(*variable);
+        auto stroke = Stroke(render_minion_with_signature(*variable) + ';');
         private_block.add(stroke);
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
 //          auto &output_minion = output.create_minion(dungeon_minion, profession);

@@ -10,8 +10,8 @@ namespace underworld {
     throw std::runtime_error("Local scope already has a member named " + member_name + ".");
   }
 
-  Function &Scope::create_function(const std::string &member_name) {
-    auto function = new Function(member_name);
+  Function &Scope::create_function(const std::string &member_name, const Profession &profession, const Source_Point & source) {
+    auto function = new Function(member_name, profession, source);
     check_has_member(function->get_name());
 
     members[function->get_name()] = Function_Owner(function);

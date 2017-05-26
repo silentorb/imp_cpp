@@ -28,6 +28,18 @@ namespace imp_summoning {
     }
   }
 
+  Expression_Owner Expression_Summoner::process_identifier(Context &context) {
+    auto path = process_path(context);
+    if (input.peek().is(lexicon.left_paren)) {
+      return process_function_call(context);
+    }
+    else {
+      auto operator_type = process_assignment_operator(context);
+      auto value = process_expression(context);
+      return Expression_Owner(new Assignment(path, operator_type, value));
+    }
+  }
+
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
     auto &token = input.next();
     if (token.is(lexicon.literal_int)) {
@@ -44,7 +56,13 @@ namespace imp_summoning {
       return Expression_Owner(new Literal_Bool(false, input.get_source_point()));
     }
     else if (token.is(lexicon.identifier)) {
-      return process_path(context);
+      auto path = process_path(context);
+      if (input.peek().is(lexicon.left_paren)) {
+        return process_function_call(context);
+      }
+      else {
+        return path;
+      }
     }
     else {
       throw Syntax_Exception(token);

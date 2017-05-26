@@ -21,8 +21,9 @@ namespace underworld {
       virtual void throw_already_exists(const std::string &member_name) const;
 
   public:
-      Function &create_function(const std::string &member_name);
-      Minion &create_minion(const std::string &name, const Profession &profession, const Source_Point & source);
+      Function &create_function(const std::string &member_name, const Profession &profession,
+                                const Source_Point &source);
+      Minion &create_minion(const std::string &name, const Profession &profession, const Source_Point &source);
 
       std::map<std::string, Member_Pointer> &get_members() {
         return members;

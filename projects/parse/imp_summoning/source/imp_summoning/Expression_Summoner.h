@@ -17,6 +17,7 @@ namespace imp_summoning {
       Expression_Owner process_function_call(Context &context);
       underworld::Operator_Type process_assignment_operator(Context &context);
       underworld::Operator_Type process_expression_operator(Context &context);
+      Expression_Owner process_identifier(Context &context);
 
   public:
       Expression_Summoner(Stream &input, Lookup & lookup);

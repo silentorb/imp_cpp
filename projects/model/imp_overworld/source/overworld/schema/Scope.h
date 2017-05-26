@@ -26,7 +26,8 @@ namespace overworld {
       Scope(const underworld::Scope &source, Scope_Parent &parent);
       ~Scope();
 
-      Function &create_function(const underworld::Function &input, overworld::Graph &graph);
+      Function &create_function(const underworld::Function &input, const Profession &profession,
+                                overworld::Graph &graph);
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
@@ -41,6 +42,21 @@ namespace overworld {
 
       Scope_Parent &get_parent() {
         return parent;
+      }
+
+      virtual Function &get_function() {
+        throw std::runtime_error("Not supported.");
+      }
+  };
+
+  class Function_Scope : public Scope {
+      Function *function = nullptr;
+
+  public:
+      Function_Scope(const underworld::Scope &source, Scope_Parent &parent, Function &function);
+
+      virtual Function &get_function() override {
+        return *function;
       }
   };
 
