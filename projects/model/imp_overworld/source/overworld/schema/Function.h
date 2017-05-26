@@ -11,6 +11,7 @@ namespace overworld {
       const underworld::Function &source;
       Block block;
       Scope &parent_scope;
+      std::vector<Minion *> parameters;
 
   public:
       Function(const underworld::Function &source, Scope &parent_scope) :
@@ -35,6 +36,15 @@ namespace overworld {
       bool is_constructor() const;
 
       bool is_inline();
+
+      const std::vector<Minion *> &get_parameters() const {
+        return parameters;
+      }
+
+      void add_parameter(Minion & minion){
+        parameters.push_back(&minion);
+      }
+
   };
 
   using Function_Owner = std::unique_ptr<Function>;

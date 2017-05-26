@@ -17,10 +17,11 @@ namespace overworld {
 
   }
 
-  Function &Scope::create_function(const underworld::Function &input) {
+  Function &Scope::create_function(const underworld::Function &input, overworld::Graph &graph) {
 //    check_has_member(name);
 
     auto function = new Function(input, *this);
+
     functions.push_back(unique_ptr<Function>(function));
     return *function;
   }
@@ -34,7 +35,7 @@ namespace overworld {
     return *minion;
   }
 
-  Minion &Scope::get_variable(const std::string &name) {
+  Minion &Scope::get_minion(const std::string &name) {
     for (auto &variable: variables) {
       if (variable->get_name() == name)
         return *variable;

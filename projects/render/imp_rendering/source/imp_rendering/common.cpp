@@ -7,6 +7,7 @@
 #include <overworld/expressions/Block.h>
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Minion_Expression.h>
+#include <overworld/expressions/Function_Call.h>
 
 using namespace std;
 
@@ -79,6 +80,16 @@ namespace imp_rendering {
   const std::string render_variable_declaration(const overworld::Minion_Declaration &declaration,
                                                 const overworld::Scope &scope) {
     return "auto " + declaration.get_minion().get_name();
+  }
+
+  const std::string render_function_call(const overworld::Function_Call &function_call,
+                                         const overworld::Scope &scope) {
+
+    return function_call.get_function().get_name() + "(" +
+           join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
+             [](const overworld::Expression_Owner &expression) {
+               return render_expression(*expression);
+             }), ", ") + ")";
   }
 
   const std::string render_operator(overworld::Operator_Type value) {
@@ -158,6 +169,10 @@ namespace imp_rendering {
       case overworld::Expression::Type::variable_declaration_and_assignment:
         return render_variable_declaration_with_assignment(
           *dynamic_cast<const overworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
+
+      case overworld::Expression::Type::function_call:
+        return render_function_call(
+          *dynamic_cast<const overworld::Function_Call *>(&input_expression), scope);
 
       default:
         throw std::runtime_error(" Not implemented.");

@@ -11,14 +11,23 @@ namespace overworld {
   class Function_Call : public virtual Expression {
       Function &function;
       std::vector<Expression_Owner> arguments;
-      underworld::Function_Call &source;
+      const underworld::Function_Call &source;
 
   public:
-      Function_Call(Function &function, std::vector<Expression_Owner> &arguments, underworld::Function_Call &source)
+      Function_Call(Function &function, std::vector<Expression_Owner> &arguments,
+                    const underworld::Function_Call &source)
         : function(function), arguments(std::move(arguments)), source(source) {}
 
       Type get_type() const override {
         return Type::function_call;
+      }
+
+      Function &get_function() const {
+        return function;
+      }
+
+      const std::vector<Expression_Owner> &get_arguments() const {
+        return arguments;
       }
   };
 }

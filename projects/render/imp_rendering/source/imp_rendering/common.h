@@ -22,4 +22,23 @@ namespace imp_rendering {
     result << text;
     return result;
   }
+
+
+  template<typename T>
+  using Joiner = std::function<const std::string(const T &)>;
+
+  template<typename T>
+  const std::string join(const std::vector<T> &items, const Joiner<T> &converter,
+                         const std::string delimiter) {
+    if (items.size() == 0)
+      return "";
+
+    std::string result = converter(items[0]);
+    for (int i = 1; i < items.size(); ++i) {
+      result += delimiter + converter(items[i]);
+    }
+
+    return result;
+  }
+
 }

@@ -15,4 +15,5 @@ namespace overworld {
   bool Function::is_inline() {
     return block.get_expressions().size() < 3;
   }
+
 }

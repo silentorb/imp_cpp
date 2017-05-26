@@ -26,7 +26,7 @@ namespace overworld {
       Scope(const underworld::Scope &source, Scope_Parent &parent);
       ~Scope();
 
-      Function &create_function(const underworld::Function &input);
+      Function &create_function(const underworld::Function &input, overworld::Graph &graph);
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
@@ -37,7 +37,7 @@ namespace overworld {
         return variables;
       }
 
-      Minion &get_variable(const std::string &name);
+      Minion &get_minion(const std::string &name);
 
       Scope_Parent &get_parent() {
         return parent;

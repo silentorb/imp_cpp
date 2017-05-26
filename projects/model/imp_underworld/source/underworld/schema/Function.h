@@ -33,6 +33,10 @@ namespace underworld {
       }
 
       Minion &add_parameter(const std::string &name, const Profession &profession, const Source_Point &source);
+
+      const std::vector<Minion *> &get_parameters() const {
+        return parameters;
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;

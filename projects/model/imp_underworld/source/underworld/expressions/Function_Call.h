@@ -19,5 +19,13 @@ namespace underworld {
       Type get_type() const override {
         return Type::function_call;
       }
+
+      Function &get_function() const {
+        return function;
+      }
+
+      const std::vector<Expression_Owner> &get_arguments() const {
+        return arguments;
+      }
   };
 }
