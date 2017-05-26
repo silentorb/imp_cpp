@@ -15,6 +15,10 @@ namespace graphing {
         return connections;
       }
 
+      const std::vector<Connection *> &get_connections() const {
+        return connections;
+      }
+
       std::vector<N *> get_neighbors() {
         return nodes;
       }

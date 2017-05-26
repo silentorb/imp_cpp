@@ -9,7 +9,7 @@ public:
 
     std::string add_topping(int value);
 
-    std::string crazy() {
-      return add_topping(12);
+    void crazy() {
+      add_topping(12);
     }
 };

@@ -15,6 +15,6 @@ Pizza {
     }
 
     crazy() {
-      return add_topping(12)
+      add_topping(12)
     }
 }

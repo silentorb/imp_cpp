@@ -52,7 +52,7 @@ namespace solving {
     for(auto other : node.get_neighbors()) {
       if(other->is_resolved()){
         auto & profession = other->get_profession_reference().get_profession();
-        node.get_profession_reference().set_profession(profession);
+        node.set_profession(profession);
         return true;
       }
     }

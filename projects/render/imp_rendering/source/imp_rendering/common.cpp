@@ -19,6 +19,7 @@ namespace imp_rendering {
     "float",
     "int",
     "std::string",
+    "void"
   };
 
   Stroke render_block(const std::string &header, const overworld::Block &block) {

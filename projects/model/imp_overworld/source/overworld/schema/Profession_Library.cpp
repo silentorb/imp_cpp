@@ -8,6 +8,7 @@ namespace overworld {
       Primitive_Type::Float,
       Primitive_Type::Int,
       Primitive_Type::String,
+      Primitive_Type::Void,
     };
 
   Profession_Library::Profession_Library() {

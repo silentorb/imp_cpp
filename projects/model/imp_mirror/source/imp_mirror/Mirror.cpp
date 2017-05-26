@@ -242,8 +242,8 @@ namespace imp_mirror {
           auto &minion = output_function.get_block().get_scope().get_minion(source_parameter->get_name());
           output_function.add_parameter(minion);
         }
-
         reflect_block(input_function.get_block(), output_function.get_block());
+        output_function.finalize(profession_library);
         element_map.add(&input_function, &output_function);
       }
     }

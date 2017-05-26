@@ -6,6 +6,20 @@
 #include "Member.h"
 
 namespace overworld {
+  class Profession_Library;
+
+//  class Function_Node : public Profession_Node<Function> {
+//  public:
+//      Function_Node::Function_Node(Function &element) : Profession_Node(element) {}
+//
+//      bool returns_a_value() {
+//
+//      }
+//
+//      void set_profession(const Profession &value) override {
+//        Node::set_profession(value);
+//      }
+//  };
 
   class Function : public virtual Member, public virtual Profession_Reference {
       const underworld::Function &source;
@@ -14,6 +28,8 @@ namespace overworld {
       std::vector<Minion *> parameters;
       Profession_Node<Function> node;
       const Profession *return_type;
+
+      bool returns_a_value() const;
 
   public:
       Function(const underworld::Function &source, const Profession &return_type, Scope &parent_scope) :
@@ -71,6 +87,8 @@ namespace overworld {
       const std::string get_name() override {
         return source.get_name();
       }
+
+      void finalize(overworld::Profession_Library &profession_library);
   };
 
   using Function_Owner = std::unique_ptr<Function>;
