@@ -4,6 +4,7 @@
 #include <fstream>
 #include <imp_rendering/headers.h>
 #include <imp_rendering/sources.h>
+#include <overworld_exploring/dependencies.h>
 
 namespace imp_taskmaster {
   void Taskmaster::render_and_write_strokes(const imp_artisan::building::Stroke_Owner &stroke,
@@ -18,16 +19,18 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::render_dungeon(const overworld::Dungeon &dungeon) {
-//    imp_artisan::Stroke_Stream header_strokes;
-//    imp_artisan::Stroke_Stream source_strokes;
-    auto header_strokes = imp_rendering::headers::render(dungeon);
+    std::vector<overworld::File *> header_files;
+    overworld::exploring::gather_header_dependencies(header_files, dungeon);
+
+    auto header_strokes = imp_rendering::headers::render(dungeon, header_files);
     auto source_strokes = imp_rendering::sources::render(dungeon);
+
     render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
     render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
   }
 
   void Taskmaster::render() {
-    for (auto &dungeon: root.get_dungeons()) {
+    for (auto &dungeon : root.get_dungeons()) {
       render_dungeon(*dungeon);
     }
   }

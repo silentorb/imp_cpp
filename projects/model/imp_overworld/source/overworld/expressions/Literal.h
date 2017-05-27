@@ -1,7 +1,7 @@
 #pragma once
 
-#include <overworld/schema/professions.h>
-#include <overworld/schema/Profession_Library.h>
+#include <overworld/schema/professions/professions.h>
+#include <overworld/schema/professions/Profession_Library.h>
 #include <underworld/expressions/Literal.h>
 #include "Expression.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <overworld/schema/professions.h>
+#include <overworld/schema/professions/professions.h>
 
 namespace imp_mirror {
 

@@ -4,8 +4,8 @@ using namespace std;
 
 namespace overworld {
 
-  Dungeon::Dungeon(const underworld::Dungeon &source) :
-    source(source), Scope(source, *this) {}
+  Dungeon::Dungeon(const underworld::Dungeon &source, Dungeon *parent) :
+    source(source), Scope(source, *this), parent(parent) {}
 
   Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
     auto dungeon = new Dungeon(input_dungeon);

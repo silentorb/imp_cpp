@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include "Minion.h"
-#include "professions.h"
+#include "overworld/schema/professions/Profession.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
 #include <overworld/imp_graph/Graph.h>
@@ -20,7 +20,7 @@ namespace overworld {
 
   protected:
       std::vector<std::unique_ptr<Function>> functions;
-      std::vector<Variable_Owner> variables;
+      std::vector<Variable_Owner> minions;
 
   public:
       Scope(const underworld::Scope &source, Scope_Parent &parent);
@@ -34,8 +34,8 @@ namespace overworld {
         return functions;
       }
 
-      const std::vector<Variable_Owner> &get_variables() const {
-        return variables;
+      const std::vector<Variable_Owner> &get_minions() const {
+        return minions;
       }
 
       Minion &get_minion(const std::string &name);
@@ -59,7 +59,6 @@ namespace overworld {
         return *function;
       }
   };
-
 
   enum class Scope_Parent_Type {
       block,

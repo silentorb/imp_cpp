@@ -2,9 +2,10 @@
 
 #include <memory>
 #include "Member.h"
-#include "professions.h"
+#include "overworld/schema/professions/Profession.h"
 #include <underworld/schema/Minion.h>
 #include <overworld/imp_graph/Node.h>
+#include <overworld/schema/professions/Profession_Reference.h>
 
 namespace overworld {
 

@@ -1,13 +1,16 @@
 #include "Profession_Library.h"
 
 namespace overworld {
+
+  File string_header("string");
+
   Primitive Profession_Library::primitives[] =
     {
       Primitive_Type::Bool,
       Primitive_Type::Double,
       Primitive_Type::Float,
       Primitive_Type::Int,
-      Primitive_Type::String,
+      {Primitive_Type::String, &string_header},
       Primitive_Type::Void,
     };
 

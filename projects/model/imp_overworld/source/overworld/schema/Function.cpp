@@ -1,6 +1,6 @@
 #include "Function.h"
 #include "Dungeon.h"
-#include "Profession_Library.h"
+#include "overworld/schema/professions/Profession_Library.h"
 
 namespace overworld {
 

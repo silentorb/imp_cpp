@@ -2,7 +2,7 @@
 
 #include <overworld/schema/Dungeon.h>
 #include <underworld/schema/Dungeon.h>
-#include <overworld/schema/Profession_Library.h>
+#include <overworld/schema/professions/Profession_Library.h>
 #include <overworld/expressions/Expression.h>
 #include <overworld/expressions/Operator.h>
 #include <underworld/expressions/Block.h>

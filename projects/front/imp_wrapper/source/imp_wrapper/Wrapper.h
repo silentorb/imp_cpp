@@ -3,7 +3,7 @@
 #include <underworld/schema/Dungeon.h>
 #include <overworld/schema/Dungeon.h>
 #include <underworld/schema/Profession_Library.h>
-#include <overworld/schema/Profession_Library.h>
+#include <overworld/schema/professions/Profession_Library.h>
 #include <imp_summoning/Lookup.h>
 #include <imp_mirror/Element_Map.h>
 #include <underworld/Source_Point.h>

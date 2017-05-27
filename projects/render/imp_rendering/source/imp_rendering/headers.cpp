@@ -64,12 +64,20 @@ namespace imp_rendering {
         }
     };
 
+    Stroke render_includes(const std::vector<File *> &files) {
+      Stroke result;
+      for (auto file : files) {
+        result << wrap("#include <" + file->get_path() + ">");
+      }
+      return result;
+    }
+
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
       Stroke block(new Class_Block("class " + dungeon.get_name()));
       Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
-      for (auto &variable : dungeon.get_variables()) {
+      for (auto &variable : dungeon.get_minions()) {
         auto stroke = Stroke(render_minion_with_signature(*variable) + ';');
         private_block.add(stroke);
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
@@ -91,12 +99,13 @@ namespace imp_rendering {
       return block;
     }
 
-    Stroke render(const Dungeon &dungeon) {
+    Stroke render(const Dungeon &dungeon, const std::vector<File *> &files) {
 //      return Stroke()
 //        << (Stroke() << "#pragma once")
 //                     << render_dungeon_body(dungeon);
       Stroke result;
       result << wrap("#pragma once")
+             << render_includes(files)
              << render_dungeon_body(dungeon);
       return result;
     }

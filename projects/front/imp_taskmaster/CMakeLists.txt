@@ -1,2 +1,2 @@
 create_library(imp_taskmaster)
-require(imp_rendering)
+require(imp_rendering overworld_exploring)

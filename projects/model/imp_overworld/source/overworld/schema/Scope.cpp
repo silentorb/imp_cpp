@@ -37,13 +37,13 @@ namespace overworld {
 //    check_has_member(name);
 
     auto minion = new Minion(input, profession);
-    variables.push_back(unique_ptr<Minion>(minion));
+    minions.push_back(unique_ptr<Minion>(minion));
     graph.add_node(minion->get_node());
     return *minion;
   }
 
   Minion &Scope::get_minion(const std::string &name) {
-    for (auto &variable: variables) {
+    for (auto &variable: minions) {
       if (variable->get_name() == name)
         return *variable;
     }
