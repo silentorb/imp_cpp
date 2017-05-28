@@ -2,7 +2,7 @@
 
 #include <map>
 #include <runic_imp/Whisper.h>
-#include <underworld/schema/professions.h>
+#include <underworld/schema/Profession.h>
 #include <underworld/schema/Profession_Library.h>
 #include <underworld/expressions/Operator.h>
 

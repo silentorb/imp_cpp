@@ -3,11 +3,11 @@
 namespace underworld {
   Primitive Profession_Library::primitives[] =
     {
-      Primitive_Type::Bool,
-      Primitive_Type::Double,
-      Primitive_Type::Float,
-      Primitive_Type::Int,
-      Primitive_Type::String,
+      {Primitive_Type::Bool, "bool"},
+      {Primitive_Type::Double, "double"},
+      {Primitive_Type::Float, "float"},
+      {Primitive_Type::Int, "int"},
+      {Primitive_Type::String, "string"},
     };
 
   Profession_Library::Profession_Library() {

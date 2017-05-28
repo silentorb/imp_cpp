@@ -6,7 +6,7 @@
 
 namespace underworld {
 
-  class Block : public virtual Expression {
+  class Block : public virtual Statement {
       Scope scope;
       std::vector<Expression_Owner> expressions;
 

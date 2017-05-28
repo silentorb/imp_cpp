@@ -4,7 +4,7 @@
 
 namespace underworld {
 
-  class Return : public virtual Expression {
+  class Return : public virtual Statement {
   public:
       Type get_type() const override {
         return Type::return_nothing;
@@ -12,7 +12,7 @@ namespace underworld {
   };
 
 
-  class Return_With_Value : public virtual Expression {
+  class Return_With_Value : public virtual Statement {
       Expression_Owner value;
 
   public:
@@ -26,5 +26,6 @@ namespace underworld {
       const Expression &get_value() const {
         return *value;
       }
+
   };
 }

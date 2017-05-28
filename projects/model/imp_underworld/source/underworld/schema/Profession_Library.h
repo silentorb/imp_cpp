@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Profession.h"
 #include "professions.h"
 
 namespace underworld {

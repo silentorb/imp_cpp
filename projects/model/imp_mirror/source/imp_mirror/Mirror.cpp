@@ -53,8 +53,8 @@ namespace imp_mirror {
   }
 
   overworld::Expression_Owner
-  Mirror::reflect_minion(const underworld::Minion_Expression &input_minion_expression, overworld::Scope &scope) {
-    auto &input_minion = input_minion_expression.get_minion();
+  Mirror::reflect_minion(const underworld::Member_Expression &input_minion_expression, overworld::Scope &scope) {
+    auto &input_minion = input_minion_expression.get_member();
     auto output_minion = element_map.find_or_null<overworld::Minion>(&input_minion);
     if (!output_minion)
       throw std::runtime_error("Could not find minion.");
@@ -144,9 +144,9 @@ namespace imp_mirror {
       case underworld::Expression::Type::literal:
         return reflect_literal(*dynamic_cast<const underworld::Literal *>(&input_expression));
 
-      case underworld::Expression::Type::minion:
+      case underworld::Expression::Type::member:
         return reflect_minion(
-          *dynamic_cast<const underworld::Minion_Expression *>(&input_expression), scope);
+          *dynamic_cast<const underworld::Member_Expression *>(&input_expression), scope);
 
       case underworld::Expression::Type::Operator:
         return overworld::Expression_Owner(new overworld::Operator(
@@ -221,7 +221,7 @@ namespace imp_mirror {
   void Mirror::reflect_scope(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
 
     for (auto &input_member : input_scope.get_members()) {
-      if (input_member.second->get_type() == underworld::Member::Type::variable) {
+      if (input_member.second->get_type() == underworld::Member::Type::minion) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
         auto &profession = reflect_profession(input_variable.get_profession());
         auto &output_minion = output_scope.create_minion(input_variable, profession, graph);
@@ -252,11 +252,11 @@ namespace imp_mirror {
   void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {
     reflect_scope(input, output);
 
-    for (auto &entry: input.get_dungeons()) {
-      auto &input_dungeon = *entry.second;
-      auto &output_dungeon = output.create_dungeon(input_dungeon);
-      reflect_dungeon(input_dungeon, output_dungeon);
-    }
+//    for (auto &entry: input.get_dungeons()) {
+//      auto &input_dungeon = *entry.second;
+//      auto &output_dungeon = output.create_dungeon(input_dungeon);
+//      reflect_dungeon(input_dungeon, output_dungeon);
+//    }
 
 //    integrity.verify_no_unknowns();
   }

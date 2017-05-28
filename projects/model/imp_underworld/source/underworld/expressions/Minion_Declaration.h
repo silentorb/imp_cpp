@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Minion_Declaration : public virtual Expression {
+  class Minion_Declaration : public virtual Statement {
   protected:
       Minion &minion;
 

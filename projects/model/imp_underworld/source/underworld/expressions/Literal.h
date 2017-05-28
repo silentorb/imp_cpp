@@ -7,7 +7,7 @@
 
 namespace underworld {
 
-  class Literal : public virtual Expression {
+  class Literal : public virtual Common_Expression {
       Source_Point source_point;
 
   public:

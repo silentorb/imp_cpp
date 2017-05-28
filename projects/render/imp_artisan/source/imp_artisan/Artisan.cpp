@@ -50,7 +50,9 @@ namespace imp_artisan {
                        ? newline_b + indent + block.get_end()
                        : block.get_end();
 
-      return indent + block.get_header() + block_start + newline_c
+      auto opening = block.get_header() + block_start;
+      auto opening2 = opening == "" ? "" : opening + newline_c;
+      return indent + opening2
              + render_strokes(strokes, new_indent)
              + block_end;
     }

@@ -13,4 +13,12 @@ namespace imp_summoning {
 
   }
 
+  underworld::Member &Base_Summoner::find_member(const Token &rune, Context &context) {
+    auto name = rune.get_text();
+    auto member = context.find_member_or_null(name);
+    if (!member)
+      throw Syntax_Exception(input.current());
+
+    return *member;
+  }
 }

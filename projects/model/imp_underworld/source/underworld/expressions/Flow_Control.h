@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Conditional_Expression : public virtual Expression {
+  class Conditional_Expression : public virtual Statement {
   protected:
       Expression_Owner condition;
       Expression_Owner expression;

@@ -10,7 +10,7 @@
 #include <underworld/expressions/Literal.h>
 #include <underworld/expressions/Return.h>
 #include <underworld/expressions/Minion_Declaration.h>
-#include <underworld/expressions/Minion_Expression.h>
+#include <underworld/expressions/Member_Expression.h>
 #include <underworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include <overworld/imp_graph/Graph.h>
@@ -34,7 +34,7 @@ namespace imp_mirror {
                                                      overworld::Scope &scope);
       void reflect_scope(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
-      overworld::Expression_Owner reflect_minion(const underworld::Minion_Expression &input_minion_expression,
+      overworld::Expression_Owner reflect_minion(const underworld::Member_Expression &input_minion_expression,
                                                  overworld::Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);

@@ -7,7 +7,7 @@
 
 namespace underworld {
 
-  class Function_Call : public virtual Expression {
+  class Function_Call : public virtual Common_Expression {
       Function &function;
       std::vector<Expression_Owner> arguments;
       Source_Point source;

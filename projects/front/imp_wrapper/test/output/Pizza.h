@@ -3,7 +3,6 @@
 #include <string>
 
 class Pizza {
-
     int size;
 
 public:

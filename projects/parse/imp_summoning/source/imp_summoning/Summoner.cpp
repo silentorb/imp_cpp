@@ -33,7 +33,7 @@ namespace imp_summoning {
 
   void Summoner::process_minion(const std::string &name, Context &context) {
     auto &profession = process_optional_profession(context);
-    context.get_dungeon().create_minion(name, profession, input.get_source_point());
+    context.get_scope().create_minion(name, profession, input.get_source_point());
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
@@ -79,7 +79,7 @@ namespace imp_summoning {
 
   void Summoner::process_function(const std::string &name, Context &context) {
     auto &profession = process_optional_profession(context);
-    auto &function = context.get_dungeon().create_function(name, profession, input.get_source_point());
+    auto &function = context.get_scope().create_function(name, profession, input.get_source_point());
     process_function_parameters(context, function);
 //    input.current().get_text();
 //    input.next();
@@ -91,9 +91,10 @@ namespace imp_summoning {
   }
 
   void Summoner::process_dungeon(const std::string &name, Context &context) {
-    auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
-    Child_Context new_context(context, dungeon);
-
+    auto dungeon = new Dungeon(name);
+//    auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
+    Child_Context new_context(context, *dungeon);
+    context.get_scope().add_profession(*dungeon, input.get_source_point());
     while (input.next().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);
     }

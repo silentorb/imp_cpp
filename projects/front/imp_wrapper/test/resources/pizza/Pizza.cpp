@@ -4,8 +4,9 @@ std::string Pizza::add_topping(int value) {
   size = value;
   auto y = "Hello World";
 
-  if (true)
+  if (true) {
     return y;
+  }
 
   return "";
 }

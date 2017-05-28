@@ -7,20 +7,19 @@
 
 namespace underworld {
 
-  class Minion : public virtual Member {
+  class Minion : public Member {
       const std::string name;
       const Profession &profession;
-      Source_Point source;
 
   public:
-      Minion(const std::string &name, const Profession &profession, const Source_Point &source) :
-        name(name), profession(profession), source(source) {}
+      Minion(const std::string &name, const Profession &profession, const Source_Point &source_point) :
+        name(name), profession(profession), Member(source_point) {}
 
       Type get_type() const override {
-        return Type::variable;
+        return Type::minion;
       }
 
-      const std::string &get_name() const {
+      const std::string get_name() const override {
         return name;
       }
 
@@ -28,9 +27,6 @@ namespace underworld {
         return profession;
       }
 
-      const Source_Point &get_source_point() const {
-        return source;
-      }
   };
 
   using Minion_Owner = std::unique_ptr<Minion>;

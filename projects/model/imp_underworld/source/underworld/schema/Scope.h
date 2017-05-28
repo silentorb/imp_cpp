@@ -4,6 +4,7 @@
 #include <map>
 #include "Minion.h"
 #include "professions.h"
+#include "Profession_Member.h"
 
 namespace underworld {
 
@@ -24,6 +25,7 @@ namespace underworld {
       Function &create_function(const std::string &member_name, const Profession &profession,
                                 const Source_Point &source);
       Minion &create_minion(const std::string &name, const Profession &profession, const Source_Point &source);
+      Profession_Member &add_profession(const Profession &profession, const Source_Point &source);
 
       std::map<std::string, Member_Pointer> &get_members() {
         return members;

@@ -10,7 +10,8 @@ namespace underworld {
     throw std::runtime_error("Local scope already has a member named " + member_name + ".");
   }
 
-  Function &Scope::create_function(const std::string &member_name, const Profession &profession, const Source_Point & source) {
+  Function &
+  Scope::create_function(const std::string &member_name, const Profession &profession, const Source_Point &source) {
     auto function = new Function(member_name, profession, source);
     check_has_member(function->get_name());
 
@@ -18,11 +19,18 @@ namespace underworld {
     return *function;
   }
 
-  Minion &Scope::create_minion(const std::string &name, const Profession &profession, const Source_Point & source) {
+  Minion &Scope::create_minion(const std::string &name, const Profession &profession, const Source_Point &source) {
     check_has_member(name);
 
     auto portal = new Minion(name, profession, source);
     members[name] = unique_ptr<Minion>(portal);
     return *portal;
+  }
+
+  Profession_Member &Scope::add_profession(const Profession &profession, const Source_Point &source) {
+    auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
+    auto &result = *member;
+    members[profession.get_name()] = std::move(member);
+    return result;
   }
 }

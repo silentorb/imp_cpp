@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Assignment : public virtual Expression {
+  class Assignment : public virtual Statement {
       Expression_Owner target;
       Operator_Type operator_type;
       Expression_Owner value;

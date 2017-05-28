@@ -8,7 +8,7 @@ namespace underworld {
       assignment,
   };
 
-  class Operator : public virtual Expression {
+  class Operator : public virtual Common_Expression {
       Operator_Type operator_type;
 
   public:

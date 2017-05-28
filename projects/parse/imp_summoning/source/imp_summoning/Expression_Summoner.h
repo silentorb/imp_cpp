@@ -14,7 +14,7 @@ namespace imp_summoning {
       Expression_Owner process_condition(Context &context);
       Expression_Owner process_statement(Context &context);
       Expression_Owner process_path(Context &context);
-      Expression_Owner process_function_call(Context &context);
+      Expression_Owner process_function_call(underworld::Function  & function, Context &context);
       underworld::Operator_Type process_assignment_operator(Context &context);
       underworld::Operator_Type process_expression_operator(Context &context);
       Expression_Owner process_identifier(Context &context);

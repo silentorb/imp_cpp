@@ -3,7 +3,7 @@
 #include <underworld/expressions/Minion_Declaration.h>
 #include <underworld/expressions/Return.h>
 #include <underworld/expressions/Assignment.h>
-#include <underworld/expressions/Minion_Expression.h>
+#include <underworld/expressions/Member_Expression.h>
 #include <underworld/expressions/Function_Call.h>
 #include "Expression_Summoner.h"
 #include "exceptions.h"
@@ -31,12 +31,22 @@ namespace imp_summoning {
   Expression_Owner Expression_Summoner::process_identifier(Context &context) {
     auto path = process_path(context);
     if (input.peek().is(lexicon.left_paren)) {
-      return process_function_call(context);
+      auto &last = path->get_last();
+      auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
+                                                        last.get_name() + " is not a function.");
+      if (member_expression.get_member().get_type() != Member::Type::function)
+        throw std::runtime_error(last.get_name() + " is not a function.");
+
+      auto &function = cast<Function>(member_expression.get_member());
+      return process_function_call(function, context);
     }
-    else {
+    else if (input.peek().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
       auto value = process_expression(context);
       return Expression_Owner(new Assignment(path, operator_type, value));
+    }
+    else {
+      return path;
     }
   }
 
@@ -56,13 +66,14 @@ namespace imp_summoning {
       return Expression_Owner(new Literal_Bool(false, input.get_source_point()));
     }
     else if (token.is(lexicon.identifier)) {
-      auto path = process_path(context);
-      if (input.peek().is(lexicon.left_paren)) {
-        return process_function_call(context);
-      }
-      else {
-        return path;
-      }
+      return process_identifier(context);
+//      auto path = process_path(context);
+//      if (input.peek().is(lexicon.left_paren)) {
+//        return process_function_call(context);
+//      }
+//      else {
+//        return path;
+//      }
     }
     else {
       throw Syntax_Exception(token);
@@ -86,29 +97,20 @@ namespace imp_summoning {
   }
 
   Expression_Owner Expression_Summoner::process_path(Context &context) {
-    auto member = context.find_member(input.current().get_text());
-    if (!member)
-      throw Syntax_Exception(input.current());
-
-    return Expression_Owner(new Minion_Expression(*dynamic_cast<underworld::Minion *>(member)));
+    auto &member = find_member(input.current(), context);
+    return Expression_Owner(new Member_Expression(*dynamic_cast<underworld::Minion *>(&member)));
   }
 
-  Expression_Owner Expression_Summoner::process_function_call(Context &context) {
-    auto member = context.find_member(input.current().get_text());
-    if (!member)
-      throw Syntax_Exception(input.current());
-
+  Expression_Owner Expression_Summoner::process_function_call(underworld::Function &function, Context &context) {
+//    auto &member = find_member(input.current(), context);
     auto source_point = input.get_source_point();
 
     std::vector<Expression_Owner> arguments;
     while (!input.next().is(lexicon.right_paren)) {
-      auto source_point = input.get_source_point();
       arguments.push_back(process_expression(context));
     }
 
-    return Expression_Owner(new underworld::Function_Call(
-      *dynamic_cast<underworld::Function *>(member), arguments, source_point
-    ));
+    return Expression_Owner(new underworld::Function_Call(function, arguments, source_point));
   }
 
   Expression_Owner Expression_Summoner::process_statement(Context &context) {
@@ -130,15 +132,16 @@ namespace imp_summoning {
       }
     }
     else if (token.is(lexicon.identifier)) {
-      auto path = process_path(context);
-      if (input.peek().is(lexicon.left_paren)) {
-        return process_function_call(context);
-      }
-      else {
-        auto operator_type = process_assignment_operator(context);
-        auto value = process_expression(context);
-        return Expression_Owner(new Assignment(path, operator_type, value));
-      }
+      return process_identifier(context);
+//      auto path = process_path(context);
+//      if (input.peek().is(lexicon.left_paren)) {
+//        return process_function_call(context);
+//      }
+//      else {
+//        auto operator_type = process_assignment_operator(context);
+//        auto value = process_expression(context);
+//        return Expression_Owner(new Assignment(path, operator_type, value));
+//      }
     }
     else {
       throw Syntax_Exception(input.current());
