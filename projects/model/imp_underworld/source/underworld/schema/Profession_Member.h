@@ -3,18 +3,29 @@
 #include <string>
 #include "Member.h"
 #include "Profession.h"
+#include <vector>
 
 namespace underworld {
 
   class Profession_Member : public Member {
-      const Profession &profession;
+      std::vector<std::unique_ptr<Profession>> professions;
 
   public:
-      Profession_Member(const Profession &profession, const Source_Point &source_point) :
-        profession(profession), Member(source_point) {}
+      Profession_Member(std::unique_ptr<Profession> &profession, const Source_Point &source_point) :
+        Member(source_point) {
+        add_profession(profession);
+      }
+
+      void add_profession(std::unique_ptr<Profession> &profession) {
+        professions.push_back(std::move(profession));
+      }
 
       const Profession &get_profession() const {
-        return profession;
+        return *professions[0];
+      }
+
+      Profession &get_profession() {
+        return *professions[0];
       }
 
       Type get_type() const override {
@@ -22,7 +33,7 @@ namespace underworld {
       }
 
       const std::string get_name() const override {
-        return profession.get_name();
+        return professions[0]->get_name();
       }
   };
 }

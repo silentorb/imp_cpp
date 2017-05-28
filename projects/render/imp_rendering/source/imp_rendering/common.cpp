@@ -4,7 +4,7 @@
 #include <overworld/expressions/Return.h>
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/expressions/Literal.h>
-#include <overworld/expressions/Block.h>
+#include <overworld/expressions/Block_Expression.h>
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Minion_Expression.h>
 #include <overworld/expressions/Function_Call.h>
@@ -28,7 +28,7 @@ namespace imp_rendering {
     return result;
   }
 
-  Stroke render_shrinking_block(const std::string &header, const overworld::Block &block) {
+  Stroke render_shrinking_block(const std::string &header, const overworld::Block_Expression &block) {
     Stroke result(new imp_artisan::internal::Standard_Block(header));
     render_statements(result, block.get_expressions(), block.get_scope());
     return result;
@@ -133,8 +133,8 @@ namespace imp_rendering {
     auto header = "if (" + render_expression(input_if.get_condition()) + ")";
     auto &expression = input_if.get_expression();
     if (expression.get_type() == overworld::Expression::Type::block) {
-      auto &block = *dynamic_cast<const overworld::Block *>(&expression);
-      return render_block(header, block);
+      auto &block = *dynamic_cast<const overworld::Block_Expression *>(&expression);
+      return render_block(header, block.get_block());
     }
     else {
       Stroke result(new imp_artisan::internal::Standard_Block(header));

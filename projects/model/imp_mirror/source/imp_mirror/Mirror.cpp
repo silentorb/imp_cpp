@@ -1,5 +1,5 @@
 
-#include <overworld/expressions/Block.h>
+#include <overworld/expressions/Block_Expression.h>
 #include <overworld/expressions/Flow_Control.h>
 #include <overworld/expressions/Literal.h>
 #include <overworld/expressions/Return.h>
@@ -101,17 +101,18 @@ namespace imp_mirror {
     ));
   }
 
-  void Mirror::reflect_block(const underworld::Block &input_block, overworld::Block &output_block) {
+  void Mirror::reflect_block2(const underworld::Block &input_block, overworld::Block_Expression &output_block) {
     for (auto &input_expression : input_block.get_expressions()) {
       auto output_expression = reflect_statement(*input_expression, output_block.get_scope());
       output_block.add_expression(output_expression);
     }
   }
 
-  overworld::Expression_Owner Mirror::reflect_block(const underworld::Block &input_block) {
-    auto output_block = new overworld::Basic_Block(input_block);
+  overworld::Expression_Owner Mirror::reflect_block(const underworld::Block &input_block,
+                                                    overworld::Scope &scope) {
+    auto output_block = new overworld::Block_Expression(input_block.get_scope(), &scope);
     auto result = overworld::Expression_Owner(output_block);
-    reflect_block(input_block, *output_block);
+    reflect_block2(input_block, *output_block);
     return result;
   }
 
@@ -179,7 +180,7 @@ namespace imp_mirror {
         return reflect_assignment(*dynamic_cast<const underworld::Assignment *>(&input_expression), scope);
 
       case underworld::Expression::Type::block:
-        return reflect_block(*dynamic_cast<const underworld::Block *>(&input_expression));
+        return reflect_block(cast<const underworld::Block>(input_expression), scope);
 
       case underworld::Expression::Type::If:
         return reflect_if(*dynamic_cast<const underworld::If *>(&input_expression), scope);
@@ -242,11 +243,33 @@ namespace imp_mirror {
           auto &minion = output_function.get_block().get_scope().get_minion(source_parameter->get_name());
           output_function.add_parameter(minion);
         }
-        reflect_block(input_function.get_block(), output_function.get_block());
+        reflect_block(input_function.get_block(), output_function.get_block().get_scope());
         output_function.finalize(profession_library);
         element_map.add(&input_function, &output_function);
       }
     }
+
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::profession) {
+        auto &input_profession = cast<const underworld::Profession_Member>(*input_member.second)
+          .get_profession();
+
+        if (input_profession.get_type() == underworld::Profession::Type::dungeon) {
+          auto &input_dungeon = cast<underworld::Dungeon>(input_profession);
+          auto output_dungeon = std::unique_ptr<overworld::Dungeon>(
+            new overworld::Dungeon(input_dungeon, output_scope));
+
+          element_map.add(&input_profession, output_dungeon.get());
+          output_scope.add_dungeon(output_dungeon);
+        }
+        else {
+//          auto &profession = reflect_profession(input_profession);
+//          auto &output_minion = output_scope.add_profession(profession);
+//          element_map.add(&input_profession, &output_minion);
+        }
+      }
+    }
+
   }
 
   void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {

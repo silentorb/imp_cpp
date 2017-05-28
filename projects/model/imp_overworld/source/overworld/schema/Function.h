@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <overworld/expressions/Block.h>
+#include <overworld/expressions/Block_Expression.h>
 #include <underworld/schema/Function.h>
 #include "Member.h"
 
@@ -23,8 +23,8 @@ namespace overworld {
 
   class Function : public virtual Member, public virtual Profession_Reference {
       const underworld::Function &source;
-      Function_Block block;
-      Scope &parent_scope;
+      Function_Scope scope;
+      Block block;
       std::vector<Minion *> parameters;
       Profession_Node<Function> node;
       const Profession *return_type;
@@ -33,14 +33,15 @@ namespace overworld {
 
   public:
       Function(const underworld::Function &source, const Profession &return_type, Scope &parent_scope) :
-        source(source), block(source.get_block(), *this), return_type(&return_type),
-        parent_scope(parent_scope), node(*this) {}
+        source(source), return_type(&return_type),
+        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
+        node(*this) {}
 
-      Function_Block &get_block() {
+      Block &get_block() {
         return block;
       }
 
-      const Function_Block &get_block() const {
+      const Block &get_block() const {
         return block;
       }
 

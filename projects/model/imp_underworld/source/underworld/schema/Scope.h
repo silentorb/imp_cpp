@@ -25,7 +25,7 @@ namespace underworld {
       Function &create_function(const std::string &member_name, const Profession &profession,
                                 const Source_Point &source);
       Minion &create_minion(const std::string &name, const Profession &profession, const Source_Point &source);
-      Profession_Member &add_profession(const Profession &profession, const Source_Point &source);
+      Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source);
 
       std::map<std::string, Member_Pointer> &get_members() {
         return members;
@@ -34,5 +34,7 @@ namespace underworld {
       const std::map<std::string, Member_Pointer> &get_members() const {
         return members;
       }
+
+      Function *get_function(const std::string &name) const;
   };
 }

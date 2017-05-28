@@ -13,7 +13,7 @@ namespace overworld {
         return Type::unknown;
       }
 
-      Dungeon *get_parent_dungeon() override {
+      Scope *get_scope() override {
         return nullptr;
       }
 
@@ -49,7 +49,7 @@ namespace overworld {
         return primitive_type;
       }
 
-      Dungeon *get_parent_dungeon() override {
+      Scope *get_scope() override {
         return nullptr;
       }
 
@@ -89,7 +89,7 @@ namespace overworld {
         return Type::reference;
       }
 
-      Dungeon *get_parent_dungeon() override {
+      Scope *get_scope() override {
         return nullptr;
       }
 
@@ -104,7 +104,7 @@ namespace overworld {
         return Type::function;
       }
 
-      Dungeon *get_parent_dungeon() override {
+      Scope *get_scope() override {
         return nullptr;
       }
 

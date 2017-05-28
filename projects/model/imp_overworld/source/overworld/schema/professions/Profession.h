@@ -6,6 +6,8 @@ namespace overworld {
 
   class File;
 
+  class Scope;
+
   class Profession {
   public:
 
@@ -18,7 +20,7 @@ namespace overworld {
       };
 
       virtual Type get_type() const = 0;
-      virtual Dungeon *get_parent_dungeon() = 0;
+      virtual Scope *get_scope() = 0;
       virtual File *get_file() const = 0;
   };
 }

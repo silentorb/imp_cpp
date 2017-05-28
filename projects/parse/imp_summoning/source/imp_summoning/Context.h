@@ -12,6 +12,8 @@ namespace imp_summoning {
       Context(underworld::Scope &scope) :
         scope(scope) {}
 
+      underworld::Member *find_member_internal(const std::string &name) const;
+
   public:
 //      underworld::Dungeon &get_dungeon() const {
 //        return dungeon;
@@ -21,7 +23,7 @@ namespace imp_summoning {
         return scope;
       }
 
-      virtual underworld::Member *find_member_or_null(const std::string &name) const = 0;
+      virtual underworld::Member *find_member(const std::string &name) const = 0;
   };
 
   class Root_Context : public Context {
@@ -29,8 +31,8 @@ namespace imp_summoning {
       Root_Context(underworld::Dungeon &dungeon) :
         Context(dungeon) {}
 
-      underworld::Member *find_member_or_null(const std::string &name) const override {
-        return nullptr;
+      underworld::Member *find_member(const std::string &name) const override {
+        return find_member_internal(name);
       }
   };
 
@@ -44,6 +46,6 @@ namespace imp_summoning {
       Child_Context(const Context &parent, underworld::Dungeon &dungeon) :
         Context(dungeon), parent(parent) {}
 
-      underworld::Member *find_member_or_null(const std::string &name) const override;
+      underworld::Member *find_member(const std::string &name) const override;
   };
 }

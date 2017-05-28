@@ -19,7 +19,7 @@
 #include "Integrity.h"
 
 namespace overworld {
-  class Block;
+  class Block_Expression;
 }
 
 namespace imp_mirror {
@@ -48,8 +48,10 @@ namespace imp_mirror {
 
       overworld::Expression_Owner reflect_if(const underworld::If &input_if,
                                              overworld::Scope &scope);
-      overworld::Expression_Owner reflect_block(const underworld::Block &input_block);
-      void reflect_block(const underworld::Block &input_block, overworld::Block &output_block);
+      overworld::Expression_Owner reflect_block(const underworld::Block &input_block,
+                                                overworld::Scope &scope);
+      void reflect_block2(const underworld::Block &input_block, overworld::Block_Expression &output_block);
+
       overworld::Expression_Owner reflect_expression(const underworld::Expression &input_expression,
                                                      overworld::Scope &scope);
       overworld::Expression_Owner reflect_statement_expression(const underworld::Expression &input_expression,
@@ -60,6 +62,11 @@ namespace imp_mirror {
 
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_function_call(const underworld::Function_Call &function_call, overworld::Scope &scope);
+
+      template<typename Output, typename Input>
+      inline const Output &cast(const Input &expression) {
+        return *dynamic_cast<const Output *>(&expression);
+      }
 
   public:
       Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph) :

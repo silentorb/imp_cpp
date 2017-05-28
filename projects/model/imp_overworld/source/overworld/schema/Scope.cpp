@@ -3,18 +3,19 @@
 #include "Scope.h"
 #include "exceptions.h"
 #include "Function.h"
+#include "Dungeon.h"
 
 using namespace std;
 
 namespace overworld {
 
-  Scope::Scope(const underworld::Scope &source, Scope_Parent &parent) :
+  Scope::Scope(const underworld::Scope &source, Scope *parent) :
     source(source), parent(parent) {
 
   }
 
-  Function_Scope::Function_Scope(const underworld::Scope &source, Scope_Parent &parent, Function &function) :
-    Scope(source, parent), function(&function) {
+  Function_Scope::Function_Scope(const underworld::Scope &source, Scope &parent, Function &function) :
+    Scope(source, &parent), function(&function) {
 
   }
 
@@ -22,8 +23,8 @@ namespace overworld {
 
   }
 
-  Function &
-  Scope::create_function(const underworld::Function &input, const Profession &profession, overworld::Graph &graph) {
+  Function &Scope::create_function(const underworld::Function &input, const Profession &profession,
+                                   overworld::Graph &graph) {
 //    check_has_member(name);
     auto function = new Function(input, profession, *this);
     functions.push_back(unique_ptr<Function>(function));
@@ -49,5 +50,14 @@ namespace overworld {
     }
 
     throw std::runtime_error("Could not find variable named " + name);
+  }
+
+  void Scope::add_profession(std::unique_ptr<const Profession> &profession) {
+    professions.push_back(std::move(profession));
+  }
+
+  void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
+    dungeons.push_back(std::move(dungeon));
+
   }
 }

@@ -39,4 +39,8 @@ namespace underworld {
     throw std::runtime_error("Dungeon " + name + " already has a member named " + member_name + ".");
   }
 
+  Dungeon::~Dungeon() {
+
+  }
+
 }

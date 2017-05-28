@@ -91,10 +91,10 @@ namespace imp_summoning {
   }
 
   void Summoner::process_dungeon(const std::string &name, Context &context) {
-    auto dungeon = new Dungeon(name);
+    auto dungeon = std::unique_ptr<Profession>(new Dungeon(name));
 //    auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
-    Child_Context new_context(context, *dungeon);
-    context.get_scope().add_profession(*dungeon, input.get_source_point());
+    Child_Context new_context(context, *dynamic_cast<Dungeon *>(dungeon.get()));
+    context.get_scope().add_profession(dungeon, input.get_source_point());
     while (input.next().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);
     }

@@ -4,14 +4,18 @@ using namespace std;
 
 namespace overworld {
 
-  Dungeon::Dungeon(const underworld::Dungeon &source, Dungeon *parent) :
-    source(source), Scope(source, *this), parent(parent) {}
+  Dungeon::Dungeon(const underworld::Dungeon &source, Scope &parent) :
+    source(source), Scope(source, &parent) {}
 
-  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
-    auto dungeon = new Dungeon(input_dungeon);
-    dungeons.push_back(unique_ptr<Dungeon>(dungeon));
-    return *dungeon;
-  }
+  Dungeon::Dungeon(const underworld::Dungeon &source) :
+    source(source), Scope(source, nullptr) {}
+
+//  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
+//    auto dungeon = new Dungeon(input_dungeon);
+//    dungeons.push_back(unique_ptr<Dungeon>(dungeon));
+//    return *dungeon;
+//  }
+
 //  void Dungeon::add_dungeon(Dungeon_Owner &dungeon) {
 //    dungeons.push_back(std::move(dungeon));
 //  }

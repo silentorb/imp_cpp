@@ -24,9 +24,10 @@ namespace underworld {
       Float,
       Int,
       String,
+      Void,
   };
 
-  const int Primitive_Type_Count = 5;
+  const int Primitive_Type_Count = 6;
 
   class Primitive : public virtual Profession {
       Primitive_Type primitive_type;

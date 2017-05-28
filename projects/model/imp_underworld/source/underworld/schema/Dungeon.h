@@ -14,6 +14,7 @@ namespace underworld {
 
   public:
       Dungeon(const std::string &name);
+      virtual ~Dungeon();
       Dungeon &get_or_create_dungeon(const std::string &dungeon_name);
       Dungeon &get_dungeon(const std::string &dungeon_name);
 

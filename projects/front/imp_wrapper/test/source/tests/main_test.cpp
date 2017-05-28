@@ -17,6 +17,6 @@ TEST(Main_Test, pizza) {
 TEST(Main_Test, game) {
   compile("game/game.imp");
 
-  compare(string(RESOURCE_PATH) + "Pizza.h", string(OUTPUT_PATH) + "Pizza.h");
-  compare(string(RESOURCE_PATH) + "Pizza.cpp", string(OUTPUT_PATH) + "Pizza.cpp");
+  compare(string(RESOURCE_PATH) + "game/World.h", string(OUTPUT_PATH) + "World.h");
+  compare(string(RESOURCE_PATH) + "game/World.cpp", string(OUTPUT_PATH) + "World.cpp");
 }

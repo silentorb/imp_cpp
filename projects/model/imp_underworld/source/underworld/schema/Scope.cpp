@@ -27,10 +27,22 @@ namespace underworld {
     return *portal;
   }
 
-  Profession_Member &Scope::add_profession(const Profession &profession, const Source_Point &source) {
+  Profession_Member &Scope::add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source) {
+    auto &prof = *profession;
     auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
     auto &result = *member;
-    members[profession.get_name()] = std::move(member);
+    members[prof.get_name()] = std::move(member);
     return result;
+  }
+
+  Function *Scope::get_function(const std::string &name) const {
+    if (members.count(name) == 0)
+      return nullptr;
+
+    auto &member = members.at(name);
+    if(member->get_type() == Member::Type::function)
+      return dynamic_cast<Function*>(member.get());
+
+    return nullptr;
   }
 }

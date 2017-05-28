@@ -48,10 +48,10 @@ namespace overworld {
     void Profession_Explorer::explore(const overworld::Dungeon &dungeon) {
       explore_scope(dungeon);
 
-      for (auto &child: dungeon.get_dungeons()) {
-        action(*child);
-        explore(*child);
-      }
+//      for (auto &child: dungeon.get_dungeons()) {
+//        action(*child);
+//        explore(*child);
+//      }
     }
 
   }

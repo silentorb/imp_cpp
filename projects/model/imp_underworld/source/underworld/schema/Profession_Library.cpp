@@ -8,6 +8,7 @@ namespace underworld {
       {Primitive_Type::Float, "float"},
       {Primitive_Type::Int, "int"},
       {Primitive_Type::String, "string"},
+      {Primitive_Type::Void, "void"},
     };
 
   Profession_Library::Profession_Library() {

@@ -30,8 +30,10 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::render() {
-    for (auto &dungeon : root.get_dungeons()) {
-      render_dungeon(*dungeon);
+    for (auto &profession : root.get_dungeons()) {
+      if (profession->get_type() == overworld::Profession::Type::dungeon) {
+        render_dungeon(*dynamic_cast<const overworld::Dungeon *>(profession.get()));
+      }
     }
   }
 }

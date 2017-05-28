@@ -31,14 +31,33 @@ namespace imp_summoning {
   Expression_Owner Expression_Summoner::process_identifier(Context &context) {
     auto path = process_path(context);
     if (input.peek().is(lexicon.left_paren)) {
+      input.next();
       auto &last = path->get_last();
       auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
                                                         last.get_name() + " is not a function.");
-      if (member_expression.get_member().get_type() != Member::Type::function)
-        throw std::runtime_error(last.get_name() + " is not a function.");
+      auto &member = member_expression.get_member();
+      if (member.get_type() == Member::Type::function) {
+        auto &function = cast<Function>(member);
+        return process_function_call(function, context);
+      }
+      else if (member.get_type() == Member::Type::profession) {
+        auto &profession = cast<Profession_Member>(member).get_profession();
+        if (profession.get_type() == Profession::Type::dungeon) {
+          auto &dungeon = cast<Dungeon>(profession);
+          auto function = dungeon.get_function(dungeon.get_name());
+          if (function) {
+            return process_function_call(*function, context);
+          }
+          else {
+            auto &function = dungeon.create_function(dungeon.get_name(),
+                                                     profession_library.get_primitive(Primitive_Type::Void),
+                                                     input.get_source_point());
+            return process_function_call(function, context);
+          }
+        }
+      }
 
-      auto &function = cast<Function>(member_expression.get_member());
-      return process_function_call(function, context);
+      throw std::runtime_error(last.get_name() + " is not a function.");
     }
     else if (input.peek().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
@@ -98,7 +117,7 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_path(Context &context) {
     auto &member = find_member(input.current(), context);
-    return Expression_Owner(new Member_Expression(*dynamic_cast<underworld::Minion *>(&member)));
+    return Expression_Owner(new Member_Expression(member));
   }
 
   Expression_Owner Expression_Summoner::process_function_call(underworld::Function &function, Context &context) {

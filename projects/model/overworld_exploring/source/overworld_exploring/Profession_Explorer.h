@@ -2,7 +2,7 @@
 
 #include <overworld/schema/Dungeon.h>
 #include <functional>
-#include <overworld/expressions/Block.h>
+#include <overworld/expressions/Block_Expression.h>
 
 namespace overworld {
   namespace exploring {
