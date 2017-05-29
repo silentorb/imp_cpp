@@ -1,17 +1,23 @@
 
 World {
-  creatures
+  creatures: stl.array
+
+  add_creature(creature) {
+    creatures.push_back(creature)
+    creature.world = this
+  }
 }
 
 Creature {
   world
 }
 
-
 Game {
   world
 
-  Game(){
+  Game() {
     world = World()
+    var hero = Creature()
+    world.add_creature(hero)
   }
 }

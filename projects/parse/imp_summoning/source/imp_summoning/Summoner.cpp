@@ -18,11 +18,12 @@ namespace imp_summoning {
     if (&primitive != &profession_library.get_unknown())
       return primitive;
 
-    throw runtime_error("Not implemented.");
+    throw Syntax_Exception(input.current());
   }
 
   const Profession &Summoner::process_optional_profession(Context &context) {
     if (input.peek().is(lexicon.colon)) {
+      input.next();
       input.next();
       return process_profession(context);
     }

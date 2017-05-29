@@ -1,6 +1,7 @@
 #include "Scope.h"
 #include "underworld/exceptions.h"
 #include "Function.h"
+#include "Dungeon.h"
 
 using namespace std;
 
@@ -35,13 +36,20 @@ namespace underworld {
     return result;
   }
 
+  Dungeon &Scope::create_dungeon(const std::string &name, const Source_Point &source) {
+    auto dungeon = new Dungeon(name);
+    auto pointer = unique_ptr<Profession>(dungeon);
+    add_profession(pointer, source);
+    return *dungeon;
+  }
+
   Function *Scope::get_function(const std::string &name) const {
     if (members.count(name) == 0)
       return nullptr;
 
     auto &member = members.at(name);
-    if(member->get_type() == Member::Type::function)
-      return dynamic_cast<Function*>(member.get());
+    if (member->get_type() == Member::Type::function)
+      return dynamic_cast<Function *>(member.get());
 
     return nullptr;
   }

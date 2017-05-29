@@ -28,7 +28,7 @@ namespace overworld {
       std::vector<Minion *> parameters;
       Profession_Node<Function> node;
       const Profession *return_type;
-
+      bool is_static = false;
       bool returns_a_value() const;
 
   public:

@@ -12,6 +12,7 @@ namespace underworld {
       Block block;
       std::vector<Minion *> parameters;
       const Profession &return_type;
+      bool is_static = false;
 
   public:
       Function(const std::string &name, const Profession &return_type, const Source_Point &source) :
