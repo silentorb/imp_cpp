@@ -19,9 +19,11 @@ namespace imp_summoning {
       void process_minion(const std::string &name, Context &context);
       const underworld::Profession &process_optional_profession(Context &context);
       const underworld::Profession &process_profession(Context &context);
+//      underworld::Profession *find_profession(Context &context);
+//      underworld::Profession *find_profession();
 
   public:
-      Summoner(Stream &lexer, Lookup & lookup);
+      Summoner(Stream &lexer, Lookup &lookup);
       void summon(underworld::Dungeon &root);
   };
 }

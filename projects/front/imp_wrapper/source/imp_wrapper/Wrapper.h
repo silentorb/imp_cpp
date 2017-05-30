@@ -22,11 +22,7 @@ namespace imp_wrapper {
       overworld::Graph graph;
 
   public:
-      Wrapper() :
-        underworld_root(""),
-        lookup(underworld_profession_library),
-        overworld_root(underworld_root) {}
-
+      Wrapper();
       void load_file(const std::string &path);
       void mirror();
       void solve();

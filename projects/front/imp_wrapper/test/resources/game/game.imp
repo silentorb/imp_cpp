@@ -1,6 +1,6 @@
 
 World {
-  creatures: stl.array
+  creatures: stl.vector
 
   add_creature(creature) {
     creatures.push_back(creature)

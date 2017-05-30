@@ -11,6 +11,8 @@ namespace underworld {
   class Function;
 
   class Scope {
+      Scope *parent = nullptr;
+
   protected:
       std::map<std::string, Member_Pointer> members;
 
@@ -22,6 +24,8 @@ namespace underworld {
       virtual void throw_already_exists(const std::string &member_name) const;
 
   public:
+      Scope(Scope *parent) : parent(parent) {}
+
       Function &create_function(const std::string &member_name, const Profession &profession,
                                 const Source_Point &source);
       Minion &create_minion(const std::string &name, const Profession &profession, const Source_Point &source);
@@ -38,5 +42,10 @@ namespace underworld {
       }
 
       Function *get_function(const std::string &name) const;
+      Profession_Member *get_profession(const std::string &name) const;
+
+      Scope *get_parent() {
+        return parent;
+      }
   };
 }

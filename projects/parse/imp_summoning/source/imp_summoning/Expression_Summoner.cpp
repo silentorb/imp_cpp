@@ -176,7 +176,7 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_block_or_single_expression(Context &context) {
     if (input.peek().is(lexicon.left_brace)) {
-      auto block = new Block();
+      auto block = new Block(context.get_scope());
       Expression_Owner result(block);
       process_block(*block, context);
       return result;

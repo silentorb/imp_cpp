@@ -3,6 +3,7 @@
 #include "Expression_Summoner.h"
 #include <underworld/schema/Function.h>
 #include <underworld/expressions/Literal.h>
+#include "Profession_Finder.h"
 
 using namespace std;
 using namespace underworld;
@@ -17,6 +18,10 @@ namespace imp_summoning {
     auto &primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (&primitive != &profession_library.get_unknown())
       return primitive;
+
+    auto profession = find_profession(context.get_scope(), lexicon, input);
+    if (profession)
+      return *profession;
 
     throw Syntax_Exception(input.current());
   }
@@ -92,7 +97,7 @@ namespace imp_summoning {
   }
 
   void Summoner::process_dungeon(const std::string &name, Context &context) {
-    auto dungeon = std::unique_ptr<Profession>(new Dungeon(name));
+    auto dungeon = std::unique_ptr<Profession>(new Dungeon(name, &context.get_scope()));
 //    auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
     Child_Context new_context(context, *dynamic_cast<Dungeon *>(dungeon.get()));
     context.get_scope().add_profession(dungeon, input.get_source_point());

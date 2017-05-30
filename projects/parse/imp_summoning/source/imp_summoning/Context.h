@@ -23,6 +23,10 @@ namespace imp_summoning {
         return scope;
       }
 
+      underworld::Scope &get_scope() {
+        return scope;
+      }
+
       virtual underworld::Member *find_member(const std::string &name) const = 0;
   };
 

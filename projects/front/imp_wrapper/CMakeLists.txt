@@ -1,2 +1,9 @@
 create_library(imp_wrapper)
-require(imp_summoning imp_mirror imp_taskmaster imp_overworld solving)
+require(
+  imp_summoning
+  imp_mirror
+  imp_taskmaster
+  imp_overworld
+  solving
+  cpp_stl
+)

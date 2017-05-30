@@ -9,7 +9,7 @@ namespace underworld {
       Dungeon root;
 
   public:
-      Underlord() : root("") {}
+      Underlord() : root("", nullptr) {}
 
       Dungeon &get_root(){
         return root;

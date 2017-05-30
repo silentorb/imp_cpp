@@ -15,8 +15,8 @@ namespace underworld {
       bool is_static = false;
 
   public:
-      Function(const std::string &name, const Profession &return_type, const Source_Point &source) :
-        name(name), return_type(return_type), Member(source) {}
+      Function(const std::string &name, const Profession &return_type, const Source_Point &source, Scope &parent) :
+        name(name), return_type(return_type), Member(source), block(parent) {}
 
       Block &get_block() {
         return block;

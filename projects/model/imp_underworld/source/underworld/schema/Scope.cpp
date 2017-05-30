@@ -13,7 +13,7 @@ namespace underworld {
 
   Function &
   Scope::create_function(const std::string &member_name, const Profession &profession, const Source_Point &source) {
-    auto function = new Function(member_name, profession, source);
+    auto function = new Function(member_name, profession, source, *this);
     check_has_member(function->get_name());
 
     members[function->get_name()] = Function_Owner(function);
@@ -37,7 +37,7 @@ namespace underworld {
   }
 
   Dungeon &Scope::create_dungeon(const std::string &name, const Source_Point &source) {
-    auto dungeon = new Dungeon(name);
+    auto dungeon = new Dungeon(name, this);
     auto pointer = unique_ptr<Profession>(dungeon);
     add_profession(pointer, source);
     return *dungeon;
@@ -50,6 +50,17 @@ namespace underworld {
     auto &member = members.at(name);
     if (member->get_type() == Member::Type::function)
       return dynamic_cast<Function *>(member.get());
+
+    return nullptr;
+  }
+
+  Profession_Member *Scope::get_profession(const std::string &name) const {
+    if (members.count(name) == 0)
+      return nullptr;
+
+    auto &member = members.at(name);
+    if (member->get_type() == Member::Type::profession)
+      return dynamic_cast<Profession_Member *>(member.get());
 
     return nullptr;
   }

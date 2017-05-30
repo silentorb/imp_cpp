@@ -11,6 +11,8 @@ namespace underworld {
       std::vector<Expression_Owner> expressions;
 
   public:
+      Block(Scope &parent) : scope(&parent) {}
+
       void add_expression(Expression_Owner expression) {
         expressions.push_back(std::move(expression));
       }

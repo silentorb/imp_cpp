@@ -13,7 +13,7 @@ namespace underworld {
       void throw_already_exists(const std::string &member_name) const override;
 
   public:
-      Dungeon(const std::string &name);
+      Dungeon(const std::string &name, Scope *parent);
       virtual ~Dungeon();
       Dungeon &get_or_create_dungeon(const std::string &dungeon_name);
       Dungeon &get_dungeon(const std::string &dungeon_name);
