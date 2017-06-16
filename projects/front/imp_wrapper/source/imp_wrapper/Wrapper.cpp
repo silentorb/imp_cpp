@@ -13,7 +13,7 @@ namespace imp_wrapper {
     underworld_root("", nullptr),
     lookup(underworld_profession_library),
     overworld_root(underworld_root) {
-    auto standard_library = new cpp_stl::Standard_Library(underworld_root);
+    auto standard_library = new cpp_stl::Standard_Library(underworld_root, underworld_profession_library);
     std::unique_ptr<underworld::Profession> library_pointer(standard_library);
     underworld_root.add_profession(library_pointer, {standard_library->get_source_file(), 0, 0});
   }

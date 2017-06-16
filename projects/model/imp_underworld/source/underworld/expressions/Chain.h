@@ -6,15 +6,24 @@
 namespace underworld {
 
   class Chain : public virtual Expression {
-      std::vector<Expression_Owner> expressions;
+      Expression_Owner first;
+      Expression_Owner second;
 
   public:
+      Chain(Expression_Owner &first, Expression_Owner &second) :
+        first(std::move(first)), second(std::move(second)) {}
+
       Type get_type() const override {
         return Type::chain;
       }
 
+
       Expression &get_last() override {
-        return *expressions[expressions.size() - 1];
+        return *second;
+      }
+
+      const std::string get_name() const override {
+        return "chain";
       }
   };
 }

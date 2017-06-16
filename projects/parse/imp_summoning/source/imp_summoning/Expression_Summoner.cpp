@@ -5,6 +5,7 @@
 #include <underworld/expressions/Assignment.h>
 #include <underworld/expressions/Member_Expression.h>
 #include <underworld/expressions/Function_Call.h>
+#include <underworld/expressions/Chain.h>
 #include "Expression_Summoner.h"
 #include "exceptions.h"
 
@@ -117,7 +118,19 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_path(Context &context) {
     auto &member = find_member(input.current(), context);
-    return Expression_Owner(new Member_Expression(member));
+    auto expression = Expression_Owner(new Member_Expression(member));
+    if (input.peek().is(lexicon.dot)) {
+//      auto chain = new Chain();
+//      auto chain_owner = Expression_Owner(chain);
+//      chain->add_expression(expression);
+      input.next();
+      input.next();
+      auto second = process_path(context);
+      return Expression_Owner(new Chain(expression, second));
+    }
+    else {
+      return expression;
+    }
   }
 
   Expression_Owner Expression_Summoner::process_function_call(underworld::Function &function, Context &context) {
