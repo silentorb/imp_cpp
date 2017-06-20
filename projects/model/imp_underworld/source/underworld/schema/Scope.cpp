@@ -64,4 +64,8 @@ namespace underworld {
 
     return nullptr;
   }
+
+  Dungeon &Scope::get_dungeon() {
+    return parent->get_dungeon();
+  }
 }

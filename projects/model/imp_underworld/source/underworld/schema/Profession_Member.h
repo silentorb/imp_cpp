@@ -20,7 +20,7 @@ namespace underworld {
         professions.push_back(std::move(profession));
       }
 
-      const Profession &get_profession() const {
+      const Profession &get_profession() const override {
         return *professions[0];
       }
 

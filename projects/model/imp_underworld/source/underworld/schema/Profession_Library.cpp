@@ -1,4 +1,6 @@
 #include "Profession_Library.h"
+#include "Minion.h"
+#include "Dungeon.h"
 
 namespace underworld {
   Primitive Profession_Library::primitives[] =

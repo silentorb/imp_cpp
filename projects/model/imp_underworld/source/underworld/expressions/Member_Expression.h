@@ -26,5 +26,28 @@ namespace underworld {
       const std::string get_name() const override {
         return member.get_name();
       }
+
+      const Profession &get_profession() const override {
+        return member.get_profession();
+      }
+  };
+
+  class Unresolved_Member_Expression : public virtual Common_Expression {
+      std::string member_name;
+
+  public:
+      Unresolved_Member_Expression(const std::string &member_name) : member_name(member_name) {}
+
+      virtual Type get_type() const override {
+        return Type::unresolved_member;
+      }
+
+      const std::string &get_member_name() const {
+        return member_name;
+      }
+
+      const Profession &get_profession() const override {
+        return Profession_Library::get_primitive(Primitive_Type::Void);
+      }
   };
 }

@@ -40,7 +40,7 @@ namespace underworld {
         return parameters;
       }
 
-      const Profession &get_return_type() const {
+      const Profession &get_profession() const override {
         return return_type;
       }
   };

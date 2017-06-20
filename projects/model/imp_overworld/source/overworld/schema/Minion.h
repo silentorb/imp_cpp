@@ -9,6 +9,8 @@
 
 namespace overworld {
 
+  class Dungeon;
+
   class Minion : public virtual Member, public virtual Profession_Reference {
       const underworld::Minion &source;
       const Profession *profession;
@@ -22,19 +24,11 @@ namespace overworld {
         return Type::variable;
       }
 
-      const std::string get_name() override {
+      const std::string get_name() const override{
         return source.get_name();
       }
 
-      const std::string get_name() const {
-        return source.get_name();
-      }
-
-      const Profession &get_profession() const {
-        return *profession;
-      }
-
-      const Profession &get_profession() override {
+      const Profession &get_profession() const override{
         return *profession;
       }
 

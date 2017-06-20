@@ -20,6 +20,7 @@ namespace overworld {
           Operator, // Infix
           return_nothing,
           return_with_value,
+          self,
           variable_declaration,
           variable_declaration_and_assignment
       };

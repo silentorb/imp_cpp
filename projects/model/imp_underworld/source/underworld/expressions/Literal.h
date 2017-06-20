@@ -19,7 +19,7 @@ namespace underworld {
 
       virtual Primitive_Type get_primitive_type() const = 0;
 
-      Profession &get_profession() const {
+      virtual const Profession &get_profession() const override {
         return Profession_Library::get_primitive(get_primitive_type());
       }
 

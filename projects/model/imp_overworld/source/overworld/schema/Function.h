@@ -49,7 +49,7 @@ namespace overworld {
         return Type::function;
       }
 
-      const std::string get_name() const {
+      const std::string get_name() const override{
         return source.get_name();
       }
 
@@ -69,11 +69,7 @@ namespace overworld {
         return node;
       }
 
-      const Profession &get_profession() override {
-        return *return_type;
-      }
-
-      const Profession &get_profession() const {
+      const Profession &get_profession() const override{
         return *return_type;
       }
 
@@ -83,10 +79,6 @@ namespace overworld {
 
       const underworld::Source_Point &get_source_point() override {
         return source.get_source_point();
-      }
-
-      const std::string get_name() override {
-        return source.get_name();
       }
 
       void finalize(overworld::Profession_Library &profession_library);

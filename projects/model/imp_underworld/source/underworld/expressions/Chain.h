@@ -17,13 +17,16 @@ namespace underworld {
         return Type::chain;
       }
 
-
       Expression &get_last() override {
         return *second;
       }
 
       const std::string get_name() const override {
         return "chain";
+      }
+
+      const Profession &get_profession() const override {
+        return second->get_profession();
       }
   };
 }

@@ -8,6 +8,7 @@ namespace underworld {
 
   class Dungeon : public Scope, public virtual Profession {
       const std::string name;
+      bool _is_complete = true;
 
   protected:
       void throw_already_exists(const std::string &member_name) const override;
@@ -15,16 +16,14 @@ namespace underworld {
   public:
       Dungeon(const std::string &name, Scope *parent);
       virtual ~Dungeon();
-      Dungeon &get_or_create_dungeon(const std::string &dungeon_name);
-      Dungeon &get_dungeon(const std::string &dungeon_name);
 
-//      Dungeons &get_dungeons() {
-//        return dungeons;
-//      }
-//
-//      const Dungeons &get_dungeons() const{
-//        return dungeons;
-//      }
+      bool is_complete() const {
+        return _is_complete;
+      }
+
+      void set_is_complete(bool value) {
+        _is_complete = value;
+      }
 
       const std::string get_name() const {
         return name;
@@ -33,5 +32,11 @@ namespace underworld {
       Type get_type() const override {
         return Type::dungeon;
       }
+
+      Dungeon &get_dungeon() override{
+        return *this;
+      }
   };
+
+  using Dungeon_Pointer = std:: unique_ptr<Dungeon>;
 }

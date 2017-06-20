@@ -41,7 +41,7 @@ namespace overworld {
         return &node;
       }
 
-      const Profession &get_profession() override {
+      const Profession &get_profession() const override {
         return Literal::get_profession();
       }
 
@@ -64,7 +64,7 @@ namespace overworld {
         return Primitive_Type::Int;
       }
 
-      const std::string get_name() override {
+      const std::string get_name() const override {
         return "int";
       }
   };
@@ -78,7 +78,7 @@ namespace overworld {
         return Primitive_Type::String;
       }
 
-      const std::string get_name() override {
+      const std::string get_name() const override {
         return "string";
       }
   };
@@ -92,7 +92,7 @@ namespace overworld {
         return Primitive_Type::Bool;
       }
 
-      const std::string get_name() override {
+      const std::string get_name() const override {
         return "bool";
       }
   };

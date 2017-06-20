@@ -47,5 +47,19 @@ namespace underworld {
       Scope *get_parent() {
         return parent;
       }
+
+      virtual Dungeon& get_dungeon();
+
+      Member *get_member(const std::string &member_name) {
+        return members.count(member_name) != 0
+               ? members[member_name].get()
+               : nullptr;
+      }
+
+//      const Member *get_member(const std::string &member_name) const {
+//        return members.count(member_name) != 0
+//               ? nullptr
+//               : members[member_name].get();
+//      }
   };
 }

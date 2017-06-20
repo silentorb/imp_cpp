@@ -12,27 +12,19 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Profession {
-      const underworld::Dungeon &source;
+  class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference {
       File *header_file = nullptr;
-//      Dungeon *parent = nullptr;
+      Profession_Node<Dungeon> node;
 
   public:
-      Dungeon(const underworld::Dungeon &source, Scope &parent);
-      Dungeon(const underworld::Dungeon &source);
-//      Dungeon &create_dungeon(underworld::Dungeon &input_dungeon);
+      Dungeon(const underworld::Scope *source, Scope *parent) :
+        Scope(source, parent), header_file(header_file), node(*this) {}
 
-//      Dungeons &get_dungeons() {
-//        return dungeons;
-//      }
-//
-//      const Dungeons &get_dungeons() const {
-//        return dungeons;
-//      }
+      virtual ~Dungeon() {
 
-      const std::string get_name() const {
-        return source.get_name();
       }
+
+      virtual const std::string get_name() const = 0;
 
       void set_file(File *value) {
         header_file = value;
@@ -41,10 +33,6 @@ namespace overworld {
       File *get_file() const {
         return header_file;
       }
-
-//      Dungeon *get_parent() {
-//        return parent;
-//      }
 
       Type get_type() const override {
         return Type::dungeon;
@@ -57,5 +45,56 @@ namespace overworld {
       const Scope *get_scope() const {
         return parent;
       }
+
+      Node &get_node() {
+        return node;
+      }
+
+      void set_profession(const Profession &value) override {
+
+      }
+
+      const Profession &get_profession() const override {
+        return *this;
+      }
+
+      Dungeon &get_dungeon() override{
+        return *this;
+      }
+
+      const underworld::Source_Point &get_source_point() override {
+        throw std::runtime_error("Not supported.");
+      }
   };
+
+  class Derived_Dungeon : public Dungeon {
+      const underworld::Dungeon &source;
+
+  public:
+      Derived_Dungeon(const underworld::Dungeon &source, Scope &parent) :
+        source(source), Dungeon(&source, &parent) {}
+
+      Derived_Dungeon(const underworld::Dungeon &source) :
+        source(source), Dungeon(&source, parent) {}
+
+      virtual ~Derived_Dungeon() {
+
+      }
+
+      const std::string get_name() const override {
+        return source.get_name();
+      }
+  };
+
+  class Anonymous_Dungeon : public Dungeon {
+  public:
+      Anonymous_Dungeon() :
+        Dungeon(nullptr, nullptr) {}
+
+      const std::string get_name() const override {
+        return "Anonymous Dungeon";
+      }
+  };
+
+  using Dungeon_Pointer = std::unique_ptr<Dungeon>;
 }

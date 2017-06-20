@@ -15,7 +15,7 @@ namespace overworld {
 //  class Scope_Parent;
 
   class Scope {
-      const underworld::Scope &source;
+      const underworld::Scope *source;
 
   protected:
       Scope *parent;
@@ -25,8 +25,8 @@ namespace overworld {
       std::vector<std::unique_ptr<Dungeon>> dungeons;
 
   public:
-      Scope(const underworld::Scope &source, Scope *parent);
-      ~Scope();
+      Scope(const underworld::Scope *source, Scope *parent);
+      virtual ~Scope();
 
       Function &create_function(const underworld::Function &input, const Profession &profession,
                                 overworld::Graph &graph);
@@ -43,6 +43,7 @@ namespace overworld {
       }
 
       Minion &get_minion(const std::string &name);
+      virtual Dungeon& get_dungeon();
 
       Scope *get_parent() {
         return parent;

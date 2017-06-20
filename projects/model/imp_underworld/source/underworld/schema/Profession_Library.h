@@ -17,7 +17,6 @@ namespace underworld {
       }
 
       static Primitive &get_primitive(Primitive_Type type);
-
   };
 
 

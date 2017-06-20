@@ -9,13 +9,13 @@ using namespace std;
 
 namespace overworld {
 
-  Scope::Scope(const underworld::Scope &source, Scope *parent) :
+  Scope::Scope(const underworld::Scope *source, Scope *parent) :
     source(source), parent(parent) {
 
   }
 
   Function_Scope::Function_Scope(const underworld::Scope &source, Scope &parent, Function &function) :
-    Scope(source, &parent), function(&function) {
+    Scope(&source, &parent), function(&function) {
 
   }
 
@@ -58,6 +58,9 @@ namespace overworld {
 
   void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
     dungeons.push_back(std::move(dungeon));
+  }
 
+  Dungeon &Scope::get_dungeon() {
+    return parent->get_dungeon();
   }
 }

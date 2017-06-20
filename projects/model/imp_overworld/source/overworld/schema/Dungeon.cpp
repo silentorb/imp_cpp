@@ -4,12 +4,6 @@ using namespace std;
 
 namespace overworld {
 
-  Dungeon::Dungeon(const underworld::Dungeon &source, Scope &parent) :
-    source(source), Scope(source, &parent) {}
-
-  Dungeon::Dungeon(const underworld::Dungeon &source) :
-    source(source), Scope(source, nullptr) {}
-
 //  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
 //    auto dungeon = new Dungeon(input_dungeon);
 //    dungeons.push_back(unique_ptr<Dungeon>(dungeon));

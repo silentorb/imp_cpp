@@ -14,6 +14,15 @@ namespace imp_summoning {
 
   };
 
+  class Invalid_Token_Exception : public Token_Exception {
+      const runic_imp::Token token;
+
+  public:
+      Invalid_Token_Exception(const runic_imp::Token &token, const std::string &__arg) :
+        Token_Exception(token, __arg  + " at line " + token.get_start().get_string()) {}
+
+  };
+
   class Syntax_Exception : public Token_Exception {
       inline static const std::string format_message(const runic_imp::Token &token) {
         auto info = token.get_info_string();

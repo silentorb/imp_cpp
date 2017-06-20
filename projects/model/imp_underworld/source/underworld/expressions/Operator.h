@@ -21,5 +21,10 @@ namespace underworld {
       const Operator_Type get_operator_type() const {
         return operator_type;
       }
+
+      const Profession &get_profession() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
   };
 }

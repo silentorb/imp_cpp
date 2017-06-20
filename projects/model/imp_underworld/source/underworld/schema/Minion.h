@@ -23,7 +23,7 @@ namespace underworld {
         return name;
       }
 
-      const Profession &get_profession() const {
+      const Profession &get_profession() const override {
         return profession;
       }
 

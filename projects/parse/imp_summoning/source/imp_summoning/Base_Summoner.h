@@ -21,7 +21,7 @@ namespace imp_summoning {
       inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,
                      const std::string &message) {
         if (expression.get_type() != type)
-          throw std::runtime_error(message);
+          throw imp_summoning::Invalid_Token_Exception(input.current(), message);
 
         return *dynamic_cast<T *>(&expression);
       }

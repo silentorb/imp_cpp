@@ -9,6 +9,7 @@
 #include <overworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include <overworld/expressions/Assignment.h>
+#include <overworld/expressions/Self.h>
 #include "Mirror.h"
 
 namespace imp_mirror {
@@ -119,9 +120,9 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Function_Call &function_call,
                                                             overworld::Scope &scope) {
 
-    auto overworld_function = element_map.find_or_null<overworld::Function>(&function_call.get_function());
-    if (!overworld_function)
-      throw std::runtime_error("Could not find function.");
+//    auto overworld_function = element_map.find_or_null<overworld::Function>(&function_call.get_function());
+//    if (!overworld_function)
+//      throw std::runtime_error("Could not find function.");
 
     auto &source_arguments = function_call.get_arguments();
     std::vector<overworld::Expression_Owner> arguments;
@@ -130,6 +131,8 @@ namespace imp_mirror {
       arguments.push_back(reflect_expression(*source_argument, scope));
     }
 
+    // Note: need to convert direct function references here to more open-ended expressions like I just did
+    // with underworld.
     auto &parameters = overworld_function->get_parameters();
     for (int i = 0; i < arguments.size(); ++i) {
       graph.connect(parameters[i]->get_node(), *arguments[i]->get_node());
@@ -153,6 +156,9 @@ namespace imp_mirror {
         return overworld::Expression_Owner(new overworld::Operator(
           reflect_operator(*dynamic_cast<const underworld::Operator *>(&input_expression))
         ));
+
+      case underworld::Expression::Type::self:
+        return overworld::Expression_Owner(new overworld::Self(scope.get_dungeon()));
 
       default:
         return reflect_statement_expression(input_expression, scope);
@@ -234,7 +240,7 @@ namespace imp_mirror {
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         auto &input_function = *(dynamic_cast<const underworld::Function *>(input_member.second.get()));
-        auto &profession = reflect_profession(input_function.get_return_type());
+        auto &profession = reflect_profession(input_function.get_profession());
         auto &output_function = output_scope.create_function(input_function, profession, graph);
 
         reflect_scope(input_function.get_block().get_scope(), output_function.get_block().get_scope());
@@ -257,7 +263,7 @@ namespace imp_mirror {
         if (input_profession.get_type() == underworld::Profession::Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(input_profession);
           auto output_dungeon = std::unique_ptr<overworld::Dungeon>(
-            new overworld::Dungeon(input_dungeon, output_scope));
+            new overworld::Derived_Dungeon(input_dungeon, output_scope));
 
           element_map.add(&input_profession, output_dungeon.get());
           output_scope.add_dungeon(output_dungeon);

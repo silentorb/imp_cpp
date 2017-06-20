@@ -36,7 +36,7 @@ namespace overworld {
 
   public:
       Block_Expression(const underworld::Scope &source, Scope *parent) :
-        Scope(source, parent), block(*this) {}
+        Scope(&source, parent), block(*this) {}
 
       void add_expression(Expression_Owner &expression) {
         block.add_expression(expression);
