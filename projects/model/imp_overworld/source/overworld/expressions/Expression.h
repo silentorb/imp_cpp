@@ -30,9 +30,24 @@ namespace overworld {
 //      virtual bool has_node() const {
 //        return false;
 //      }
+      virtual Expression &get_last() = 0;
 
       virtual Node *get_node() {
         throw std::runtime_error("Not implemented.");
+      }
+  };
+
+  class Common_Expression : public virtual Expression {
+  public:
+      Expression &get_last() override {
+        return *this;
+      }
+  };
+
+  class Statement : public virtual Expression {
+  public:
+      Expression &get_last() override {
+        throw std::runtime_error("Not supported");
       }
   };
 

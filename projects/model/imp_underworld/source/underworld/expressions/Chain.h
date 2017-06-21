@@ -21,6 +21,10 @@ namespace underworld {
         return *second;
       }
 
+      const Expression &get_last() const override {
+        return *second;
+      }
+
       const std::string get_name() const override {
         return "chain";
       }

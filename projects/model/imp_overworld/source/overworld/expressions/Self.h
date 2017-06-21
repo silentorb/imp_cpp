@@ -6,7 +6,7 @@
 
 namespace overworld {
 
-  class Self : public virtual Expression {
+  class Self : public Common_Expression {
       Dungeon &dungeon;
 
   public:

@@ -4,7 +4,7 @@
 
 namespace overworld {
 
-  class Return : public virtual Expression {
+  class Return : public Statement{
   public:
       Type get_type() const override {
         return Type::return_nothing;
@@ -12,7 +12,7 @@ namespace overworld {
   };
 
 
-  class Return_With_Value : public virtual Expression {
+  class Return_With_Value : public Statement {
       Expression_Owner value;
 
   public:

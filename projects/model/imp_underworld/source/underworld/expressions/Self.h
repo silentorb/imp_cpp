@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Self : public virtual Expression {
+  class Self : public Common_Expression {
       Dungeon &dungeon;
 
   public:
@@ -13,10 +13,6 @@ namespace underworld {
 
       Type get_type() const override {
         return Type::self;
-      }
-
-      Expression &get_last() override {
-        return *this;
       }
 
       const std::string get_name() const override {

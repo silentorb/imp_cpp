@@ -30,6 +30,10 @@ namespace underworld {
         return arguments;
       }
 
+      const Expression & get_expression()const {
+        return *expression;
+      }
+
       const Profession &get_profession() const override {
         return expression->get_profession();
       }

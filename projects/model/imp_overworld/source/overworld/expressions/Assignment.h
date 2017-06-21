@@ -5,7 +5,7 @@
 
 namespace overworld {
 
-  class Assignment : public virtual Expression {
+  class Assignment : public Statement {
       Expression_Owner target;
       Operator_Type operator_type;
       Expression_Owner value;

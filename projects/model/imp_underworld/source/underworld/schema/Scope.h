@@ -56,10 +56,10 @@ namespace underworld {
                : nullptr;
       }
 
-//      const Member *get_member(const std::string &member_name) const {
-//        return members.count(member_name) != 0
-//               ? nullptr
-//               : members[member_name].get();
-//      }
+      const Member *get_member(const std::string &member_name) const {
+        return members.count(member_name) != 0
+               ? nullptr
+               : members.at(member_name).get();
+      }
   };
 }

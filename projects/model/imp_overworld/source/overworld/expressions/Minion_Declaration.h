@@ -5,7 +5,7 @@
 
 namespace overworld {
 
-  class Minion_Declaration : public virtual Expression {
+  class Minion_Declaration : public Common_Expression {
   protected:
       Minion &minion;
 

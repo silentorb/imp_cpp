@@ -28,6 +28,7 @@ namespace underworld {
 
       virtual Type get_type() const = 0;
       virtual Expression &get_last() = 0;
+      virtual const Expression &get_last() const = 0;
       virtual const std::string get_name() const = 0;
 
       virtual const Profession &get_profession() const = 0;
@@ -39,6 +40,10 @@ namespace underworld {
         return *this;
       }
 
+      const Expression &get_last() const override {
+        return *this;
+      }
+
       const std::string get_name() const override {
         return "Expression";
       }
@@ -47,6 +52,10 @@ namespace underworld {
   class Statement : public virtual Expression {
   public:
       Expression &get_last() override {
+        throw std::runtime_error("Not supported");
+      }
+
+      const Expression &get_last() const override {
         throw std::runtime_error("Not supported");
       }
 

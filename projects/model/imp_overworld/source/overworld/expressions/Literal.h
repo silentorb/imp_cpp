@@ -7,7 +7,7 @@
 
 namespace overworld {
 
-  class Literal : public Expression {
+  class Literal : public Common_Expression {
 
   public:
       Type get_type() const override {

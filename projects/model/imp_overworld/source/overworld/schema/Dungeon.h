@@ -65,6 +65,8 @@ namespace overworld {
       const underworld::Source_Point &get_source_point() override {
         throw std::runtime_error("Not supported.");
       }
+
+      Function & get_constructor();
   };
 
   class Derived_Dungeon : public Dungeon {

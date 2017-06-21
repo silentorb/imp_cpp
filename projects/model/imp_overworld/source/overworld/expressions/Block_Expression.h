@@ -53,6 +53,11 @@ namespace overworld {
       const Block &get_block() const {
         return block;
       }
+
+       Block &get_block()  {
+        return block;
+      }
+
       Scope &get_scope() {
         return block.get_scope();
       }
@@ -60,6 +65,11 @@ namespace overworld {
       const Scope &get_scope() const {
         return block.get_scope();
       }
+
+      Expression &get_last() override {
+        throw std::runtime_error("Not supported");
+      }
+
 //      Scope_Parent_Type get_scope_parent_type() const override {
 //        return Scope_Parent_Type::block;
 //      }

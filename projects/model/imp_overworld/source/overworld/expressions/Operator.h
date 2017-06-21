@@ -7,7 +7,7 @@ namespace overworld {
       assignment,
   };
 
-  class Operator : public virtual Expression {
+  class Operator : public Common_Expression {
       Operator_Type operator_type;
 
   public:
