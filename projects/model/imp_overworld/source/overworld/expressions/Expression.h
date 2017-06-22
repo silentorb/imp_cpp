@@ -12,6 +12,7 @@ namespace overworld {
       enum class Type {
           assignment,
           block,
+          chain,
           Else,
           function_call,
           If,

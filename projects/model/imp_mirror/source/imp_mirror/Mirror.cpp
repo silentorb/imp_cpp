@@ -10,6 +10,7 @@
 #include <underworld/expressions/Assignment.h>
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Self.h>
+#include <overworld/expressions/Chain.h>
 #include "Mirror.h"
 
 namespace imp_mirror {
@@ -117,54 +118,56 @@ namespace imp_mirror {
     return result;
   }
 
-//  const underworld::Function &get_function_from_member(const underworld::Member &member) {
+  overworld::Function &Mirror::get_function(overworld::Expression &expression) {
+    throw std::runtime_error("Expression is not a function.");
+//    if (expression.get_type() == overworld::Expression::Type::member) {
+//      auto &member_expression = *dynamic_cast<const underworld::Member_Expression *>(&expression);
+//      auto &member = member_expression.get_member();
+//      if (member.get_type() == underworld::Member::Type::function) {
+//        auto &underworld_function = *dynamic_cast<const underworld::Function *>(&member);
+//        auto overworld_function = element_map.find_or_null<overworld::Function>(&underworld_function);
+//        if (!overworld_function)
+//          throw std::runtime_error("Could not find overworld function.");
 //
-//  }
-
-  overworld::Function &
-  Mirror::get_function(const underworld::Function_Call &function_call, overworld::Scope &scope) {
-    auto &expression = function_call.get_expression().get_last();
-    if (expression.get_type() == underworld::Expression::Type::member) {
-      auto &member_expression = *dynamic_cast<const underworld::Member_Expression *>(&expression);
-      auto &member = member_expression.get_member();
-      if (member.get_type() == underworld::Member::Type::function) {
-        auto &underworld_function = *dynamic_cast<const underworld::Function *>(&member);
-//        auto &underworld_function = get_function_from_member(member);
-        auto overworld_function = element_map.find_or_null<overworld::Function>(&underworld_function);
-        if (!overworld_function)
-          throw std::runtime_error("Could not find overworld function.");
-
-        return *overworld_function;
-      }
-      else if (member.get_type() == underworld::Member::Type::profession) {
-        auto &profession = member.get_profession();
-        auto &underworld_dungeon = *dynamic_cast<const underworld::Dungeon *>(&profession);
-        auto dungeon = element_map.find_or_null<overworld::Dungeon>(&underworld_dungeon);
-        if (!dungeon)
-          throw std::runtime_error("Could not find overworld dungeon.");
-
-        return dungeon->get_constructor();
-//        if (!constructor)
-//          throw std::runtime_error("Could not find constructor.");
+//        return *overworld_function;
+//      }
+//      else if (member.get_type() == underworld::Member::Type::profession) {
+//        auto &profession = member.get_profession();
+//        auto &underworld_dungeon = *dynamic_cast<const underworld::Dungeon *>(&profession);
+//        auto dungeon = element_map.find_or_null<overworld::Dungeon>(&underworld_dungeon);
+//        if (!dungeon)
+//          throw std::runtime_error("Could not find overworld dungeon.");
 //
-//        return *constructor;
-      }
-      else {
-        throw std::runtime_error("Member is not a function.");
-      }
-
-    }
-    else if (expression.get_type() == underworld::Expression::Type::member) {
-      throw std::runtime_error("Not implemented.");
-    }
-    else {
-      throw std::runtime_error("Expression is not a function.");
-    }
+//        return dungeon->get_constructor();
+////        if (!constructor)
+////          throw std::runtime_error("Could not find constructor.");
+////
+////        return *constructor;
+//      }
+//      if (expression.get_type() == underworld::Expression::Type::unresolved_member) {
+//        auto &member_expression = *dynamic_cast<const underworld::Unresolved_Member_Expression *>(&expression);
+//        auto name = member_expression.get_member_name();
+//
+//
+//      }
+//      else {
+//        throw std::runtime_error("Member is not a function.");
+//      }
+//
+//    }
+//    else if (expression.get_type() == underworld::Expression::Type::member) {
+//      throw std::runtime_error("Not implemented.");
+//    }
+//    else {
+//      throw std::runtime_error("Expression is not a function.");
+//    }
   }
 
   overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Function_Call &function_call,
                                                             overworld::Scope &scope) {
-    auto &overworld_function = get_function(function_call, scope);
+    auto &input_expression = function_call.get_expression();
+    auto output_expression = reflect_expression(input_expression, scope);
+    auto &overworld_function = get_function(output_expression->get_last());
 //    auto overworld_function = element_map.find_or_null<overworld::Function>(&function_call.get_function());
 //    if (!overworld_function)
 //      throw std::runtime_error("Could not find function.");
@@ -186,6 +189,12 @@ namespace imp_mirror {
     return overworld::Expression_Owner(new overworld::Function_Call(overworld_function, arguments, function_call));
   }
 
+  overworld::Expression_Owner Mirror::reflect_chain(const underworld::Chain &input_chain, overworld::Scope &scope) {
+    auto first = reflect_expression(input_chain.get_first(), scope);
+    auto second = reflect_expression(input_chain.get_second(), scope);
+    return overworld::Expression_Owner(new overworld::Chain(first, second));
+  }
+
   overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression,
                                                          overworld::Scope &scope) {
     switch (input_expression.get_type()) {
@@ -204,6 +213,9 @@ namespace imp_mirror {
 
       case underworld::Expression::Type::self:
         return overworld::Expression_Owner(new overworld::Self(scope.get_dungeon()));
+
+      case underworld::Expression::Type::chain:
+        return reflect_chain(*dynamic_cast<const underworld::Chain *>(&input_expression), scope);
 
       default:
         return reflect_statement_expression(input_expression, scope);

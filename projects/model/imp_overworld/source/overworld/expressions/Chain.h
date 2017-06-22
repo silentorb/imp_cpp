@@ -3,7 +3,7 @@
 #include "Expression.h"
 #include <vector>
 
-namespace underworld {
+namespace overworld {
 
   class Chain : public virtual Expression {
       Expression_Owner first;
@@ -21,24 +21,16 @@ namespace underworld {
         return *second;
       }
 
-      const Expression &get_last() const override {
-        return *second;
+      virtual Node *get_node() {
+        return second->get_node();
       }
 
-      const std::string get_name() const override {
-        return "chain";
-      }
-
-      const Profession &get_profession() const override {
-        return second->get_profession();
-      }
-
-      const Expression &get_first() const {
-        return *first;
-      }
-
-      const Expression &get_second() const {
-        return *second;
-      }
+//      const std::string get_name() const override {
+//        return "chain";
+//      }
+//
+//      const Profession &get_profession() const override {
+//        return second->get_profession();
+//      }
   };
 }

@@ -15,6 +15,7 @@
 #include <underworld/expressions/Assignment.h>
 #include <overworld/imp_graph/Graph.h>
 #include <overworld/expressions/Function_Call.h>
+#include <underworld/expressions/Chain.h>
 #include "Element_Map.h"
 #include "Integrity.h"
 
@@ -55,6 +56,10 @@ namespace imp_mirror {
 
       overworld::Expression_Owner reflect_expression(const underworld::Expression &input_expression,
                                                      overworld::Scope &scope);
+
+      overworld::Expression_Owner reflect_chain(const underworld::Chain &input_chain,
+                                                     overworld::Scope &scope);
+
       overworld::Expression_Owner reflect_statement_expression(const underworld::Expression &input_expression,
                                                                overworld::Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
@@ -66,8 +71,7 @@ namespace imp_mirror {
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_function_call(const underworld::Function_Call &function_call,
                                                         overworld::Scope &scope);
-      overworld::Function &get_function(const underworld::Function_Call &function_call,
-                                        overworld::Scope &scope);
+      overworld::Function &get_function(overworld::Expression &expression);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {

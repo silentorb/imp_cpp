@@ -35,31 +35,35 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
-      if (last.get_type() == Expression::Type::member || last.get_type() == Expression::Type::unresolved_member) {
-//        auto &function = cast<Function>(member);
+      if(last.get_type() == Expression::Type::unresolved_member){
         return process_function_call(path, context);
       }
+     else if (last.get_type() == Expression::Type::member) {
+//        auto &function = cast<Function>(member);
+        auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
+                                                          last.get_name() + " is not a function");
+        auto &member = member_expression.get_member();
 
-      auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
-                                                        last.get_name() + " is not a function");
-      auto &member = member_expression.get_member();
+        if (member.get_type() == Member::Type::profession) {
+          auto &profession = cast<Profession_Member>(member).get_profession();
+          if (profession.get_type() == Profession::Type::dungeon) {
+            auto &dungeon = cast<Dungeon>(profession);
+            auto function = dungeon.get_function(dungeon.get_name());
+            if (!function) {
+              auto &function2 = dungeon.create_function(dungeon.get_name(),
+                                                        profession_library.get_primitive(Primitive_Type::Void),
+                                                        input.get_source_point());
+            }
 
-      if (member.get_type() == Member::Type::profession) {
-        auto &profession = cast<Profession_Member>(member).get_profession();
-        if (profession.get_type() == Profession::Type::dungeon) {
-          auto &dungeon = cast<Dungeon>(profession);
-          auto function = dungeon.get_function(dungeon.get_name());
-          if (!function) {
-            auto &function2 = dungeon.create_function(dungeon.get_name(),
-                                                      profession_library.get_primitive(Primitive_Type::Void),
-                                                      input.get_source_point());
+//            return process_function_call(path, context);
           }
-
-          return process_function_call(path, context);
         }
-      }
 
-      throw std::runtime_error(last.get_name() + " is not a function.");
+        return process_function_call(path, context);
+      }
+      else {
+        throw std::runtime_error(last.get_name() + " is not a function.");
+      }
     }
     else if (input.peek().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
