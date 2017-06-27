@@ -12,7 +12,7 @@ using namespace imp_mirror;
 TEST(Mirror_Test, mirroring) {
 
   Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
-  underworld::Dungeon root("");
+  underworld::Dungeon root("", nullptr);
   underworld::Profession_Library profession_library;
   underworld::Source_File source_file(string(RESOURCE_PATH) + "pizza.imp");
   imp_summoning::Stream stream(lexer, source_file);
@@ -20,7 +20,7 @@ TEST(Mirror_Test, mirroring) {
   imp_summoning::Summoner summoner(stream, lookup);
   summoner.summon(root);
 
-  overworld::Dungeon output_root(root);
+  overworld::Derived_Dungeon output_root(root);
   overworld::Profession_Library profession_library2;
   imp_mirror::Element_Map element_map;
   overworld::Graph graph;

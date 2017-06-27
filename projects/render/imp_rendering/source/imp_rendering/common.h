@@ -3,6 +3,7 @@
 #include <imp_artisan/Stroke.h>
 #include <overworld/schema/Dungeon.h>
 #include <overworld/expressions/Block_Expression.h>
+#include <functional>
 
 namespace imp_rendering {
 
@@ -18,7 +19,7 @@ namespace imp_rendering {
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope);
   Stroke render_function_definition(const overworld::Function &function);
   const std::string render_minion_with_signature(const overworld::Minion &minion);
-
+ 
   inline Stroke wrap(const std::string &text) {
     Stroke result;
     result << text;

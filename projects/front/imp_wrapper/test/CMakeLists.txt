@@ -1,5 +1,5 @@
-create_test(imp_wrapper_test)
-require(imp_wrapper boost_filesystem)
+create_executable(imp_wrapper_test)
+require(imp_wrapper boost_filesystem googletest)
 
 add_definitions(-DRESOURCE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/\")
 add_definitions(-DOUTPUT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/output/\")

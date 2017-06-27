@@ -1,6 +1,7 @@
 #pragma once
 #include "gtest/gtest.h"
 #include <boost/filesystem/operations.hpp>
+#include <windows.h>
 #include <handleapi.h>
 #include <processthreadsapi.h>
 

@@ -30,7 +30,6 @@ add_subdirectory(projects/parse/runic)
 add_subdirectory(projects/parse/runic_cpp)
 add_subdirectory(projects/parse/runic_imp)
 add_subdirectory(projects/model/graphing)
-#add_subdirectory(projects/model/imp_graph)
 add_subdirectory(projects/model/imp_underworld)
 add_subdirectory(projects/model/imp_overworld)
 add_subdirectory(projects/model/cpp_stl)
@@ -43,9 +42,13 @@ add_subdirectory(projects/render/imp_rendering)
 add_subdirectory(projects/front/imp_taskmaster)
 add_subdirectory(projects/front/imp_wrapper)
 
+add_subdirectory(${GTEST_DIR} projects2/googletest)
+
 add_subdirectory(projects/parse/runic_imp/test)
 add_subdirectory(projects/parse/imp_summoning/test)
 add_subdirectory(projects/model/imp_mirror/test)
 add_subdirectory(projects/front/imp_wrapper/test)
+
+add_subdirectory(${CMAKE_BOOST_DIR}/projects/system projects2/system)
 
 finish_cmake()

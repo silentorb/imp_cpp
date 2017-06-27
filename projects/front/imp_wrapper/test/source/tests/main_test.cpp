@@ -1,11 +1,8 @@
 #include "gtest/gtest.h"
 #include <imp_wrapper/Wrapper.h>
-#include <boost/filesystem/operations.hpp>
 #include <utility/utility.h>
 
 using namespace std;
-
-
 
 TEST(Main_Test, pizza) {
   compile("pizza/pizza.imp");
