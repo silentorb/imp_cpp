@@ -49,7 +49,7 @@ namespace underworld {
 
     auto &member = members.at(name);
     if (member->get_type() == Member::Type::function)
-      return dynamic_cast<Function *>(member.get());
+      return static_cast<Function*>(member.get());
 
     return nullptr;
   }

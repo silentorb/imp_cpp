@@ -54,14 +54,38 @@ namespace imp_mirror {
     return overworld::Expression_Owner(expression);
   }
 
-  overworld::Expression_Owner
-  Mirror::reflect_minion(const underworld::Member_Expression &input_minion_expression, overworld::Scope &scope) {
-    auto &input_minion = input_minion_expression.get_member();
-    auto output_minion = element_map.find_or_null<overworld::Minion>(&input_minion);
-    if (!output_minion)
-      throw std::runtime_error("Could not find minion.");
+  overworld::Expression_Owner Mirror::reflect_member(const underworld::Member_Expression &input_member_expression,
+                                                     overworld::Scope &scope) {
+    auto &input_member = input_member_expression.get_member();
+    if (input_member.get_type() == underworld::Member::Type::minion) {
+      auto output_minion = element_map.find_or_null<overworld::Minion>(&input_member);
+      if (!output_minion)
+        throw std::runtime_error("Could not find minion " + input_member.get_name() + ".");
 
-    return overworld::Expression_Owner(new overworld::Member_Expression(*output_minion));
+      return overworld::Expression_Owner(new overworld::Member_Expression(*output_minion));
+    }
+    else if (input_member.get_type() == underworld::Member::Type::profession) {
+      auto &input_profession_member = cast<const underworld::Profession_Member>(input_member);
+      auto &input_profession = input_profession_member.get_profession();
+      auto &input_dungeon = cast<underworld::Dungeon>(input_profession);
+      auto input_function = input_dungeon.get_function(input_dungeon.get_name());
+      if (!input_function)
+        throw std::runtime_error("Could not find constructor " + input_member.get_name() + ".");
+
+      auto output_function = element_map.find_or_null<overworld::Function>(input_function);
+      if (!output_function)
+        throw std::runtime_error("Could not find constructor " + input_member.get_name() + ".");
+
+      return overworld::Expression_Owner(new overworld::Member_Expression(*output_function));
+    }
+    else {
+      auto &input_function = cast<underworld::Function>(input_member);
+      auto output_function = element_map.find_or_null<overworld::Function>(&input_function);
+      if (!output_function)
+        throw std::runtime_error("Could not find constructor " + input_member.get_name() + ".");
+
+      return overworld::Expression_Owner(new overworld::Member_Expression(*output_function));
+    }
   }
 
   overworld::Operator_Type Mirror::reflect_operator(const underworld::Operator &input_operator) {
@@ -121,7 +145,7 @@ namespace imp_mirror {
   overworld::Function &Mirror::get_function(overworld::Expression &expression) {
 //    throw std::runtime_error("Expression is not a function.");
     if (expression.get_type() == overworld::Expression::Type::minion) {
-      auto &member_expression = *dynamic_cast<const overworld::Member_Expression*>(&expression);
+      auto &member_expression = *dynamic_cast<const overworld::Member_Expression *>(&expression);
       auto &member = member_expression.get_member();
       if (member.get_type() == overworld::Member::Type::function) {
 //        auto &underworld_function = *dynamic_cast<const overworld::Function *>(&member);
@@ -195,6 +219,14 @@ namespace imp_mirror {
     return overworld::Expression_Owner(new overworld::Chain(first, second));
   }
 
+  overworld::Expression_Owner Mirror::reflect_unresolved(const underworld::Unresolved_Member_Expression &member_expression,
+                                                         overworld::Scope &scope) {
+
+// TODO Add code to reflect unresolved members
+throw std::runtime_error("Not implemented.");
+//    return overworld::Expression_Owner(new overworld::Chain(first, second));
+  }
+
   overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression,
                                                          overworld::Scope &scope) {
     switch (input_expression.get_type()) {
@@ -203,7 +235,7 @@ namespace imp_mirror {
         return reflect_literal(*dynamic_cast<const underworld::Literal *>(&input_expression));
 
       case underworld::Expression::Type::member:
-        return reflect_minion(
+        return reflect_member(
           *dynamic_cast<const underworld::Member_Expression *>(&input_expression), scope);
 
       case underworld::Expression::Type::Operator:
@@ -216,6 +248,10 @@ namespace imp_mirror {
 
       case underworld::Expression::Type::chain:
         return reflect_chain(*dynamic_cast<const underworld::Chain *>(&input_expression), scope);
+
+      case underworld::Expression::Type::unresolved_member:
+        return reflect_unresolved(*dynamic_cast<const underworld::Unresolved_Member_Expression *>(&input_expression),
+                                  scope);
 
       default:
         return reflect_statement_expression(input_expression, scope);
