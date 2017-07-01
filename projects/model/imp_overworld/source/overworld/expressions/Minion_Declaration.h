@@ -12,6 +12,10 @@ namespace overworld {
   public:
       Minion_Declaration(Minion &variable) : minion(variable) {}
 
+      virtual ~Minion_Declaration() {
+
+      }
+
       Type get_type() const override {
         return Type::variable_declaration;
       }

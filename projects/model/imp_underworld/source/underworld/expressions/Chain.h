@@ -13,6 +13,10 @@ namespace underworld {
       Chain(Expression_Owner &first, Expression_Owner &second) :
         first(std::move(first)), second(std::move(second)) {}
 
+      virtual ~Chain() {
+
+      }
+
       Type get_type() const override {
         return Type::chain;
       }

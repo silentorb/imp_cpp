@@ -32,6 +32,10 @@ namespace underworld {
       virtual const std::string get_name() const = 0;
 
       virtual const Profession &get_profession() const = 0;
+
+      virtual ~Expression() {
+
+      }
   };
 
   class Common_Expression : public virtual Expression {

@@ -36,6 +36,8 @@ namespace overworld {
       virtual Node *get_node() {
         throw std::runtime_error("Not implemented.");
       }
+
+      virtual ~Expression() {}
   };
 
   class Common_Expression : public virtual Expression {

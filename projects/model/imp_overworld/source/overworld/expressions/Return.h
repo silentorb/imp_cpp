@@ -19,6 +19,10 @@ namespace overworld {
       Return_With_Value(Expression_Owner value) :
         value(std::move(value)) {}
 
+      virtual ~Return_With_Value() {
+
+      }
+
       Type get_type() const override {
         return Type::return_with_value;
       }

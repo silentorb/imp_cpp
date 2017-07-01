@@ -6,7 +6,7 @@
 #include <overworld/expressions/Literal.h>
 #include <overworld/expressions/Block_Expression.h>
 #include <overworld/expressions/Assignment.h>
-#include <overworld/expressions/Minion_Expression.h>
+#include <overworld/expressions/Member_Expression.h>
 #include <overworld/expressions/Function_Call.h>
 
 using namespace std;
@@ -81,8 +81,8 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_minion_expression(const overworld::Minion_Expression &minion) {
-    return minion.get_minion().get_name();
+  const std::string render_minion_expression(const overworld::Member_Expression &minion) {
+    return minion.get_member().get_name();
   }
 
   const std::string render_return_nothing(const overworld::Return &input_return) {
@@ -150,7 +150,7 @@ namespace imp_rendering {
         return render_literal(*dynamic_cast<const overworld::Literal *>(&input_expression));
 
       case overworld::Expression::Type::minion:
-        return render_minion_expression(*dynamic_cast<const overworld::Minion_Expression *>(&input_expression));
+        return render_minion_expression(*dynamic_cast<const overworld::Member_Expression *>(&input_expression));
 
       case overworld::Expression::Type::function_call:
         return render_function_call(

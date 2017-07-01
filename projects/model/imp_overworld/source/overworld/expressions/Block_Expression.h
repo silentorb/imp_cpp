@@ -38,6 +38,10 @@ namespace overworld {
       Block_Expression(const underworld::Scope &source, Scope *parent) :
         Scope(&source, parent), block(*this) {}
 
+      virtual ~Block_Expression() {
+
+      }
+
       void add_expression(Expression_Owner &expression) {
         block.add_expression(expression);
       }

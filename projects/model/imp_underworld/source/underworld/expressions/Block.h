@@ -13,6 +13,10 @@ namespace underworld {
   public:
       Block(Scope &parent) : scope(&parent) {}
 
+      virtual ~Block() {
+
+      }
+
       void add_expression(Expression_Owner expression) {
         expressions.push_back(std::move(expression));
       }

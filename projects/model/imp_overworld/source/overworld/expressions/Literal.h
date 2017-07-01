@@ -33,6 +33,10 @@ namespace overworld {
         node.set_resolved(true);
       }
 
+      virtual ~Literal_Implementation() {
+
+      }
+
       const T &get_value() const {
         return value;
       }

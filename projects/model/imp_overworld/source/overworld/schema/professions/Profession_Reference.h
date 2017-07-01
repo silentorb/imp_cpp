@@ -10,5 +10,9 @@ namespace overworld {
       virtual void set_profession(const Profession &value) = 0;
       virtual const underworld::Source_Point &get_source_point() = 0;
       virtual const std::string get_name() const = 0;
+
+      virtual ~Profession_Reference() {
+
+      }
   };
 }

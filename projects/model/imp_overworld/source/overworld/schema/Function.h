@@ -37,6 +37,8 @@ namespace overworld {
         scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
         node(*this) {}
 
+      ~Function() {}
+
       Block &get_block() {
         return block;
       }
@@ -65,7 +67,7 @@ namespace overworld {
         parameters.push_back(&minion);
       }
 
-      Profession_Node<Function> &get_node() {
+      Profession_Node<Function> &get_node() override {
         return node;
       }
 

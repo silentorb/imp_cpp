@@ -14,6 +14,10 @@ namespace overworld {
       Conditional_Expression(Expression_Owner &condition, Expression_Owner &expression) :
         condition(std::move(condition)), expression(std::move(expression)) {}
 
+      virtual ~Conditional_Expression() {
+
+      }
+
       const Expression &get_condition() const {
         return *condition;
       }
@@ -39,6 +43,10 @@ namespace overworld {
   public:
       Else(Expression_Owner &expression) :
         expression(std::move(expression)) {}
+
+      virtual ~Else() {
+
+      }
 
       Type get_type() const override {
         return Type::Else;

@@ -12,6 +12,10 @@ namespace underworld {
   public:
       Minion_Declaration(Minion &variable) : minion(variable) {}
 
+      virtual ~Minion_Declaration() {
+
+      }
+
       Type get_type() const override {
         return Type::variable_declaration;
       }
@@ -27,6 +31,10 @@ namespace underworld {
   public:
       Minion_Declaration_And_Assignment(Minion &minion, Expression_Owner &expression) :
         Minion_Declaration(minion), expression(std::move(expression)) {}
+
+      virtual ~Minion_Declaration_And_Assignment() {
+
+      }
 
       Type get_type() const override {
         return Type::variable_declaration_and_assignment;

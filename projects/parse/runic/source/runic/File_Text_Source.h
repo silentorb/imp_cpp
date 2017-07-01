@@ -17,9 +17,17 @@ namespace runic {
           throw std::runtime_error("Could not open file \"" + file_path + "\".");
       }
 
+      ~File_Text_Source() override {}
+
       Character next_character() override {
+        if (file_stream.eof())
+          return 0;
+
         Character result;
         file_stream >> std::noskipws >> result;
+        if (result < 0)
+          result = 0;
+
         return result;
       }
   };

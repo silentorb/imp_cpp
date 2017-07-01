@@ -20,6 +20,10 @@ namespace overworld {
       Minion(const underworld::Minion &source, const Profession &profession) :
         source(source), profession(&profession), node(*this) {}
 
+      virtual ~Minion() {
+
+      }
+
       Type get_type() const override {
         return Type::variable;
       }

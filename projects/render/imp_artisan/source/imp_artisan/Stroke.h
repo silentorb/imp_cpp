@@ -16,6 +16,10 @@ namespace imp_artisan {
         };
 
         virtual Type get_type() const = 0;
+
+        virtual ~Stroke() {
+
+        }
     };
 
     class Stroke_Stream;
@@ -43,6 +47,8 @@ namespace imp_artisan {
 
         Stroke_Owner(Stroke_Owner &&other) :
           stroke(std::move(other.stroke)) {}
+
+        ~Stroke_Owner() {}
 
         Stroke_Owner &operator=(Stroke_Owner &&other) noexcept {
           stroke = std::move(other.stroke);
@@ -77,6 +83,10 @@ namespace imp_artisan {
     public:
         Text_Stroke(const std::string &value) : value(value) {}
 
+        virtual ~Text_Stroke() {
+
+        }
+
         const std::string &get_value() const {
           return value;
         }
@@ -92,6 +102,10 @@ namespace imp_artisan {
     public:
         Special_Text(const std::string &value) : value(value) {}
 
+        virtual ~Special_Text() {
+
+        }
+
         const std::string &get_value() const {
           return value;
         }
@@ -106,6 +120,10 @@ namespace imp_artisan {
         building::Strokes strokes;
 
     public:
+        virtual ~Stroke_Stream() {
+
+        }
+
         void add_stroke(Stroke *stroke) {
           strokes.push_back(building::Stroke_Owner(stroke));
         }
@@ -157,6 +175,10 @@ namespace imp_artisan {
     public:
         Standard_Block(const std::string &header, int indent = 1) :
           header(header), indent(indent) {}
+
+        virtual ~Standard_Block() {
+
+        }
 
         const std::string get_header() const {
           return header;

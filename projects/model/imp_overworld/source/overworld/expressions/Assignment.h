@@ -14,6 +14,10 @@ namespace overworld {
       Assignment(Expression_Owner &target, Operator_Type operator_type, Expression_Owner &value) :
         target(std::move(target)), operator_type(operator_type), value(std::move(value)) {}
 
+      virtual ~Assignment() {
+
+      }
+
       Type get_type() const override {
         return Type::assignment;
       }

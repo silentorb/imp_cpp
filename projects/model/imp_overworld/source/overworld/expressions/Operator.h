@@ -13,6 +13,10 @@ namespace overworld {
   public:
       Operator(Operator_Type operator_type) : operator_type(operator_type) {}
 
+      virtual ~Operator() {
+
+      }
+
       Type get_type() const override {
         return Type::Operator;
       }

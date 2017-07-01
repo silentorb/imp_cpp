@@ -13,6 +13,10 @@ namespace underworld {
   public:
       Literal(const Source_Point &source_point) : source_point(source_point) {}
 
+      virtual ~Literal() {
+
+      }
+
       Type get_type() const override {
         return Type::literal;
       }
@@ -35,6 +39,10 @@ namespace underworld {
   public:
       Literal_Implementation(T value, const Source_Point &source) :
         value(value), Literal(source) {}
+
+      virtual ~Literal_Implementation() {
+
+      }
 
       const T &get_value() const {
         return value;

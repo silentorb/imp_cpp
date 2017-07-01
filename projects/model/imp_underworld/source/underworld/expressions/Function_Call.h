@@ -18,6 +18,10 @@ namespace underworld {
       Function_Call(Expression_Owner &expression, std::vector<Expression_Owner> &arguments, const Source_Point &source)
         : expression(std::move(expression)), arguments(std::move(arguments)), source(source) {}
 
+      virtual ~Function_Call() {
+
+      }
+
       Type get_type() const override {
         return Type::function_call;
       }

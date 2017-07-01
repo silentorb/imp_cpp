@@ -14,6 +14,10 @@ namespace underworld {
       Conditional_Expression(Expression_Owner &condition, Expression_Owner &expression) :
         condition(std::move(condition)), expression(std::move(expression)) {}
 
+      virtual ~Conditional_Expression() {
+
+      }
+
       Expression &get_condition() {
         return *condition;
       }
@@ -43,6 +47,10 @@ namespace underworld {
 
   class Else : public virtual Expression {
       Expression_Owner expression;
+  public:
+      virtual ~Else() {
+
+      }
 
   public:
       Else(Expression_Owner &expression) :

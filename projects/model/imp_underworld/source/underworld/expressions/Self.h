@@ -11,6 +11,10 @@ namespace underworld {
   public:
       Self(Dungeon &dungeon) : dungeon(dungeon) {}
 
+      virtual ~Self() {
+
+      }
+
       Type get_type() const override {
         return Type::self;
       }

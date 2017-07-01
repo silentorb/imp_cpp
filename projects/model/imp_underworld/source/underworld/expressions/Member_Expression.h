@@ -11,6 +11,10 @@ namespace underworld {
   public:
       Member_Expression(Member &member) : member(member) {}
 
+      virtual ~Member_Expression() {
+
+      }
+
       virtual Type get_type() const override {
         return Type::member;
       }
@@ -37,6 +41,10 @@ namespace underworld {
 
   public:
       Unresolved_Member_Expression(const std::string &member_name) : member_name(member_name) {}
+
+      virtual ~Unresolved_Member_Expression() {
+
+      }
 
       virtual Type get_type() const override {
         return Type::unresolved_member;

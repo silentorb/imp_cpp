@@ -5,7 +5,7 @@
 #include <overworld/expressions/Return.h>
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/schema/Function.h>
-#include <overworld/expressions/Minion_Expression.h>
+#include <overworld/expressions/Member_Expression.h>
 #include <overworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include <overworld/expressions/Assignment.h>
@@ -61,7 +61,7 @@ namespace imp_mirror {
     if (!output_minion)
       throw std::runtime_error("Could not find minion.");
 
-    return overworld::Expression_Owner(new overworld::Minion_Expression(*output_minion));
+    return overworld::Expression_Owner(new overworld::Member_Expression(*output_minion));
   }
 
   overworld::Operator_Type Mirror::reflect_operator(const underworld::Operator &input_operator) {
@@ -119,19 +119,20 @@ namespace imp_mirror {
   }
 
   overworld::Function &Mirror::get_function(overworld::Expression &expression) {
-    throw std::runtime_error("Expression is not a function.");
-//    if (expression.get_type() == overworld::Expression::Type::member) {
-//      auto &member_expression = *dynamic_cast<const underworld::Member_Expression *>(&expression);
-//      auto &member = member_expression.get_member();
-//      if (member.get_type() == underworld::Member::Type::function) {
-//        auto &underworld_function = *dynamic_cast<const underworld::Function *>(&member);
+//    throw std::runtime_error("Expression is not a function.");
+    if (expression.get_type() == overworld::Expression::Type::minion) {
+      auto &member_expression = *dynamic_cast<const overworld::Member_Expression*>(&expression);
+      auto &member = member_expression.get_member();
+      if (member.get_type() == overworld::Member::Type::function) {
+//        auto &underworld_function = *dynamic_cast<const overworld::Function *>(&member);
+        return *dynamic_cast<overworld::Function *>(&member);
 //        auto overworld_function = element_map.find_or_null<overworld::Function>(&underworld_function);
 //        if (!overworld_function)
 //          throw std::runtime_error("Could not find overworld function.");
 //
 //        return *overworld_function;
-//      }
-//      else if (member.get_type() == underworld::Member::Type::profession) {
+      }
+//      else if (member.get_type() == overworld::Member::Type::variable) {
 //        auto &profession = member.get_profession();
 //        auto &underworld_dungeon = *dynamic_cast<const underworld::Dungeon *>(&profession);
 //        auto dungeon = element_map.find_or_null<overworld::Dungeon>(&underworld_dungeon);
@@ -153,14 +154,13 @@ namespace imp_mirror {
 //      else {
 //        throw std::runtime_error("Member is not a function.");
 //      }
-//
-//    }
+
+    }
 //    else if (expression.get_type() == underworld::Expression::Type::member) {
 //      throw std::runtime_error("Not implemented.");
 //    }
-//    else {
-//      throw std::runtime_error("Expression is not a function.");
-//    }
+
+    throw std::runtime_error("Expression is not a function.");
   }
 
   overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Function_Call &function_call,

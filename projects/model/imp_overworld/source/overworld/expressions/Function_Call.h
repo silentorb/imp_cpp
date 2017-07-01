@@ -18,6 +18,10 @@ namespace overworld {
                     const underworld::Function_Call &source)
         : function(function), arguments(std::move(arguments)), source(source) {}
 
+      virtual ~Function_Call() {
+
+      }
+
       Type get_type() const override {
         return Type::function_call;
       }
