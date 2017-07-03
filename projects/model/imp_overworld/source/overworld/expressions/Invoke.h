@@ -4,26 +4,26 @@
 #include "Expression.h"
 #include <vector>
 #include <overworld/schema/Function.h>
-#include <underworld/expressions/Function_Call.h>
+#include <underworld/expressions/Invoke.h>
 
 namespace overworld {
 
-  class Function_Call : public Common_Expression {
+  class Invoke : public Common_Expression {
       Function &function;
       std::vector<Expression_Owner> arguments;
-      const underworld::Function_Call &source;
+      const underworld::Invoke &source;
 
   public:
-      Function_Call(Function &function, std::vector<Expression_Owner> &arguments,
-                    const underworld::Function_Call &source)
+      Invoke(Function &function, std::vector<Expression_Owner> &arguments,
+                    const underworld::Invoke &source)
         : function(function), arguments(std::move(arguments)), source(source) {}
 
-      virtual ~Function_Call() {
+      virtual ~Invoke() {
 
       }
 
       Type get_type() const override {
-        return Type::function_call;
+        return Type::invoke;
       }
 
       Function &get_function() const {

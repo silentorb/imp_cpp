@@ -38,12 +38,14 @@ namespace overworld {
         return functions;
       }
 
+      Function *get_function(const std::string &function_name);
+
       const std::vector<Variable_Owner> &get_minions() const {
         return minions;
       }
 
       Minion &get_minion(const std::string &name);
-      virtual Dungeon& get_dungeon();
+      virtual Dungeon &get_dungeon();
 
       Scope *get_parent() {
         return parent;

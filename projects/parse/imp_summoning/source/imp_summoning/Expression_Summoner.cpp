@@ -4,7 +4,7 @@
 #include <underworld/expressions/Return.h>
 #include <underworld/expressions/Assignment.h>
 #include <underworld/expressions/Member_Expression.h>
-#include <underworld/expressions/Function_Call.h>
+#include <underworld/expressions/Invoke.h>
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Self.h>
 #include "Expression_Summoner.h"
@@ -35,28 +35,17 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
-      if(last.get_type() == Expression::Type::unresolved_member){
+      if (last.get_type() == Expression::Type::unresolved_member) {
         return process_function_call(path, context);
       }
-     else if (last.get_type() == Expression::Type::member) {
+      else if (last.get_type() == Expression::Type::member) {
 //        auto &function = cast<Function>(member);
         auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
                                                           last.get_name() + " is not a function");
         auto &member = member_expression.get_member();
 
         if (member.get_type() == Member::Type::profession) {
-          auto &profession = cast<Profession_Member>(member).get_profession();
-          if (profession.get_type() == Profession::Type::dungeon) {
-            auto &dungeon = cast<Dungeon>(profession);
-            auto function = dungeon.get_function(dungeon.get_name());
-            if (!function) {
-              auto &function2 = dungeon.create_function(dungeon.get_name(),
-                                                        profession_library.get_primitive(Primitive_Type::Void),
-                                                        input.get_source_point());
-            }
-
-//            return process_function_call(path, context);
-          }
+          process_constructor_invocation(member);
         }
 
         return process_function_call(path, context);
@@ -72,6 +61,19 @@ namespace imp_summoning {
     }
     else {
       return path;
+    }
+  }
+
+  void Expression_Summoner::process_constructor_invocation(Member &member) {
+    auto &profession = cast<Profession_Member>(member).get_profession();
+    if (profession.get_type() == Profession::Type::dungeon) {
+      auto &dungeon = cast<Dungeon>(profession);
+      auto function = dungeon.get_function(dungeon.get_name());
+      if (!function) {
+        auto &function2 = dungeon.create_function(dungeon.get_name(),
+                                                  dungeon,
+                                                  input.get_source_point());
+      }
     }
   }
 
@@ -128,7 +130,8 @@ namespace imp_summoning {
       auto name = input.next().get_text();
       auto &profession = expression->get_profession();
       if (profession.get_type() == Profession::Type::unknown) {
-        return Expression_Owner(new Unresolved_Member_Expression(name));
+        auto second = Expression_Owner(new Unresolved_Member_Expression(name, input.get_source_point()));
+        return Expression_Owner(new Chain(expression, second));
       }
       if (profession.get_type() == Profession::Type::dungeon) {
         auto &dungeon = *dynamic_cast<const Dungeon *>(&profession);
@@ -174,8 +177,7 @@ namespace imp_summoning {
     }
 
     input.next();
-
-    return Expression_Owner(new underworld::Function_Call(expression, arguments, source_point));
+    return Expression_Owner(new underworld::Invoke(expression, arguments, source_point));
   }
 
   Expression_Owner Expression_Summoner::process_statement(Context &context) {

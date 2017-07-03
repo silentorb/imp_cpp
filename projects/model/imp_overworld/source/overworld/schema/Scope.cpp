@@ -63,4 +63,13 @@ namespace overworld {
   Dungeon &Scope::get_dungeon() {
     return parent->get_dungeon();
   }
+
+  Function *Scope::get_function(const std::string &function_name) {
+    for(auto & function: functions) {
+      if (function->get_name() == function_name)
+        return function.get();
+    }
+
+    return nullptr;
+  }
 }

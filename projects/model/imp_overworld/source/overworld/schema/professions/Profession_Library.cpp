@@ -3,6 +3,8 @@
 namespace overworld {
 
   File string_header("string");
+  static Unknown unknown;
+  static Unknown not_found;
 
   Primitive Profession_Library::primitives[] =
     {
@@ -16,6 +18,14 @@ namespace overworld {
 
   Profession_Library::Profession_Library() {
 
+  }
+
+  const Unknown &Profession_Library::get_unknown() {
+    return unknown;
+  }
+
+  const Unknown &Profession_Library::get_not_found() {
+    return not_found;
   }
 
   Primitive &Profession_Library::get_primitive(Primitive_Type type) {

@@ -14,10 +14,10 @@ namespace overworld {
           block,
           chain,
           Else,
-          function_call,
           If,
+          invoke,
           literal,
-          minion,
+          member,
           Operator, // Infix
           return_nothing,
           return_with_value,

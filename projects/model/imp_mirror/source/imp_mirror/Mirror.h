@@ -14,7 +14,7 @@
 #include <underworld/expressions/Operator.h>
 #include <underworld/expressions/Assignment.h>
 #include <overworld/imp_graph/Graph.h>
-#include <overworld/expressions/Function_Call.h>
+#include <overworld/expressions/Invoke.h>
 #include <underworld/expressions/Chain.h>
 #include "Element_Map.h"
 #include "Integrity.h"
@@ -31,12 +31,18 @@ namespace imp_mirror {
       overworld::Graph &graph;
       Integrity integrity;
 
+      overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
+        auto &profession = expression.get_node()->get_profession_reference().get_profession();
+        auto &dungeon = cast<const overworld::Dungeon>(profession);
+        return const_cast<overworld::Dungeon *> (&dungeon);
+      }
+
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
-      overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
+      overworld::Expression_Owner reflect_method(const underworld::Member_Expression &input_member_expression,
                                                  overworld::Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);
@@ -60,7 +66,12 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_chain(const underworld::Chain &input_chain,
                                                 overworld::Scope &scope);
 
-      overworld::Expression_Owner reflect_unresolved(const underworld::Unresolved_Member_Expression &member_expression,
+      overworld::Expression_Owner reflect_chain_member(overworld::Expression &first,
+                                                       const underworld::Expression &second,
+                                                       overworld::Scope &scope);
+
+      overworld::Expression_Owner reflect_unresolved(overworld::Expression &previous,
+                                                     const underworld::Unresolved_Member_Expression &member_expression,
                                                      overworld::Scope &scope);
 
       overworld::Expression_Owner reflect_statement_expression(const underworld::Expression &input_expression,
@@ -72,7 +83,7 @@ namespace imp_mirror {
       void reflect_function2(const underworld::Function &input_function);
 
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
-      overworld::Expression_Owner reflect_function_call(const underworld::Function_Call &function_call,
+      overworld::Expression_Owner reflect_function_call(const underworld::Invoke &function_call,
                                                         overworld::Scope &scope);
       overworld::Function &get_function(overworld::Expression &expression);
 

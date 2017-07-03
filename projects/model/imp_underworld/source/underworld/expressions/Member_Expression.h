@@ -38,9 +38,11 @@ namespace underworld {
 
   class Unresolved_Member_Expression : public virtual Common_Expression {
       std::string member_name;
+      Source_Point source_point;
 
   public:
-      Unresolved_Member_Expression(const std::string &member_name) : member_name(member_name) {}
+      Unresolved_Member_Expression(const std::string &member_name, const Source_Point &source_point) :
+        member_name(member_name), source_point(source_point) {}
 
       virtual ~Unresolved_Member_Expression() {
 
@@ -56,6 +58,10 @@ namespace underworld {
 
       const Profession &get_profession() const override {
         return Profession_Library::get_primitive(Primitive_Type::Void);
+      }
+
+      const Source_Point &get_source_point() const {
+        return source_point;
       }
   };
 }

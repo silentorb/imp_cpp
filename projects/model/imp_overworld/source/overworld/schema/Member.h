@@ -8,15 +8,15 @@ namespace overworld {
   public:
       enum class Type {
           function,
-          variable
+          variable,
+          unresolved,
       };
 
       virtual Type get_type() const = 0;
       virtual Node &get_node() = 0;
       virtual const std::string get_name() const = 0;
-      virtual ~Member() {
 
-      }
+      virtual ~Member() {}
   };
 
   using Member_Pointer = std::unique_ptr<Member>;

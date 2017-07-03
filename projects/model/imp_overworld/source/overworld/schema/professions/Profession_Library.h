@@ -5,16 +5,14 @@
 namespace overworld {
 
   class Profession_Library {
-      Unknown unknown;
       static Primitive primitives[Primitive_Type_Count];
       std::map<Minion *, Dungeon_Pointer> anonymous_dungeons;
 
   public:
       Profession_Library();
 
-      const Unknown &get_unknown() const {
-        return unknown;
-      }
+      static const Unknown &get_unknown();
+      static const Unknown &get_not_found();
 
       static Primitive &get_primitive(Primitive_Type type);
 

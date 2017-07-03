@@ -11,6 +11,7 @@
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Self.h>
 #include <overworld/expressions/Chain.h>
+#include <overworld/schema/Unresolved_Member.h>
 #include "Mirror.h"
 
 namespace imp_mirror {
@@ -23,6 +24,15 @@ namespace imp_mirror {
 
     graph.connect(*target->get_node(), *value->get_node());
 
+    // Optimization to reduce the amount of graph solving later on
+    // since so often variables types are defined by assigning them an instantiation.
+    auto &value_profession = value->get_node()->get_profession_reference().get_profession();
+    if (target->get_node()->get_profession_reference().get_profession().get_type()
+        == overworld::Profession::Type::unknown
+        && value_profession.get_type()
+           != overworld::Profession::Type::unknown) {
+      target->get_node()->set_profession(value_profession);
+    }
     return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
   }
 
@@ -54,7 +64,7 @@ namespace imp_mirror {
     return overworld::Expression_Owner(expression);
   }
 
-  overworld::Expression_Owner Mirror::reflect_member(const underworld::Member_Expression &input_member_expression,
+  overworld::Expression_Owner Mirror::reflect_method(const underworld::Member_Expression &input_member_expression,
                                                      overworld::Scope &scope) {
     auto &input_member = input_member_expression.get_member();
     if (input_member.get_type() == underworld::Member::Type::minion) {
@@ -144,7 +154,7 @@ namespace imp_mirror {
 
   overworld::Function &Mirror::get_function(overworld::Expression &expression) {
 //    throw std::runtime_error("Expression is not a function.");
-    if (expression.get_type() == overworld::Expression::Type::minion) {
+    if (expression.get_type() == overworld::Expression::Type::member) {
       auto &member_expression = *dynamic_cast<const overworld::Member_Expression *>(&expression);
       auto &member = member_expression.get_member();
       if (member.get_type() == overworld::Member::Type::function) {
@@ -156,38 +166,16 @@ namespace imp_mirror {
 //
 //        return *overworld_function;
       }
-//      else if (member.get_type() == overworld::Member::Type::variable) {
-//        auto &profession = member.get_profession();
-//        auto &underworld_dungeon = *dynamic_cast<const underworld::Dungeon *>(&profession);
-//        auto dungeon = element_map.find_or_null<overworld::Dungeon>(&underworld_dungeon);
-//        if (!dungeon)
-//          throw std::runtime_error("Could not find overworld dungeon.");
-//
-//        return dungeon->get_constructor();
-////        if (!constructor)
-////          throw std::runtime_error("Could not find constructor.");
-////
-////        return *constructor;
-//      }
-//      if (expression.get_type() == underworld::Expression::Type::unresolved_member) {
-//        auto &member_expression = *dynamic_cast<const underworld::Unresolved_Member_Expression *>(&expression);
-//        auto name = member_expression.get_member_name();
-//
-//
-//      }
-//      else {
-//        throw std::runtime_error("Member is not a function.");
-//      }
+      else if (member.get_type() == overworld::Member::Type::unresolved) {
+
+      }
 
     }
-//    else if (expression.get_type() == underworld::Expression::Type::member) {
-//      throw std::runtime_error("Not implemented.");
-//    }
 
     throw std::runtime_error("Expression is not a function.");
   }
 
-  overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Function_Call &function_call,
+  overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Invoke &function_call,
                                                             overworld::Scope &scope) {
     auto &input_expression = function_call.get_expression();
     auto output_expression = reflect_expression(input_expression, scope);
@@ -210,21 +198,55 @@ namespace imp_mirror {
       graph.connect(parameters[i]->get_node(), *arguments[i]->get_node());
     }
 
-    return overworld::Expression_Owner(new overworld::Function_Call(overworld_function, arguments, function_call));
+    return overworld::Expression_Owner(new overworld::Invoke(overworld_function, arguments, function_call));
+  }
+
+  overworld::Expression_Owner Mirror::reflect_chain_member(overworld::Expression &first,
+                                                           const underworld::Expression &second,
+                                                           overworld::Scope &scope) {
+
+    if (second.get_type() == underworld::Expression::Type::unresolved_member) {
+      return reflect_unresolved(first, cast<underworld::Unresolved_Member_Expression>(second),
+                                scope);
+    }
+    else {
+      throw std::runtime_error("Not implemented.");
+    }
   }
 
   overworld::Expression_Owner Mirror::reflect_chain(const underworld::Chain &input_chain, overworld::Scope &scope) {
     auto first = reflect_expression(input_chain.get_first(), scope);
-    auto second = reflect_expression(input_chain.get_second(), scope);
+    auto second = reflect_chain_member(*first, input_chain.get_second(), scope);
     return overworld::Expression_Owner(new overworld::Chain(first, second));
   }
 
-  overworld::Expression_Owner Mirror::reflect_unresolved(const underworld::Unresolved_Member_Expression &member_expression,
+  overworld::Expression_Owner Mirror::reflect_unresolved(overworld::Expression &previous,
+                                                         const underworld::Unresolved_Member_Expression &member_expression,
                                                          overworld::Scope &scope) {
 
-// TODO Add code to reflect unresolved members
-throw std::runtime_error("Not implemented.");
-//    return overworld::Expression_Owner(new overworld::Chain(first, second));
+    auto dungeon = get_dungeon(previous);
+    if (!dungeon) {
+      auto member = new overworld::Unresolved_Member(previous, member_expression.get_member_name(),
+                                                     member_expression.get_source_point());
+      auto member_container = overworld::Member_Pointer(member);
+
+      auto result = overworld::Expression_Owner(
+        new overworld::Member_Expression(member_container)
+      );
+
+      member->set_second(*result);
+      return result;
+    }
+//      throw std::runtime_error("Expression is not a dungeon.");
+
+    auto member = dungeon->get_function(member_expression.get_member_name());
+    if (!member) {
+      throw std::runtime_error("Dungeon " + dungeon->get_name() +
+                               " does not have a function named " + member_expression.get_member_name() + ".");
+    }
+
+//    throw std::runtime_error("Not implemented.");
+    return overworld::Expression_Owner(new overworld::Member_Expression(*member));
   }
 
   overworld::Expression_Owner Mirror::reflect_expression(const underworld::Expression &input_expression,
@@ -235,7 +257,7 @@ throw std::runtime_error("Not implemented.");
         return reflect_literal(*dynamic_cast<const underworld::Literal *>(&input_expression));
 
       case underworld::Expression::Type::member:
-        return reflect_member(
+        return reflect_method(
           *dynamic_cast<const underworld::Member_Expression *>(&input_expression), scope);
 
       case underworld::Expression::Type::Operator:
@@ -250,8 +272,7 @@ throw std::runtime_error("Not implemented.");
         return reflect_chain(*dynamic_cast<const underworld::Chain *>(&input_expression), scope);
 
       case underworld::Expression::Type::unresolved_member:
-        return reflect_unresolved(*dynamic_cast<const underworld::Unresolved_Member_Expression *>(&input_expression),
-                                  scope);
+        throw std::runtime_error("This is the wrong place to resolve members.");
 
       default:
         return reflect_statement_expression(input_expression, scope);
@@ -262,8 +283,8 @@ throw std::runtime_error("Not implemented.");
                                                                    overworld::Scope &scope) {
     switch (input_expression.get_type()) {
 
-      case underworld::Expression::Type::function_call:
-        return reflect_function_call(*dynamic_cast<const underworld::Function_Call *>(&input_expression),
+      case underworld::Expression::Type::invoke:
+        return reflect_function_call(*dynamic_cast<const underworld::Invoke *>(&input_expression),
                                      scope);
 
       default:
@@ -314,6 +335,17 @@ throw std::runtime_error("Not implemented.");
     switch (profession.get_type()) {
       case underworld::Profession::Type::primitive:
         return reflect_primitive(*dynamic_cast<const underworld::Primitive *>(&profession));
+
+      case underworld::Profession::Type::dungeon: {
+        auto input_dungeon = dynamic_cast<const underworld::Dungeon*>(&profession);
+        auto dungeon = element_map.find_or_null<overworld::Dungeon>(input_dungeon);
+        if (!dungeon)
+          return profession_library.get_not_found();
+//          throw std::runtime_error("Could not find overworld dungeon for " + profession.get_name() + ".");
+
+        return *dungeon;
+      }
+
     }
     return profession_library.get_unknown();
   }

@@ -7,7 +7,7 @@
 #include <overworld/expressions/Block_Expression.h>
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Member_Expression.h>
-#include <overworld/expressions/Function_Call.h>
+#include <overworld/expressions/Invoke.h>
 
 using namespace std;
 
@@ -98,7 +98,7 @@ namespace imp_rendering {
     return "auto " + declaration.get_minion().get_name();
   }
 
-  const std::string render_function_call(const overworld::Function_Call &function_call) {
+  const std::string render_function_call(const overworld::Invoke &function_call) {
 
     return function_call.get_function().get_name() + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
@@ -149,12 +149,12 @@ namespace imp_rendering {
       case overworld::Expression::Type::literal:
         return render_literal(*dynamic_cast<const overworld::Literal *>(&input_expression));
 
-      case overworld::Expression::Type::minion:
+      case overworld::Expression::Type::member:
         return render_minion_expression(*dynamic_cast<const overworld::Member_Expression *>(&input_expression));
 
-      case overworld::Expression::Type::function_call:
+      case overworld::Expression::Type::invoke:
         return render_function_call(
-          *dynamic_cast<const overworld::Function_Call *>(&input_expression));
+          *dynamic_cast<const overworld::Invoke *>(&input_expression));
 
       default:
         throw std::runtime_error(" Not implemented.");

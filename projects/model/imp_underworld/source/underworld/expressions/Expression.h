@@ -13,10 +13,11 @@ namespace underworld {
           block,
           chain,
           Else,
-          function_call,
+          invoke,
           If,
           literal,
           member,
+          method_call,
           Operator, // Infix
           return_nothing,
           return_with_value,
