@@ -11,11 +11,11 @@ namespace imp_wrapper {
 
   Wrapper::Wrapper() :
     underworld_root("", nullptr),
-    lookup(underworld_profession_library),
-    overworld_root(underworld_root) {
-    auto standard_library = new cpp_stl::Standard_Library(underworld_root, underworld_profession_library);
-    std::unique_ptr<underworld::Profession> library_pointer(standard_library);
-    underworld_root.add_profession(library_pointer, {standard_library->get_source_file(), 0, 0});
+    lookup(),
+    overworld_root("") {
+    auto standard_library = new cpp_stl::Standard_Library(overworld_root, overworld_profession_library, graph);
+    std::unique_ptr<overworld::Profession> library_pointer(standard_library);
+    overworld_root.add_profession(library_pointer);
   }
 
   void Wrapper::load_file(const std::string &path) {

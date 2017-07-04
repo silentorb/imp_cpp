@@ -22,7 +22,7 @@ namespace underworld {
           return_nothing,
           return_with_value,
           self,
-          unresolved_member,
+//          unresolved_member,
           variable_declaration,
           variable_declaration_and_assignment
       };

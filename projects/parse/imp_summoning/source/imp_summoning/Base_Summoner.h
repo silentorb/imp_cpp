@@ -17,6 +17,10 @@ namespace imp_summoning {
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
 
+      underworld::Source_Point get_source_point() {
+        return input.get_source_point();
+      }
+
       template<typename T>
       inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,
                      const std::string &message) {

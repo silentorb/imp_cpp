@@ -37,10 +37,11 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
-      if (last.get_type() == Expression::Type::unresolved_member) {
-        return process_function_call(path, context);
-      }
-      else if (last.get_type() == Expression::Type::member) {
+//      if (last.get_type() == Expression::Type::unresolved_member) {
+//        return process_function_call(path, context);
+//      }
+//      else
+      if (last.get_type() == Expression::Type::member) {
 //        auto &function = cast<Function>(member);
         auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
                                                           last.get_name() + " is not a function");
@@ -125,7 +126,7 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.dot)) {
       input.next();
       auto name = input.next().get_text();
-      auto child_expression = Expression_Owner(new Member_Expression(name));
+      auto child_expression = Expression_Owner(new Member_Expression(name, get_source_point()));
       auto second = process_child(child_expression, context);
       return Expression_Owner(new Chain(expression, second));
 
@@ -159,7 +160,7 @@ namespace imp_summoning {
     }
     else {
 //      auto &member = find_member(input.current(), context);
-      return Expression_Owner(new Member_Expression(input.current().get_text()));
+      return Expression_Owner(new Member_Expression(input.current().get_text(), get_source_point()));
     }
   }
 

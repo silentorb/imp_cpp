@@ -8,7 +8,8 @@ namespace cpp_stl {
       underworld::Source_File file;
 
   public:
-      Standard_Library(overworld::Scope &parent, overworld:: Profession_Library & profession_library);
+      Standard_Library(overworld::Scope &parent, overworld::Profession_Library &profession_library,
+                       overworld::Graph &graph);
 
       const underworld::Source_File &get_source_file() const {
         return file;

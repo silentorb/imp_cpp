@@ -28,12 +28,18 @@ namespace overworld {
       std::vector<Minion *> parameters;
       Profession_Node<Function> node;
       const Profession *return_type;
+      const std::string name;
       bool is_static = false;
       bool returns_a_value() const;
 
   public:
       Function(const underworld::Function &source, const Profession &return_type, Scope &parent_scope) :
-        source(source), return_type(&return_type),
+        name(source.get_name()), source(source), return_type(&return_type),
+        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
+        node(*this) {}
+
+      Function(const std::string &name, const Profession &return_type, Scope &parent_scope) :
+        name(name), source(source), return_type(&return_type),
         scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
         node(*this) {}
 
@@ -51,8 +57,8 @@ namespace overworld {
         return Type::function;
       }
 
-      const std::string get_name() const override{
-        return source.get_name();
+      const std::string get_name() const override {
+        return name;
       }
 
       bool is_constructor() const;
@@ -71,7 +77,7 @@ namespace overworld {
         return node;
       }
 
-      const Profession &get_profession() const override{
+      const Profession &get_profession() const override {
         return *return_type;
       }
 

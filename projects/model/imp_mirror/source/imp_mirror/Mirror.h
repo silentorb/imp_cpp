@@ -42,7 +42,7 @@ namespace imp_mirror {
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
-      overworld::Expression_Owner reflect_method(const underworld::Member_Expression &input_member_expression,
+      overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
                                                  overworld::Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);

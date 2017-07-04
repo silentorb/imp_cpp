@@ -23,6 +23,7 @@ namespace overworld {
       std::vector<Variable_Owner> minions;
       std::vector<std::unique_ptr<const Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
+      std::map<std::string, Member *> members;
 
   public:
       Scope(const underworld::Scope *source, Scope *parent);
@@ -30,9 +31,16 @@ namespace overworld {
 
       Function &create_function(const underworld::Function &input, const Profession &profession,
                                 overworld::Graph &graph);
+
+      Function &create_function(const std:: string & name, const Profession &profession,
+                                overworld::Graph &graph);
+
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
       void add_profession(std::unique_ptr<const Profession> &profession);
+      void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
+      Dungeon &create_dungeon(const std::string &name);
+      Member *find_member(const std::string &name);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;

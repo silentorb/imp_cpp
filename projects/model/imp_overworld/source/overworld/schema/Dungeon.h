@@ -18,14 +18,19 @@ namespace overworld {
       const std::string &name;
 
   public:
-      Dungeon(const std::string &name, const underworld::Scope *source, Scope *parent) :
-        name(name), Scope(source, parent), header_file(header_file), node(*this) {}
+      Dungeon(const std::string &name, Scope &parent) :
+        name(name), Scope(nullptr, &parent), header_file(header_file), node(*this) {}
+
+      Dungeon(const std::string &name) :
+        name(name), Scope(nullptr, nullptr), header_file(header_file), node(*this) {}
 
       virtual ~Dungeon() {
 
       }
 
-      virtual const std::string get_name() const = 0;
+      const std::string get_name() const {
+        return name;
+      }
 
       void set_file(File *value) {
         header_file = value;

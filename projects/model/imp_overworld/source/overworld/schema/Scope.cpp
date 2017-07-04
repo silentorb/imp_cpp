@@ -31,6 +31,17 @@ namespace overworld {
     if (!function->is_constructor())
       graph.add_node(function->get_node());
 
+    members[input.get_name()] = function;
+    return *function;
+  }
+
+  Function &Scope::create_function(const std::string &name, const Profession &profession, overworld::Graph &graph) {
+    auto function = new Function(name, profession, *this);
+    functions.push_back(unique_ptr<Function>(function));
+    if (!function->is_constructor())
+      graph.add_node(function->get_node());
+
+    members[name] = function;
     return *function;
   }
 
@@ -56,6 +67,17 @@ namespace overworld {
     professions.push_back(std::move(profession));
   }
 
+  void Scope::add_profession(std::unique_ptr<Profession> &profession) {
+    professions.push_back(std::move(profession));
+  }
+
+  Dungeon &Scope::create_dungeon(const std::string &name) {
+    auto dungeon = new Dungeon(name, *this);
+    auto pointer = unique_ptr<Dungeon>(dungeon);
+    add_dungeon(pointer);
+    return *dungeon;
+  }
+
   void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
     dungeons.push_back(std::move(dungeon));
   }
@@ -65,11 +87,17 @@ namespace overworld {
   }
 
   Function *Scope::get_function(const std::string &function_name) {
-    for(auto & function: functions) {
+    for (auto &function: functions) {
       if (function->get_name() == function_name)
         return function.get();
     }
 
     return nullptr;
+  }
+
+  Member *Scope::find_member(const std::string &name) {
+    return members.count(name) != 0
+           ? members.at(name)
+           : nullptr;
   }
 }

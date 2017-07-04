@@ -6,10 +6,12 @@
 namespace underworld {
 
   class Member_Expression : public virtual Common_Expression {
-      const std:: string name;
+      const std::string name;
+      Source_Point point;
 
   public:
-      Member_Expression(const std::string &name) : name(name) {}
+      Member_Expression(const std::string &name, const Source_Point &point) :
+        name(name), point(point) {}
 
       virtual ~Member_Expression() {
 
@@ -19,11 +21,13 @@ namespace underworld {
         return Type::member;
       }
 
-
       const std::string get_name() const override {
         return name;
       }
 
+      const Source_Point &get_source_point() const {
+        return point;
+      }
   };
 
 }

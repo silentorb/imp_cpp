@@ -13,8 +13,7 @@ namespace imp_wrapper {
 
   class Wrapper {
       underworld::Dungeon underworld_root;
-      overworld::Derived_Dungeon overworld_root;
-      underworld::Profession_Library underworld_profession_library;
+      overworld::Dungeon overworld_root;
       imp_summoning::Lookup lookup;
       overworld::Profession_Library overworld_profession_library;
       imp_mirror::Element_Map element_map;
