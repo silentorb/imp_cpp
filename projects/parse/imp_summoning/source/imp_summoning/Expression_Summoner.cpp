@@ -18,8 +18,10 @@ namespace imp_summoning {
     Base_Summoner(input, lookup) {}
 
   Expression_Owner Expression_Summoner::process_variable_declaration(Context &context) {
-    auto &minion = context.get_scope().create_minion(input.expect_next(lexicon.identifier).get_text(),
-                                                      input.get_source_point());
+//    auto &minion = context.get_scope().create_minion(input.expect_next(lexicon.identifier).get_text(),
+//                                                      input.get_source_point());
+    auto name = input.expect_next(lexicon.identifier).get_text();
+    Minion_Owner minion(new Minion(name, input.get_source_point()));
     if (input.peek().is(lexicon.assignment)) {
       input.next();
       auto expression = process_expression(context);
@@ -42,11 +44,6 @@ namespace imp_summoning {
 //        auto &function = cast<Function>(member);
         auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
                                                           last.get_name() + " is not a function");
-        auto &member = member_expression.get_member();
-
-        if (member.get_type() == Member::Type::profession) {
-          process_constructor_invocation(member);
-        }
 
         return process_function_call(path, context);
       }
@@ -64,18 +61,18 @@ namespace imp_summoning {
     }
   }
 
-  void Expression_Summoner::process_constructor_invocation(Member &member) {
-    auto &profession = cast<Profession_Member>(member).get_profession();
-    if (profession.get_type() == Profession::Type::dungeon) {
-      auto &dungeon = cast<Dungeon>(profession);
-      auto function = dungeon.get_function(dungeon.get_name());
-      if (!function) {
-        auto &function2 = dungeon.create_function(dungeon.get_name(),
-                                                  dungeon,
-                                                  input.get_source_point());
-      }
-    }
-  }
+//  void Expression_Summoner::process_constructor_invocation(Member &member) {
+//    auto &profession = cast<Profession_Member>(member).get_profession();
+//    if (profession.get_type() == Profession::Type::dungeon) {
+//      auto &dungeon = cast<Dungeon>(profession);
+//      auto function = dungeon.get_function(dungeon.get_name());
+//      if (!function) {
+//        auto &function2 = dungeon.create_function(dungeon.get_name(),
+//                                                  dungeon,
+//                                                  input.get_source_point());
+//      }
+//    }
+//  }
 
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
     auto &token = input.next();
@@ -128,24 +125,28 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.dot)) {
       input.next();
       auto name = input.next().get_text();
-      auto &profession = expression->get_profession();
-      if (profession.get_type() == Profession::Type::unknown) {
-        auto second = Expression_Owner(new Unresolved_Member_Expression(name, input.get_source_point()));
-        return Expression_Owner(new Chain(expression, second));
-      }
-      if (profession.get_type() == Profession::Type::dungeon) {
-        auto &dungeon = *dynamic_cast<const Dungeon *>(&profession);
-        auto member = const_cast<Dungeon &>(dungeon).get_member(name);
-        if (member) {
-          auto child_expression = Expression_Owner(new Member_Expression(*member));
-          auto second = process_child(child_expression, context);
-          return Expression_Owner(new Chain(expression, second));
-        }
-      }
+      auto child_expression = Expression_Owner(new Member_Expression(name));
+      auto second = process_child(child_expression, context);
+      return Expression_Owner(new Chain(expression, second));
 
-      throw imp_summoning::Token_Exception(input.current(), "Type " + profession.get_name()
-                                                            + " does not have a member named "
-                                                            + name + ".");
+//      auto &profession = expression->get_profession();
+//      if (profession.get_type() == Profession::Type::unknown) {
+//        auto second = Expression_Owner(new Unresolved_Member_Expression(name, input.get_source_point()));
+//        return Expression_Owner(new Chain(expression, second));
+//      }
+//      if (profession.get_type() == Profession::Type::dungeon) {
+//        auto &dungeon = *dynamic_cast<const Dungeon *>(&profession);
+//        auto member = const_cast<Dungeon &>(dungeon).get_member(name);
+//        if (member) {
+//          auto child_expression = Expression_Owner(new Member_Expression(*member));
+//          auto second = process_child(child_expression, context);
+//          return Expression_Owner(new Chain(expression, second));
+//        }
+//      }
+
+//      throw imp_summoning::Token_Exception(input.current(), "Type " + profession.get_name()
+//                                                            + " does not have a member named "
+//                                                            + name + ".");
     }
     else {
       return std::move(expression);
@@ -157,8 +158,8 @@ namespace imp_summoning {
       return Expression_Owner(new Self(context.get_scope().get_dungeon()));
     }
     else {
-      auto &member = find_member(input.current(), context);
-      return Expression_Owner(new Member_Expression(member));
+//      auto &member = find_member(input.current(), context);
+      return Expression_Owner(new Member_Expression(input.current().get_text()));
     }
   }
 

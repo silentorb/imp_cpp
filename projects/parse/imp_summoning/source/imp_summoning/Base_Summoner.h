@@ -15,7 +15,7 @@ namespace imp_summoning {
       Lookup &lookup;
 //      underworld::Profession_Library &profession_library;
 
-      underworld::Member &find_member(const Token &rune, Context &context);
+//      underworld::Member &find_member(const Token &rune, Context &context);
 
       template<typename T>
       inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,

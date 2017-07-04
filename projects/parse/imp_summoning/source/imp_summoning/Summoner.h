@@ -17,7 +17,7 @@ namespace imp_summoning {
       void process_root(Context &context);
       void process_root_identifier(const std::string &name, Context &context);
       void process_minion(const std::string &name, Context &context);
-      Profession_Owner process_optional_profession(Context &context);
+      underworld::Profession_Owner process_optional_profession(Context &context);
        underworld::Profession_Owner process_profession(Context &context);
 //      underworld::Profession *find_profession(Context &context);
 //      underworld::Profession *find_profession();

@@ -70,9 +70,9 @@ namespace imp_mirror {
                                                        const underworld::Expression &second,
                                                        overworld::Scope &scope);
 
-      overworld::Expression_Owner reflect_unresolved(overworld::Expression &previous,
-                                                     const underworld::Unresolved_Member_Expression &member_expression,
-                                                     overworld::Scope &scope);
+//      overworld::Expression_Owner reflect_unresolved(overworld::Expression &previous,
+//                                                     const underworld::Unresolved_Member_Expression &member_expression,
+//                                                     overworld::Scope &scope);
 
       overworld::Expression_Owner reflect_statement_expression(const underworld::Expression &input_expression,
                                                                overworld::Scope &scope);
