@@ -8,24 +8,19 @@
 namespace underworld {
 
   class Profession_Member : public Member {
-      std::vector<std::unique_ptr<Profession>> professions;
+      Profession_Owner profession;
 
   public:
       Profession_Member(std::unique_ptr<Profession> &profession, const Source_Point &source_point) :
-        Member(source_point) {
-        add_profession(profession);
-      }
-
-      void add_profession(std::unique_ptr<Profession> &profession) {
-        professions.push_back(std::move(profession));
+        Member(source_point), profession(std::move(profession)) {
       }
 
       const Profession &get_profession() const override {
-        return *professions[0];
+        return *profession;
       }
 
       Profession &get_profession() {
-        return *professions[0];
+        return *profession;
       }
 
       Type get_type() const override {
@@ -33,7 +28,7 @@ namespace underworld {
       }
 
       const std::string get_name() const override {
-        return professions[0]->get_name();
+        return profession->get_name();
       }
   };
 }

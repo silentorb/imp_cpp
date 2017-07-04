@@ -27,5 +27,5 @@ namespace underworld {
 
   };
 
-  using Member_Pointer = std::unique_ptr<Member>;
+  using Member_Owner = std::unique_ptr<Member>;
 }

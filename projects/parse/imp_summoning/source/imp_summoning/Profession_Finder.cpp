@@ -3,7 +3,8 @@
 
 namespace imp_summoning {
 
-  underworld::Profession *find_profession(underworld::Scope &scope, const runic_imp::Symbols &lexicon, Stream &input) {
+  underworld::Profession_Owner find_profession(underworld::Scope &scope, const runic_imp::Symbols &lexicon,
+                                               Stream &input) {
     std::string last = "";
     auto current_scope = &scope;
 
@@ -35,35 +36,4 @@ namespace imp_summoning {
 
     return nullptr;
   }
-
-//  void Profession_Finder::prepare_path_buffer(Stream &input) {
-//    path_buffer.clear();
-//    path_buffer.push_back(input.current().get_text());
-//
-//    while (input.peek().is(lexicon.dot)) {
-//      input.next();
-//      if (!input.peek().is(lexicon.identifier))
-//        break;
-//
-//      path_buffer.push_back(input.next().get_text());
-//      ++progress;
-//    }
-//
-//  }
-
-//  underworld::Profession *Profession_Finder::find(underworld::Scope &scope, Stream &input) {
-////    progress = 0;
-////    prepare_path_buffer(input);
-////    current_string = &path_buffer[0];
-//    return find(input.current().get_text(), scope);
-//  }
-
-//  const std::string Profession_Finder::get_failure_path() const {
-//    std::string result = path_buffer[0];
-//    for (int i = 1; i < progress + 1; ++i) {
-//      result += "." + path_buffer[i];
-//    }
-//
-//    return result;
-//  }
 }

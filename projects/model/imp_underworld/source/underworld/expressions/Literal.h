@@ -1,6 +1,6 @@
 #pragma once
 
-#include <underworld/schema/professions.h>
+#include <underworld/schema/primitives.h>
 #include <underworld/schema/Profession_Library.h>
 #include <underworld/Source_Point.h>
 #include "Expression.h"
@@ -23,9 +23,6 @@ namespace underworld {
 
       virtual Primitive_Type get_primitive_type() const = 0;
 
-      virtual const Profession &get_profession() const override {
-        return Profession_Library::get_primitive(get_primitive_type());
-      }
 
       const Source_Point &get_source_point() const {
         return source_point;

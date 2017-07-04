@@ -33,10 +33,6 @@ namespace underworld {
         return "chain";
       }
 
-      const Profession &get_profession() const override {
-        return second->get_profession();
-      }
-
       const Expression &get_first() const {
         return *first;
       }

@@ -14,31 +14,31 @@ namespace imp_summoning {
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 
-  const underworld::Profession &Summoner::process_profession(Context &context) {
-    auto &primitive = lookup.get_primitive(input.current().get_match().get_type());
-    if (&primitive != &profession_library.get_unknown())
-      return primitive;
+  underworld::Profession_Owner Summoner::process_profession(Context &context) {
+    auto primitive = lookup.get_primitive(input.current().get_match().get_type());
+    if (primitive != Primitive_Type::Unknown)
+      return Profession_Owner(new Primitive(primitive));
 
     auto profession = find_profession(context.get_scope(), lexicon, input);
     if (profession)
-      return *profession;
+      return profession;
 
     throw Syntax_Exception(input.current());
   }
 
-  const Profession &Summoner::process_optional_profession(Context &context) {
+  Profession_Owner Summoner::process_optional_profession(Context &context) {
     if (input.peek().is(lexicon.colon)) {
       input.next();
       input.next();
       return process_profession(context);
     }
     else {
-      return profession_library.get_unknown();
+      return Profession_Owner();
     }
   }
 
   void Summoner::process_minion(const std::string &name, Context &context) {
-    auto &profession = process_optional_profession(context);
+    auto profession = process_optional_profession(context);
     context.get_scope().create_minion(name, profession, input.get_source_point());
   }
 
@@ -77,14 +77,14 @@ namespace imp_summoning {
 //     throw Syntax_Exception(input.current());
       auto source_point = input.get_source_point();
       auto &name = input.current().get_text();
-      auto &profession = process_optional_profession(context);
+      auto profession = process_optional_profession(context);
       auto &minion = func.add_parameter(name, profession, source_point);
     }
 //    input.next();
   }
 
   void Summoner::process_function(const std::string &name, Context &context) {
-    auto &profession = process_optional_profession(context);
+    auto profession = process_optional_profession(context);
     auto &function = context.get_scope().create_function(name, profession, input.get_source_point());
     process_function_parameters(context, function);
 //    input.current().get_text();

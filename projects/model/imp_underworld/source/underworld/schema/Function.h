@@ -11,12 +11,12 @@ namespace underworld {
       const std::string name;
       Block block;
       std::vector<Minion *> parameters;
-      const Profession &return_type;
+       Profession_Owner return_type;
       bool is_static = false;
 
   public:
-      Function(const std::string &name, const Profession &return_type, const Source_Point &source, Scope &parent) :
-        name(name), return_type(return_type), Member(source), block(parent) {}
+      Function(const std::string &name, Profession_Owner &return_type, const Source_Point &source, Scope &parent) :
+        name(name), return_type(std:: move(return_type)), Member(source), block(parent) {}
 
       Block &get_block() {
         return block;
@@ -34,14 +34,14 @@ namespace underworld {
         return name;
       }
 
-      Minion &add_parameter(const std::string &name, const Profession &profession, const Source_Point &source);
+      Minion &add_parameter(const std::string &name, Profession_Owner &profession, const Source_Point &source);
 
       const std::vector<Minion *> &get_parameters() const {
         return parameters;
       }
 
       const Profession &get_profession() const override {
-        return return_type;
+        return *return_type;
       }
   };
 

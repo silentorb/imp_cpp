@@ -23,8 +23,5 @@ namespace underworld {
         return dungeon.get_name();
       }
 
-      const Profession &get_profession() const override {
-        return dungeon;
-      }
   };
 }

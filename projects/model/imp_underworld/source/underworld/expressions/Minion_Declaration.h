@@ -7,10 +7,10 @@ namespace underworld {
 
   class Minion_Declaration : public virtual Statement {
   protected:
-      Minion &minion;
+      Minion_Owner minion;
 
   public:
-      Minion_Declaration(Minion &variable) : minion(variable) {}
+      Minion_Declaration(Minion_Owner &variable) : minion(std:: move(variable)) {}
 
       virtual ~Minion_Declaration() {
 
@@ -21,7 +21,7 @@ namespace underworld {
       }
 
       const Minion &get_minion() const {
-        return minion;
+        return* minion;
       }
   };
 
@@ -29,7 +29,7 @@ namespace underworld {
       Expression_Owner expression;
 
   public:
-      Minion_Declaration_And_Assignment(Minion &minion, Expression_Owner &expression) :
+      Minion_Declaration_And_Assignment(Minion_Owner &minion, Expression_Owner &expression) :
         Minion_Declaration(minion), expression(std::move(expression)) {}
 
       virtual ~Minion_Declaration_And_Assignment() {

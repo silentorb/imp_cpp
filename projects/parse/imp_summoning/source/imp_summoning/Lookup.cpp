@@ -5,16 +5,15 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Lookup::Lookup(underworld::Profession_Library &profession_library) :
+  Lookup::Lookup() :
     lexicon(runic_imp::Lexicon::get_instance().patterns),
-    profession_library(profession_library),
-    primitive_map(
+        primitive_map(
       {
-        {&lexicon.Bool, &profession_library.get_primitive(Primitive_Type::Bool)},
-        {&lexicon.Double, &profession_library.get_primitive(Primitive_Type::Double)},
-        {&lexicon.Float, &profession_library.get_primitive(Primitive_Type::Float)},
-        {&lexicon.Int, &profession_library.get_primitive(Primitive_Type::Int)},
-        {&lexicon.String, &profession_library.get_primitive(Primitive_Type::String)},
+        {&lexicon.Bool, Primitive_Type::Bool},
+        {&lexicon.Double, Primitive_Type::Double},
+        {&lexicon.Float, Primitive_Type::Float},
+        {&lexicon.Int, Primitive_Type::Int},
+        {&lexicon.String, Primitive_Type::String},
       }),
     expression_operator_map(
       {
@@ -26,13 +25,13 @@ namespace imp_summoning {
       }) {
   }
 
-  const underworld::Profession &Lookup::get_primitive(const runic_imp::Whisper *whisper) {
+  underworld::Primitive_Type Lookup::get_primitive(const runic_imp::Whisper *whisper) {
     auto search = primitive_map.find(whisper);
     if (search != primitive_map.end()) {
-      return *(*search).second;
+      return (*search).second;
     }
 
-    return profession_library.get_unknown();
+    return Primitive_Type::Unknown;
   }
 
   bool find(const Operator_Map &operator_map, const runic_imp::Whisper *whisper, underworld::Operator_Type &result) {

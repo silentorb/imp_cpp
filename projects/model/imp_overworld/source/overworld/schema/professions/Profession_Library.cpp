@@ -36,10 +36,10 @@ namespace overworld {
     anonymous_dungeons[&minion] = std::move(dungeon);
   }
 
-  Dungeon &Profession_Library::create_anonymous_dungeon(Minion &minion) {
-    auto result = new Anonymous_Dungeon();
-    Dungeon_Pointer dungeon(result);
-    add_anonymous_dungeon(minion, dungeon);
-    return *result;
-  }
+//  Dungeon &Profession_Library::create_anonymous_dungeon(Minion &minion) {
+//    auto result = new Anonymous_Dungeon();
+//    Dungeon_Pointer dungeon(result);
+//    add_anonymous_dungeon(minion, dungeon);
+//    return *result;
+//  }
 }

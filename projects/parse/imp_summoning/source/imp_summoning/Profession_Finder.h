@@ -24,6 +24,7 @@ namespace imp_summoning {
 ////      const std::string get_failure_path() const;
 //  };
 
-  underworld::Profession *find_profession(underworld::Scope &current_scope, const runic_imp::Symbols &lexicon, Stream &input);
+  underworld::Profession_Owner find_profession(underworld::Scope &current_scope, const runic_imp::Symbols &lexicon,
+                                               Stream &input);
 
 }

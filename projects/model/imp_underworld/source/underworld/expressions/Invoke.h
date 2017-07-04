@@ -38,8 +38,5 @@ namespace underworld {
         return *expression;
       }
 
-      const Profession &get_profession() const override {
-        return expression->get_profession();
-      }
   };
 }

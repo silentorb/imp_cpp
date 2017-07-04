@@ -13,7 +13,7 @@ namespace imp_summoning {
       Stream &input;
       const runic_imp::Symbols &lexicon;
       Lookup &lookup;
-      underworld::Profession_Library &profession_library;
+//      underworld::Profession_Library &profession_library;
 
       underworld::Member &find_member(const Token &rune, Context &context);
 
