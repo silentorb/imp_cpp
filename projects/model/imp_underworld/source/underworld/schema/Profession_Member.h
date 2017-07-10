@@ -15,8 +15,8 @@ namespace underworld {
         Member(source_point), profession(std::move(profession)) {
       }
 
-      const Profession &get_profession() const override {
-        return *profession;
+      const Profession * get_profession() const override {
+        return profession.get();
       }
 
       Profession &get_profession() {

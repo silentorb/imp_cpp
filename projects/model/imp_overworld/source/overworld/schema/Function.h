@@ -22,7 +22,6 @@ namespace overworld {
 //  };
 
   class Function : public virtual Member, public virtual Profession_Reference {
-      const underworld::Function &source;
       Function_Scope scope;
       Block block;
       std::vector<Minion *> parameters;
@@ -31,17 +30,19 @@ namespace overworld {
       const std::string name;
       bool is_static = false;
       bool returns_a_value() const;
+      const underworld::Source_Point source_point;
 
   public:
-      Function(const underworld::Function &source, const Profession &return_type, Scope &parent_scope) :
-        name(source.get_name()), source(source), return_type(&return_type),
-        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
-        node(*this) {}
+//      Function(const Profession &return_type, Scope &parent_scope) :
+//        name(source.get_name()), source(source), return_type(&return_type),
+//        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
+//        node(*this) {}
 
-      Function(const std::string &name, const Profession &return_type, Scope &parent_scope) :
-        name(name), source(source), return_type(&return_type),
-        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
-        node(*this) {}
+      Function(const std::string &name, const Profession &return_type, Scope &parent_scope,
+               const underworld::Source_Point &source_point) :
+        name(name), return_type(&return_type),
+        scope(parent_scope, *this), block(scope),
+        node(*this), source_point(source_point) {}
 
       ~Function() {}
 
@@ -86,7 +87,7 @@ namespace overworld {
       }
 
       const underworld::Source_Point &get_source_point() override {
-        return source.get_source_point();
+        return source_point;
       }
 
       void finalize(overworld::Profession_Library &profession_library);

@@ -11,32 +11,25 @@ namespace overworld {
 
   Scope::Scope(const underworld::Scope *source, Scope *parent) :
     source(source), parent(parent) {
-
+    int k = 0;
   }
 
-  Function_Scope::Function_Scope(const underworld::Scope &source, Scope &parent, Function &function) :
-    Scope(&source, &parent), function(&function) {
+  Scope::Scope(Scope *parent) :
+    source(nullptr), parent(parent) {
+  }
+
+  Function_Scope::Function_Scope(Scope &parent, Function &function) :
+    Scope(&parent), function(&function) {
 
   }
 
   Scope::~Scope() {
-
+    int k = 0;
   }
 
-  Function &Scope::create_function(const underworld::Function &input, const Profession &profession,
-                                   overworld::Graph &graph) {
-//    check_has_member(name);
-    auto function = new Function(input, profession, *this);
-    functions.push_back(unique_ptr<Function>(function));
-    if (!function->is_constructor())
-      graph.add_node(function->get_node());
-
-    members[input.get_name()] = function;
-    return *function;
-  }
-
-  Function &Scope::create_function(const std::string &name, const Profession &profession, overworld::Graph &graph) {
-    auto function = new Function(name, profession, *this);
+  Function &Scope::create_function(const std::string &name, const Profession &profession, overworld::Graph &graph,
+                                   const underworld::Source_Point &source_point) {
+    auto function = new Function(name, profession, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
     if (!function->is_constructor())
       graph.add_node(function->get_node());
@@ -45,12 +38,18 @@ namespace overworld {
     return *function;
   }
 
+  Function &Scope::create_function(const underworld::Function &input, const Profession &profession,
+                                   overworld::Graph &graph) {
+    return create_function(input.get_name(), profession, graph, input.get_source_point());
+  }
+
   Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph) {
 //    check_has_member(name);
 
     auto minion = new Minion(input, profession);
     minions.push_back(unique_ptr<Minion>(minion));
     graph.add_node(minion->get_node());
+    members[minion->get_name()] = minion;
     return *minion;
   }
 
@@ -98,6 +97,8 @@ namespace overworld {
   Member *Scope::find_member(const std::string &name) {
     return members.count(name) != 0
            ? members.at(name)
-           : nullptr;
+           : (parent
+              ? parent->find_member(name)
+              : nullptr);
   }
 }

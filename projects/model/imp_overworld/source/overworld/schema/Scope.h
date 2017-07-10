@@ -27,13 +27,14 @@ namespace overworld {
 
   public:
       Scope(const underworld::Scope *source, Scope *parent);
+      Scope(Scope *parent);
       virtual ~Scope();
 
       Function &create_function(const underworld::Function &input, const Profession &profession,
                                 overworld::Graph &graph);
 
-      Function &create_function(const std:: string & name, const Profession &profession,
-                                overworld::Graph &graph);
+      Function &create_function(const std::string &name, const Profession &profession, overworld::Graph &graph,
+                                      const underworld::Source_Point &source_point);
 
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
       void add_profession(std::unique_ptr<const Profession> &profession);
@@ -88,7 +89,7 @@ namespace overworld {
       Function *function = nullptr;
 
   public:
-      Function_Scope(const underworld::Scope &source, Scope &parent, Function &function);
+      Function_Scope(Scope &parent, Function &function);
 
       virtual Function &get_function() override {
         return *function;

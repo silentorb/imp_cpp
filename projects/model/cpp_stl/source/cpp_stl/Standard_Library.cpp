@@ -9,6 +9,6 @@ namespace cpp_stl {
     underworld::Source_Point source_point(file, 0, 0);
     auto &vector = create_dungeon("vector");
     auto &void_type = profession_library.get_primitive(overworld::Primitive_Type::Void);
-    vector.create_function("push_back", void_type, graph);
+    vector.create_function("push_back", void_type, graph, source_point);
   }
 }

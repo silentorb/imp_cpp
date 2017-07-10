@@ -37,7 +37,7 @@ namespace underworld {
       }
 
       const std::string to_string() const {
-        return source_file->get_file_path() + " (" + std::to_string(column) + ":" + std::to_string(row) + ")";
+        return source_file->get_file_path() + " (" + std::to_string(row) + ":" + std::to_string(column) + ")";
       }
   };
 }

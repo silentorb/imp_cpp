@@ -15,7 +15,7 @@ namespace overworld {
   class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
-      const std::string &name;
+      const std::string name;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
