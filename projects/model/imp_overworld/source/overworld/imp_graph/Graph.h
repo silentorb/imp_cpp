@@ -12,10 +12,12 @@ namespace overworld {
   class Graph {
       std::unique_ptr<graphing::Reference_Graph<Node, Connection>> graph;
 
+      void add_node(Node & node);
+      bool has_node(Node &node);
+
   public:
       Graph();
       virtual ~Graph();
-      void add_node(Node & node);
       Connection &connect(Node &first, Node &second);
 
       graphing::Reference_Graph<Node, Connection> &get_graph() {

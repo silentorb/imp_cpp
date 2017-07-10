@@ -24,8 +24,8 @@ namespace overworld {
 
       }
 
-      Type get_type() const override {
-        return Type::variable;
+      Member_Type get_member_type() const override {
+        return Member_Type::variable;
       }
 
       const std::string get_name() const override{

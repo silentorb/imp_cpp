@@ -54,8 +54,8 @@ namespace overworld {
         return block;
       }
 
-      Type get_type() const override {
-        return Type::function;
+      Member_Type get_member_type() const override {
+        return Member_Type::function;
       }
 
       const std::string get_name() const override {

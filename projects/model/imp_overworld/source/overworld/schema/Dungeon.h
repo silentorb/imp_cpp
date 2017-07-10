@@ -12,7 +12,8 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference {
+  class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference,
+  public virtual Member {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
       const std::string name;
@@ -72,7 +73,11 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      Function &get_constructor();
+      Function &get_or_create_constructor();
+
+      Member_Type get_member_type() const override {
+        return Member_Type:: dungeon;
+      }
   };
 
 //

@@ -5,12 +5,14 @@ using namespace std;
 
 namespace overworld {
 
-  Function &Dungeon::get_constructor() {
+  Function &Dungeon::get_or_create_constructor() {
     for (auto &method: functions) {
       if (method->get_name() == get_name())
         return *method;
     }
-    throw std::runtime_error("Could not find constructor.");
+
+    return create_function(get_name(), *this, underworld::Source_Point());
+//    throw std::runtime_error("Could not find constructor.");
   }
 
 //  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {

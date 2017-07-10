@@ -21,8 +21,8 @@ namespace overworld {
 
       virtual ~Unresolved_Member() {}
 
-      Type get_type() const override {
-        return Type::unresolved;
+      Member_Type get_member_type() const override {
+        return Member_Type::unresolved;
       }
 
       void set_second(Expression &value) {

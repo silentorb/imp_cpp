@@ -24,6 +24,8 @@ namespace underworld {
       Source_Point(const Source_File &source_file, unsigned long row, unsigned long column) :
         source_file(&source_file), column(column), row(row) {}
 
+      Source_Point() : source_file(nullptr), row(0), column(0) {}
+
       const Source_File &get_source_file() const {
         return *source_file;
       }

@@ -61,7 +61,7 @@ namespace imp_mirror {
         throw std::runtime_error("Not implemented.");
     }
 
-    graph.add_node(*expression->get_node());
+//    graph.add_node(*expression->get_node());
     return overworld::Expression_Owner(expression);
   }
 
@@ -165,7 +165,7 @@ namespace imp_mirror {
     if (expression.get_type() == overworld::Expression::Type::member) {
       auto &member_expression = *dynamic_cast<const overworld::Member_Expression *>(&expression);
       auto &member = member_expression.get_member();
-      if (member.get_type() == overworld::Member::Type::function) {
+      if (member.get_member_type() == overworld::Member_Type::function) {
 //        auto &underworld_function = *dynamic_cast<const overworld::Function *>(&member);
         return *dynamic_cast<overworld::Function *>(&member);
 //        auto overworld_function = element_map.find_or_null<overworld::Function>(&underworld_function);
@@ -174,7 +174,11 @@ namespace imp_mirror {
 //
 //        return *overworld_function;
       }
-      else if (member.get_type() == overworld::Member::Type::unresolved) {
+      else if (member.get_member_type() == overworld::Member_Type::dungeon) {
+        auto &dungeon = *dynamic_cast<overworld::Dungeon *>(&member);
+        return dungeon.get_or_create_constructor();
+      }
+      else if (member.get_member_type() == overworld::Member_Type::unresolved) {
 
       }
 
@@ -364,7 +368,7 @@ namespace imp_mirror {
   void Mirror::reflect_function1(const underworld::Member &member, overworld::Scope &scope) {
     auto &input_function = *(dynamic_cast<const underworld::Function *>(&member));
     auto &profession = reflect_profession(input_function.get_profession());
-    auto &output_function = scope.create_function(input_function, profession, graph);
+    auto &output_function = scope.create_function(input_function, profession);
 
     reflect_scope1(input_function.get_block().get_scope(), output_function.get_block().get_scope());
 

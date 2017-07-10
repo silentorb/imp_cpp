@@ -27,20 +27,18 @@ namespace overworld {
     int k = 0;
   }
 
-  Function &Scope::create_function(const std::string &name, const Profession &profession, overworld::Graph &graph,
-                                   const underworld::Source_Point &source_point) {
+  Function &Scope::create_function(const std::string &name, const Profession &profession, const underworld::Source_Point &source_point) {
     auto function = new Function(name, profession, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
-    if (!function->is_constructor())
-      graph.add_node(function->get_node());
+//    if (!function->is_constructor())
+//      graph.add_node(function->get_node());
 
     members[name] = function;
     return *function;
   }
 
-  Function &Scope::create_function(const underworld::Function &input, const Profession &profession,
-                                   overworld::Graph &graph) {
-    return create_function(input.get_name(), profession, graph, input.get_source_point());
+  Function &Scope::create_function(const underworld::Function &input, const Profession &profession) {
+    return create_function(input.get_name(), profession, input.get_source_point());
   }
 
   Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph) {
@@ -48,7 +46,7 @@ namespace overworld {
 
     auto minion = new Minion(input, profession);
     minions.push_back(unique_ptr<Minion>(minion));
-    graph.add_node(minion->get_node());
+//    graph.add_node(minion->get_node());
     members[minion->get_name()] = minion;
     return *minion;
   }
@@ -74,10 +72,12 @@ namespace overworld {
     auto dungeon = new Dungeon(name, *this);
     auto pointer = unique_ptr<Dungeon>(dungeon);
     add_dungeon(pointer);
+    members[name] = dungeon;
     return *dungeon;
   }
 
   void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
+    members[dungeon->get_name()] = dungeon.get();
     dungeons.push_back(std::move(dungeon));
   }
 

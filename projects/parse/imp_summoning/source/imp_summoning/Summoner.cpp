@@ -14,14 +14,27 @@ namespace imp_summoning {
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 
+  underworld::Profession_Owner Summoner::process_profession_token(Context &context) {
+    auto name = input.current().get_text();
+    if (input.peek().is(lexicon.dot)) {
+      input.next();
+      if (input.next().is_not(lexicon.identifier))
+        throw Syntax_Exception(input.current());
+      
+      auto child = process_profession_token(context);
+      return Profession_Owner(new Dungeon_Reference_Profession(name, child));
+    }
+    else {
+      return Profession_Owner(new Token_Profession(name));
+    }
+  }
+
   underworld::Profession_Owner Summoner::process_profession(Context &context) {
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown)
       return Profession_Owner(new Primitive(primitive));
 
-    auto profession = find_profession(context.get_scope(), lexicon, input);
-    if (profession)
-      return profession;
+    return process_profession_token(context);
 
     throw Syntax_Exception(input.current());
   }

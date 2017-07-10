@@ -3,10 +3,10 @@
 
 namespace imp_summoning {
 
-  underworld::Profession_Owner find_profession(underworld::Scope &scope, const runic_imp::Symbols &lexicon,
-                                               Stream &input) {
-    throw std:: runtime_error("Not implemented.");
-  }
+//  underworld::Profession_Owner find_profession(underworld::Scope &scope, const runic_imp::Symbols &lexicon,
+//                                               Stream &input) {
+//    throw std:: runtime_error("Not implemented.");
+//  }
 //    std::string last = "";
 //    auto current_scope = &scope;
 //
