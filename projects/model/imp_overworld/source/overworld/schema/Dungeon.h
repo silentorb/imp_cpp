@@ -13,7 +13,7 @@ namespace overworld {
   using Dungeons = std::vector<Dungeon_Owner>;
 
   class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference,
-  public virtual Member {
+                  public virtual Member {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
       const std::string name;
@@ -25,9 +25,7 @@ namespace overworld {
       Dungeon(const std::string &name) :
         name(name), Scope(nullptr, nullptr), header_file(header_file), node(*this) {}
 
-      virtual ~Dungeon() {
-
-      }
+      virtual ~Dungeon() {}
 
       const std::string get_name() const {
         return name;
@@ -76,7 +74,7 @@ namespace overworld {
       Function &get_or_create_constructor();
 
       Member_Type get_member_type() const override {
-        return Member_Type:: dungeon;
+        return Member_Type::dungeon;
       }
   };
 

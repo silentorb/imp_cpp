@@ -217,7 +217,18 @@ namespace imp_mirror {
                                                            const underworld::Expression &second,
                                                            overworld::Scope &scope) {
 
-//    if (second.get_type() == underworld::Expression::Type::unresolved_member) {
+    auto &profession = first.get_last().get_node()->get_profession_reference().get_profession();
+    if (second.get_type() == underworld::Expression::Type::member) {
+      auto &member_expression = cast<underworld::Member_Expression>(second);
+      if (profession.get_type() == overworld::Profession::Type::dungeon) {
+        auto &dungeon = *get_dungeon(first.get_last());
+        auto member = dungeon.get_member(member_expression.get_name());
+        return overworld:: Expression_Owner(new overworld::Member_Expression(*member));
+      }
+      else {
+        throw std::runtime_error("Not implemented.");
+      }
+    }
 ////      return reflect_unresolved(first, cast<underworld::Unresolved_Member_Expression>(second),
 ////                                scope);
 //    }
@@ -383,6 +394,11 @@ namespace imp_mirror {
       auto &minion = output_function.get_block().get_scope().get_minion(source_parameter->get_name());
       output_function.add_parameter(minion);
     }
+
+  }
+
+  void Mirror::reflect_function3(const underworld::Function &input_function) {
+    auto &output_function = *element_map.find_or_null<overworld::Function>(&input_function);
     reflect_block(input_function.get_block(), output_function.get_block());
     output_function.finalize(profession_library);
   }
@@ -446,10 +462,26 @@ namespace imp_mirror {
           auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
           reflect_scope2(input_dungeon, dungeon);
         }
-        else {
-//          auto &profession = reflect_profession(input_profession);
-//          auto &output_minion = output_scope.add_profession(profession);
-//          element_map.add(&input_profession, &output_minion);
+      }
+    }
+  }
+
+  void Mirror::reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::function) {
+        reflect_function3(cast<underworld::Function>(*input_member.second));
+      }
+    }
+
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::profession) {
+        auto input_profession = cast<const underworld::Profession_Member>(*input_member.second)
+          .get_profession();
+
+        if (input_profession->get_type() == underworld::Profession::Type::dungeon) {
+          auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
+          auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
+          reflect_scope3(input_dungeon, dungeon);
         }
       }
     }
@@ -458,6 +490,7 @@ namespace imp_mirror {
   void Mirror::reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output) {
     reflect_scope1(input, output);
     reflect_scope2(input, output);
+    reflect_scope3(input, output);
 
 //    for (auto &entry: input.get_dungeons()) {
 //      auto &input_dungeon = *entry.second;

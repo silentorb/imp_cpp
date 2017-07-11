@@ -101,4 +101,10 @@ namespace overworld {
               ? parent->find_member(name)
               : nullptr);
   }
+
+  Member *Scope::get_member(const std::string &name) {
+    return members.count(name) != 0
+           ? members.at(name)
+           : nullptr;
+  }
 }

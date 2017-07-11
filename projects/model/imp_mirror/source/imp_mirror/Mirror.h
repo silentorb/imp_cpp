@@ -39,8 +39,7 @@ namespace imp_mirror {
 
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
-      void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
+
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
                                                  overworld::Scope &scope);
@@ -81,7 +80,10 @@ namespace imp_mirror {
       const overworld::Profession &reflect_profession(const underworld::Profession *profession);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
       void reflect_function2(const underworld::Function &input_function);
-
+      void reflect_function3(const underworld::Function &input_function);
+      void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
+      void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
+      void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_function_call(const underworld::Invoke &function_call,
                                                         overworld::Scope &scope);

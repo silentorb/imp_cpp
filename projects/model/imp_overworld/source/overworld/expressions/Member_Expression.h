@@ -10,7 +10,7 @@ namespace overworld {
       Member_Pointer owned_member; // Used to optionally own its member
 
   public:
-      Member_Expression(Member &minion) : member(&minion) {}
+      Member_Expression(Member &member) : member(&member) {}
 
       Member_Expression(Member_Pointer &minion) :
         owned_member(std::move(minion)) {

@@ -41,6 +41,8 @@ namespace overworld {
       Primitive(Primitive_Type primitive_type, File *file = nullptr) :
         primitive_type(primitive_type), file(file) {}
 
+      virtual ~Primitive() {}
+
       Type get_type() const override {
         return Type::primitive;
       }
@@ -84,6 +86,8 @@ namespace overworld {
   public:
       Reference(Profession &profession) :
         profession(profession) {}
+
+      virtual ~Reference() {}
 
       Type get_type() const override {
         return Type::reference;

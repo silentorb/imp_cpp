@@ -40,6 +40,7 @@ namespace overworld {
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
       Dungeon &create_dungeon(const std::string &name);
       Member *find_member(const std::string &name);
+      Member *get_member(const std::string &name);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
