@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <handleapi.h>
 #include <processthreadsapi.h>
+#include <imp_mirror/Temporary_Interface_Manager.h>
 
 using namespace std;
 
@@ -38,8 +39,9 @@ void compare(const std::string &first_file, const std::string &second_file) {
 void compile(const std::string &input_file){
   boost::filesystem::create_directory(string(OUTPUT_PATH));
   imp_wrapper::Wrapper wrapper;
+  imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
   wrapper.load_file(string(RESOURCE_PATH) + input_file);
-  wrapper.mirror();
+  wrapper.mirror(temporary_interface_manager);
   wrapper.solve();
   wrapper.render(string(OUTPUT_PATH));
 }

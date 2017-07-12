@@ -18,6 +18,7 @@
 #include <underworld/expressions/Chain.h>
 #include "Element_Map.h"
 #include "Integrity.h"
+#include "Temporary_Interface_Manager.h"
 
 namespace overworld {
   class Block_Expression;
@@ -30,6 +31,7 @@ namespace imp_mirror {
       Element_Map &element_map;
       overworld::Graph &graph;
       Integrity integrity;
+      Temporary_Interface_Manager &temporary_interface_manager;
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_node()->get_profession_reference().get_profession();
@@ -106,12 +108,19 @@ namespace imp_mirror {
         return *dynamic_cast<const Output *>(&expression);
       }
 
+      template<typename Output, typename Input>
+      inline Output &cast(Input &expression) {
+        return *dynamic_cast<Output *>(&expression);
+      }
+
 //      void reflect_dungeon1(const underworld::Dungeon &input, overworld::Dungeon &output);
 //      void reflect_dungeon2(const underworld::Dungeon &input, overworld::Dungeon &output);
 
   public:
-      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph) :
-        profession_library(profession_library), element_map(element_map), graph(graph) {}
+      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph,
+             Temporary_Interface_Manager &temporary_interface_manager) :
+        profession_library(profession_library), element_map(element_map), graph(graph),
+        temporary_interface_manager(temporary_interface_manager) {}
 
       void reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output);
   };

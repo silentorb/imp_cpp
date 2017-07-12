@@ -27,8 +27,8 @@ namespace imp_wrapper {
     summoner.summon(underworld_root);
   }
 
-  void Wrapper::mirror() {
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph);
+  void Wrapper::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager) {
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
     mirror.reflect_dungeon(underworld_root, overworld_root);
   }
 

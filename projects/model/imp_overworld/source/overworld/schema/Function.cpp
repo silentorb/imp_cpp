@@ -32,4 +32,10 @@ namespace overworld {
       node.set_resolved(true);
     }
   }
+
+  Minion &Function::create_parameter(const std::string &name, const Profession &profession) {
+    auto & minion = scope.create_minion(name, profession);
+    add_parameter(minion);
+    return minion;
+  }
 }

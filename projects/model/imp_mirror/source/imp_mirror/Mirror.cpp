@@ -218,7 +218,8 @@ namespace imp_mirror {
                                                            const underworld::Expression &second,
                                                            overworld::Scope &scope) {
 
-    auto &profession = first.get_last().get_node()->get_profession_reference().get_profession();
+    auto &previous_expression = first.get_last();
+    auto &profession = previous_expression.get_node()->get_profession_reference().get_profession();
     if (second.get_type() == underworld::Expression::Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession::Type::dungeon) {
@@ -226,9 +227,20 @@ namespace imp_mirror {
         auto member = dungeon.get_member(member_expression.get_name());
         return overworld::Expression_Owner(new overworld::Member_Expression(*member));
       }
-      else {
-        throw std::runtime_error("Not implemented.");
+      else if (profession.get_type() == overworld::Profession::Type::unknown) {
+        if (previous_expression.get_type() == overworld::Expression::Type::member) {
+          auto &previous_member_expression = cast<overworld::Member_Expression>(previous_expression);
+          auto &member = previous_member_expression.get_member();
+          if (member.get_member_type() == overworld::Member_Type::variable) {
+            auto &minion = cast<overworld::Minion>(member);
+            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
+            auto &function = interface.create_function(member_expression.get_name(), profession_library.get_unknown());
+            return overworld::Expression_Owner(new overworld::Member_Expression(function));
+          }
+        }
       }
+
+      throw std::runtime_error("Not implemented.");
     }
 ////      return reflect_unresolved(first, cast<underworld::Unresolved_Member_Expression>(second),
 ////                                scope);
@@ -366,7 +378,7 @@ namespace imp_mirror {
       if (profession.get_type() == underworld::Profession::Type::dungeon_reference) {
         return reflect_dungeon_reference(profession, dungeon);
       }
-      else if (profession.get_type() == underworld::Profession::Type::token){
+      else if (profession.get_type() == underworld::Profession::Type::token) {
         return get_dungeon(*child);
       }
       throw std::runtime_error("Not implemented");

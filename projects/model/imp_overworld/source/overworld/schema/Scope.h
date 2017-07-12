@@ -34,10 +34,11 @@ namespace overworld {
       Function &create_function(const underworld::Function &input);
 
       Function &create_function(const std::string &name, const Profession &profession,
-                                const underworld::Source_Point &source_point);
+                                const underworld::Source_Point &source_point = underworld::Source_Point());
 
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
       Minion &create_minion(const underworld::Minion &input);
+      Minion &create_minion(const std:: string & name, const Profession &profession);
 
       void add_profession(std::unique_ptr<const Profession> &profession);
       void add_profession(std::unique_ptr<Profession> &profession);

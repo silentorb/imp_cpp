@@ -8,6 +8,7 @@
 #include <imp_mirror/Element_Map.h>
 #include <underworld/Source_Point.h>
 #include <overworld/imp_graph/Graph.h>
+#include <imp_mirror/Temporary_Interface_Manager.h>
 
 namespace imp_wrapper {
 
@@ -23,7 +24,7 @@ namespace imp_wrapper {
   public:
       Wrapper();
       void load_file(const std::string &path);
-      void mirror();
+      void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager);
       void solve();
       void render(const std::string &output_path);
   };

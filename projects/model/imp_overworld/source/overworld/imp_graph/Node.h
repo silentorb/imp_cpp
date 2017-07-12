@@ -14,10 +14,13 @@ namespace overworld {
 
   public:
       Node() {
-        
+
       }
 
+      virtual ~Node() {}
+
       virtual Profession_Reference &get_profession_reference() = 0;
+
       virtual void set_profession(const Profession &value) {
         get_profession_reference().set_profession(value);
       }

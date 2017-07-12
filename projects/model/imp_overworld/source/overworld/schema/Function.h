@@ -80,6 +80,8 @@ namespace overworld {
         parameters.push_back(&minion);
       }
 
+      Minion & create_parameter(const std::string &name, const Profession &profession);
+
       Profession_Node<Function> &get_node() override {
         return node;
       }

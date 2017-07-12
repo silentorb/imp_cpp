@@ -65,6 +65,13 @@ namespace overworld {
     return *minion;
   }
 
+  Minion &Scope::create_minion(const std::string &name, const Profession &profession) {
+    auto minion = new Minion(name, profession);
+    minions.push_back(unique_ptr<Minion>(minion));
+    members[minion->get_name()] = minion;
+    return *minion;
+  }
+
   Minion &Scope::get_minion(const std::string &name) {
     for (auto &variable: minions) {
       if (variable->get_name() == name)

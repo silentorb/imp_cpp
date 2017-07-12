@@ -25,8 +25,14 @@ namespace overworld {
   }
 
   Connection &Graph::connect(Node &first, Node &second) {
+//    if (((int) first.is_changed()) > 1 || ((int) first.is_changed()) < 0)
+//      throw std::runtime_error("Error with node");
+//
+//    if (((int) second.is_changed()) > 1 || ((int) second.is_changed()) < 0)
+//      throw std::runtime_error("Error with node");
+
     if (!has_node(first))
-      add_node(first);
+        add_node(first);
 
     if (!has_node(second))
       add_node(second);
