@@ -131,7 +131,8 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_variable_declaration_with_assignment(
     const underworld::Minion_Declaration_And_Assignment &input_declaration, overworld::Scope &scope) {
     auto &input_minion = input_declaration.get_minion();
-    auto &variable = scope.create_minion(input_minion, reflect_profession(input_minion.get_profession()), graph);
+    auto &variable = scope.create_minion(input_minion,
+                                         reflect_profession(input_minion.get_profession(), scope), graph);
     auto expression = reflect_expression(input_declaration.get_expression(), scope);
     graph.connect(variable.get_node(), *expression->get_node());
     return overworld::Expression_Owner(new overworld::Minion_Declaration_And_Assignment(variable, expression));
@@ -223,7 +224,7 @@ namespace imp_mirror {
       if (profession.get_type() == overworld::Profession::Type::dungeon) {
         auto &dungeon = *get_dungeon(first.get_last());
         auto member = dungeon.get_member(member_expression.get_name());
-        return overworld:: Expression_Owner(new overworld::Member_Expression(*member));
+        return overworld::Expression_Owner(new overworld::Member_Expression(*member));
       }
       else {
         throw std::runtime_error("Not implemented.");
@@ -354,7 +355,38 @@ namespace imp_mirror {
     return profession_library.get_primitive(primitive_type);
   }
 
-  const overworld::Profession &Mirror::reflect_profession(const underworld::Profession *profession) {
+  const overworld::Profession &
+  Mirror::reflect_profession_child(overworld::Member &member, const underworld::Profession &profession) {
+    if (member.get_member_type() == overworld::Member_Type::dungeon) {
+      auto &dungeon = get_dungeon(member);
+      auto child = dungeon.get_member(profession.get_name());
+      if (!child)
+        throw Code_Error("Could not find " + profession.get_name(), profession.get_source_point());
+
+      if (profession.get_type() == underworld::Profession::Type::dungeon_reference) {
+        return reflect_dungeon_reference(profession, dungeon);
+      }
+      else if (profession.get_type() == underworld::Profession::Type::token){
+        return get_dungeon(*child);
+      }
+      throw std::runtime_error("Not implemented");
+    }
+
+    throw std::runtime_error("Not implemented");
+  }
+
+  const overworld::Profession &Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
+                                                                 overworld::Scope &scope) {
+    auto input_dungeon = dynamic_cast<const underworld::Dungeon_Reference_Profession *>(&profession);
+    auto member = scope.find_member(input_dungeon->get_name());
+    if (!member)
+      throw Code_Error("Could not find " + input_dungeon->get_name(), input_dungeon->get_source_point());
+
+    return reflect_profession_child(*member, input_dungeon->get_child());
+  }
+
+  const overworld::Profession &
+  Mirror::reflect_profession(const underworld::Profession *profession, overworld::Scope &scope) {
     if (!profession)
       return profession_library.get_unknown();
 
@@ -362,24 +394,16 @@ namespace imp_mirror {
       case underworld::Profession::Type::primitive:
         return reflect_primitive(*dynamic_cast<const underworld::Primitive *>(profession));
 
-      case underworld::Profession::Type::dungeon: {
-        auto input_dungeon = dynamic_cast<const underworld::Dungeon *>(profession);
-        auto dungeon = element_map.find_or_null<overworld::Dungeon>(input_dungeon);
-        if (!dungeon)
-          return profession_library.get_not_found();
-//          throw std::runtime_error("Could not find overworld dungeon for " + profession.get_name() + ".");
-
-        return *dungeon;
+      case underworld::Profession::Type::dungeon_reference: {
+        return reflect_dungeon_reference(*profession, scope);
       }
-
     }
     return profession_library.get_unknown();
   }
 
   void Mirror::reflect_function1(const underworld::Member &member, overworld::Scope &scope) {
     auto &input_function = *(dynamic_cast<const underworld::Function *>(&member));
-    auto &profession = reflect_profession(input_function.get_profession());
-    auto &output_function = scope.create_function(input_function, profession);
+    auto &output_function = scope.create_function(input_function);
 
     reflect_scope1(input_function.get_block().get_scope(), output_function.get_block().get_scope());
 
@@ -388,6 +412,7 @@ namespace imp_mirror {
 
   void Mirror::reflect_function2(const underworld::Function &input_function) {
     auto &output_function = *element_map.find_or_null<overworld::Function>(&input_function);
+    auto &profession = reflect_profession(input_function.get_profession(), *output_function.get_scope().get_parent());
     reflect_scope2(input_function.get_block().get_scope(), output_function.get_block().get_scope());
 
     for (auto &source_parameter : input_function.get_parameters()) {
@@ -408,8 +433,7 @@ namespace imp_mirror {
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::minion) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
-        auto &profession = reflect_profession(input_variable.get_profession());
-        auto &output_minion = output_scope.create_minion(input_variable, profession, graph);
+        auto &output_minion = output_scope.create_minion(input_variable);
 //        integrity.check_reference(output_minion);
         element_map.add(&input_variable, &output_minion);
       }
@@ -449,6 +473,12 @@ namespace imp_mirror {
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         reflect_function2(cast<underworld::Function>(*input_member.second));
+      }
+      else if (input_member.second->get_type() == underworld::Member::Type::minion) {
+        auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
+        auto &profession = reflect_profession(input_variable.get_profession(), output_scope);
+        auto &output_minion = *element_map.find_or_null<overworld::Minion>(&input_variable);
+        output_minion.set_profession(profession);
       }
     }
 

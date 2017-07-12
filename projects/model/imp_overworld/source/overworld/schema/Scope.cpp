@@ -41,12 +41,26 @@ namespace overworld {
     return create_function(input.get_name(), profession, input.get_source_point());
   }
 
+  Function &Scope::create_function(const underworld::Function &input) {
+    auto function = new Function(input.get_name(), *this, input.get_source_point());
+    functions.push_back(unique_ptr<Function>(function));
+    members[input.get_name()] = function;
+    return *function;
+  }
+
   Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph) {
 //    check_has_member(name);
 
     auto minion = new Minion(input, profession);
     minions.push_back(unique_ptr<Minion>(minion));
 //    graph.add_node(minion->get_node());
+    members[minion->get_name()] = minion;
+    return *minion;
+  }
+
+  Minion &Scope::create_minion(const underworld::Minion &input) {
+    auto minion = new Minion(input);
+    minions.push_back(unique_ptr<Minion>(minion));
     members[minion->get_name()] = minion;
     return *minion;
   }

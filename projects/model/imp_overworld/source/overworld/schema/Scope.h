@@ -31,10 +31,14 @@ namespace overworld {
       virtual ~Scope();
 
       Function &create_function(const underworld::Function &input, const Profession &profession);
+      Function &create_function(const underworld::Function &input);
 
-      Function &create_function(const std::string &name, const Profession &profession, const underworld::Source_Point &source_point);
+      Function &create_function(const std::string &name, const Profession &profession,
+                                const underworld::Source_Point &source_point);
 
       Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
+      Minion &create_minion(const underworld::Minion &input);
+
       void add_profession(std::unique_ptr<const Profession> &profession);
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);

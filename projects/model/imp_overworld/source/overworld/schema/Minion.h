@@ -20,6 +20,9 @@ namespace overworld {
       Minion(const underworld::Minion &source, const Profession &profession) :
         source(source), profession(&profession), node(*this) {}
 
+      Minion(const underworld::Minion &source) :
+        source(source), profession(nullptr), node(*this) {}
+
       virtual ~Minion() {
 
       }
@@ -28,11 +31,11 @@ namespace overworld {
         return Member_Type::variable;
       }
 
-      const std::string get_name() const override{
+      const std::string get_name() const override {
         return source.get_name();
       }
 
-      const Profession &get_profession() const override{
+      const Profession &get_profession() const override {
         return *profession;
       }
 

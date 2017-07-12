@@ -37,6 +37,11 @@ namespace imp_mirror {
         return const_cast<overworld::Dungeon *> (&dungeon);
       }
 
+      overworld::Dungeon &get_dungeon(overworld::Member &member) {
+        auto &dungeon = cast<const overworld::Dungeon>(member);
+        return *const_cast<overworld::Dungeon *> (&dungeon);
+      }
+
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 
@@ -77,7 +82,14 @@ namespace imp_mirror {
                                                                overworld::Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
                                                     overworld::Scope &scope);
-      const overworld::Profession &reflect_profession(const underworld::Profession *profession);
+      const overworld::Profession &reflect_profession(const underworld::Profession *profession,
+                                                      overworld::Scope &scope);
+      const overworld::Profession &
+      reflect_profession_child(overworld::Member &member, const underworld::Profession &profession);
+
+      const overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
+                                                             overworld::Scope &scope);
+
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
       void reflect_function2(const underworld::Function &input_function);
       void reflect_function3(const underworld::Function &input_function);

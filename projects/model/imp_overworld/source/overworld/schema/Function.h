@@ -44,6 +44,12 @@ namespace overworld {
         scope(parent_scope, *this), block(scope),
         node(*this), source_point(source_point) {}
 
+      Function(const std::string &name, Scope &parent_scope,
+               const underworld::Source_Point &source_point) :
+        name(name), return_type(nullptr),
+        scope(parent_scope, *this), block(scope),
+        node(*this), source_point(source_point) {}
+
       ~Function() {}
 
       Block &get_block() {
@@ -88,6 +94,14 @@ namespace overworld {
 
       const underworld::Source_Point &get_source_point() override {
         return source_point;
+      }
+
+      const Function_Scope &get_scope() const {
+        return scope;
+      }
+
+      Function_Scope &get_scope() {
+        return scope;
       }
 
       void finalize(overworld::Profession_Library &profession_library);

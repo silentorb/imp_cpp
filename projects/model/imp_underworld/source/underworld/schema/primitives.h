@@ -19,10 +19,11 @@ namespace underworld {
 
   class Primitive : public virtual Profession {
       Primitive_Type primitive_type;
+      const Source_Point source_point;
 
   public:
-      Primitive(Primitive_Type primitive_type) :
-        primitive_type(primitive_type) {}
+      Primitive(Primitive_Type primitive_type, const Source_Point &source_point) :
+        primitive_type(primitive_type), source_point(source_point) {}
 
       Type get_type() const override {
         return Type::primitive;
@@ -34,6 +35,10 @@ namespace underworld {
 
       const std::string get_name() const override {
         return "primitive";
+      }
+
+      const Source_Point get_source_point() const override {
+        return source_point;
       }
   };
 

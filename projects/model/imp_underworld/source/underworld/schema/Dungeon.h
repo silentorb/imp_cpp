@@ -25,6 +25,10 @@ namespace underworld {
       Dungeon &get_dungeon() override{
         return *this;
       }
+
+      const Source_Point get_source_point() const override {
+        throw new std::runtime_error("Not implemented.");
+      }
   };
 
 //  using Dungeons = std::map<std::string, std::unique_ptr<Dungeon>>;

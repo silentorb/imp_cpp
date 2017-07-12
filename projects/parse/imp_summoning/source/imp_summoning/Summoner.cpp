@@ -20,19 +20,19 @@ namespace imp_summoning {
       input.next();
       if (input.next().is_not(lexicon.identifier))
         throw Syntax_Exception(input.current());
-      
+
       auto child = process_profession_token(context);
-      return Profession_Owner(new Dungeon_Reference_Profession(name, child));
+      return Profession_Owner(new Dungeon_Reference_Profession(name, child, get_source_point()));
     }
     else {
-      return Profession_Owner(new Token_Profession(name));
+      return Profession_Owner(new Token_Profession(name, get_source_point()));
     }
   }
 
   underworld::Profession_Owner Summoner::process_profession(Context &context) {
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown)
-      return Profession_Owner(new Primitive(primitive));
+      return Profession_Owner(new Primitive(primitive, get_source_point()));
 
     return process_profession_token(context);
 
