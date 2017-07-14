@@ -6,6 +6,7 @@
 #include <runic/Rune_Stream.h>
 #include <underworld/Source_Point.h>
 #include "exceptions.h"
+#include <iostream>
 
 namespace imp_summoning {
 
@@ -31,6 +32,7 @@ namespace imp_summoning {
 
       const underworld::Source_Point get_source_point() const {
         auto &position = current().get_range().get_start();
+//        std::cout << current().get_text() << " " << position.get_row() << ":"<< position.get_column() << std::endl;
         return underworld::Source_Point(source_file, position.get_row(), position.get_column());
       }
   };

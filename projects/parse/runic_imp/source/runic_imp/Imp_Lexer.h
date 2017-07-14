@@ -31,7 +31,7 @@ namespace runic_imp {
       void match_comment_or_division(Match &result);
 
       bool match_special_symbols(Match &result);
-      bool match_any(Match &result);
+      bool match_any(Match &result, Token &token);
 
   public:
       Imp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source);

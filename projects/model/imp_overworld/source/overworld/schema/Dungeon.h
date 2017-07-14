@@ -21,10 +21,10 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), header_file(header_file), node(*this) {}
+        name(name), Scope(nullptr, &parent), node(*this) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), header_file(header_file), node(*this) {}
+        name(name), Scope(nullptr, nullptr), node(*this) {}
 
       virtual ~Dungeon() {}
 
@@ -32,9 +32,9 @@ namespace overworld {
         return name;
       }
 
-      void set_file(File *value) {
-        header_file = value;
-      }
+//      void set_file(File *value) {
+//        header_file = value;
+//      }
 
       File *get_file() const {
         return header_file;

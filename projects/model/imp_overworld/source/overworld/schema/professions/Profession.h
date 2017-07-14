@@ -24,5 +24,6 @@ namespace overworld {
       virtual Type get_type() const = 0;
       virtual Scope *get_scope() = 0;
       virtual File *get_file() const = 0;
+      virtual const std::string get_name() const = 0;
   };
 }

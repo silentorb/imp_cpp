@@ -44,6 +44,7 @@ namespace imp_mirror {
         return *const_cast<overworld::Dungeon *> (&dungeon);
       }
 
+      void apply_node_assignment(overworld::Node & target, overworld::Node &value);
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 

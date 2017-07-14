@@ -8,6 +8,7 @@
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Member_Expression.h>
 #include <overworld/expressions/Invoke.h>
+#include <overworld/expressions/Chain.h>
 
 using namespace std;
 
@@ -143,6 +144,11 @@ namespace imp_rendering {
     }
   }
 
+  std::string render_chain(const overworld::Chain &chain) {
+    return render_expression(*chain.get_first())
+           + "." + render_expression(*chain.get_first());
+  }
+
   const std::string render_expression(const overworld::Expression &input_expression) {
     switch (input_expression.get_type()) {
 
@@ -155,6 +161,12 @@ namespace imp_rendering {
       case overworld::Expression::Type::invoke:
         return render_function_call(
           *dynamic_cast<const overworld::Invoke *>(&input_expression));
+
+      case overworld::Expression::Type::self:
+        return "this";
+
+      case overworld::Expression::Type::chain:
+        return render_chain(*dynamic_cast<const overworld::Chain *>(&input_expression));
 
       default:
         throw std::runtime_error(" Not implemented.");
@@ -207,8 +219,13 @@ namespace imp_rendering {
       auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
       return primitive_names[(int) index];
     }
+    else if (type == overworld::Profession::Type::dungeon) {
+      auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
+      return dungeon.get_name();
+    }
 
-    return "void";
+    return "unknown";
+//    throw std::runtime_error(" Not implemented.");
   }
 
 

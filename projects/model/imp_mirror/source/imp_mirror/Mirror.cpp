@@ -16,6 +16,20 @@
 #include "Code_Error.h"
 
 namespace imp_mirror {
+  void Mirror::apply_node_assignment(overworld::Node &target, overworld::Node &value) {
+    graph.connect(target, value);
+
+    // Optimization to reduce the amount of graph solving later on
+    // since so often variables types are defined by assigning them an instantiation.
+    auto &value_profession = value.get_profession_reference().get_profession();
+    if (target.get_profession_reference().get_profession().get_type()
+        == overworld::Profession::Type::unknown
+        && value_profession.get_type()
+           != overworld::Profession::Type::unknown) {
+      target.set_profession(value_profession);
+      target.set_resolved(true);
+    }
+  }
 
   overworld::Expression_Owner
   Mirror::reflect_assignment(const underworld::Assignment &input_assignment, overworld::Scope &scope) {
@@ -23,17 +37,8 @@ namespace imp_mirror {
     auto operator_type = reflect_operator(input_assignment.get_operator());
     auto value = reflect_expression(*input_assignment.get_value(), scope);
 
+    apply_node_assignment(*target->get_node(), *value->get_node());
     graph.connect(*target->get_node(), *value->get_node());
-
-    // Optimization to reduce the amount of graph solving later on
-    // since so often variables types are defined by assigning them an instantiation.
-    auto &value_profession = value->get_node()->get_profession_reference().get_profession();
-    if (target->get_node()->get_profession_reference().get_profession().get_type()
-        == overworld::Profession::Type::unknown
-        && value_profession.get_type()
-           != overworld::Profession::Type::unknown) {
-      target->get_node()->set_profession(value_profession);
-    }
     return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
   }
 
@@ -134,7 +139,7 @@ namespace imp_mirror {
     auto &variable = scope.create_minion(input_minion,
                                          reflect_profession(input_minion.get_profession(), scope), graph);
     auto expression = reflect_expression(input_declaration.get_expression(), scope);
-    graph.connect(variable.get_node(), *expression->get_node());
+    apply_node_assignment(variable.get_node(), *expression->get_node());
     return overworld::Expression_Owner(new overworld::Minion_Declaration_And_Assignment(variable, expression));
   }
 

@@ -29,6 +29,13 @@ namespace overworld {
         return second->get_node();
       }
 
+      const Expression_Owner &get_first() const {
+        return first;
+      }
+
+      const Expression_Owner &get_second() const {
+        return second;
+      }
 //      const std::string get_name() const override {
 //        return "chain";
 //      }

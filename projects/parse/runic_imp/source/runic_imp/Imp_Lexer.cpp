@@ -64,6 +64,7 @@ namespace runic_imp {
   }
 
   void Imp_Lexer::match_identifier(Match &result) {
+//    token.get_range().set_start(lexer.get_position());
     std::string text(1, lexer.get_character());
     Char value;
 
@@ -175,11 +176,14 @@ namespace runic_imp {
     }
   }
 
-  bool Imp_Lexer::match_any(Match &result) {
+  bool Imp_Lexer::match_any(Match &result, Token &token) {
     auto &value = lexer.get_character();
 
     if (is_whitespace_or_semicolon(value))
       consume_whitespace();
+
+    token.get_match().set_text("");
+    token.get_range().set_start(lexer.get_position());
 
     if (value == End_Of_File)
       return false;
@@ -191,10 +195,8 @@ namespace runic_imp {
 
   bool Imp_Lexer::next_token(Token &token) {
     follows_whitespace = false;
-    token.get_match().set_text("");
-    token.get_range().set_start(lexer.get_position());
     auto &result = token.get_match();
-    if (!match_any(result)) {
+    if (!match_any(result, token)) {
       token.get_match().set_type(lexicon.patterns.end_of_file);
       return false;
     }

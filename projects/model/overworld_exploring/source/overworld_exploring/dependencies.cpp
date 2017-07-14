@@ -18,6 +18,7 @@ namespace overworld {
         auto file = profession.get_file();
         if (file) {
           if (!has_file(files, *file)) {
+            profession.get_file();
             files.push_back(file);
           }
         }

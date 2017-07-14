@@ -20,6 +20,10 @@ namespace overworld {
       File *get_file() const override {
         return nullptr;
       }
+
+      const std::string get_name() const override {
+        return "?";
+      }
   };
 
   enum class Primitive_Type {
@@ -58,6 +62,8 @@ namespace overworld {
       File *get_file() const override {
         return file;
       }
+
+      const std::string get_name() const override;
   };
 
 //  class Professional_Dungeon : public virtual Profession {

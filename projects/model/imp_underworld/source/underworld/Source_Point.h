@@ -13,6 +13,10 @@ namespace underworld {
       const std::string &get_file_path() const {
         return file_path;
       }
+
+      const std::string get_short_file_path() const {
+        return file_path.substr(file_path.find_last_of("/") + 1);
+      }
   };
 
   class Source_Point {
@@ -39,7 +43,7 @@ namespace underworld {
       }
 
       const std::string to_string() const {
-        return (source_file ? source_file->get_file_path() : "")
+        return (source_file ? source_file->get_short_file_path() : "")
                + " (" + std::to_string(row) + ":" + std::to_string(column) + ")";
       }
   };
