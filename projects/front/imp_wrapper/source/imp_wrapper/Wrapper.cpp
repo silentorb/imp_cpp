@@ -6,6 +6,7 @@
 #include <solving/Solver.h>
 #include <cpp_stl/Standard_Library.h>
 #include "Wrapper.h"
+#include <iostream>
 
 namespace imp_wrapper {
 
@@ -32,8 +33,21 @@ namespace imp_wrapper {
     mirror.reflect_dungeon(underworld_root, overworld_root);
   }
 
+  void log_node(overworld::Node &node) {
+    std::cout << node.get_profession_reference().get_name() << " - "
+              << node.get_profession_reference().get_source_point().to_string() << std::endl;
+  }
+
   void Wrapper::solve() {
     solving::Solver solver(graph.get_graph());
+    std::cout << std::endl;
+    for (auto &node : graph.get_graph().get_nodes()) {
+      log_node(*node);
+      for (auto &other : node->get_neighbors()) {
+        std::cout << " * ";
+        log_node(*other);
+      }
+    }
     solver.scan_fresh();
     if (!solver.solve()) {
       auto &unknowns = solver.get_unsolved_nodes();

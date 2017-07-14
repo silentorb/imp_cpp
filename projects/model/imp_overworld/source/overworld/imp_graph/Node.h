@@ -40,6 +40,8 @@ namespace overworld {
       void set_changed(bool changed) {
         Node::changed = changed;
       }
+
+//      virtual const std::string get_name() const = 0;
   };
 
   template<typename T>
@@ -53,6 +55,9 @@ namespace overworld {
         return element;
       }
 
+//      const std::string get_name() const override {
+//        return element.get_name();
+//      }
   };
 
   using Node_Pointer = std::unique_ptr<Node>;

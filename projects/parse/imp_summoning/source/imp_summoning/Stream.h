@@ -30,7 +30,8 @@ namespace imp_summoning {
       }
 
       const underworld::Source_Point get_source_point() const {
-        return underworld::Source_Point(source_file, get_position().get_row(), get_position().get_column());
+        auto &position = current().get_range().get_start();
+        return underworld::Source_Point(source_file, position.get_row(), position.get_column());
       }
   };
 }

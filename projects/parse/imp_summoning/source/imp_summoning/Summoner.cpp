@@ -51,8 +51,9 @@ namespace imp_summoning {
   }
 
   void Summoner::process_minion(const std::string &name, Context &context) {
+    auto source_point = input.get_source_point();
     auto profession = process_optional_profession(context);
-    context.get_scope().create_minion(name, profession, input.get_source_point());
+    context.get_scope().create_minion(name, profession, source_point);
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {

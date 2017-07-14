@@ -17,6 +17,7 @@ namespace overworld {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
       const std::string name;
+      const underworld::Source_Point source_point;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -68,7 +69,7 @@ namespace overworld {
       }
 
       const underworld::Source_Point &get_source_point() override {
-        throw std::runtime_error("Not supported.");
+        return source_point;
       }
 
       Function &get_or_create_constructor();
