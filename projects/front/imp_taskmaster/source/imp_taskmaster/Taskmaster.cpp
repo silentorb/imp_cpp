@@ -69,10 +69,12 @@ namespace imp_taskmaster {
     include_manager.prepare(dependencies, header_file_map);
 
     auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes());
-    auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
-
     render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
-    render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
+
+    if (imp_rendering::sources:: needs_source_file(dungeon)) {
+      auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
+      render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
+    }
   }
 
   void Taskmaster::render() {

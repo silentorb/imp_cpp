@@ -6,7 +6,7 @@ class World {
     vector creatures;
 
 public:
-    void add_creature(std:: unique_ptr<Creature> &creature);
+    void add_creature(Creature creature);
 
     World() {}
 };

@@ -37,5 +37,14 @@ namespace imp_rendering {
 
       return result;
     }
+
+    bool needs_source_file(const overworld::Dungeon &dungeon) {
+      for (auto &function :dungeon.get_functions()) {
+        if (!function->is_inline())
+          return true;
+      }
+
+      return false;
+    }
   }
 }
