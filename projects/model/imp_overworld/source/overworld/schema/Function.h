@@ -28,7 +28,7 @@ namespace overworld {
       Profession_Node<Function> node;
       const Profession *return_type;
       const std::string name;
-      bool is_static = false;
+      bool _is_static = false;
       bool returns_a_value() const;
       const underworld::Source_Point source_point;
 
@@ -104,6 +104,14 @@ namespace overworld {
 
       Function_Scope &get_scope() {
         return scope;
+      }
+
+      bool is_static() const {
+        return _is_static;
+      }
+
+      void set_is_static(bool value) {
+        _is_static = value;
       }
 
       void finalize(overworld::Profession_Library &profession_library);

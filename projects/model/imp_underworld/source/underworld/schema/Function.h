@@ -12,7 +12,7 @@ namespace underworld {
       Block block;
       std::vector<Minion *> parameters;
        Profession_Owner return_type;
-      bool is_static = false;
+      bool _is_static = false;
 
   public:
       Function(const std::string &name, Profession_Owner &return_type, const Source_Point &source, Scope &parent) :
@@ -42,6 +42,14 @@ namespace underworld {
 
       const Profession * get_profession() const override {
         return return_type.get();
+      }
+
+      bool is_static() const {
+        return _is_static;
+      }
+
+      void set_is_static(bool value) {
+        _is_static = value;
       }
   };
 

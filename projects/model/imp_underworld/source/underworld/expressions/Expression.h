@@ -13,6 +13,7 @@ namespace underworld {
           block,
           chain,
           Else,
+          instantiation,
           invoke,
           If,
           literal,

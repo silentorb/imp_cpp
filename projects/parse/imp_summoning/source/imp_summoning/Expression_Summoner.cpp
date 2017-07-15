@@ -7,6 +7,7 @@
 #include <underworld/expressions/Invoke.h>
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Self.h>
+#include <underworld/expressions/Instantiation.h>
 #include "Expression_Summoner.h"
 #include "exceptions.h"
 
@@ -37,20 +38,19 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
-//      if (last.get_type() == Expression::Type::unresolved_member) {
-//        return process_function_call(path, context);
-//      }
-//      else
       if (last.get_type() == Expression::Type::member) {
-//        auto &function = cast<Function>(member);
         auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
                                                           last.get_name() + " is not a function");
-
         return process_function_call(path, context);
       }
       else {
         throw std::runtime_error(last.get_name() + " is not a function.");
       }
+    }
+    else if (input.peek().is(lexicon.left_brace)) {
+      input.next();
+      auto profession = process_profession(context);
+      return process_instantiation(profession, context);
     }
     else if (input.peek().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
@@ -170,7 +170,6 @@ namespace imp_summoning {
   }
 
   Expression_Owner Expression_Summoner::process_function_call(Expression_Owner &expression, Context &context) {
-//    auto &member = find_member(input.current(), context);
     auto source_point = input.get_source_point();
 
     std::vector<Expression_Owner> arguments;
@@ -180,6 +179,20 @@ namespace imp_summoning {
 
     input.next();
     return Expression_Owner(new underworld::Invoke(expression, arguments, source_point));
+  }
+
+  Expression_Owner Expression_Summoner::process_instantiation(Profession_Owner &profession, Context &context) {
+    auto instantiation = new underworld::Instantiation(profession, get_source_point());
+    Expression_Owner result(instantiation);
+    while (!input.peek().is(lexicon.right_paren)) {
+      input.expect_next(lexicon.identifier);
+      auto key = input.current().get_text();
+      input.expect_next(lexicon.colon);
+      instantiation->add_expression(key, process_expression(context));
+    }
+
+    input.next();
+    return result;
   }
 
   Expression_Owner Expression_Summoner::process_statement(Context &context) {

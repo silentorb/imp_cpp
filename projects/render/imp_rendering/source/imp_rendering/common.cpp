@@ -58,7 +58,8 @@ namespace imp_rendering {
   }
 
   const std::string render_function_declaration(const overworld::Function &function) {
-    return render_function_return_signature(function)
+    auto static_clause = function.is_static() ? "static " : "";
+    return static_clause + render_function_return_signature(function)
            + function.get_name()
            + render_function_parameters(function);
   }

@@ -421,6 +421,7 @@ namespace imp_mirror {
   void Mirror::reflect_function1(const underworld::Member &member, overworld::Scope &scope) {
     auto &input_function = *(dynamic_cast<const underworld::Function *>(&member));
     auto &output_function = scope.create_function(input_function);
+    output_function.set_is_static(input_function.is_static());
 
     reflect_scope1(input_function.get_block().get_scope(), output_function.get_block().get_scope());
 

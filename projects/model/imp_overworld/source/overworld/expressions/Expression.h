@@ -15,6 +15,7 @@ namespace overworld {
           chain,
           Else,
           If,
+          instantiation,
           invoke,
           literal,
           member,

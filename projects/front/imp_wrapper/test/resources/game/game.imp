@@ -15,9 +15,10 @@ Creature {
 Game {
   world
 
-  Game() {
-    world = World()
-    var hero = Creature()
-    world.add_creature(hero)
+  static new() {
+    var game = Game {}
+    var hero = Creature{}
+    game.world.add_creature(hero)
+    return game
   }
 }

@@ -12,15 +12,14 @@ namespace imp_summoning {
 
       void process_dungeon(const std::string &name, Context &context);
       void process_dungeon_member(Context &context);
-      void process_function(const std::string &name, Context &context);
+      underworld::Function & process_function(const std::string &name, Context &context);
       void process_function_parameters(Context &context, underworld::Function &func);
       void process_root(Context &context);
       void process_root_identifier(const std::string &name, Context &context);
-      void process_minion(const std::string &name, Context &context);
-      underworld::Profession_Owner process_profession_token(Context &context);
+      void process_member(const std::string &name, Context &context, bool is_static);
+      underworld::Minion & process_minion(const std::string &name, Context &context);
 
       underworld::Profession_Owner process_optional_profession(Context &context);
-       underworld::Profession_Owner process_profession(Context &context);
 //      underworld::Profession *find_profession(Context &context);
 //      underworld::Profession *find_profession();
 

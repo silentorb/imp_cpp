@@ -16,6 +16,8 @@ namespace imp_summoning {
 //      underworld::Profession_Library &profession_library;
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
+      underworld::Profession_Owner process_profession_token(Context &context);
+      underworld::Profession_Owner process_profession(Context &context);
 
       underworld::Source_Point get_source_point() {
         return input.get_source_point();

@@ -14,31 +14,6 @@ namespace imp_summoning {
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 
-  underworld::Profession_Owner Summoner::process_profession_token(Context &context) {
-    auto name = input.current().get_text();
-    if (input.peek().is(lexicon.dot)) {
-      input.next();
-      if (input.next().is_not(lexicon.identifier))
-        throw Syntax_Exception(input.current());
-
-      auto child = process_profession_token(context);
-      return Profession_Owner(new Dungeon_Reference_Profession(name, child, get_source_point()));
-    }
-    else {
-      return Profession_Owner(new Token_Profession(name, get_source_point()));
-    }
-  }
-
-  underworld::Profession_Owner Summoner::process_profession(Context &context) {
-    auto primitive = lookup.get_primitive(input.current().get_match().get_type());
-    if (primitive != Primitive_Type::Unknown)
-      return Profession_Owner(new Primitive(primitive, get_source_point()));
-
-    return process_profession_token(context);
-
-    throw Syntax_Exception(input.current());
-  }
-
   Profession_Owner Summoner::process_optional_profession(Context &context) {
     if (input.peek().is(lexicon.colon)) {
       input.next();
@@ -50,10 +25,10 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_minion(const std::string &name, Context &context) {
+  Minion & Summoner::process_minion(const std::string &name, Context &context) {
     auto source_point = input.get_source_point();
     auto profession = process_optional_profession(context);
-    context.get_scope().create_minion(name, profession, source_point);
+    return context.get_scope().create_minion(name, profession, source_point);
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
@@ -63,20 +38,36 @@ namespace imp_summoning {
 
       process_dungeon(name, context);
     }
-    else if (input.peek().is(lexicon.left_paren)) {
+    else {
+      process_member(name, context, false);
+    }
+  }
+
+  void Summoner::process_member(const std::string &name, Context &context, bool is_static) {
+    if (input.peek().is(lexicon.left_paren)) {
       if (input.next().follows_terminator())
         throw Syntax_Exception(input.current());
 
-      process_function(name, context);
+      auto &function = process_function(name, context);
+      if (is_static)
+        function.set_is_static(true);
+
     }
     else {
-      process_minion(name, context);
+      auto &minion = process_minion(name, context);
+      if (is_static)
+        minion.set_is_static(true);
+
 //      throw Syntax_Exception(input.current());
     }
   }
 
   void Summoner::process_dungeon_member(Context &context) {
-    if (input.current().is(lexicon.identifier)) {
+    if (input.current().is(lexicon.Static)) {
+      auto name = input.current().get_text();
+      process_member(name, context, true);
+    }
+    else if (input.current().is(lexicon.identifier)) {
       // Make sure to copy the name before the token gets deleted.
       auto name = input.current().get_text();
       process_root_identifier(name, context);
@@ -97,7 +88,7 @@ namespace imp_summoning {
 //    input.next();
   }
 
-  void Summoner::process_function(const std::string &name, Context &context) {
+  Function & Summoner::process_function(const std::string &name, Context &context) {
     auto profession = process_optional_profession(context);
     auto &function = context.get_scope().create_function(name, profession, input.get_source_point());
     process_function_parameters(context, function);
@@ -107,7 +98,7 @@ namespace imp_summoning {
 
 //    if (!input.current().is(lexicon.left_brace))
 //      throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
-
+    return function;
   }
 
   void Summoner::process_dungeon(const std::string &name, Context &context) {

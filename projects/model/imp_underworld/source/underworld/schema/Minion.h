@@ -10,6 +10,7 @@ namespace underworld {
   class Minion : public Member {
       const std::string name;
       const Profession_Owner profession;
+      bool _is_static = false;
 
   public:
       Minion(const std::string &name, Profession_Owner &profession, const Source_Point &source_point) :
@@ -30,6 +31,13 @@ namespace underworld {
         return profession.get();
       }
 
+      bool is_static() const {
+        return _is_static;
+      }
+
+      void set_is_static(bool value) {
+        _is_static = value;
+      }
   };
 
   using Minion_Owner = std::unique_ptr<Minion>;
