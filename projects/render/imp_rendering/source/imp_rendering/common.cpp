@@ -11,6 +11,7 @@
 #include <overworld/expressions/Chain.h>
 
 using namespace std;
+using namespace overworld;
 
 namespace imp_rendering {
 
@@ -235,5 +236,14 @@ namespace imp_rendering {
                               + render_function_parameters(function);
 
     return render_block(function_signature, function.get_block());
+  }
+
+
+  Stroke render_includes(const std::vector<File *> &files) {
+    Stroke result;
+    for (auto file : files) {
+      result << wrap("#include <" + file->get_filename() + ">");
+    }
+    return result;
   }
 }

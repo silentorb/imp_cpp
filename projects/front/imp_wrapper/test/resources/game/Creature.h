@@ -1,6 +1,9 @@
 #pragma once
 
-class Creature {
+class World;
 
+class Creature {
 public:
+    World *world = nullptr;
+
 };

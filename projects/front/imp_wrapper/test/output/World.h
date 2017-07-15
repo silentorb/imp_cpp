@@ -6,10 +6,7 @@ class World {
     vector creatures;
 
 public:
-    void add_creature(Creature creature) {
-      push_back(creature);
-      creature.creature = this;
-    }
+    void add_creature(std:: unique_ptr<Creature> &creature);
 
     World() {}
 };

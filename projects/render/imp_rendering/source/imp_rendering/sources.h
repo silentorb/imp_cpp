@@ -7,6 +7,6 @@
 namespace imp_rendering {
   namespace sources {
 
-    Stroke render(const overworld::Dungeon &dungeon);
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File *> &files);
   }
 }

@@ -6,6 +6,7 @@
 #include <imp_rendering/sources.h>
 #include <overworld_exploring/dependencies.h>
 #include <boost/filesystem/operations.hpp>
+#include <imp_rendering/including.h>
 
 using namespace overworld;
 using namespace boost;
@@ -62,20 +63,22 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::render_dungeon(const overworld::Dungeon &dungeon) {
-    std::vector<overworld::File *> header_files;
-    overworld::exploring::gather_header_dependencies(header_files, dungeon, header_file_map);
+    imp_rendering:: Include_Manager include_manager(dungeon);
+    std::vector<const overworld::Profession *> dependencies;
+    overworld::exploring::gather_dungeon_dependencies(dependencies, dungeon);
+    include_manager.prepare(dependencies, header_file_map);
 
-    auto header_strokes = imp_rendering::headers::render(dungeon, header_files);
-    auto source_strokes = imp_rendering::sources::render(dungeon);
+    auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes());
+    auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
 
     render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
     render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
   }
 
   void Taskmaster::render() {
-    clear_output_directory();
-//    gather_dungeons(root);
+    gather_dungeons(root);
     prepare_header_files();
+    clear_output_directory();
 
     for (auto &dungeon : dungeons) {
       render_dungeon(*dungeon.second);

@@ -1,4 +1,8 @@
-#include "Game.h"
+#include <World.h>
+
+#include <Creature.h>
+
+#include <Game.h>
 
 Game::Game() {
   world = World();

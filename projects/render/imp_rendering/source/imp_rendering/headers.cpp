@@ -64,14 +64,6 @@ namespace imp_rendering {
         }
     };
 
-    Stroke render_includes(const std::vector<File *> &files) {
-      Stroke result;
-      for (auto file : files) {
-        result << wrap("#include <" + file->get_filename() + ">");
-      }
-      return result;
-    }
-
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
       Stroke block(new Class_Block("class " + dungeon.get_name()));
       Stroke private_block(new Simple_Block());
