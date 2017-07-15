@@ -43,7 +43,6 @@ namespace overworld {
       void add_profession(std::unique_ptr<const Profession> &profession);
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
-      Dungeon &create_dungeon(const std::string &name);
       Member *find_member(const std::string &name);
       Member *get_member(const std::string &name);
 

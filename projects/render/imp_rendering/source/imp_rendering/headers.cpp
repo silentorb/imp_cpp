@@ -67,7 +67,7 @@ namespace imp_rendering {
     Stroke render_includes(const std::vector<File *> &files) {
       Stroke result;
       for (auto file : files) {
-        result << wrap("#include <" + file->get_path() + ">");
+        result << wrap("#include <" + file->get_filename() + ">");
       }
       return result;
     }

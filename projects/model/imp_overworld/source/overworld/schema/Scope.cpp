@@ -89,14 +89,6 @@ namespace overworld {
     professions.push_back(std::move(profession));
   }
 
-  Dungeon &Scope::create_dungeon(const std::string &name) {
-    auto dungeon = new Dungeon(name, *this);
-    auto pointer = unique_ptr<Dungeon>(dungeon);
-    add_dungeon(pointer);
-    members[name] = dungeon;
-    return *dungeon;
-  }
-
   void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
     members[dungeon->get_name()] = dungeon.get();
     dungeons.push_back(std::move(dungeon));

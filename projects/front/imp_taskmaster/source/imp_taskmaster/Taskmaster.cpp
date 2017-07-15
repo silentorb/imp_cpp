@@ -5,8 +5,51 @@
 #include <imp_rendering/headers.h>
 #include <imp_rendering/sources.h>
 #include <overworld_exploring/dependencies.h>
+#include <boost/filesystem/operations.hpp>
+
+using namespace overworld;
+using namespace boost;
 
 namespace imp_taskmaster {
+
+  Taskmaster::~Taskmaster() {
+
+  }
+
+  void Taskmaster::clear_output_directory() {
+    filesystem::directory_iterator end_iter;
+    for (filesystem::directory_iterator iterator(output_path); iterator != end_iter; ++iterator) {
+      if (filesystem::is_directory(iterator->status())) {
+        filesystem::remove_all(iterator->path());
+//        std::cout << iterator->path().filename() << " [directory]\n";
+      }
+      else {
+         filesystem::remove(iterator->path());
+      }
+    }
+  }
+
+  void Taskmaster::gather_dungeons(const overworld::Dungeon &parent) {
+    for (auto &entry : parent.get_dungeons()) {
+      auto &dungeon = *entry;
+
+      if (dungeon.is_external())
+        continue;
+
+      if (dungeon.is_class()) {
+        dungeons[dungeon.get_name()] = entry.get();
+      }
+      gather_dungeons(dungeon);
+    }
+  }
+
+  void Taskmaster::prepare_header_files() {
+    for (auto entry : dungeons) {
+      auto &dungeon = *entry.second;
+      header_file_map.set(dungeon, std::unique_ptr<File>(new File("", dungeon.get_name() + ".h")));
+    }
+  }
+
   void Taskmaster::render_and_write_strokes(const imp_artisan::building::Stroke_Owner &stroke,
                                             const std::string &file_path) {
     imp_artisan::Artisan artisan;
@@ -20,7 +63,7 @@ namespace imp_taskmaster {
 
   void Taskmaster::render_dungeon(const overworld::Dungeon &dungeon) {
     std::vector<overworld::File *> header_files;
-    overworld::exploring::gather_header_dependencies(header_files, dungeon);
+    overworld::exploring::gather_header_dependencies(header_files, dungeon, header_file_map);
 
     auto header_strokes = imp_rendering::headers::render(dungeon, header_files);
     auto source_strokes = imp_rendering::sources::render(dungeon);
@@ -30,10 +73,13 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::render() {
-    for (auto &profession : root.get_dungeons()) {
-      if (profession->get_type() == overworld::Profession::Type::dungeon) {
-        render_dungeon(*dynamic_cast<const overworld::Dungeon *>(profession.get()));
-      }
+    clear_output_directory();
+//    gather_dungeons(root);
+    prepare_header_files();
+
+    for (auto &dungeon : dungeons) {
+      render_dungeon(*dungeon.second);
     }
   }
+
 }

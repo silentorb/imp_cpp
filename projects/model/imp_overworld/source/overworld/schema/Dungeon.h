@@ -18,6 +18,7 @@ namespace overworld {
       Profession_Node<Dungeon> node;
       const std::string name;
       const underworld::Source_Point source_point;
+      bool _is_external = false;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -32,9 +33,13 @@ namespace overworld {
         return name;
       }
 
-//      void set_file(File *value) {
-//        header_file = value;
-//      }
+      bool is_class() const {
+        return get_minions().size() > 0;
+      }
+
+      void set_file(File *value) {
+        header_file = value;
+      }
 
       File *get_file() const {
         return header_file;
@@ -77,6 +82,17 @@ namespace overworld {
       Member_Type get_member_type() const override {
         return Member_Type::dungeon;
       }
+
+      bool is_external() const {
+        return _is_external;
+      }
+
+      void set_is_external(bool value) {
+        _is_external = value;
+      }
+
+      Dungeon &create_dungeon(const std::string &name);
+
   };
 
 //

@@ -13,9 +13,12 @@ namespace overworld {
       return false;
     }
 
-    void gather_header_dependencies(std::vector<File *> &files, const Dungeon &dungeon) {
-      Profession_Explorer explorer([& files](const Profession &profession) {
+    void gather_header_dependencies(std::vector<File *> &files, const Dungeon &dungeon, Profession_File_Map &file_map) {
+      Profession_Explorer explorer([&files, &file_map](const Profession &profession) {
         auto file = profession.get_file();
+        if (!file)
+          file = file_map.get_file(profession);
+
         if (file) {
           if (!has_file(files, *file)) {
             profession.get_file();

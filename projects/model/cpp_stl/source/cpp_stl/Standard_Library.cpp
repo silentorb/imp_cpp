@@ -6,6 +6,7 @@ namespace cpp_stl {
   Standard_Library::Standard_Library(overworld::Scope &parent, overworld::Profession_Library &profession_library,
                                      overworld::Graph &graph) :
     Dungeon("stl", parent), file("standard_library") {
+    set_is_external(true);
 
     underworld::Source_Point source_point(file, 0, 0);
     auto &vector = create_dungeon("vector");

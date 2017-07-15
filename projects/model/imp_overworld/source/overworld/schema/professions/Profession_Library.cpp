@@ -2,7 +2,7 @@
 
 namespace overworld {
 
-  File string_header("string");
+  File string_header("", "string");
   static Unknown unknown;
   static Unknown not_found;
 

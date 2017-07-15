@@ -15,6 +15,17 @@ namespace overworld {
 //    throw std::runtime_error("Could not find constructor.");
   }
 
+  Dungeon &Dungeon::create_dungeon(const std::string &name) {
+    auto dungeon = new Dungeon(name, *this);
+    auto pointer = unique_ptr<Dungeon>(dungeon);
+    add_dungeon(pointer);
+    members[name] = dungeon;
+    if (_is_external)
+      dungeon->set_is_external(true);
+
+    return *dungeon;
+  }
+
 //  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
 //    auto dungeon = new Dungeon(input_dungeon);
 //    dungeons.push_back(unique_ptr<Dungeon>(dungeon));
