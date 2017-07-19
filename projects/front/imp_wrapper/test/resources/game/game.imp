@@ -16,6 +16,7 @@ Game {
   world
 
   static new() {
+    world = World {}
     var game = Game {}
     var hero = Creature{}
     game.world.add_creature(hero)

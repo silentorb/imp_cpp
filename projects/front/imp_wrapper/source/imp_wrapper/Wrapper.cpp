@@ -34,9 +34,10 @@ namespace imp_wrapper {
   }
 
   void log_node(overworld::Node &node) {
-    std::cout << node.get_profession_reference().get_name()
-              << ":" << node.get_profession_reference().get_profession().get_name()
-              << " - " << node.get_profession_reference().get_source_point().to_string() << std::endl;
+    auto &profession_reference = node.get_profession_reference();
+    std::cout << profession_reference.get_name()
+              << ":" << profession_reference.get_profession().get_name()
+              << " - " << profession_reference.get_source_point().to_string() << std::endl;
   }
 
   void Wrapper::solve() {

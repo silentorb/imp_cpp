@@ -18,6 +18,7 @@ namespace imp_summoning {
 //      underworld::Member &find_member(const Token &rune, Context &context);
       underworld::Profession_Owner process_profession_token(Context &context);
       underworld::Profession_Owner process_profession(Context &context);
+      underworld::Profession_Owner parse_profession_path(std::vector<std::string> &path, Context &context);
 
       underworld::Source_Point get_source_point() {
         return input.get_source_point();

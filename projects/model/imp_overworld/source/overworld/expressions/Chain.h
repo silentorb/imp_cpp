@@ -22,7 +22,7 @@ namespace overworld {
       }
 
       Expression &get_last() override {
-        return *second;
+        return second->get_last();
       }
 
       virtual Node *get_node() {

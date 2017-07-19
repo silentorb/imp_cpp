@@ -57,7 +57,7 @@ namespace overworld {
         return parent;
       }
 
-      Node &get_node() {
+      virtual Node &get_node() override{
         return node;
       }
 

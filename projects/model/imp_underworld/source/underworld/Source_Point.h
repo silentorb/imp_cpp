@@ -26,7 +26,10 @@ namespace underworld {
 
   public:
       Source_Point(const Source_File &source_file, unsigned long row, unsigned long column) :
-        source_file(&source_file), column(column), row(row) {}
+        source_file(&source_file), column(column), row(row)
+      {
+				int k = 0;
+      }
 
       Source_Point() : source_file(nullptr), row(0), column(0) {}
 

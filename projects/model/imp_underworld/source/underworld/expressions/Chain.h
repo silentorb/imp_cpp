@@ -22,7 +22,7 @@ namespace underworld {
       }
 
       Expression &get_last() override {
-        return *second;
+        return second->get_last();
       }
 
       const Expression &get_last() const override {

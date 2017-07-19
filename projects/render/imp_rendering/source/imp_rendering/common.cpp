@@ -9,6 +9,7 @@
 #include <overworld/expressions/Member_Expression.h>
 #include <overworld/expressions/Invoke.h>
 #include <overworld/expressions/Chain.h>
+#include <overworld/expressions/Instantiation.h>
 
 using namespace std;
 using namespace overworld;
@@ -102,12 +103,19 @@ namespace imp_rendering {
   }
 
   const std::string render_function_call(const overworld::Invoke &function_call) {
-
     return function_call.get_function().get_name() + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
              [](const overworld::Expression_Owner &expression) {
                return render_expression(*expression);
              }), ", ") + ")";
+  }
+
+  const std::string render_instantiation(const overworld::Instantiation &instantiation) {
+    return instantiation.get_profession().get_name() + "(" +
+           join(instantiation.get_dictionary(), Map_Joiner<Minion *, const overworld::Expression_Owner>(
+             [](Minion *minion, const overworld::Expression_Owner &expression) {
+               return minion->get_name() + ": " + render_expression(*expression);
+             }), ",\n") + ")";
   }
 
   const std::string render_operator(overworld::Operator_Type value) {
@@ -163,6 +171,10 @@ namespace imp_rendering {
       case overworld::Expression::Type::invoke:
         return render_function_call(
           *dynamic_cast<const overworld::Invoke *>(&input_expression));
+
+      case overworld::Expression::Type::instantiation:
+        return render_instantiation(
+          *dynamic_cast<const overworld::Instantiation *>(&input_expression));
 
       case overworld::Expression::Type::self:
         return "this";

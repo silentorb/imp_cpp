@@ -13,12 +13,16 @@ namespace imp_summoning {
   using Token = runic_imp::Token;
 
   class Stream : public runic::Rune_Stream<runic_imp::Imp_Lexer, Token, runic_imp::Whisper> {
-      underworld::Source_File source_file;
+      underworld::Source_File &source_file;
 
   public:
       Stream(runic_imp::Imp_Lexer &lexer, underworld::Source_File &source_file) :
         Rune_Stream(lexer), source_file(source_file) {}
 
+			~Stream()
+      {
+				int k = 0;
+      }
       const Token &expect_next(const runic_imp::Whisper &whisper) {
         if (!next().is(whisper))
           throw Expected_Whisper_Exception(current(), whisper);

@@ -19,14 +19,13 @@ namespace imp_rendering {
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope);
   Stroke render_function_definition(const overworld::Function &function);
   const std::string render_minion_with_signature(const overworld::Minion &minion);
-  Stroke render_includes(const std::vector<overworld::File *> &files) ;
+  Stroke render_includes(const std::vector<overworld::File *> &files);
 
-    inline Stroke wrap(const std::string &text) {
+  inline Stroke wrap(const std::string &text) {
     Stroke result;
     result << text;
     return result;
   }
-
 
   template<typename T>
   using Joiner = std::function<const std::string(const T &)>;
@@ -45,4 +44,25 @@ namespace imp_rendering {
     return result;
   }
 
+
+  template<typename Key, typename Value>
+  using Map_Joiner = std::function<const std::string(const Key &, const Value &)>;
+
+  template<typename Key, typename Value>
+  const std::string join(const std::map<Key, Value> &items, const Map_Joiner<Key, Value> &converter,
+                         const std::string delimiter) {
+    if (items.size() == 0)
+      return "";
+
+    int i = 0;
+    std::string result;
+    for (auto &item : items) {
+      if (i++ != 0)
+        result += delimiter;
+
+      result += converter(item.first, item.second);
+    }
+
+    return result;
+  }
 }

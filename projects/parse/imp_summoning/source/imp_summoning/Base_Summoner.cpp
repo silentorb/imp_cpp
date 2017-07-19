@@ -9,7 +9,7 @@ namespace imp_summoning {
   Base_Summoner::Base_Summoner(Stream &input, Lookup &lookup) :
     input(input),
     lookup(lookup),
-    lexicon(runic_imp::Lexicon::get_instance().patterns){
+    lexicon(runic_imp::Lexicon::get_instance().patterns) {
 
   }
 
@@ -37,5 +37,17 @@ namespace imp_summoning {
 
     throw Syntax_Exception(input.current());
   }
+
+//  underworld::Profession_Owner Base_Summoner::parse_profession_path(std::vector<std::string> &path, Context &context) {
+//    path.clear();
+//    while(input.current().is(lexicon.identifier)) {
+//      path.push_back(input.current().get_text());
+//      if(input.peek().is_not(lexicon.dot))
+//        break;
+//
+//      input.next();
+//      input.next();
+//    }
+//  }
 
 }

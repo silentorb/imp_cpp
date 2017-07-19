@@ -16,6 +16,7 @@
 #include <overworld/imp_graph/Graph.h>
 #include <overworld/expressions/Invoke.h>
 #include <underworld/expressions/Chain.h>
+#include <underworld/expressions/Instantiation.h>
 #include "Element_Map.h"
 #include "Integrity.h"
 #include "Temporary_Interface_Manager.h"
@@ -101,6 +102,8 @@ namespace imp_mirror {
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_function_call(const underworld::Invoke &function_call,
+                                                        overworld::Scope &scope);
+      overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
                                                         overworld::Scope &scope);
       overworld::Function &get_function(overworld::Expression &expression);
 

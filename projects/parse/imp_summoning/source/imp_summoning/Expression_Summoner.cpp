@@ -48,9 +48,7 @@ namespace imp_summoning {
       }
     }
     else if (input.peek().is(lexicon.left_brace)) {
-      input.next();
-      auto profession = process_profession(context);
-      return process_instantiation(profession, context);
+      return process_instantiation(context);
     }
     else if (input.peek().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
@@ -181,10 +179,15 @@ namespace imp_summoning {
     return Expression_Owner(new underworld::Invoke(expression, arguments, source_point));
   }
 
-  Expression_Owner Expression_Summoner::process_instantiation(Profession_Owner &profession, Context &context) {
+  Expression_Owner Expression_Summoner::process_instantiation(Context &context) {
+    auto profession = process_profession(context);
+    if (profession->get_type() == underworld::Profession::Type::unknown)
+      throw Syntax_Exception(input.current());
+
+    input.next();
     auto instantiation = new underworld::Instantiation(profession, get_source_point());
     Expression_Owner result(instantiation);
-    while (!input.peek().is(lexicon.right_paren)) {
+    while (!input.peek().is(lexicon.right_brace)) {
       input.expect_next(lexicon.identifier);
       auto key = input.current().get_text();
       input.expect_next(lexicon.colon);

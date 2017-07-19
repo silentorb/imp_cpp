@@ -28,12 +28,13 @@ namespace underworld {
         return dictionary;
       }
 
-      const Profession_Owner &get_profession() const {
-        return profession;
+      const Profession &get_profession() const {
+        return *profession;
       }
 
       const Source_Point &get_source_point() const {
         return source_point;
       }
+
   };
 }
