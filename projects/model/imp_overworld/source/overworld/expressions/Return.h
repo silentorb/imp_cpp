@@ -11,7 +11,6 @@ namespace overworld {
       }
   };
 
-
   class Return_With_Value : public Statement {
       Expression_Owner value;
 

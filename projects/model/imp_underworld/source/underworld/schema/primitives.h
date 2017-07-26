@@ -11,7 +11,6 @@ namespace underworld {
       Float,
       Int,
       String,
-      Void,
       Unknown,
   };
 

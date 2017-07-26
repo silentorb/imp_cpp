@@ -12,11 +12,12 @@ namespace overworld {
       Profession_Library();
 
       static const Unknown &get_unknown();
+      static const Void &get_void();
       static const Unknown &get_not_found();
 
       static Primitive &get_primitive(Primitive_Type type);
 
-      void add_anonymous_dungeon(Minion & minion, Dungeon_Pointer & dungeon);
-      Dungeon & create_anonymous_dungeon(Minion & minion);
+      void add_anonymous_dungeon(Minion &minion, Dungeon_Pointer &dungeon);
+      Dungeon &create_anonymous_dungeon(Minion &minion);
   };
 }

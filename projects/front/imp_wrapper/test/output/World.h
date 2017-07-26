@@ -6,7 +6,5 @@ class World {
     vector creatures;
 
 public:
-    void add_creature(Creature creature);
-
-    World() {}
+    unknown add_creature(Creature creature);
 };

@@ -17,6 +17,7 @@ namespace overworld {
           dungeon,
           reference,
           function,
+          Void,
       };
 
       virtual ~Profession() {}

@@ -6,5 +6,4 @@ class Creature {
     unknown world;
 
 public:
-    Creature() {}
 };

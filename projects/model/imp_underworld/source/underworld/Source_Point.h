@@ -33,8 +33,8 @@ namespace underworld {
 
       Source_Point() : source_file(nullptr), row(0), column(0) {}
 
-      const Source_File &get_source_file() const {
-        return *source_file;
+      const Source_File *get_source_file() const {
+        return source_file;
       }
 
       unsigned long get_column() const {

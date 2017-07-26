@@ -26,16 +26,35 @@ namespace overworld {
       }
   };
 
+  class Void : public virtual Profession {
+  public:
+      Type get_type() const override {
+        return Type::Void;
+      }
+
+      Scope *get_scope() override {
+        return nullptr;
+      }
+
+      File *get_file() const override {
+        return nullptr;
+      }
+
+      const std::string get_name() const override {
+        return "void";
+      }
+  };
+
   enum class Primitive_Type {
       Bool,
       Double,
       Float,
       Int,
       String,
-      Void
+//      Void
   };
 
-  const int Primitive_Type_Count = 6;
+  const int Primitive_Type_Count = 5;
 
   class Primitive : public virtual Profession {
       Primitive_Type primitive_type;

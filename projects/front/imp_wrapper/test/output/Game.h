@@ -3,8 +3,9 @@
 
 
 class Game {
+    unknown ;
     World world;
 
 public:
-    Game();
+    Game new();
 };

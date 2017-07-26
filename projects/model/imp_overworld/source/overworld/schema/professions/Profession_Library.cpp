@@ -4,6 +4,7 @@ namespace overworld {
 
   File string_header("", "string");
   static Unknown unknown;
+  static Void _void;
   static Unknown not_found;
 
   Primitive Profession_Library::primitives[] =
@@ -13,7 +14,7 @@ namespace overworld {
       Primitive_Type::Float,
       Primitive_Type::Int,
       {Primitive_Type::String, &string_header},
-      Primitive_Type::Void,
+//      Primitive_Type::Void,
     };
 
   Profession_Library::Profession_Library() {
@@ -22,6 +23,10 @@ namespace overworld {
 
   const Unknown &Profession_Library::get_unknown() {
     return unknown;
+  }
+
+  const Void &Profession_Library::get_void() {
+    return _void;
   }
 
   const Unknown &Profession_Library::get_not_found() {

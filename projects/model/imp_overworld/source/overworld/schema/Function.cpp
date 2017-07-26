@@ -28,13 +28,16 @@ namespace overworld {
 
   void Function::finalize(overworld::Profession_Library &profession_library) {
     if (!returns_a_value()) {
-      set_profession(profession_library.get_primitive(Primitive_Type::Void));
+      set_profession(profession_library.get_void());
       node.set_resolved(true);
+    }
+    else {
+      set_profession(profession_library.get_unknown());
     }
   }
 
   Minion &Function::create_parameter(const std::string &name, const Profession &profession) {
-    auto & minion = scope.create_minion(name, profession);
+    auto &minion = scope.create_minion(name, profession);
     add_parameter(minion);
     return minion;
   }
