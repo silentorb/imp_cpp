@@ -4,8 +4,8 @@
 
 class Game {
     unknown ;
-    World world;
+    std::unique_ptr<World> world;
 
 public:
-    Game new();
+    std::unique_ptr<Game> new();
 };

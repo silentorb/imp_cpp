@@ -2,7 +2,7 @@
 
 #include <World.h>
 
-void World::add_creature(Creature creature) {
+void World::add_creature(std::unique_ptr<Creature> &creature) {
   push_back(creature);
   creature.creature = this;
 }

@@ -4,7 +4,7 @@
 
 #include <Game.h>
 
-Game Game::new() {
+std::unique_ptr<Game> Game::new() {
   world = World();
   auto game = Game();
   auto hero = Creature();

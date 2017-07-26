@@ -12,6 +12,9 @@ namespace imp_rendering {
   const std::string render_function_return_signature(const overworld::Function &function);
   const std::string render_function_declaration(const overworld::Function &function);
   const std::string render_profession(const overworld::Profession &profession);
+  const std::string render_profession_as_owner(const overworld::Profession &profession);
+//  const std::string render_profession_as_owner_reference(const overworld::Profession &profession);
+
   const std::string render_expression(const overworld::Expression &input_expression);
   void render_statements(Stroke &stroke, const overworld::Expressions &statements, const overworld::Scope &scope);
   Stroke render_block(const std::string &header, const overworld::Block &block);
@@ -19,6 +22,7 @@ namespace imp_rendering {
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope);
   Stroke render_function_definition(const overworld::Function &function);
   const std::string render_minion_with_signature(const overworld::Minion &minion);
+  const std::string render_parameter(const overworld::Minion &minion);
   Stroke render_includes(const std::vector<overworld::File *> &files);
 
   inline Stroke wrap(const std::string &text) {

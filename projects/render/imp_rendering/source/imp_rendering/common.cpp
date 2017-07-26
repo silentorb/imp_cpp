@@ -42,11 +42,20 @@ namespace imp_rendering {
     return render_profession(minion.get_profession()) + ' ' + minion.get_name();
   }
 
+  const std::string render_parameter(const overworld::Minion &minion) {
+    auto &profession = minion.get_profession();
+    std::string separator = profession.get_ownership() == Ownership::owner
+                            ? " &"
+                            : " ";
+
+    return render_profession(profession) + separator + minion.get_name();
+  }
+
   const std::string render_function_parameters(const overworld::Function &function) {
     return "(" +
            join(function.get_parameters(), Joiner<overworld::Minion *>(
              [](const overworld::Minion *minion) {
-               return render_minion_with_signature(*minion);
+               return render_parameter(*minion);
              }), ", ") + ")";
   }
 
@@ -227,7 +236,7 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_profession(const overworld::Profession &profession) {
+  const std::string render_profession_internal(const overworld::Profession &profession) {
     auto type = profession.get_type();
 
     switch (type) {
@@ -249,6 +258,21 @@ namespace imp_rendering {
 //    throw std::runtime_error(" Not implemented.");
   }
 
+  const std::string render_profession(const overworld::Profession &profession) {
+    auto result = render_profession_internal(profession);
+    if (profession.get_ownership() == Ownership::owner)
+      return "std::unique_ptr<" + result + ">";
+
+    return result;
+  }
+
+//  const std::string render_profession_as_owner(const overworld::Profession &profession) {
+//    return "std::unique_ptr<" + render_profession(profession) + ">";
+//  }
+//
+//  const std::string render_profession_as_owner_reference(const overworld::Profession &profession) {
+//    return render_profession_as_owner(profession) + " &";
+//  }
 
   Stroke render_function_definition(const overworld::Function &function) {
     auto function_signature = render_function_return_signature(function)
