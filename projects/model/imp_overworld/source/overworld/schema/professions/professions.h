@@ -9,8 +9,8 @@ namespace overworld {
 
   class Unknown : public virtual Profession {
   public:
-      Type get_type() const override {
-        return Type::unknown;
+      Profession_Type get_type() const override {
+        return Profession_Type::unknown;
       }
 
       Scope *get_scope() override {
@@ -24,12 +24,16 @@ namespace overworld {
       const std::string get_name() const override {
         return "?";
       }
+
+      Ownership get_ownership() const override {
+        return Ownership::value;
+      }
   };
 
   class Void : public virtual Profession {
   public:
-      Type get_type() const override {
-        return Type::Void;
+      Profession_Type get_type() const override {
+        return Profession_Type::Void;
       }
 
       Scope *get_scope() override {
@@ -42,6 +46,10 @@ namespace overworld {
 
       const std::string get_name() const override {
         return "void";
+      }
+
+      Ownership get_ownership() const override {
+        return Ownership::value;
       }
   };
 
@@ -66,8 +74,8 @@ namespace overworld {
 
       virtual ~Primitive() {}
 
-      Type get_type() const override {
-        return Type::primitive;
+      Profession_Type get_type() const override {
+        return Profession_Type::primitive;
       }
 
       Primitive_Type get_primitive_type() const {
@@ -83,6 +91,10 @@ namespace overworld {
       }
 
       const std::string get_name() const override;
+
+      Ownership get_ownership() const override {
+        return Ownership::value;
+      }
   };
 
 //  class Professional_Dungeon : public virtual Profession {
@@ -114,8 +126,8 @@ namespace overworld {
 
       virtual ~Reference() {}
 
-      Type get_type() const override {
-        return Type::reference;
+      Profession_Type get_type() const override {
+        return Profession_Type::reference;
       }
 
       Scope *get_scope() override {
@@ -125,21 +137,25 @@ namespace overworld {
       File *get_file() const override {
         return nullptr;
       }
-  };
 
-  class Function_Signature : public virtual Profession {
-  public:
-      Type get_type() const override {
-        return Type::function;
-      }
-
-      Scope *get_scope() override {
-        return nullptr;
-      }
-
-      File *get_file() const override {
-        return nullptr;
+      Ownership get_ownership() const override {
+        return Ownership::reference;
       }
   };
+
+//  class Function_Signature : public virtual Profession {
+//  public:
+//      Type get_type() const override {
+//        return Type::function;
+//      }
+//
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
+//
+//      File *get_file() const override {
+//        return nullptr;
+//      }
+//  };
 
 }

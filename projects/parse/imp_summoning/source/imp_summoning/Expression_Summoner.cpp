@@ -62,7 +62,7 @@ namespace imp_summoning {
 
 //  void Expression_Summoner::process_constructor_invocation(Member &member) {
 //    auto &profession = cast<Profession_Member>(member).get_profession();
-//    if (profession.get_type() == Profession::Type::dungeon) {
+//    if (profession.get_type() == Profession_Type::dungeon) {
 //      auto &dungeon = cast<Dungeon>(profession);
 //      auto function = dungeon.get_function(dungeon.get_name());
 //      if (!function) {
@@ -129,11 +129,11 @@ namespace imp_summoning {
       return Expression_Owner(new Chain(expression, second));
 
 //      auto &profession = expression->get_profession();
-//      if (profession.get_type() == Profession::Type::unknown) {
+//      if (profession.get_type() == Profession_Type::unknown) {
 //        auto second = Expression_Owner(new Unresolved_Member_Expression(name, input.get_source_point()));
 //        return Expression_Owner(new Chain(expression, second));
 //      }
-//      if (profession.get_type() == Profession::Type::dungeon) {
+//      if (profession.get_type() == Profession_Type::dungeon) {
 //        auto &dungeon = *dynamic_cast<const Dungeon *>(&profession);
 //        auto member = const_cast<Dungeon &>(dungeon).get_member(name);
 //        if (member) {
@@ -181,7 +181,7 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_instantiation(Context &context) {
     auto profession = process_profession(context);
-    if (profession->get_type() == underworld::Profession::Type::unknown)
+    if (profession->get_type() == underworld::Profession_Type::unknown)
       throw Syntax_Exception(input.current());
 
     input.next();

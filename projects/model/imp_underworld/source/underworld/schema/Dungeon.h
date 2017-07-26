@@ -18,8 +18,8 @@ namespace underworld {
         return name;
       }
 
-      Type get_type() const override {
-        return Type::dungeon;
+      Profession_Type get_type() const override {
+        return Profession_Type::dungeon;
       }
 
       Dungeon &get_dungeon() override{

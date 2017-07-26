@@ -6,20 +6,21 @@
 
 namespace underworld {
 
+  enum class Profession_Type {
+      unknown,
+      primitive,
+      dungeon,
+      dungeon_reference,
+      reference,
+      function,
+      token,
+  };
+
+
   class Profession {
   public:
 
-      enum class Type {
-          unknown,
-          primitive,
-          dungeon,
-          dungeon_reference,
-          reference,
-          function,
-          token,
-      };
-
-      virtual Type get_type() const = 0;
+      virtual Profession_Type get_type() const = 0;
       virtual const std::string get_name() const = 0;
       virtual const Source_Point get_source_point() const = 0;
   };
@@ -34,8 +35,8 @@ namespace underworld {
       Token_Profession(const std::string &name, const Source_Point &source_point) :
         name(name), source_point(source_point) {}
 
-      Type get_type() const override {
-        return Profession::Type::token;
+      Profession_Type get_type() const override {
+        return Profession_Type::token;
       }
 
       const std::string get_name() const override {
@@ -57,8 +58,8 @@ namespace underworld {
                                    const Source_Point &source_point) :
         name(name), child(std::move(child)), source_point(source_point) {}
 
-      Type get_type() const override {
-        return Profession::Type::dungeon_reference;
+      Profession_Type get_type() const override {
+        return Profession_Type::dungeon_reference;
       }
 
       const std::string get_name() const override {

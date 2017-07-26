@@ -8,21 +8,27 @@ namespace overworld {
 
   class Scope;
 
+  enum class Ownership {
+      unknown,
+      value,
+      owner,
+      reference,
+  };
+
+  enum class Profession_Type {
+      unknown,
+      primitive,
+      dungeon,
+      reference,
+      function,
+      Void,
+  };
+
   class Profession {
   public:
 
-      enum class Type {
-          unknown,
-          primitive,
-          dungeon,
-          reference,
-          function,
-          Void,
-      };
-
       virtual ~Profession() {}
-
-      virtual Type get_type() const = 0;
+      virtual Profession_Type get_type() const = 0;
       virtual Scope *get_scope() = 0;
       virtual File *get_file() const = 0;
       virtual const std::string get_name() const = 0;
@@ -30,5 +36,7 @@ namespace overworld {
       virtual Node &get_node() {
         throw std::runtime_error("Not implemented.");
       }
+
+      virtual Ownership get_ownership() const = 0;
   };
 }

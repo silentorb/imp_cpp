@@ -10,7 +10,7 @@ namespace imp_mirror {
   public:
 
       void check_reference(overworld::Profession_Reference &reference) {
-        if (reference.get_profession().get_type() == overworld::Profession::Type::unknown) {
+        if (reference.get_profession().get_type() == overworld::Profession_Type::unknown) {
           unknowns.push_back(&reference);
         }
       }

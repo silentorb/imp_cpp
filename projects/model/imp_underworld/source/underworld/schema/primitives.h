@@ -24,8 +24,8 @@ namespace underworld {
       Primitive(Primitive_Type primitive_type, const Source_Point &source_point) :
         primitive_type(primitive_type), source_point(source_point) {}
 
-      Type get_type() const override {
-        return Type::primitive;
+      Profession_Type get_type() const override {
+        return Profession_Type::primitive;
       }
 
       Primitive_Type get_primitive_type() const {
@@ -48,8 +48,8 @@ namespace underworld {
       Reference(Profession &profession) :
         profession(profession) {}
 
-      Type get_type() const override {
-        return Type::reference;
+      Profession_Type get_type() const override {
+        return Profession_Type::reference;
       }
   };
 

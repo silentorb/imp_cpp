@@ -19,7 +19,7 @@ namespace imp_summoning {
 //          return &profession;
 //        }
 //        else {
-//          if (profession.get_type() != underworld::Profession::Type::dungeon)
+//          if (profession.get_type() != underworld::Profession_Type::dungeon)
 //            throw std::runtime_error(name + "is not a namespace or class.");
 //
 //          current_scope = dynamic_cast<underworld::Dungeon *>(&profession);

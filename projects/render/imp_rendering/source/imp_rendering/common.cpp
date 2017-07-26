@@ -231,16 +231,16 @@ namespace imp_rendering {
     auto type = profession.get_type();
 
     switch (type) {
-      case overworld::Profession::Type::primitive: {
+      case overworld::Profession_Type::primitive: {
         auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
         return primitive_names[(int) index];
       }
-      case overworld::Profession::Type::dungeon: {
+      case overworld::Profession_Type::dungeon: {
         auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
         return dungeon.get_name();
       }
 
-      case overworld::Profession::Type::Void:
+      case overworld::Profession_Type::Void:
         return "void";
 
       default:

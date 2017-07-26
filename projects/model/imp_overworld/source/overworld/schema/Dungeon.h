@@ -45,8 +45,8 @@ namespace overworld {
         return header_file;
       }
 
-      Type get_type() const override {
-        return Type::dungeon;
+      Profession_Type get_type() const override {
+        return Profession_Type::dungeon;
       }
 
       Scope *get_scope() override {
@@ -93,6 +93,9 @@ namespace overworld {
 
       Dungeon &create_dungeon(const std::string &name);
 
+      Ownership get_ownership() const override {
+        return Ownership::owner;
+      }
   };
 
 //

@@ -24,9 +24,9 @@ namespace imp_mirror {
     // since so often variables types are defined by assigning them an instantiation.
     auto &value_profession = value.get_profession_reference().get_profession();
     if (target.get_profession_reference().get_profession().get_type()
-        == overworld::Profession::Type::unknown
+        == overworld::Profession_Type::unknown
         && value_profession.get_type()
-           != overworld::Profession::Type::unknown) {
+           != overworld::Profession_Type::unknown) {
       target.set_profession(value_profession);
       target.set_resolved(true);
     }
@@ -219,7 +219,7 @@ namespace imp_mirror {
                                                             overworld::Scope &scope) {
     auto &input_profession = instantiation.get_profession();
     auto &output_profession = reflect_profession(&input_profession, scope);
-    if (output_profession.get_type() == overworld::Profession::Type::unknown)
+    if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + input_profession.get_name(), instantiation.get_source_point());
 
     auto &source_arguments = instantiation.get_dictionary();
@@ -249,12 +249,12 @@ namespace imp_mirror {
     auto &profession = previous_expression.get_node()->get_profession_reference().get_profession();
     if (second.get_type() == underworld::Expression::Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
-      if (profession.get_type() == overworld::Profession::Type::dungeon) {
+      if (profession.get_type() == overworld::Profession_Type::dungeon) {
         auto &dungeon = *get_dungeon(first.get_last());
         auto member = dungeon.get_member(member_expression.get_name());
         return overworld::Expression_Owner(new overworld::Member_Expression(*member));
       }
-      else if (profession.get_type() == overworld::Profession::Type::unknown) {
+      else if (profession.get_type() == overworld::Profession_Type::unknown) {
         if (previous_expression.get_type() == overworld::Expression::Type::member) {
           auto &previous_member_expression = cast<overworld::Member_Expression>(previous_expression);
           auto &member = previous_member_expression.get_member();
@@ -279,13 +279,13 @@ namespace imp_mirror {
 
       auto &chain = cast<underworld::Chain>(second);
       return reflect_chain(chain, scope);
-//      if (profession.get_type() == overworld::Profession::Type::dungeon) {
+//      if (profession.get_type() == overworld::Profession_Type::dungeon) {
 //        auto &dungeon = *get_dungeon(first.get_last());
 //        auto member = dungeon.get_member(chain.get_name());
 //        auto first_output = overworld::Expression_Owner(new overworld::Member_Expression(*member));
 //        return reflect_chain(first_output, chain.get_second(), scope);
 //      }
-//      else if (profession.get_type() == overworld::Profession::Type::unknown) {
+//      else if (profession.get_type() == overworld::Profession_Type::unknown) {
 //        if (previous_expression.get_type() == overworld::Expression::Type::member) {
 //          auto &previous_member_expression = cast<overworld::Member_Expression>(previous_expression);
 //          auto &member = previous_member_expression.get_member();
@@ -437,10 +437,10 @@ namespace imp_mirror {
       if (!child)
         throw Code_Error("Could not find " + profession.get_name(), profession.get_source_point());
 
-      if (profession.get_type() == underworld::Profession::Type::dungeon_reference) {
+      if (profession.get_type() == underworld::Profession_Type::dungeon_reference) {
         return reflect_dungeon_reference(profession, dungeon);
       }
-      else if (profession.get_type() == underworld::Profession::Type::token) {
+      else if (profession.get_type() == underworld::Profession_Type::token) {
         return get_dungeon(*child);
       }
       throw std::runtime_error("Not implemented");
@@ -465,14 +465,14 @@ namespace imp_mirror {
       return profession_library.get_unknown();
 
     switch (profession->get_type()) {
-      case underworld::Profession::Type::primitive:
+      case underworld::Profession_Type::primitive:
         return reflect_primitive(*dynamic_cast<const underworld::Primitive *>(profession));
 
-      case underworld::Profession::Type::dungeon_reference: {
+      case underworld::Profession_Type::dungeon_reference: {
         return reflect_dungeon_reference(*profession, scope);
       }
 
-      case underworld::Profession::Type::token: {
+      case underworld::Profession_Type::token: {
         auto token = cast<const underworld::Token_Profession>(*profession);
         auto member = scope.find_member(token.get_name());
         if (!member)
@@ -537,7 +537,7 @@ namespace imp_mirror {
         auto input_profession = cast<const underworld::Profession_Member>(*input_member.second)
           .get_profession();
 
-        if (input_profession->get_type() == underworld::Profession::Type::dungeon) {
+        if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
           auto output_dungeon = std::unique_ptr<overworld::Dungeon>(
             new overworld::Dungeon(input_dungeon.get_name(), output_scope));
@@ -574,7 +574,7 @@ namespace imp_mirror {
         auto input_profession = cast<const underworld::Profession_Member>(*input_member.second)
           .get_profession();
 
-        if (input_profession->get_type() == underworld::Profession::Type::dungeon) {
+        if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
           auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
           reflect_scope2(input_dungeon, dungeon);
@@ -595,7 +595,7 @@ namespace imp_mirror {
         auto input_profession = cast<const underworld::Profession_Member>(*input_member.second)
           .get_profession();
 
-        if (input_profession->get_type() == underworld::Profession::Type::dungeon) {
+        if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
           auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
           reflect_scope3(input_dungeon, dungeon);
