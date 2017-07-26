@@ -229,16 +229,23 @@ namespace imp_rendering {
 
   const std::string render_profession(const overworld::Profession &profession) {
     auto type = profession.get_type();
-    if (type == overworld::Profession::Type::primitive) {
-      auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
-      return primitive_names[(int) index];
-    }
-    else if (type == overworld::Profession::Type::dungeon) {
-      auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
-      return dungeon.get_name();
-    }
 
-    return "unknown";
+    switch (type) {
+      case overworld::Profession::Type::primitive: {
+        auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
+        return primitive_names[(int) index];
+      }
+      case overworld::Profession::Type::dungeon: {
+        auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
+        return dungeon.get_name();
+      }
+
+      case overworld::Profession::Type::Void:
+        return "void";
+
+      default:
+        return "unknown";
+    }
 //    throw std::runtime_error(" Not implemented.");
   }
 
