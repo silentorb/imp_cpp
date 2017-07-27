@@ -1,6 +1,8 @@
 #include <overworld/schema/Function.h>
 #include "Standard_Library.h"
 
+using namespace overworld;
+
 namespace cpp_stl {
 
   Standard_Library::Standard_Library(overworld::Scope &parent, overworld::Profession_Library &profession_library,
@@ -9,9 +11,11 @@ namespace cpp_stl {
     set_is_external(true);
 
     underworld::Source_Point source_point(file, 0, 0);
-    auto &vector = create_dungeon("vector");
+
+    auto &vector = add_dungeon(std::unique_ptr<Dungeon>(new Cpp_Dungeon("vector", "std::vector", *this)));
+    vector.set_default_ownership(Ownership::value);
     auto &void_type = profession_library.get_void();
     auto &push_back = vector.create_function("push_back", void_type, source_point);
-    push_back.create_parameter("item", profession_library.get_unknown());
+    push_back.add_parameter(new Owning_Parameter("item", profession_library.get_unknown()));
   }
 }

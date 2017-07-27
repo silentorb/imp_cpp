@@ -53,7 +53,7 @@ namespace imp_rendering {
 
   const std::string render_function_parameters(const overworld::Function &function) {
     return "(" +
-           join(function.get_parameters(), Joiner<overworld::Minion *>(
+           join(function.get_parameters(), Joiner<overworld::Parameter *>(
              [](const overworld::Minion *minion) {
                return render_parameter(*minion);
              }), ", ") + ")";
@@ -111,11 +111,20 @@ namespace imp_rendering {
     return "auto " + declaration.get_minion().get_name();
   }
 
+  const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter) {
+    auto result = render_expression(argument);
+    if (parameter.transfers_ownership())
+      return "std::move(" + result + ")";
+
+    return result;
+  }
+
   const std::string render_function_call(const overworld::Invoke &function_call) {
-    return function_call.get_function().get_name() + "(" +
+    auto minions = function_call.get_function().get_parameters().begin();
+    return render_expression(function_call.get_expression()) + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-             [](const overworld::Expression_Owner &expression) {
-               return render_expression(*expression);
+             [& minions](const overworld::Expression_Owner &expression) {
+               return render_argument(*expression, **minions++);
              }), ", ") + ")";
   }
 
@@ -163,9 +172,20 @@ namespace imp_rendering {
     }
   }
 
+  const std::string render_separator(const overworld::Profession &profession) {
+    switch (profession.get_ownership()) {
+      case Ownership::owner:
+        return "->";
+
+      default:
+        return ".";
+    }
+  }
+
   std::string render_chain(const overworld::Chain &chain) {
-    return render_expression(*chain.get_first())
-           + "." + render_expression(*chain.get_first());
+    return render_expression(chain.get_first())
+           + render_separator(chain.get_first().get_node()->get_profession_reference().get_profession())
+           + render_expression(chain.get_second());
   }
 
   const std::string render_expression(const overworld::Expression &input_expression) {
@@ -246,7 +266,7 @@ namespace imp_rendering {
       }
       case overworld::Profession_Type::dungeon: {
         auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
-        return dungeon.get_name();
+        return dungeon.get_cpp_name();
       }
 
       case overworld::Profession_Type::Void:

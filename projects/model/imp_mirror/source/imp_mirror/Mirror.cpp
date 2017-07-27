@@ -212,7 +212,8 @@ namespace imp_mirror {
       graph.connect(parameters[i]->get_node(), *arguments[i]->get_node());
     }
 
-    return overworld::Expression_Owner(new overworld::Invoke(overworld_function, arguments, function_call));
+    return overworld::Expression_Owner(new overworld::Invoke(output_expression, overworld_function, arguments,
+                                                             function_call));
   }
 
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
@@ -504,7 +505,7 @@ namespace imp_mirror {
 
     for (auto &source_parameter : input_function.get_parameters()) {
       auto &minion = output_function.get_block().get_scope().get_minion(source_parameter->get_name());
-      output_function.add_parameter(minion);
+      output_function.add_parameter(cast<overworld::Parameter>(minion));
     }
 
   }
@@ -515,14 +516,27 @@ namespace imp_mirror {
     output_function.finalize(profession_library);
   }
 
+  std::unique_ptr<overworld::Minion>
+  Mirror::create_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
+    auto &profession = reflect_profession(input_minion.get_profession(), output_scope);
+    if (input_minion.is_parameter()) {
+      return std::unique_ptr<overworld::Minion>(new overworld::Parameter(input_minion.get_name(), profession));
+    }
+    return std::unique_ptr<overworld::Minion>(new overworld::Minion(input_minion.get_name(), profession));
+  }
+
+  void Mirror::reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
+    auto output_minion = create_minion(input_minion, output_scope);
+    element_map.add(&input_minion, output_minion.get());
+    output_scope.add_minion(output_minion);
+  }
+
   void Mirror::reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
 
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::minion) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
-        auto &output_minion = output_scope.create_minion(input_variable);
-//        integrity.check_reference(output_minion);
-        element_map.add(&input_variable, &output_minion);
+        reflect_minion(input_variable, output_scope);
       }
     }
 

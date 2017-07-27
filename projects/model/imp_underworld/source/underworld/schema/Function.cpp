@@ -2,9 +2,12 @@
 
 namespace underworld {
 
-  Minion & Function::add_parameter(const std::string &name, Profession_Owner &profession, const Source_Point &source) {
-    auto &minion = block.get_scope().create_minion(name, profession, source);
-    parameters.push_back(& minion);
-    return minion;
+  Parameter &Function::add_parameter(const std::string &name, Profession_Owner &profession,
+                                     const Source_Point &source) {
+    auto minion = new Parameter(name, profession, source);
+    block.get_scope().add_minion(std::unique_ptr<Parameter>(minion));
+    parameters.push_back(minion);
+    return *minion;
   }
+
 }

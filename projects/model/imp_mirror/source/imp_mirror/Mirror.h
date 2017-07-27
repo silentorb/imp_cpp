@@ -45,7 +45,7 @@ namespace imp_mirror {
         return *const_cast<overworld::Dungeon *> (&dungeon);
       }
 
-      void apply_node_assignment(overworld::Node & target, overworld::Node &value);
+      void apply_node_assignment(overworld::Node &target, overworld::Node &value);
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 
@@ -94,6 +94,9 @@ namespace imp_mirror {
       const overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
                                                              overworld::Scope &scope);
 
+      void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
+      std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
+                                                       overworld::Scope &output_scope);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
       void reflect_function2(const underworld::Function &input_function);
       void reflect_function3(const underworld::Function &input_function);

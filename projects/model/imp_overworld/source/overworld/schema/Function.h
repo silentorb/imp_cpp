@@ -21,11 +21,34 @@ namespace overworld {
 //      }
 //  };
 
+  class Parameter : public Minion {
+  public:
+      Parameter(const std::string &name, const Profession &profession) : Minion(name, profession) {}
+
+      bool is_parameter() const override {
+        return true;;
+      }
+
+      virtual bool transfers_ownership() const {
+        return false;
+      }
+  };
+
+  class Owning_Parameter : public Parameter {
+  public:
+      Owning_Parameter(const std::string &name, const Profession &profession) :
+        Parameter(name, profession) {}
+
+      bool transfers_ownership() const override {
+        return true;
+      }
+  };
+
   class Function : public virtual Member, public virtual Profession_Reference {
       Function_Scope scope;
       Block block;
-      std::vector<Minion *> parameters;
-      Profession_Node<Function> node;
+      std::vector<Parameter *> parameters;
+      Profession_Node <Function> node;
       const Profession *return_type;
       const std::string name;
       bool _is_static = false;
@@ -72,17 +95,22 @@ namespace overworld {
 
       bool is_inline();
 
-      const std::vector<Minion *> &get_parameters() const {
+      const std::vector<Parameter *> &get_parameters() const {
         return parameters;
       }
 
-      void add_parameter(Minion &minion) {
+      void add_parameter(Parameter &minion) {
         parameters.push_back(&minion);
       }
 
-      Minion & create_parameter(const std::string &name, const Profession &profession);
+      void add_parameter(Parameter *parameter) {
+        scope.add_minion(parameter);
+        parameters.push_back(parameter);
+      }
 
-      Profession_Node<Function> &get_node() override {
+//      Minion &create_parameter(const std::string &name, const Profession &profession);
+
+      Profession_Node <Function> &get_node() override {
         return node;
       }
 

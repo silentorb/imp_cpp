@@ -3,6 +3,6 @@
 #include <World.h>
 
 void World::add_creature(std::unique_ptr<Creature> &creature) {
-  push_back(creature);
-  creature.creature = this;
+  creatures.push_back(std::move(creature));
+  creature->world = this;
 }

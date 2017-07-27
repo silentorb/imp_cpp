@@ -18,12 +18,21 @@ namespace overworld {
   Dungeon &Dungeon::create_dungeon(const std::string &name) {
     auto dungeon = new Dungeon(name, *this);
     auto pointer = unique_ptr<Dungeon>(dungeon);
-    add_dungeon(pointer);
+    add_dungeon(std::move(pointer));
     members[name] = dungeon;
     if (_is_external)
       dungeon->set_is_external(true);
 
     return *dungeon;
+  }
+
+  Dungeon &Dungeon::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
+    if (_is_external)
+      dungeon->set_is_external(true);
+
+    auto result = dungeon.get();
+    Scope::add_dungeon(dungeon);
+    return *result;
   }
 
 //  Dungeon &Dungeon::create_dungeon(underworld::Dungeon &input_dungeon) {
@@ -67,6 +76,7 @@ namespace overworld {
 //  void Dungeon::throw_already_exists(const std::string &member_name) const {
 //    throw std::runtime_error("Dungeon " + source.get_name() + " already has a member named " + member_name + ".");
 //  }
+
 
 
 }

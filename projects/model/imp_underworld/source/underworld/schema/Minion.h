@@ -14,7 +14,7 @@ namespace underworld {
 
   public:
       Minion(const std::string &name, Profession_Owner &profession, const Source_Point &source_point) :
-        name(name), profession(std:: move(profession)), Member(source_point) {}
+        name(name), profession(std::move(profession)), Member(source_point) {}
 
       Minion(const std::string &name, const Source_Point &source_point) :
         name(name), Member(source_point) {}
@@ -37,6 +37,10 @@ namespace underworld {
 
       void set_is_static(bool value) {
         _is_static = value;
+      }
+
+      virtual bool is_parameter() const {
+        return false;
       }
   };
 

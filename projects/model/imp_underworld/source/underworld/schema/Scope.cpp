@@ -28,6 +28,12 @@ namespace underworld {
     return *portal;
   }
 
+  void Scope::add_minion(std::unique_ptr<Minion> minion) {
+    check_has_member(minion->get_name());
+
+    members[minion->get_name()] = std::move(minion);
+  }
+
   Minion &Scope::create_minion(const std::string &name, const Source_Point &source) {
     check_has_member(name);
 

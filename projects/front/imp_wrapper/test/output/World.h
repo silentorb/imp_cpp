@@ -3,7 +3,7 @@
 
 
 class World {
-    std::unique_ptr<vector> creatures;
+    std::vector creatures;
 
 public:
     void add_creature(std::unique_ptr<Creature> &creature);

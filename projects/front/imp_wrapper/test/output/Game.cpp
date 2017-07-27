@@ -8,6 +8,6 @@ std::unique_ptr<Game> Game::new() {
   world = World();
   auto game = Game();
   auto hero = Creature();
-  add_creature(hero);
+  game->world->add_creature(hero);
   return game;
 }

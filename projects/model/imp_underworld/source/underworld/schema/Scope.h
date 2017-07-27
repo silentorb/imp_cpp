@@ -33,6 +33,7 @@ namespace underworld {
       Minion &create_minion(const std::string &name, Profession_Owner &profession, const Source_Point &source);
       Minion &create_minion(const std::string &name, const Source_Point &source);
       Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source);
+      void add_minion(std::unique_ptr<Minion> minion);
 
       Dungeon &create_dungeon(const std::string &name, const Source_Point &source);
 

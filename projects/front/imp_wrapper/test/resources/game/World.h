@@ -9,6 +9,4 @@ class World {
 
 public:
     void add_creature(std::unique_ptr<Creature> &creature);
-
-    World() {}
 };

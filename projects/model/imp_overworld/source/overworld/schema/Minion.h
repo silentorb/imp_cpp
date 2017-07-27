@@ -23,9 +23,9 @@ namespace overworld {
         source(&source), profession(&profession), node(*this), name(source.get_name()),
         source_point(source.get_source_point()) {}
 
-      Minion(const underworld::Minion &source) :
-        source(&source), profession(nullptr), node(*this), name(source.get_name()),
-        source_point(source.get_source_point()) {}
+//      Minion(const underworld::Minion &source) :
+//        source(&source), profession(nullptr), node(*this), name(source.get_name()),
+//        source_point(source.get_source_point()) {}
 
       Minion(const std::string &name, const Profession &profession) :
         source(nullptr), profession(&profession), node(*this), name(name) {}
@@ -56,6 +56,10 @@ namespace overworld {
 
       Node &get_node() {
         return node;
+      }
+
+      virtual bool is_parameter() const {
+        return false;
       }
   };
 

@@ -19,6 +19,7 @@ namespace overworld {
       const std::string name;
       const underworld::Source_Point source_point;
       bool _is_external = false;
+      Ownership default_ownership = Ownership::owner;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -30,6 +31,10 @@ namespace overworld {
       virtual ~Dungeon() {}
 
       const std::string get_name() const {
+        return name;
+      }
+
+      virtual const std::string get_cpp_name() const {
         return name;
       }
 
@@ -57,7 +62,7 @@ namespace overworld {
         return parent;
       }
 
-      virtual Node &get_node() override{
+      virtual Node &get_node() override {
         return node;
       }
 
@@ -92,41 +97,28 @@ namespace overworld {
       }
 
       Dungeon &create_dungeon(const std::string &name);
+      Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
+
+      void set_default_ownership(Ownership value) {
+        this->default_ownership = value;
+      }
 
       Ownership get_ownership() const override {
-        return Ownership::owner;
+        return default_ownership;
       }
   };
 
-//
-//  class Derived_Dungeon : public Dungeon {
-//      const underworld::Dungeon &source;
-//
-//  public:
-//      Derived_Dungeon(const underworld::Dungeon &source, Scope &parent) :
-//        source(source), Dungeon(&source, &parent) {}
-//
-//      Derived_Dungeon(const underworld::Dungeon &source) :
-//        source(source), Dungeon(&source, parent) {}
-//
-//      virtual ~Derived_Dungeon() {
-//
-//      }
-//
-//      const std::string get_name() const override {
-//        return source.get_name();
-//      }
-//  };
-//
-//  class Anonymous_Dungeon : public Dungeon {
-//  public:
-//      Anonymous_Dungeon() :
-//        Dungeon(nullptr, nullptr) {}
-//
-//      const std::string get_name() const override {
-//        return "Anonymous Dungeon";
-//      }
-//  };
+  class Cpp_Dungeon : public Dungeon {
+      std::string cpp_name;
+
+  public:
+      Cpp_Dungeon(const std::string &name, const std::string &cpp_name, Scope &parent) :
+        Dungeon(name, parent), cpp_name(cpp_name) {}
+
+      const std::string get_cpp_name() const override {
+        return cpp_name;
+      }
+  };
 
   using Dungeon_Pointer = std::unique_ptr<Dungeon>;
 }
