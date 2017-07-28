@@ -9,7 +9,7 @@ World {
 }
 
 Creature {
-  world
+  world: &
 }
 
 Game {

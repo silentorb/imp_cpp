@@ -42,14 +42,25 @@ namespace underworld {
   };
 
   class Reference : public virtual Profession {
-      Profession &profession;
+      Profession_Owner profession;
 
   public:
-      Reference(Profession &profession) :
-        profession(profession) {}
+      Reference(Profession_Owner profession) :
+        profession(std::move(profession)) {}
+
+      Reference(Profession *profession) :
+        profession(std::unique_ptr<Profession>(profession)) {}
 
       Profession_Type get_type() const override {
         return Profession_Type::reference;
+      }
+
+      const std::string get_name() const override {
+        return profession->get_name();
+      }
+
+      const Source_Point get_source_point() const override {
+        return profession->get_source_point();
       }
   };
 
