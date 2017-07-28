@@ -16,4 +16,9 @@ TEST(Main_Test, game) {
 
   compare(string(RESOURCE_PATH) + "game/World.cpp", string(OUTPUT_PATH) + "World.cpp");
   compare(string(RESOURCE_PATH) + "game/World.h", string(OUTPUT_PATH) + "World.h");
+
+  compare(string(RESOURCE_PATH) + "game/Game.cpp", string(OUTPUT_PATH) + "Game.cpp");
+  compare(string(RESOURCE_PATH) + "game/Game.h", string(OUTPUT_PATH) + "Game.h");
+
+  compare(string(RESOURCE_PATH) + "game/Creature.h", string(OUTPUT_PATH) + "Creature.h");
 }

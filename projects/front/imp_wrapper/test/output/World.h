@@ -1,6 +1,8 @@
 #pragma once
 
+#include <memory>
 
+class Creature;
 
 class World {
     std::vector creatures;

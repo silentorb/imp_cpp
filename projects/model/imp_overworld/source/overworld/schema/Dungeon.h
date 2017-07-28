@@ -46,6 +46,10 @@ namespace overworld {
         header_file = value;
       }
 
+      void set_file(File &value) {
+        header_file = &value;
+      }
+
       File *get_file() const {
         return header_file;
       }

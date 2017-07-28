@@ -5,16 +5,17 @@
 namespace overworld {
 
   class File {
-     const std::string folder;
-     const std::string filename;
+      const std::string folder;
+      const std::string filename;
 
   public:
       File(const std::string &folder, const std::string &filename) :
-        folder(folder), filename(filename) {
+        folder(folder), filename(filename) {}
 
-      }
+      File(const std::string &filename) :
+        folder(""), filename(filename) {}
 
-      const std:: string get_folder()const {
+      const std::string get_folder() const {
         return folder;
       }
 

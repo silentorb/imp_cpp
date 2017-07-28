@@ -25,7 +25,7 @@ namespace imp_taskmaster {
 //        std::cout << iterator->path().filename() << " [directory]\n";
       }
       else {
-         filesystem::remove(iterator->path());
+        filesystem::remove(iterator->path());
       }
     }
   }
@@ -47,7 +47,9 @@ namespace imp_taskmaster {
   void Taskmaster::prepare_header_files() {
     for (auto entry : dungeons) {
       auto &dungeon = *entry.second;
-      header_file_map.set(dungeon, std::unique_ptr<File>(new File("", dungeon.get_name() + ".h")));
+      auto file = new File("", dungeon.get_name() + ".h");
+      header_file_map.set(dungeon, std::unique_ptr<File>(file));
+      dungeon.set_file(file);
     }
   }
 
@@ -63,15 +65,16 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::render_dungeon(const overworld::Dungeon &dungeon) {
-    imp_rendering:: Include_Manager include_manager(dungeon);
-    std::vector<const overworld::Profession *> dependencies;
-    overworld::exploring::gather_dungeon_dependencies(dependencies, dungeon);
-    include_manager.prepare(dependencies, header_file_map);
+    imp_rendering::Include_Manager include_manager(dungeon, header_file_map);
+//    std::vector<const overworld::Profession *> dependencies;
+//    overworld::exploring::gather_dungeon_dependencies(dependencies, dungeon);
+    include_manager.gather_headers(standard_library);
 
-    auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes());
+    auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes(),
+                                                         include_manager.get_forward_declarations());
     render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
 
-    if (imp_rendering::sources:: needs_source_file(dungeon)) {
+    if (imp_rendering::sources::needs_source_file(dungeon)) {
       auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
       render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
     }

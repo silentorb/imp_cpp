@@ -14,8 +14,9 @@ namespace imp_wrapper {
     underworld_root("", nullptr),
     lookup(),
     overworld_root("") {
-    auto standard_library = new cpp_stl::Standard_Library(overworld_root, overworld_profession_library, graph);
+    standard_library = new cpp_stl::Standard_Library(overworld_root);
     overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library));
+    standard_library->initialize(overworld_profession_library);
   }
 
   void Wrapper::load_file(const std::string &path) {
@@ -68,7 +69,7 @@ namespace imp_wrapper {
   }
 
   void Wrapper::render(const std::string &output_path) {
-    imp_taskmaster::Taskmaster taskmaster(overworld_root, output_path);
+    imp_taskmaster::Taskmaster taskmaster(overworld_root, output_path, *standard_library);
     taskmaster.render();
   }
 }

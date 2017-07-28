@@ -9,6 +9,7 @@
 #include <underworld/Source_Point.h>
 #include <overworld/imp_graph/Graph.h>
 #include <imp_mirror/Temporary_Interface_Manager.h>
+#include <cpp_stl/Standard_Library.h>
 
 namespace imp_wrapper {
 
@@ -20,6 +21,7 @@ namespace imp_wrapper {
       imp_mirror::Element_Map element_map;
       std::vector<std::unique_ptr<underworld::Source_File>> source_files;
       overworld::Graph graph;
+      cpp_stl::Standard_Library *standard_library;
 
   public:
       Wrapper();

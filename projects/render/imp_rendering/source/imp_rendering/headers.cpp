@@ -91,13 +91,23 @@ namespace imp_rendering {
       return block;
     }
 
-    Stroke render(const Dungeon &dungeon, const std::vector<File *> &files) {
+    Stroke render_forward_declarations(const vector<const Profession *> &forward_declarations) {
+      Stroke result;
+      for (auto declaration : forward_declarations) {
+        result << "class " + declaration->get_name() + ";";
+      }
+      return result;
+    }
+
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File *> &files,
+                  const vector<const Profession *> &forward_declarations) {
 //      return Stroke()
 //        << (Stroke() << "#pragma once")
 //                     << render_dungeon_body(dungeon);
       Stroke result;
       result << wrap("#pragma once")
              << render_includes(files)
+             << render_forward_declarations(forward_declarations)
              << render_dungeon_body(dungeon);
       return result;
     }
