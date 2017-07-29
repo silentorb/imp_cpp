@@ -13,7 +13,7 @@ namespace overworld {
         const Expression_Delegate action;
 
         void explore_expression(const Expression &expression);
-//        void explore_profession(const Profession &profession);
+//        void explore_profession(Profession &profession);
         void explore_function(const Function &function);
         void explore_scope(const Scope &scope);
 

@@ -23,6 +23,10 @@ namespace underworld {
       const Minion &get_minion() const {
         return* minion;
       }
+
+       Minion &get_minion()  {
+        return* minion;
+      }
   };
 
   class Minion_Declaration_And_Assignment : public virtual Minion_Declaration {

@@ -27,7 +27,7 @@ namespace overworld {
     int k = 0;
   }
 
-  Function &Scope::create_function(const std::string &name, const Profession &profession,
+  Function &Scope::create_function(const std::string &name, Profession &profession,
                                    const underworld::Source_Point &source_point) {
     auto function = new Function(name, profession, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
@@ -38,7 +38,7 @@ namespace overworld {
     return *function;
   }
 
-  Function &Scope::create_function(const underworld::Function &input, const Profession &profession) {
+  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
     return create_function(input.get_name(), profession, input.get_source_point());
   }
 
@@ -59,7 +59,7 @@ namespace overworld {
     minions.push_back(std::move(minion));
   }
 
-  Minion &Scope::create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph) {
+  Minion &Scope::create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph) {
 //    check_has_member(name);
 
     auto minion = new Minion(input, profession);
@@ -75,7 +75,7 @@ namespace overworld {
 //    return *minion;
 //  }
 
-  Minion &Scope::create_minion(const std::string &name, const Profession &profession) {
+  Minion &Scope::create_minion(const std::string &name, Profession &profession) {
     auto minion = new Minion(name, profession);
     add_minion(minion);
     return *minion;
@@ -90,9 +90,9 @@ namespace overworld {
     throw std::runtime_error("Could not find variable named " + name);
   }
 
-  void Scope::add_profession(std::unique_ptr<const Profession> &profession) {
-    professions.push_back(std::move(profession));
-  }
+//  void Scope::add_profession(std::unique_ptr<Profession> &profession) {
+//    professions.push_back(std::move(profession));
+//  }
 
   void Scope::add_profession(std::unique_ptr<Profession> &profession) {
     professions.push_back(std::move(profession));

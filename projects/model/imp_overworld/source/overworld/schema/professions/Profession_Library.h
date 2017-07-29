@@ -11,9 +11,9 @@ namespace overworld {
   public:
       Profession_Library();
 
-      static const Unknown &get_unknown();
-      static const Void &get_void();
-      static const Unknown &get_not_found();
+      static  Unknown &get_unknown();
+      static  Void &get_void();
+      static  Unknown &get_not_found();
 
       static Primitive &get_primitive(Primitive_Type type);
 

@@ -70,8 +70,12 @@ namespace overworld {
         return node;
       }
 
-      void set_profession(const Profession &value) override {
+      void set_profession(Profession &value) override {
 
+      }
+
+      Profession &get_profession() override {
+        return *this;
       }
 
       const Profession &get_profession() const override {

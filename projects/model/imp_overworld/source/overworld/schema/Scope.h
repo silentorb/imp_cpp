@@ -21,7 +21,7 @@ namespace overworld {
       Scope *parent;
       std::vector<std::unique_ptr<Function>> functions;
       std::vector<Variable_Owner> minions;
-      std::vector<std::unique_ptr<const Profession>> professions;
+      std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
       std::map<std::string, Member *> members;
 
@@ -30,20 +30,20 @@ namespace overworld {
       Scope(Scope *parent);
       virtual ~Scope();
 
-      Function &create_function(const underworld::Function &input, const Profession &profession);
+      Function &create_function(const underworld::Function &input, Profession &profession);
       Function &create_function(const underworld::Function &input);
 
-      Function &create_function(const std::string &name, const Profession &profession,
+      Function &create_function(const std::string &name, Profession &profession,
                                 const underworld::Source_Point &source_point = underworld::Source_Point());
 
-      Minion &create_minion(const underworld::Minion &input, const Profession &profession, overworld::Graph &graph);
+      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
 //      Minion &create_minion(const underworld::Minion &input);
-      Minion &create_minion(const std::string &name, const Profession &profession);
+      Minion &create_minion(const std::string &name, Profession &profession);
       void add_minion(Minion *minion);
       void add_minion(std::unique_ptr<Minion> &minion);
 
-      void add_profession(std::unique_ptr<const Profession> &profession);
       void add_profession(std::unique_ptr<Profession> &profession);
+//      void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
       Member *find_member(const std::string &name);
       Member *get_member(const std::string &name);
@@ -73,11 +73,11 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      const std::vector<std::unique_ptr<const Profession>> &get_professions() const {
+      const std::vector<std::unique_ptr<Profession>> &get_professions() const {
         return professions;
       }
 
-      std::vector<std::unique_ptr<const Profession>> &get_professions() {
+      std::vector<std::unique_ptr<Profession>> &get_professions() {
         return professions;
       }
 

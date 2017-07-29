@@ -25,10 +25,10 @@ namespace overworld {
   class Literal_Implementation : public virtual Literal, public virtual Profession_Reference {
       T value;
       Profession_Node<Literal_Implementation> node;
-      const underworld::Literal & source;
+      const underworld::Literal &source;
 
   public:
-      Literal_Implementation(T value, const underworld::Literal & source) :
+      Literal_Implementation(T value, const underworld::Literal &source) :
         value(value), node(*this), source(source) {
         node.set_resolved(true);
       }
@@ -45,11 +45,15 @@ namespace overworld {
         return &node;
       }
 
+      Profession &get_profession() override {
+        return Literal::get_profession();
+      }
+
       const Profession &get_profession() const override {
         return Literal::get_profession();
       }
 
-      void set_profession(const Profession &value) override {
+      void set_profession(Profession &value) override {
         throw std::runtime_error("Not supported.");
       }
 
@@ -61,7 +65,7 @@ namespace overworld {
 
   class Literal_Int : public Literal_Implementation<int> {
   public:
-      Literal_Int(int value, const underworld::Literal & source) :
+      Literal_Int(int value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
@@ -75,7 +79,7 @@ namespace overworld {
 
   class Literal_String : public Literal_Implementation<const std::string> {
   public:
-      Literal_String(const std::string &value, const underworld::Literal & source) :
+      Literal_String(const std::string &value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
@@ -89,7 +93,7 @@ namespace overworld {
 
   class Literal_Bool : public Literal_Implementation<bool> {
   public:
-      Literal_Bool(const bool &value, const underworld::Literal & source) :
+      Literal_Bool(const bool &value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {

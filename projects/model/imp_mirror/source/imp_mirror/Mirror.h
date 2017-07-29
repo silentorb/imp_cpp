@@ -86,13 +86,13 @@ namespace imp_mirror {
                                                                overworld::Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
                                                     overworld::Scope &scope);
-      const overworld::Profession &reflect_profession(const underworld::Profession *profession,
+      overworld::Profession &reflect_profession(const underworld::Profession *profession,
                                                       overworld::Scope &scope);
-      const overworld::Profession &
+       overworld::Profession &
       reflect_profession_child(overworld::Member &member, const underworld::Profession &profession);
 
-      const overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
-                                                             overworld::Scope &scope);
+      overworld::Profession & reflect_dungeon_reference(const underworld::Profession &profession,
+                                                        overworld::Scope &scope);
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
@@ -103,7 +103,7 @@ namespace imp_mirror {
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      const overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
+       overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_function_call(const underworld::Invoke &function_call,
                                                         overworld::Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,

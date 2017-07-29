@@ -21,7 +21,7 @@ namespace overworld {
 
       virtual Profession_Reference &get_profession_reference() = 0;
 
-      virtual void set_profession(const Profession &value) {
+      virtual void set_profession(Profession &value) {
         get_profession_reference().set_profession(value);
       }
 

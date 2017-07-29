@@ -13,21 +13,17 @@ namespace overworld {
 
   class Minion : public virtual Member, public virtual Profession_Reference {
       const underworld::Minion *source;
-      const Profession *profession;
+      Profession *profession;
       Profession_Node<Minion> node;
       const std::string name;
       const underworld::Source_Point source_point;
 
   public:
-      Minion(const underworld::Minion &source, const Profession &profession) :
+      Minion(const underworld::Minion &source, Profession &profession) :
         source(&source), profession(&profession), node(*this), name(source.get_name()),
         source_point(source.get_source_point()) {}
 
-//      Minion(const underworld::Minion &source) :
-//        source(&source), profession(nullptr), node(*this), name(source.get_name()),
-//        source_point(source.get_source_point()) {}
-
-      Minion(const std::string &name, const Profession &profession) :
+      Minion(const std::string &name, Profession &profession) :
         source(nullptr), profession(&profession), node(*this), name(name) {}
 
       virtual ~Minion() {
@@ -46,7 +42,11 @@ namespace overworld {
         return *profession;
       }
 
-      void set_profession(const Profession &value) override {
+      Profession &get_profession() override {
+        return *profession;
+      }
+
+      virtual void set_profession(Profession &value) override {
         profession = &value;
       }
 

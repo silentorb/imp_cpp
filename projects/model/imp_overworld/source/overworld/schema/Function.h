@@ -2,66 +2,25 @@
 
 #include <memory>
 #include <overworld/expressions/Block_Expression.h>
-#include <underworld/schema/Function.h>
-#include "Member.h"
+#include "Parameter.h"
 
 namespace overworld {
+
   class Profession_Library;
-
-//  class Function_Node : public Profession_Node<Function> {
-//  public:
-//      Function_Node::Function_Node(Function &element) : Profession_Node(element) {}
-//
-//      bool returns_a_value() {
-//
-//      }
-//
-//      void set_profession(const Profession &value) override {
-//        Node::set_profession(value);
-//      }
-//  };
-
-  class Parameter : public Minion {
-  public:
-      Parameter(const std::string &name, const Profession &profession) : Minion(name, profession) {}
-
-      bool is_parameter() const override {
-        return true;;
-      }
-
-      virtual bool transfers_ownership() const {
-        return false;
-      }
-  };
-
-  class Owning_Parameter : public Parameter {
-  public:
-      Owning_Parameter(const std::string &name, const Profession &profession) :
-        Parameter(name, profession) {}
-
-      bool transfers_ownership() const override {
-        return true;
-      }
-  };
 
   class Function : public virtual Member, public virtual Profession_Reference {
       Function_Scope scope;
       Block block;
       std::vector<Parameter *> parameters;
-      Profession_Node <Function> node;
-      const Profession *return_type;
+      Profession_Node<Function> node;
+      Profession *return_type;
       const std::string name;
       bool _is_static = false;
       bool returns_a_value() const;
       const underworld::Source_Point source_point;
 
   public:
-//      Function(const Profession &return_type, Scope &parent_scope) :
-//        name(source.get_name()), source(source), return_type(&return_type),
-//        scope(source.get_block().get_scope(), parent_scope, *this), block(scope),
-//        node(*this) {}
-
-      Function(const std::string &name, const Profession &return_type, Scope &parent_scope,
+      Function(const std::string &name, Profession &return_type, Scope &parent_scope,
                const underworld::Source_Point &source_point) :
         name(name), return_type(&return_type),
         scope(parent_scope, *this), block(scope),
@@ -108,17 +67,21 @@ namespace overworld {
         parameters.push_back(parameter);
       }
 
-//      Minion &create_parameter(const std::string &name, const Profession &profession);
+//      Minion &create_parameter(const std::string &name, Profession &profession);
 
-      Profession_Node <Function> &get_node() override {
+      Profession_Node<Function> &get_node() override {
         return node;
+      }
+
+      Profession &get_profession() override {
+        return *return_type;
       }
 
       const Profession &get_profession() const override {
         return *return_type;
       }
 
-      void set_profession(const Profession &value) override {
+      void set_profession(Profession &value) override {
         return_type = &value;
       }
 

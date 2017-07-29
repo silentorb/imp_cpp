@@ -40,7 +40,7 @@ namespace overworld {
 //        return "chain";
 //      }
 //
-//      const Profession &get_profession() const override {
+//      Profession &get_profession() const override {
 //        return second->get_profession();
 //      }
   };

@@ -8,12 +8,12 @@
 namespace overworld {
 
   class Instantiation : public Common_Expression {
-      const Profession &profession;
+      Profession &profession;
       std::map<Minion *, Expression_Owner> dictionary;
       const underworld::Source_Point source_point;
 
   public:
-      Instantiation(const Profession &profession, const underworld::Source_Point &source_point) :
+      Instantiation(Profession &profession, const underworld::Source_Point &source_point) :
         profession(profession), source_point(source_point) {}
 
       virtual ~Instantiation() {}
@@ -30,7 +30,7 @@ namespace overworld {
         return dictionary;
       }
 
-      const Profession &get_profession() const {
+      Profession &get_profession() const {
         return profession;
       }
 

@@ -21,15 +21,15 @@ namespace overworld {
 
   }
 
-  const Unknown &Profession_Library::get_unknown() {
+  Unknown &Profession_Library::get_unknown() {
     return unknown;
   }
 
-  const Void &Profession_Library::get_void() {
+  Void &Profession_Library::get_void() {
     return _void;
   }
 
-  const Unknown &Profession_Library::get_not_found() {
+  Unknown &Profession_Library::get_not_found() {
     return not_found;
   }
 

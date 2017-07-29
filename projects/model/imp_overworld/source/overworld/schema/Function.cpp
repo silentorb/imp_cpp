@@ -44,7 +44,7 @@ namespace overworld {
     }
   }
 
-//  Minion &Function::create_parameter(const std::string &name, const Profession &profession) {
+//  Minion &Function::create_parameter(const std::string &name, Profession &profession) {
 //    auto &minion = scope.create_minion(name, profession);
 //    add_parameter(minion);
 //    return minion;
