@@ -2,10 +2,10 @@
 
 #include <memory>
 
-
+class World;
 
 class Creature {
-    unknown world;
+    std::unique_ptr<World> world;
 
 public:
 };

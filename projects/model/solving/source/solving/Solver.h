@@ -33,6 +33,8 @@ namespace solving {
       void node_changed(Node &node);
       bool process_node(Node &node);
 
+      int update_unresolved();
+
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph) :
         graph(graph) {}
@@ -43,6 +45,7 @@ namespace solving {
 
       // Assumes that this is the first scan and there is not existing scan result data.
       void scan_fresh();
+      void add_node(Node &node);
 
       std::vector<Node *> &get_unsolved_nodes() {
         return unresolved;

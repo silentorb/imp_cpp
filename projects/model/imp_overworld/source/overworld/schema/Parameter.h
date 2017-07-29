@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Dungeon.h"
 
 namespace overworld {
@@ -7,7 +8,8 @@ namespace overworld {
       std::unique_ptr<Dungeon> temporary_interface;
 
   public:
-      Parameter(const std::string &name, Profession &profession) : Minion(name, profession) {}
+      Parameter(const std::string &name, Profession &profession, const underworld::Source_Point &source_point) :
+        Minion(name, profession, source_point) {}
 
       virtual ~Parameter();
 
@@ -28,12 +30,13 @@ namespace overworld {
       }
 
       void set_profession(Profession &value) override;
+      Dungeon &get_or_create_interface();
   };
 
   class Owning_Parameter : public Parameter {
   public:
-      Owning_Parameter(const std::string &name, Profession &profession) :
-        Parameter(name, profession) {}
+      Owning_Parameter(const std::string &name, Profession &profession, const underworld::Source_Point &source_point) :
+        Parameter(name, profession, source_point) {}
 
       bool transfers_ownership() const override {
         return true;

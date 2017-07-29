@@ -8,7 +8,7 @@
 
 namespace overworld {
 
-  class Node : public graphing::Node<Connection, Node> {
+  class Node : public graphing::Node<Node, Connection> {
       bool resolved = false;
       bool changed = false;
 

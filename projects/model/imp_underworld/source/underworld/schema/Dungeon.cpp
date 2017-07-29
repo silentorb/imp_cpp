@@ -4,9 +4,6 @@ using namespace std;
 
 namespace underworld {
 
-  Dungeon::Dungeon(const std::string &name, Scope *parent) :
-    name(name), Scope(parent) {}
-
 //  Dungeon &Dungeon::get_or_create_dungeon(const std::string &dungeon_name) {
 //    if (dungeon_name == "")
 //      throw runtime_error("Dungeon name cannot be empty.");

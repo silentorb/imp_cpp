@@ -75,11 +75,11 @@ namespace overworld {
 //    return *minion;
 //  }
 
-  Minion &Scope::create_minion(const std::string &name, Profession &profession) {
-    auto minion = new Minion(name, profession);
-    add_minion(minion);
-    return *minion;
-  }
+//  Minion &Scope::create_minion(const std::string &name, Profession &profession) {
+//    auto minion = new Minion(name, profession);
+//    add_minion(minion);
+//    return *minion;
+//  }
 
   Minion &Scope::get_minion(const std::string &name) {
     for (auto &variable: minions) {

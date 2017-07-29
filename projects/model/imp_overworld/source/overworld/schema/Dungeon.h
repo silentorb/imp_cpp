@@ -25,6 +25,9 @@ namespace overworld {
       Dungeon(const std::string &name, Scope &parent) :
         name(name), Scope(nullptr, &parent), node(*this) {}
 
+      Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
+        name(name), Scope(nullptr, &parent), node(*this), source_point(source_point) {}
+
       Dungeon(const std::string &name) :
         name(name), Scope(nullptr, nullptr), node(*this) {}
 

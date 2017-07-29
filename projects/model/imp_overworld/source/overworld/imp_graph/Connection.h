@@ -13,6 +13,10 @@ namespace overworld {
   public:
       Connection(Node &first, Node &second) : graphing::Connection<Node>(first, second) {}
 
+      virtual ~Connection() {
+
+      }
+
       bool does_conflict() const {
         return conflicts;
       }

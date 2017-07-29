@@ -2,7 +2,8 @@
 
 #include <memory>
 
-
+class ?;
+class World;
 
 class Game {
     unknown ;

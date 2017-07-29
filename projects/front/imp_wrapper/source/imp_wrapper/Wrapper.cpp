@@ -36,27 +36,54 @@ namespace imp_wrapper {
   void log_node(overworld::Node &node) {
     auto &profession_reference = node.get_profession_reference();
     auto &profession = profession_reference.get_profession();
+    auto & source_point =profession_reference.get_source_point();
+
+    if (source_point.get_source_file())
+      std::cout << source_point.get_row() << ":" << source_point.get_column() << " ";
+
     std::cout << profession_reference.get_name()
               << ":" << profession.get_name();
-
-    if (profession_reference.get_source_point().get_source_file())
-      std::cout << " - " << profession_reference.get_source_point().to_string();
 
     std::cout << std::endl;
   }
 
-  void Wrapper::solve() {
-    solving::Solver solver(graph.get_graph());
-    std::cout << std::endl;
-    for (auto &node : graph.get_graph().get_nodes()) {
+  int get_row(overworld::Node &node) {
+    return node.get_profession_reference().get_source_point().get_row();
+  }
+
+  void insert_node(std::vector<overworld::Node *> &nodes, overworld::Node *node) {
+    for (auto i = nodes.begin(); i != nodes.end(); i++) {
+      if (get_row(*node) < get_row(**i)) {
+        nodes.insert(i, node);
+        return;
+      }
+    }
+
+    nodes.push_back(node);
+  }
+
+  void log_nodes(const std::vector<overworld::Node *> &original_nodes) {
+    std::vector<overworld::Node *> nodes;
+    for (auto first: original_nodes) {
+      insert_node(nodes, first);
+    }
+    for (auto &node : nodes) {
       log_node(*node);
       for (auto &other : node->get_neighbors()) {
         std::cout << " * ";
         log_node(*other);
       }
     }
+  }
+
+  void Wrapper::solve() {
+    solving::Solver solver(graph.get_graph());
     solver.scan_fresh();
-    if (!solver.solve()) {
+    std::cout << std::endl;
+    auto solved = solver.solve();
+    log_nodes(graph.get_graph().get_nodes());
+
+    if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();
       if (unknowns.size() > 0) {
         auto &unknown = *unknowns[0];

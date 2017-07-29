@@ -13,6 +13,7 @@
 #include <overworld/expressions/Chain.h>
 #include <overworld/schema/Unresolved_Member.h>
 #include <overworld/expressions/Instantiation.h>
+#include <overworld/schema/Temporary_Minion.h>
 #include "Mirror.h"
 #include "Code_Error.h"
 
@@ -243,6 +244,29 @@ namespace imp_mirror {
     return result;
   }
 
+  overworld::Expression_Owner create_temporary_member(overworld::Member_Expression &previous_expression,
+                                                      const underworld::Member_Expression &member_expression) {
+    auto &member = previous_expression.get_member();
+    if (member.get_member_type() == overworld::Member_Type::variable) {
+      auto &minion = *dynamic_cast<overworld::Parameter *>(&member);
+      auto &interface = minion.get_or_create_interface();
+      auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
+                                                        overworld::Profession_Library::get_unknown(),
+                                                        member_expression.get_source_point());
+      interface.add_minion(new_member);
+      auto result = new overworld::Member_Expression(*new_member);
+      new_member->add_expression(*result);
+      return overworld::Expression_Owner(result);
+    }
+//          else if (member.get_member_type() == overworld::Member_Type::function) {
+//            auto &minion = cast<overworld::Function>(member);
+//            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
+//            auto &function = interface.create_function(member_expression.get_name(), profession_library.get_unknown());
+//            return overworld::Expression_Owner(new overworld::Member_Expression(function));
+//          }
+    throw std::runtime_error("Not implemented.");
+  }
+
   overworld::Expression_Owner Mirror::reflect_chain_member(overworld::Expression &first,
                                                            const underworld::Expression &second,
                                                            overworld::Scope &scope) {
@@ -258,20 +282,8 @@ namespace imp_mirror {
       }
       else if (profession.get_type() == overworld::Profession_Type::unknown) {
         if (previous_expression.get_type() == overworld::Expression::Type::member) {
-          auto &previous_member_expression = cast<overworld::Member_Expression>(previous_expression);
-          auto &member = previous_member_expression.get_member();
-          if (member.get_member_type() == overworld::Member_Type::variable) {
-            auto &minion = cast<overworld::Minion>(member);
-            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
-            auto &function = interface.create_minion(member_expression.get_name(), profession_library.get_unknown());
-            return overworld::Expression_Owner(new overworld::Member_Expression(function));
-          }
-//          else if (member.get_member_type() == overworld::Member_Type::function) {
-//            auto &minion = cast<overworld::Function>(member);
-//            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
-//            auto &function = interface.create_function(member_expression.get_name(), profession_library.get_unknown());
-//            return overworld::Expression_Owner(new overworld::Member_Expression(function));
-//          }
+          auto &previous_member_expression = *dynamic_cast<overworld::Member_Expression *>(&previous_expression);
+          return create_temporary_member(previous_member_expression, member_expression);
         }
       }
 
@@ -425,7 +437,7 @@ namespace imp_mirror {
     }
   }
 
-   overworld::Profession &Mirror::reflect_primitive(const underworld::Primitive &primitive) {
+  overworld::Profession &Mirror::reflect_primitive(const underworld::Primitive &primitive) {
     const auto index = (int) primitive.get_primitive_type();
     auto primitive_type = (overworld::Primitive_Type) index;
     return profession_library.get_primitive(primitive_type);
@@ -451,8 +463,8 @@ namespace imp_mirror {
     throw std::runtime_error("Not implemented");
   }
 
-  overworld::Profession & Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
-                                                            overworld::Scope &scope) {
+  overworld::Profession &Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
+                                                           overworld::Scope &scope) {
     auto input_dungeon = dynamic_cast<const underworld::Dungeon_Reference_Profession *>(&profession);
     auto member = scope.find_member(input_dungeon->get_name());
     if (!member)
@@ -461,7 +473,7 @@ namespace imp_mirror {
     return reflect_profession_child(*member, input_dungeon->get_child());
   }
 
-  overworld::Profession &  Mirror::reflect_profession(const underworld::Profession *profession, overworld::Scope &scope) {
+  overworld::Profession &Mirror::reflect_profession(const underworld::Profession *profession, overworld::Scope &scope) {
     if (!profession)
       return profession_library.get_unknown();
 
@@ -520,9 +532,13 @@ namespace imp_mirror {
   Mirror::create_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
     auto &profession = reflect_profession(input_minion.get_profession(), output_scope);
     if (input_minion.is_parameter()) {
-      return std::unique_ptr<overworld::Minion>(new overworld::Parameter(input_minion.get_name(), profession));
+      return std::unique_ptr<overworld::Minion>(
+        new overworld::Parameter(input_minion.get_name(), profession, input_minion.get_source_point())
+      );
     }
-    return std::unique_ptr<overworld::Minion>(new overworld::Minion(input_minion.get_name(), profession));
+    return std::unique_ptr<overworld::Minion>(
+      new overworld::Minion(input_minion.get_name(), profession, input_minion.get_source_point())
+    );
   }
 
   void Mirror::reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
@@ -554,7 +570,7 @@ namespace imp_mirror {
         if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
           auto output_dungeon = std::unique_ptr<overworld::Dungeon>(
-            new overworld::Dungeon(input_dungeon.get_name(), output_scope));
+            new overworld::Dungeon(input_dungeon.get_name(), output_scope, input_dungeon.get_source_point()));
 
           auto &dungeon = *output_dungeon;
           element_map.add(&input_dungeon, &dungeon);

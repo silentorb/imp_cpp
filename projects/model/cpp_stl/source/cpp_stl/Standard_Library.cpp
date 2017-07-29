@@ -23,7 +23,7 @@ namespace cpp_stl {
     vector.set_default_ownership(Ownership::value);
     auto &void_type = profession_library.get_void();
     auto &push_back = vector.create_function("push_back", void_type, source_point);
-    push_back.add_parameter(new Owning_Parameter("item", profession_library.get_unknown()));
+    push_back.add_parameter(new Owning_Parameter("item", profession_library.get_unknown(), source_point));
 
     // Currently only used to track include file references.
     unique_pointer = &add_dungeon(std::unique_ptr<Dungeon>(

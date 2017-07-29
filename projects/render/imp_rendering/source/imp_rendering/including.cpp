@@ -144,10 +144,11 @@ namespace imp_rendering {
 
         for (auto &minion: dungeon.get_minions()) {
           auto &profession = minion->get_profession();
-          if (profession.get_ownership() == Ownership::value) {
+          if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-        }
+          helper.add_partial(profession);
+         }
       }
 
       void gather_source_references() {

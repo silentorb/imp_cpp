@@ -3,10 +3,14 @@
 
 namespace solving {
 
+  void Solver::add_node(Node &node) {
+    if (!node.is_resolved())
+      unresolved.push_back(&node);
+  }
+
   void Solver::scan_fresh() {
     for (auto node : graph.get_nodes()) {
-      if (!node->is_resolved())
-        unresolved.push_back(node);
+      add_node(*node);
     }
   }
 
@@ -14,7 +18,6 @@ namespace solving {
     if (node.is_resolved())
       return;
 
-    unresolved.erase(std::remove(unresolved.begin(), unresolved.end(), &node), unresolved.end());
     node.set_resolved(true);
   }
 
@@ -49,9 +52,9 @@ namespace solving {
   }
 
   bool Solver::process_node(Node &node) {
-    for(auto other : node.get_neighbors()) {
-      if(other->is_resolved()){
-        auto & profession = other->get_profession_reference().get_profession();
+    for (auto other : node.get_neighbors()) {
+      if (other->is_resolved()) {
+        auto &profession = other->get_profession_reference().get_profession();
         node.set_profession(profession);
         return true;
       }
@@ -103,8 +106,18 @@ namespace solving {
     return progress;
   }
 
+  int Solver::update_unresolved() {
+    unresolved.clear();
+    for (auto node : graph.get_nodes()) {
+      if (!node->is_resolved())
+        unresolved.push_back(node);
+    }
+
+    return unresolved.size();
+  }
+
   bool Solver::solve() {
-    while (changed.size() != 0 || unresolved.size() != 0) {
+    while (changed.size() != 0 || update_unresolved() != 0) {
       auto progress1 = process_unresolved();
       auto progress2 = process_changed();
 

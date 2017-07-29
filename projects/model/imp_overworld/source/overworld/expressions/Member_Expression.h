@@ -29,6 +29,13 @@ namespace overworld {
         return *this->member;
       }
 
+      void set_member(Member &value) {
+        if (owned_member)
+          throw std::runtime_error("Member_Expression already has an owned member and cannot change to a reference.");
+
+        member = &value;
+      }
+
       Node *get_node() override {
         return &member->get_node();
       }

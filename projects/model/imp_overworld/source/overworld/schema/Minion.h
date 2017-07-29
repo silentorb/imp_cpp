@@ -23,8 +23,9 @@ namespace overworld {
         source(&source), profession(&profession), node(*this), name(source.get_name()),
         source_point(source.get_source_point()) {}
 
-      Minion(const std::string &name, Profession &profession) :
-        source(nullptr), profession(&profession), node(*this), name(name) {}
+      Minion(const std::string &name, Profession &profession, const underworld::Source_Point &source_point) :
+        source(nullptr), profession(&profession), node(*this), name(name),
+        source_point(source_point) {}
 
       virtual ~Minion() {
 

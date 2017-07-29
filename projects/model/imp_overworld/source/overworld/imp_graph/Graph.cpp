@@ -31,11 +31,11 @@ namespace overworld {
 //    if (((int) second.is_changed()) > 1 || ((int) second.is_changed()) < 0)
 //      throw std::runtime_error("Error with node");
 
-    if (!has_node(first))
-        add_node(first);
-
-    if (!has_node(second))
-      add_node(second);
+//    if (!has_node(first))
+//        add_node(first);
+//
+//    if (!has_node(second))
+//      add_node(second);
 
     return graph->connect(first, second);
   }
