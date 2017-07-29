@@ -22,7 +22,13 @@ namespace overworld {
       virtual Profession_Reference &get_profession_reference() = 0;
 
       virtual void set_profession(Profession &value) {
-        get_profession_reference().set_profession(value);
+        auto &previous = get_profession_reference().get_profession();
+        if (previous.get_type() == Profession_Type::reference) {
+
+        }
+        else {
+          get_profession_reference().set_profession(value);
+        }
       }
 
       bool is_resolved() const {

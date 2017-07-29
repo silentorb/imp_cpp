@@ -117,6 +117,14 @@ namespace overworld {
       Ownership get_ownership() const override {
         return default_ownership;
       }
+
+      Profession &get_base() override {
+        return *this;
+      }
+
+      const Profession &get_base() const override {
+        return *this;
+      }
   };
 
   class Cpp_Dungeon : public Dungeon {

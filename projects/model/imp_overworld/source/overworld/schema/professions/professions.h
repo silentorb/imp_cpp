@@ -28,6 +28,14 @@ namespace overworld {
       Ownership get_ownership() const override {
         return Ownership::value;
       }
+
+      Profession &get_base() override {
+        return *this;
+      }
+
+      const Profession &get_base() const override {
+        return *this;
+      }
   };
 
   class Void : public virtual Profession {
@@ -50,6 +58,14 @@ namespace overworld {
 
       Ownership get_ownership() const override {
         return Ownership::value;
+      }
+
+      Profession &get_base() override {
+        return *this;
+      }
+
+      const Profession &get_base() const override {
+        return *this;
       }
   };
 
@@ -94,6 +110,14 @@ namespace overworld {
 
       Ownership get_ownership() const override {
         return Ownership::value;
+      }
+
+      Profession &get_base() override {
+        return *this;
+      }
+
+      const Profession &get_base() const override {
+        return *this;
       }
   };
 
@@ -140,6 +164,18 @@ namespace overworld {
 
       Ownership get_ownership() const override {
         return Ownership::reference;
+      }
+
+      const std::string get_name() const override {
+        return "&" + profession.get_name();
+      }
+
+      Profession &get_base() override {
+        return profession;
+      }
+
+      const Profession &get_base() const override {
+        return profession;
       }
   };
 

@@ -1,11 +1,9 @@
 #pragma once
 
-#include <memory>
-
-class World;
+class &?;
 
 class Creature {
-    std::unique_ptr<World> world;
+    unknown world;
 
 public:
 };

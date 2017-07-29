@@ -62,6 +62,10 @@ namespace underworld {
       const Source_Point get_source_point() const override {
         return profession->get_source_point();
       }
+
+      const Profession &get_profession() const {
+        return *profession;
+      }
   };
 
 //  class Function_Signature : public virtual Profession {

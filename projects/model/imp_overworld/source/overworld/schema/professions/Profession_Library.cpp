@@ -37,9 +37,17 @@ namespace overworld {
     return primitives[static_cast<int>(type)];
   }
 
-  void Profession_Library::add_anonymous_dungeon(Minion &minion, Dungeon_Pointer &dungeon) {
-    anonymous_dungeons[&minion] = std::move(dungeon);
+  Reference &Profession_Library::get_reference(Profession &profession) {
+    if (references.count(&profession))
+      return *references[&profession];
+
+    auto reference = new Reference(profession);
+    references[&profession] = std::unique_ptr<Reference>(reference);
+    return *reference;
   }
+//  void Profession_Library::add_anonymous_dungeon(Minion &minion, Dungeon_Pointer &dungeon) {
+//    anonymous_dungeons[&minion] = std::move(dungeon);
+//  }
 
 //  Dungeon &Profession_Library::create_anonymous_dungeon(Minion &minion) {
 //    auto result = new Anonymous_Dungeon();

@@ -28,6 +28,7 @@ namespace overworld {
   public:
 
       virtual ~Profession() {}
+
       virtual Profession_Type get_type() const = 0;
       virtual Scope *get_scope() = 0;
       virtual File *get_file() const = 0;
@@ -38,5 +39,7 @@ namespace overworld {
       }
 
       virtual Ownership get_ownership() const = 0;
+      virtual Profession &get_base()  = 0;
+      virtual const Profession &get_base() const = 0;
   };
 }

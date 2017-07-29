@@ -221,7 +221,7 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
                                                             overworld::Scope &scope) {
     auto &input_profession = instantiation.get_profession();
-    auto &output_profession = reflect_profession(&input_profession, scope);
+    auto &output_profession = reflect_profession(input_profession, scope);
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + input_profession.get_name(), instantiation.get_source_point());
 
@@ -473,20 +473,17 @@ namespace imp_mirror {
     return reflect_profession_child(*member, input_dungeon->get_child());
   }
 
-  overworld::Profession &Mirror::reflect_profession(const underworld::Profession *profession, overworld::Scope &scope) {
-    if (!profession)
-      return profession_library.get_unknown();
-
-    switch (profession->get_type()) {
+  overworld::Profession &Mirror::reflect_profession(const underworld::Profession &profession, overworld::Scope &scope) {
+    switch (profession.get_type()) {
       case underworld::Profession_Type::primitive:
-        return reflect_primitive(*dynamic_cast<const underworld::Primitive *>(profession));
+        return reflect_primitive(cast<underworld::Primitive>(profession));
 
       case underworld::Profession_Type::dungeon_reference: {
-        return reflect_dungeon_reference(*profession, scope);
+        return reflect_dungeon_reference(profession, scope);
       }
 
       case underworld::Profession_Type::token: {
-        auto token = cast<const underworld::Token_Profession>(*profession);
+        auto &token = cast<underworld::Token_Profession>(profession);
         auto member = scope.find_member(token.get_name());
         if (!member)
           throw Code_Error("Could not find " + token.get_name(), token.get_source_point());
@@ -496,8 +493,24 @@ namespace imp_mirror {
 
         return cast<overworld::Dungeon>(*member);
       }
+
+      case underworld::Profession_Type::unknown:
+        return profession_library.get_unknown();
+
+      case underworld::Profession_Type::reference: {
+        auto &child_profession = cast<underworld::Reference>(profession).get_profession();
+        return profession_library.get_reference(reflect_profession(child_profession, scope));
+      }
     }
-    return profession_library.get_unknown();
+
+    throw std::runtime_error("Not implemented");
+  }
+
+  overworld::Profession &Mirror::reflect_profession(const underworld::Profession *profession, overworld::Scope &scope) {
+    if (!profession)
+      return profession_library.get_unknown();
+
+    return reflect_profession(*profession, scope);
   }
 
   void Mirror::reflect_function1(const underworld::Member &member, overworld::Scope &scope) {
