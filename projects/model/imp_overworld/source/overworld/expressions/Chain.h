@@ -29,19 +29,16 @@ namespace overworld {
         return second->get_node();
       }
 
-      Expression &get_first() const{
+      Expression &get_first() const {
         return *first;
       }
 
-      Expression &get_second() const{
+      Expression &get_second() const {
         return *second;
       }
-//      const std::string get_name() const override {
-//        return "chain";
-//      }
-//
-//      Profession &get_profession() const override {
-//        return second->get_profession();
-//      }
+
+      bool is_statement() const override {
+        return false;
+      }
   };
 }

@@ -77,7 +77,7 @@ namespace imp_wrapper {
   }
 
   void Wrapper::solve() {
-    solving::Solver solver(graph.get_graph());
+    solving::Solver solver(graph.get_graph(), overworld_profession_library);
     solver.scan_fresh();
     std::cout << std::endl;
     auto solved = solver.solve();

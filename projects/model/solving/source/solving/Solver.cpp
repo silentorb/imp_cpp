@@ -1,6 +1,8 @@
 #include "Solver.h"
 #include <algorithm>
 
+using namespace overworld;
+
 namespace solving {
 
   void Solver::add_node(Node &node) {
@@ -17,6 +19,9 @@ namespace solving {
   void Solver::set_node_resolved(Node &node) {
     if (node.is_resolved())
       return;
+
+    if (node.get_profession_reference().get_profession().get_base().get_type() == overworld::Profession_Type::unknown)
+      throw std::runtime_error("Invalid resolution.");
 
     node.set_resolved(true);
   }
@@ -38,9 +43,9 @@ namespace solving {
 
   }
 
-  void Solver::connection_conflicts(Connection &connection) {
-
-  }
+//  void Solver::connection_conflicts(Connection &connection) {
+//
+//  }
 
   void Solver::ripple_changed(Node &node) {
     for (auto &connection: node.get_connections()) {
@@ -51,11 +56,25 @@ namespace solving {
     }
   }
 
+  void Solver::set_profession(Node &node, overworld::Profession &profession) {
+    if (node.get_profession_reference().get_source_point().get_row() == 12)
+      int k = 0;
+    if (profession.get_base().get_type() == overworld::Profession_Type::unknown)
+      throw std::runtime_error("Invalid type.");
+    auto &previous = node.get_profession_reference().get_profession();
+    if (previous.get_type() == Profession_Type::reference) {
+      node.set_profession(profession_library.get_reference(profession.get_base()));
+    }
+    else {
+      node.set_profession(profession);
+    }
+  }
+
   bool Solver::process_node(Node &node) {
     for (auto other : node.get_neighbors()) {
       if (other->is_resolved()) {
         auto &profession = other->get_profession_reference().get_profession();
-        node.set_profession(profession);
+        set_profession(node, profession);
         return true;
       }
     }

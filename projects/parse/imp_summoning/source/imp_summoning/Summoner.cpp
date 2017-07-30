@@ -64,7 +64,7 @@ namespace imp_summoning {
 
   void Summoner::process_dungeon_member(Context &context) {
     if (input.current().is(lexicon.Static)) {
-      auto name = input.current().get_text();
+      auto name = input.next().get_text();
       process_member(name, context, true);
     }
     else if (input.current().is(lexicon.identifier)) {

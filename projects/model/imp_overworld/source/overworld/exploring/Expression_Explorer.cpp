@@ -1,5 +1,6 @@
 #include <overworld/schema/Function.h>
 #include <overworld/expressions/Assignment.h>
+#include <overworld/expressions/Minion_Declaration.h>
 #include "Expression_Explorer.h"
 
 namespace overworld {
@@ -17,6 +18,11 @@ namespace overworld {
           break;
         }
 
+        case Expression::Type::variable_declaration_and_assignment: {
+          auto &assignment = *dynamic_cast<const overworld::Minion_Declaration_And_Assignment *>(&expression);
+          explore_expression(assignment.get_expression());
+          break;
+        }
       }
     }
 

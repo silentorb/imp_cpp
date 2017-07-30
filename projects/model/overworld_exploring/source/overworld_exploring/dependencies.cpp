@@ -1,5 +1,5 @@
 #include "dependencies.h"
-#include "Profession_Explorer.h"
+#include "overworld/exploring/Profession_Explorer.h"
 
 namespace overworld {
   namespace exploring {
@@ -25,14 +25,14 @@ namespace overworld {
     }
 */
 
-    void gather_dungeon_dependencies(std::vector<const Profession *> &dependencies, const Dungeon &dungeon) {
-      Profession_Explorer explorer([&dungeon, &dependencies](const Profession &profession) {
-        if (&profession == &dungeon)
-          return;
-
-        dependencies.push_back(&profession);
-      });
-      explorer.explore(dungeon);
-    }
+//    void gather_dungeon_dependencies(std::vector<const Profession *> &dependencies, const Dungeon &dungeon) {
+//      Profession_Explorer explorer([&dungeon, &dependencies](const Profession &profession) {
+//        if (&profession == &dungeon)
+//          return;
+//
+//        dependencies.push_back(&profession);
+//      });
+//      explorer.explore_block(dungeon);
+//    }
   }
 }

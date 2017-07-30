@@ -1,8 +1,8 @@
 #pragma once
 
+#include <vector>
 #include <memory>
 
-class vector;
 class Creature;
 
 class World {

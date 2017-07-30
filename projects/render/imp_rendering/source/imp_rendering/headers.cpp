@@ -69,8 +69,12 @@ namespace imp_rendering {
       Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
-      for (auto &variable : dungeon.get_minions()) {
-        auto stroke = Stroke(render_minion_with_signature(*variable) + ';');
+      for (auto &minion : dungeon.get_minions()) {
+        auto assignment = minion->get_profession().get_type() == Profession_Type::reference
+                          ? " = nullptr"
+                          : "";
+
+        auto stroke = Stroke(render_minion_with_signature(*minion) + assignment + ';');
         private_block.add(stroke);
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
 //          auto &output_minion = output.create_minion(dungeon_minion, profession);

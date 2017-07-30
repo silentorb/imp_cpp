@@ -75,7 +75,6 @@ namespace overworld {
       Float,
       Int,
       String,
-//      Void
   };
 
   const int Primitive_Type_Count = 5;
@@ -121,26 +120,6 @@ namespace overworld {
       }
   };
 
-//  class Professional_Dungeon : public virtual Profession {
-//      Dungeon &dungeon;
-//
-//  public:
-//      Professional_Dungeon(Dungeon &dungeon) :
-//        dungeon(dungeon) {}
-//
-//      Type get_type() const override {
-//        return Type::dungeon;
-//      }
-//
-//      Dungeon *get_parent_dungeon() override {
-//        return dungeon.get_parent();
-//      }
-//
-//      File *get_file() override {
-//        return nullptr;
-//      }
-//  };
-
   class Reference : public virtual Profession {
       Profession &profession;
 
@@ -167,14 +146,22 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        return "&" + profession.get_name();
+        return profession.get_name();
+      }
+
+      const std::string get_debug_name() const override {
+        return "&" + profession.get_debug_name();
       }
 
       Profession &get_base() override {
-        return profession;
+        return profession.get_base();
       }
 
       const Profession &get_base() const override {
+        return profession.get_base();
+      }
+
+      const Profession &get_profession() const {
         return profession;
       }
   };

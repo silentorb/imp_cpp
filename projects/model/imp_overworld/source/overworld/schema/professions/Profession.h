@@ -34,6 +34,10 @@ namespace overworld {
       virtual File *get_file() const = 0;
       virtual const std::string get_name() const = 0;
 
+      virtual const std::string get_debug_name() const {
+        return get_name();
+      };
+
       virtual Node &get_node() {
         throw std::runtime_error("Not implemented.");
       }

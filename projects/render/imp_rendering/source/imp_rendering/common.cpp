@@ -39,7 +39,13 @@ namespace imp_rendering {
 
 
   const std::string render_minion_with_signature(const overworld::Minion &minion) {
-    return render_profession(minion.get_profession()) + ' ' + minion.get_name();
+    auto signature = render_profession(minion.get_profession());
+    auto last_character = signature[signature.size() - 1];
+    string separator = last_character == '*' || last_character == '&'
+                       ? ""
+                       : " ";
+
+    return signature + separator + minion.get_name();
   }
 
   const std::string render_parameter(const overworld::Minion &minion) {
@@ -70,7 +76,7 @@ namespace imp_rendering {
   const std::string render_function_declaration(const overworld::Function &function) {
     auto static_clause = function.is_static() ? "static " : "";
     return static_clause + render_function_return_signature(function)
-           + function.get_name()
+           + sanitize_name(function.get_name())
            + render_function_parameters(function);
   }
 
@@ -95,7 +101,7 @@ namespace imp_rendering {
   }
 
   const std::string render_minion_expression(const overworld::Member_Expression &minion) {
-    return minion.get_member().get_name();
+    return sanitize_name(minion.get_member().get_name());
   }
 
   const std::string render_return_nothing(const overworld::Return &input_return) {
@@ -128,12 +134,17 @@ namespace imp_rendering {
              }), ", ") + ")";
   }
 
+  const std::string render_dictionary(const std::map<Minion *, Expression_Owner> &dictionary) {
+    return join(dictionary, Map_Joiner<Minion *, const overworld::Expression_Owner>(
+      [](Minion *minion, const overworld::Expression_Owner &expression) {
+        return minion->get_name() + ": " + render_expression(*expression);
+      }), ",\n");;
+  }
+
   const std::string render_instantiation(const overworld::Instantiation &instantiation) {
-    return instantiation.get_profession().get_name() + "(" +
-           join(instantiation.get_dictionary(), Map_Joiner<Minion *, const overworld::Expression_Owner>(
-             [](Minion *minion, const overworld::Expression_Owner &expression) {
-               return minion->get_name() + ": " + render_expression(*expression);
-             }), ",\n") + ")";
+    return render_profession_owner(instantiation.get_profession()) +
+           "(new " + instantiation.get_profession().get_name()
+           + "(" + render_dictionary(instantiation.get_dictionary()) + "))";
   }
 
   const std::string render_operator(overworld::Operator_Type value) {
@@ -272,18 +283,26 @@ namespace imp_rendering {
       case overworld::Profession_Type::Void:
         return "void";
 
+      case Profession_Type::reference: {
+        auto reference = *dynamic_cast<const Reference *>(&profession);
+        return render_profession_internal(reference.get_profession()) + " *";
+      }
+
       default:
         return "unknown";
     }
 //    throw std::runtime_error(" Not implemented.");
   }
 
-  const std::string render_profession(const overworld::Profession &profession) {
-    auto result = render_profession_internal(profession);
-    if (profession.get_ownership() == Ownership::owner)
-      return "std::unique_ptr<" + result + ">";
+  const std::string render_profession_owner(const overworld::Profession &profession) {
+    return "std::unique_ptr<" + render_profession_internal(profession) + ">";
+  }
 
-    return result;
+  const std::string render_profession(const overworld::Profession &profession) {
+    if (profession.get_ownership() == Ownership::owner)
+      return render_profession_owner(profession);
+
+    return render_profession_internal(profession);
   }
 
 //  const std::string render_profession_as_owner(const overworld::Profession &profession) {
@@ -294,9 +313,16 @@ namespace imp_rendering {
 //    return render_profession_as_owner(profession) + " &";
 //  }
 
+  std::string sanitize_name(const string &name) {
+    if (name == "new")
+      return "_new";
+
+    return name;
+  }
+
   Stroke render_function_definition(const overworld::Function &function) {
     auto function_signature = render_function_return_signature(function)
-                              + function.get_name()
+                              + sanitize_name(function.get_name())
                               + render_function_parameters(function);
 
     return render_block(function_signature, function.get_block());

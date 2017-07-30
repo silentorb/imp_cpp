@@ -74,6 +74,9 @@ namespace overworld {
         throw std::runtime_error("Not supported");
       }
 
+      bool is_statement()const override {
+        return false;
+      }
 //      Scope_Parent_Type get_scope_parent_type() const override {
 //        return Scope_Parent_Type::block;
 //      }

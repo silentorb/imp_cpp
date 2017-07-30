@@ -4,6 +4,7 @@
 #include "overworld/imp_graph/Connection.h"
 #include <vector>
 #include <graphing/Reference_Graph.h>
+#include <overworld/schema/professions/Profession_Library.h>
 
 namespace solving {
 
@@ -12,13 +13,10 @@ namespace solving {
 
   class Solver {
       graphing::Reference_Graph<Node, Connection> &graph;
-
       std::vector<Node *> unresolved;
       std::vector<Node *> changed;
-
       std::vector<Connection *> conflicts;
-
-//      Solver_Logic &resolver;
+      overworld::Profession_Library &profession_library;
 
       enum Progress {
           none,
@@ -35,13 +33,15 @@ namespace solving {
 
       int update_unresolved();
 
+      void set_profession(Node &node, overworld::Profession &profession);
+
   public:
-      Solver(graphing::Reference_Graph<Node, Connection> &graph) :
-        graph(graph) {}
+      Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
+        graph(graph), profession_library(profession_library) {}
 
       bool solve();
       void ripple_changed(Node &node);
-      void connection_conflicts(Connection &connection);
+//      void connection_conflicts(Connection &connection);
 
       // Assumes that this is the first scan and there is not existing scan result data.
       void scan_fresh();

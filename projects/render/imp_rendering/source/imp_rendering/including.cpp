@@ -1,4 +1,5 @@
 #include <overworld/schema/Function.h>
+#include <overworld/exploring/Profession_Explorer.h>
 #include "including.h"
 
 using namespace overworld;
@@ -14,42 +15,10 @@ namespace imp_rendering {
     return false;
   }
 
-//  void Include_Manager::prepare(std::vector<const Profession *> dependencies, Profession_File_Map &file_map) {
-//    for (auto dependency: dependencies) {
-//      auto &profession = *dependency;
-//
-//      auto file = profession.get_file();
-//      if (!file)
-//        file = file_map.get_file(profession);
-//
-//      if (file) {
-//        if (!has_file(source_includes, *file)) {
-//          profession.get_file();
-//          source_includes.push_back(file);
-//        }
-//      }
-//    }
-//
-//    source_includes.push_back(file_map.get_file(dungeon));
-//  }
-
   void Include_Manager::process_expression(const overworld::Expression &expression) {
     switch (expression.get_type()) {
 //      case Expression::Type::return_with_value:
     }
-  }
-
-  void Include_Manager::gather_include_headers() {
-    exploring::Expression_Explorer explorer([this](const Expression &expression) {
-      process_expression(expression);
-    });
-
-    for (auto &function :  dungeon.get_functions()) {
-      if (function->is_inline()) {
-        explorer.explore_block(function->get_block());
-      }
-    }
-
   }
 
   enum class Reference_Type {
@@ -134,12 +103,27 @@ namespace imp_rendering {
       Gatherer(const Dungeon &dungeon, cpp_stl::Standard_Library &standard_library, Helper &helper) :
         dungeon(dungeon), standard_library(standard_library), helper(helper) {}
 
+      void process_profession(const overworld::Profession &profession) {
+        helper.add_full(profession);
+//        switch (profession.get_type()) {
+////      case Expression::Type::return_with_value:
+//        }
+      }
+
+      void explore_block(const Block & block){
+        exploring::Profession_Explorer explorer([this](const Profession &profession) {
+          process_profession(profession);
+        });
+
+        explorer.explore_block(block);
+      }
+
       void gather_header_references() {
         for (auto &function : dungeon.get_functions()) {
           process_function_declaration(*function);
-//      if (function->is_inline()) {
-//        explorer.explore_block(function->get_block());
-//      }
+          if (function->is_inline()) {
+            explore_block(function->get_block());
+          }
         }
 
         for (auto &minion: dungeon.get_minions()) {
@@ -147,8 +131,13 @@ namespace imp_rendering {
           if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-          helper.add_partial(profession);
-         }
+          if (profession.get_ownership() == Ownership::value) {
+            helper.add_full(profession);
+          }
+          else {
+            helper.add_partial(profession);
+          }
+        }
       }
 
       void gather_source_references() {
@@ -156,7 +145,12 @@ namespace imp_rendering {
           process_function_declaration(*function);
         }
 
-//        helper.add_full(dungeon);
+        for (auto &function : dungeon.get_functions()) {
+          process_function_declaration(*function);
+          if (!function->is_inline()) {
+            explore_block(function->get_block());
+          }
+        }
       }
   };
 

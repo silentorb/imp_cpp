@@ -6,5 +6,4 @@ class Creature {
     World *world = nullptr;
 
 public:
-
 };

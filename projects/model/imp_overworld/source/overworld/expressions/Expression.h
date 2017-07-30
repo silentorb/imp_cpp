@@ -39,6 +39,8 @@ namespace overworld {
       }
 
       virtual ~Expression() {}
+
+      virtual bool is_statement() const = 0;
   };
 
   class Common_Expression : public virtual Expression {
@@ -46,12 +48,20 @@ namespace overworld {
       Expression &get_last() override {
         return *this;
       }
+
+      bool is_statement() const override {
+        return false;
+      }
   };
 
   class Statement : public virtual Expression {
   public:
       Expression &get_last() override {
         throw std::runtime_error("Not supported");
+      }
+
+      bool is_statement() const override {
+        return true;
       }
   };
 
