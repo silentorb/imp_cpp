@@ -2,24 +2,40 @@
 World {
   creatures: stl.vector
 
+public:
   add_creature(creature) {
     creatures.push_back(creature)
-    creature.world = this
+    creature.set_world(this)
   }
 }
 
 Creature {
   world: &
+
+public:
+  set_world(value) {
+    world = value
+  }
+}
+
+Hero : Creature {
+
+}
+
+Monster : Creature {
+
 }
 
 Game {
   world
 
+public:
   static new() {
     var game = Game {}
     game.world = World {}
-    var hero = Creature {}
+    var hero = Hero {}
     game.world.add_creature(hero)
+    game.world.add_creature(Monster {})
     return game
   }
 }
