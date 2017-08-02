@@ -2,7 +2,7 @@
 World {
   creatures: stl.vector
 
-public:
+@public:
   add_creature(creature) {
     creatures.push_back(creature)
     creature.set_world(this)
@@ -12,7 +12,7 @@ public:
 Creature {
   world: &
 
-public:
+@public:
   set_world(value) {
     world = value
   }
@@ -29,7 +29,7 @@ Monster : Creature {
 Game {
   world
 
-public:
+@public:
   static new() {
     var game = Game {}
     game.world = World {}

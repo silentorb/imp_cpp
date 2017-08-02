@@ -45,12 +45,14 @@ namespace runic_imp {
       Whisper assignment = "=";
       Whisper colon = ":";
       Whisper dot = ".";
+      Whisper comma = ",";
 
       Whisper lesser_than = "<";
       Whisper greater_than = ">";
 
       Whisper bitwise_or = "|";
       Whisper ampersand = "&";
+      Whisper at_sign = "@";
   };
 
   // The way the parser currently works, the first character of each of these whispers must exist in Single_Symbols

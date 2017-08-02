@@ -20,14 +20,6 @@ namespace underworld {
     return *function;
   }
 
-  Minion &Scope::create_minion(const std::string &name, Profession_Owner &profession, const Source_Point &source) {
-    check_has_member(name);
-
-    auto portal = new Minion(name, profession, source);
-    members[name] = unique_ptr<Minion>(portal);
-    return *portal;
-  }
-
   void Scope::add_minion(std::unique_ptr<Minion> minion) {
     check_has_member(minion->get_name());
 

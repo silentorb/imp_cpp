@@ -27,19 +27,61 @@ namespace imp_summoning {
 
   Minion &Summoner::process_minion(const std::string &name, Context &context) {
     auto source_point = input.get_source_point();
-    auto profession = process_optional_profession(context);
-    return context.get_scope().create_minion(name, profession, source_point);
+//    auto profession = process_optional_profession(context);
+    return context.get_scope().create_minion(name, source_point);
   }
 
   void Summoner::process_root_identifier(const string &name, Context &context) {
     if (input.peek().is(lexicon.left_brace)) {
-      if (input.next().follows_terminator())
-        throw Syntax_Exception(input.current());
+//      if (input.next().follows_terminator())
+//        throw Syntax_Exception(input.current());
 
       process_dungeon(name, context);
     }
     else {
       process_member(name, context, false);
+    }
+  }
+
+  void Summoner::process_dungeon_with_contracts(const std::string &name, underworld::Profession_Owner first_contract,
+                                                Context &context) {
+    std::vector<Profession_Owner> contracts;
+    do {
+      auto contract = process_profession(context);
+      contracts.push_back(std::move(contract));
+    } while (input.next().is(lexicon.comma));
+    auto &dungeon = process_dungeon(name, context);
+    dungeon.add_contract(std::move(first_contract));
+    for (auto &contract: contracts) {
+      dungeon.add_contract(std::move(contract));
+    }
+  }
+
+  void Summoner::process_minion_or_dungeon(const std::string &name, Context &context) {
+    if (input.next().is(lexicon.colon)) {
+      input.next();
+      auto profession = process_profession(context);
+      if (input.next().is(lexicon.comma)) {
+        process_dungeon_with_contracts(name, std::move(profession), context);
+        return;
+      }
+
+      if (input.current().is(lexicon.left_brace)) {
+        auto &dungeon = process_dungeon(name, context);
+        dungeon.add_contract(std::move(profession));
+      }
+      else {
+        auto &minion = process_minion(name, context);
+        minion.set_profession(std::move(profession));
+      }
+    }
+    else {
+      if (input.current().is(lexicon.left_brace)) {
+        auto &dungeon = process_dungeon(name, context);
+      }
+      else {
+        auto &minion = process_minion(name, context);
+      }
     }
   }
 
@@ -54,16 +96,23 @@ namespace imp_summoning {
 
     }
     else {
-      auto &minion = process_minion(name, context);
-      if (is_static)
+      if (is_static) {
+        auto &minion = process_minion(name, context);
         minion.set_is_static(true);
-
-//      throw Syntax_Exception(input.current());
+      }
+      else {
+        process_minion_or_dungeon(name, context);
+      }
     }
   }
 
   void Summoner::process_dungeon_member(Context &context) {
-    if (input.current().is(lexicon.Static)) {
+    if (input.current().is(lexicon.at_sign)) {
+      input.expect_next(lexicon.identifier);
+      input.expect_next(lexicon.colon);
+      input.next();
+    }
+    else if (input.current().is(lexicon.Static)) {
       auto name = input.next().get_text();
       process_member(name, context, true);
     }
@@ -98,17 +147,22 @@ namespace imp_summoning {
 
 //    if (!input.current().is(lexicon.left_brace))
 //      throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
+    input.next();
     return function;
   }
 
-  void Summoner::process_dungeon(const std::string &name, Context &context) {
-    auto dungeon = std::unique_ptr<Profession>(new Dungeon(name, &context.get_scope(), input.get_source_point()));
-//    auto &dungeon = context.get_dungeon().get_or_create_dungeon(name);
-    Child_Context new_context(context, *dynamic_cast<Dungeon *>(dungeon.get()));
-    context.get_scope().add_profession(dungeon, input.get_source_point());
-    while (input.next().is_not(lexicon.right_brace)) {
+  Dungeon &Summoner::process_dungeon(const std::string &name, Context &context) {
+    auto dungeon = new Dungeon(name, &context.get_scope(), input.get_source_point());
+    auto profession = std::unique_ptr<Profession>(dungeon);
+    Child_Context new_context(context, *dungeon);
+    context.get_scope().add_profession(profession, input.get_source_point());
+    input.next();
+    input.next();
+    while (input.current().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);
     }
+
+    return *dungeon;
   }
 
   void Summoner::process_root(Context &context) {

@@ -9,7 +9,7 @@ namespace underworld {
 
   class Minion : public Member {
       const std::string name;
-      const Profession_Owner profession;
+      Profession_Owner profession;
       bool _is_static = false;
 
   public:
@@ -41,6 +41,10 @@ namespace underworld {
 
       virtual bool is_parameter() const {
         return false;
+      }
+
+      void set_profession(Profession_Owner value) {
+        profession = std::move(value);
       }
   };
 

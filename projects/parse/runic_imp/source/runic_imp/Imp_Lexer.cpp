@@ -185,7 +185,7 @@ namespace runic_imp {
     token.get_match().set_text("");
     token.get_range().set_start(lexer.get_position());
 
-    if (value == End_Of_File)
+    if (value == End_Of_File || value == 1)
       return false;
 
     match_non_whitespace(result);

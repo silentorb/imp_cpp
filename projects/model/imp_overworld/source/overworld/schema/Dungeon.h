@@ -20,6 +20,8 @@ namespace overworld {
       const underworld::Source_Point source_point;
       bool _is_external = false;
       Ownership default_ownership = Ownership::owner;
+      Dungeon *base_dungeon = nullptr;
+      std::vector<Dungeon *> contracts;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -107,8 +109,7 @@ namespace overworld {
         _is_external = value;
       }
 
-      Dungeon &create_dungeon(const std::string &name);
-      Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
+            Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
 
       void set_default_ownership(Ownership value) {
         this->default_ownership = value;
@@ -124,6 +125,37 @@ namespace overworld {
 
       const Profession &get_base() const override {
         return *this;
+      }
+
+      Dungeon *get_base_dungeon() {
+        return base_dungeon;
+      }
+
+      const Dungeon *get_base_dungeon() const {
+        return base_dungeon;
+      }
+
+      bool is_interface() const {
+        return false;
+      }
+
+      void add_contract(Dungeon &dungeon) {
+        if (!dungeon.is_interface()) {
+          if (base_dungeon)
+            throw std::runtime_error(get_name() + " already has a base dungeon.");
+
+          base_dungeon = &dungeon;
+        }
+
+        contracts.push_back(&dungeon);
+      }
+
+      const std::vector<Dungeon *> &get_contracts() const {
+        return contracts;
+      }
+
+      std::vector<Dungeon *> &get_contracts() {
+        return contracts;
       }
   };
 

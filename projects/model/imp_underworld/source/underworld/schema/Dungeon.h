@@ -8,6 +8,8 @@ namespace underworld {
       const std::string name;
       const Source_Point source_point;
 
+      std::vector<Profession_Owner> contracts;
+
   protected:
       void throw_already_exists(const std::string &member_name) const override;
 
@@ -34,6 +36,14 @@ namespace underworld {
 
       const Source_Point get_source_point() const override {
         return source_point;
+      }
+
+      void add_contract(Profession_Owner profession) {
+        contracts.push_back(std::move(profession));
+      }
+
+      const std::vector<Profession_Owner> &get_contracts() const {
+        return contracts;
       }
   };
 

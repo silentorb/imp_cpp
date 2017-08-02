@@ -190,6 +190,12 @@ namespace imp_mirror {
       else if (member.get_member_type() == overworld::Member_Type::unresolved) {
 
       }
+      else if (member.get_member_type() == overworld::Member_Type::variable) {
+        int k = 0;
+      }
+      else {
+        throw std::runtime_error("Expression is not a function.");
+      }
 
     }
 
