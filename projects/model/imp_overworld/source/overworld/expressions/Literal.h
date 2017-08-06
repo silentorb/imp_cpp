@@ -29,7 +29,7 @@ namespace overworld {
 
   public:
       Literal_Implementation(T value, const underworld::Literal &source) :
-        value(value), node(*this), source(source) {
+        value(value), node(*this, get_profession()), source(source) {
         node.set_resolved(true);
       }
 
@@ -57,7 +57,7 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      const underworld::Source_Point &get_source_point() override {
+      const underworld::Source_Point &get_source_point()const override {
         return source.get_source_point();
       }
 

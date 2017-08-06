@@ -94,22 +94,22 @@ namespace solving {
     }
   }
 
-  Solver::Progress Solver::process_unresolved() {
-    Progress progress = Progress::none;
-    for (int i = 0; i < unresolved.size(); ++i) {
-      auto &node = *unresolved[i];
-      if (node.is_resolved())
-        continue;
+//  Progress Solver::process_unresolved() {
+//    Progress progress = 0;
+//    for (int i = 0; i < unresolved.size(); ++i) {
+//      auto &node = *unresolved[i];
+//      if (node.is_resolved())
+//        continue;
+//
+//      if (attempt_resolution(node))
+//        ++progress;
+//    }
+//
+//    return progress;
+//  }
 
-      if (attempt_resolution(node))
-        progress = Progress::some;
-    }
-
-    return progress;
-  }
-
-  Solver::Progress Solver::process_changed() {
-    Progress progress = Progress::none;
+  Progress Solver::process_changed() {
+    Progress progress = 0;
 //    while (changed.size() > 0) {
     for (int i = 0; i < changed.size(); ++i) {
       auto &node = *changed[i];
@@ -117,12 +117,16 @@ namespace solving {
         continue;
 
       if (attempt_resolution(node))
-        progress = Progress::some;
+        ++progress;
 
       node_unchanged(node);
     }
 //    }
     return progress;
+  }
+
+  Progress Solver::process_conflicts() {
+    return 0;
   }
 
   int Solver::update_unresolved() {
@@ -146,7 +150,7 @@ namespace solving {
   }
 
   bool Solver::double_check_unresolved() {
-    for (auto node:unresolved) {
+    for (auto node : unresolved) {
       if (node->is_resolved())
         return false;
     }
@@ -154,16 +158,29 @@ namespace solving {
     return true;
   }
 
+  int Solver::update_conflicts() {
+    return 0;
+  }
+
+  void Solver::initialize() {
+    for (auto node : graph.get_nodes()) {
+      if (!node->is_resolved())
+        node->set_changed(true);
+    }
+  }
+
   bool Solver::solve() {
-    while (update_changed() != 0 || update_unresolved() != 0) {
-      for(auto node : graph.get_nodes()) {
-        node->set_changed(false);
-      }
+    initialize();
 
-      auto progress1 = process_unresolved();
-      auto progress2 = process_changed();
+    while (update_changed() || update_conflicts()) {
+//      for (auto node : graph.get_nodes()) {
+//        node->set_changed(false);
+//      }
 
-      if (progress1 == Progress::none && progress2 == Progress::none) {
+      auto progress = process_changed()
+                      + process_conflicts();
+
+      if (progress == 0) {
         if (double_check_unresolved())
           return false;
       }

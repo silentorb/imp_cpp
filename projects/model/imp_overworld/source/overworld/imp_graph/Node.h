@@ -20,6 +20,7 @@ namespace overworld {
       virtual ~Node() {}
 
       virtual Profession_Reference &get_profession_reference() = 0;
+      virtual const Profession_Reference &get_profession_reference() const = 0;
 
       virtual void set_profession(Profession &value) {
         get_profession_reference().set_profession(value);
@@ -41,17 +42,24 @@ namespace overworld {
         Node::changed = changed;
       }
 
+      std::string get_debug_string() const;
 //      virtual const std::string get_name() const = 0;
   };
 
   template<typename T>
   class Profession_Node : public Node {
       T &element;
+      Profession *original_profession;
 
   public:
-      Profession_Node(T &element) : element(element) {}
+      Profession_Node(T &element, Profession &original_profession) :
+        element(element), original_profession(&original_profession) {}
 
       Profession_Reference &get_profession_reference() override {
+        return element;
+      }
+
+      const Profession_Reference &get_profession_reference() const override {
         return element;
       }
 
@@ -60,6 +68,13 @@ namespace overworld {
         return profession.get_base().get_type() != overworld::Profession_Type::unknown;
       }
 
+      void set_original_profession(Profession &value) {
+        original_profession = &value;
+      }
+
+      Profession &get_original_profession() {
+        return *original_profession;
+      }
 //      const std::string get_name() const override {
 //        return element.get_name();
 //      }

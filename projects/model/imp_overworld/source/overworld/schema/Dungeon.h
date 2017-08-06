@@ -25,13 +25,13 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), node(*this) {}
+        name(name), Scope(nullptr, &parent), node(*this,*this) {}
 
       Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
-        name(name), Scope(nullptr, &parent), node(*this), source_point(source_point) {}
+        name(name), Scope(nullptr, &parent), node(*this,*this), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), node(*this) {}
+        name(name), Scope(nullptr, nullptr), node(*this,*this) {}
 
       virtual ~Dungeon() {}
 
@@ -91,7 +91,7 @@ namespace overworld {
         return *this;
       }
 
-      const underworld::Source_Point &get_source_point() override {
+      const underworld::Source_Point &get_source_point()const override {
         return source_point;
       }
 

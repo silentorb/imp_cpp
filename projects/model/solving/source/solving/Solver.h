@@ -11,6 +11,8 @@ namespace solving {
   using Node = overworld::Node;
   using Connection = overworld::Connection;
 
+  using Progress = unsigned int;
+
   class Solver {
       graphing::Reference_Graph<Node, Connection> &graph;
       std::vector<Node *> unresolved;
@@ -18,14 +20,19 @@ namespace solving {
       std::vector<Connection *> conflicts;
       overworld::Profession_Library &profession_library;
 
-      enum Progress {
-          none,
-          some
-      };
+#ifdef DEBUG_SOLVER
+      std::vector<Node *> resolved;
+#endif
 
+//      enum Progress {
+//          none,
+//          some
+//      };
+void initialize();
       bool attempt_resolution(Node &node);
-      Progress process_unresolved();
+//      Progress process_unresolved();
       Progress process_changed();
+      Progress process_conflicts();
       void set_node_resolved(Node &node);
       void node_unchanged(Node &node);
       void node_changed(Node &node);
@@ -33,6 +40,7 @@ namespace solving {
 
       int update_unresolved();
       int update_changed();
+      int update_conflicts();
       bool double_check_unresolved();
 
       void set_profession(Node &node, overworld::Profession &profession);

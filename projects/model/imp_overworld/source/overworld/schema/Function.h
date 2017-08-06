@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <overworld/expressions/Block_Expression.h>
+#include <overworld/schema/professions/Profession_Library.h>
 #include "Parameter.h"
 
 namespace overworld {
@@ -54,13 +55,13 @@ namespace overworld {
                const underworld::Source_Point &source_point) :
         name(name), signature(node, &return_type),
         scope(parent_scope, *this), block(scope),
-        node(*this), source_point(source_point) {}
+        node(*this, return_type), source_point(source_point) {}
 
       Function(const std::string &name, Scope &parent_scope,
                const underworld::Source_Point &source_point) :
         name(name), signature(node, nullptr),
         scope(parent_scope, *this), block(scope),
-        node(*this), source_point(source_point) {}
+        node(*this, Profession_Library::get_void()), source_point(source_point) {}
 
       ~Function() {}
 
@@ -115,7 +116,7 @@ namespace overworld {
         signature.set_return_type(value);
       }
 
-      const underworld::Source_Point &get_source_point() override {
+      const underworld::Source_Point &get_source_point()const override {
         return source_point;
       }
 
