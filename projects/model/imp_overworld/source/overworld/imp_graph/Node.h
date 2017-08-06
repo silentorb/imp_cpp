@@ -25,7 +25,7 @@ namespace overworld {
         get_profession_reference().set_profession(value);
       }
 
-      bool is_resolved() const {
+      virtual bool is_resolved() const {
         return resolved;
       }
 
@@ -53,6 +53,11 @@ namespace overworld {
 
       Profession_Reference &get_profession_reference() override {
         return element;
+      }
+
+      bool is_resolved() const override {
+        auto &profession = element.get_profession();
+        return profession.get_base().get_type() != overworld::Profession_Type::unknown;
       }
 
 //      const std::string get_name() const override {

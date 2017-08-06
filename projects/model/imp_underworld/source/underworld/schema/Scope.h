@@ -34,11 +34,12 @@ namespace underworld {
       Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source);
       void add_minion(std::unique_ptr<Minion> minion);
 
-      Dungeon &create_dungeon(const std::string &name, const Source_Point &source);
+//      Dungeon &create_dungeon(const std::string &name, const Source_Point &source);
 
       std::map<std::string, Member_Owner> &get_members() {
         return members;
       }
+
 
       const std::map<std::string, Member_Owner> &get_members() const {
         return members;

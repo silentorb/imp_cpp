@@ -1,11 +1,5 @@
 {
   "external": {
-    "cmake-tools": {
-      "remote": {
-        "type": "github",
-        "path": "silentorb/cmake-tools"
-      }
-    },
     "boost.filesystem": {
       "remote": {
         "type": "github",

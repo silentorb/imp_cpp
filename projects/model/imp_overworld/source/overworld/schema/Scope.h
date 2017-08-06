@@ -12,7 +12,10 @@ namespace overworld {
 
   class Function;
 
-//  class Scope_Parent;
+  enum class Scope_Type {
+      scope,
+      dungeon
+  };
 
   class Scope {
       const underworld::Scope *source;
@@ -46,10 +49,15 @@ namespace overworld {
 //      void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
       Member *find_member(const std::string &name);
-      Member *get_member(const std::string &name);
+      Member *get_member_or_null(const std::string &name);
+      virtual Member &get_member(const std::string &name);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
+      }
+
+      virtual Scope_Type get_scope_type() const {
+        return Scope_Type::scope;
       }
 
       Function *get_function(const std::string &function_name);
@@ -58,7 +66,7 @@ namespace overworld {
         return minions;
       }
 
-      Minion &get_minion(const std::string &name);
+      virtual Minion &get_minion(const std::string &name);
       virtual Dungeon &get_dungeon();
 
       Scope *get_parent() {

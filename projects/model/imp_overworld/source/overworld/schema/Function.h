@@ -8,12 +8,42 @@ namespace overworld {
 
   class Profession_Library;
 
+  class Function_Signature {
+      std::vector<Parameter *> parameters;
+      Node &node;
+      Profession *return_type = nullptr;
+
+  public:
+
+      const std::vector<Parameter *> &get_parameters() const {
+        return parameters;
+      }
+
+      Function_Signature(Node &node, Profession *return_type = nullptr) :
+        node(node), return_type(return_type) {}
+
+      Profession *get_return_type() const {
+        return return_type;
+      }
+
+      void add_parameter(Parameter &parameter) {
+        parameters.push_back(&parameter);
+      }
+
+      void set_return_type(Profession &profession) {
+        return_type = &profession;;
+      }
+
+      Node &get_node() {
+        return node;
+      }
+  };
+
   class Function : public virtual Member, public virtual Profession_Reference {
       Function_Scope scope;
       Block block;
-      std::vector<Parameter *> parameters;
+      Function_Signature signature;
       Profession_Node<Function> node;
-      Profession *return_type;
       const std::string name;
       bool _is_static = false;
       bool returns_a_value() const;
@@ -22,13 +52,13 @@ namespace overworld {
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope,
                const underworld::Source_Point &source_point) :
-        name(name), return_type(&return_type),
+        name(name), signature(node, &return_type),
         scope(parent_scope, *this), block(scope),
         node(*this), source_point(source_point) {}
 
       Function(const std::string &name, Scope &parent_scope,
                const underworld::Source_Point &source_point) :
-        name(name), return_type(nullptr),
+        name(name), signature(node, nullptr),
         scope(parent_scope, *this), block(scope),
         node(*this), source_point(source_point) {}
 
@@ -55,16 +85,16 @@ namespace overworld {
       bool is_inline();
 
       const std::vector<Parameter *> &get_parameters() const {
-        return parameters;
+        return signature.get_parameters();
       }
 
-      void add_parameter(Parameter &minion) {
-        parameters.push_back(&minion);
+      void add_parameter(Parameter &parameter) {
+        signature.add_parameter(parameter);
       }
 
       void add_parameter(Parameter *parameter) {
         scope.add_minion(parameter);
-        parameters.push_back(parameter);
+        signature.add_parameter(*parameter);
       }
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
@@ -74,15 +104,15 @@ namespace overworld {
       }
 
       Profession &get_profession() override {
-        return *return_type;
+        return *signature.get_return_type();
       }
 
       const Profession &get_profession() const override {
-        return *return_type;
+        return *signature.get_return_type();
       }
 
       void set_profession(Profession &value) override {
-        return_type = &value;
+        signature.set_return_type(value);
       }
 
       const underworld::Source_Point &get_source_point() override {
@@ -106,6 +136,14 @@ namespace overworld {
       }
 
       void finalize(overworld::Profession_Library &profession_library);
+
+      Function_Signature &get_signature() {
+        return signature;
+      }
+
+      const Function_Signature &get_function_signature() const {
+        return signature;
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;

@@ -1,7 +1,6 @@
-#include <Creature.h>
 #include <World.h>
 
-void World::add_creature(std::unique_ptr<Creature> &creature) {
+void World::add_creature(std::unique_ptr<Hero> &creature) {
   creatures.push_back(std::move(creature));
-  creature->world = this;
+  creature->set_world(this);
 }

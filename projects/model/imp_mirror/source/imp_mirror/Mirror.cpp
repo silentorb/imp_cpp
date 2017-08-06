@@ -169,29 +169,31 @@ namespace imp_mirror {
     return result;
   }
 
-  overworld::Function &Mirror::get_function(overworld::Expression &expression) {
-//    throw std::runtime_error("Expression is not a function.");
+  overworld::Function_Signature &Mirror::get_function_signature(overworld::Expression &expression,
+                                                                std::vector<overworld::Expression_Owner> &arguments) {
     if (expression.get_type() == overworld::Expression::Type::member) {
       auto &member_expression = *dynamic_cast<const overworld::Member_Expression *>(&expression);
       auto &member = member_expression.get_member();
       if (member.get_member_type() == overworld::Member_Type::function) {
-//        auto &underworld_function = *dynamic_cast<const overworld::Function *>(&member);
-        return *dynamic_cast<overworld::Function *>(&member);
-//        auto overworld_function = element_map.find_or_null<overworld::Function>(&underworld_function);
-//        if (!overworld_function)
-//          throw std::runtime_error("Could not find overworld function.");
-//
-//        return *overworld_function;
+        return dynamic_cast<overworld::Function *>(&member)->get_signature();
       }
       else if (member.get_member_type() == overworld::Member_Type::dungeon) {
         auto &dungeon = *dynamic_cast<overworld::Dungeon *>(&member);
-        return dungeon.get_or_create_constructor();
+        return dungeon.get_or_create_constructor().get_signature();
       }
       else if (member.get_member_type() == overworld::Member_Type::unresolved) {
 
       }
       else if (member.get_member_type() == overworld::Member_Type::variable) {
-        int k = 0;
+        auto &temporary_member = *dynamic_cast<overworld::Temporary_Minion *>(&member);
+        auto &signature = temporary_member.get_or_create_signature();
+        for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
+          auto &argument = arguments[i];
+          auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
+          auto parameter = new overworld::Parameter("", argument_profession, underworld::Source_Point());
+          temporary_member.add_parameter(parameter);
+        }
+        return signature;
       }
       else {
         throw std::runtime_error("Expression is not a function.");
@@ -206,7 +208,6 @@ namespace imp_mirror {
                                                             overworld::Scope &scope) {
     auto &input_expression = function_call.get_expression();
     auto output_expression = reflect_expression(input_expression, scope);
-    auto &overworld_function = get_function(output_expression->get_last());
 
     auto &source_arguments = function_call.get_arguments();
     std::vector<overworld::Expression_Owner> arguments;
@@ -215,12 +216,14 @@ namespace imp_mirror {
       arguments.push_back(reflect_expression(*source_argument, scope));
     }
 
+    auto &overworld_function = get_function_signature(output_expression->get_last(), arguments);
+
     auto &parameters = overworld_function.get_parameters();
     for (int i = 0; i < arguments.size(); ++i) {
       graph.connect(parameters[i]->get_node(), *arguments[i]->get_node());
     }
 
-    return overworld::Expression_Owner(new overworld::Invoke(output_expression, overworld_function, arguments,
+    return overworld::Expression_Owner(new overworld::Invoke(output_expression, arguments,
                                                              function_call));
   }
 
@@ -283,7 +286,7 @@ namespace imp_mirror {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon) {
         auto &dungeon = *get_dungeon(first.get_last());
-        auto member = dungeon.get_member(member_expression.get_name());
+        auto member = dungeon.get_member_or_null(member_expression.get_name());
         return overworld::Expression_Owner(new overworld::Member_Expression(*member));
       }
       else if (profession.get_type() == overworld::Profession_Type::unknown) {
@@ -453,7 +456,7 @@ namespace imp_mirror {
   Mirror::reflect_profession_child(overworld::Member &member, const underworld::Profession &profession) {
     if (member.get_member_type() == overworld::Member_Type::dungeon) {
       auto &dungeon = get_dungeon(member);
-      auto child = dungeon.get_member(profession.get_name());
+      auto child = dungeon.get_member_or_null(profession.get_name());
       if (!child)
         throw Code_Error("Could not find " + profession.get_name(), profession.get_source_point());
 
@@ -606,6 +609,14 @@ namespace imp_mirror {
   }
 
   void Mirror::reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
+    if (output_scope.get_scope_type() == overworld::Scope_Type::dungeon) {
+      auto &input_dungeon = cast<underworld::Dungeon>(input_scope);
+      auto &output_dungeon = cast<overworld::Dungeon>(output_scope);
+      for (auto &contract:input_dungeon.get_contracts()) {
+        auto &dungeon = cast<overworld::Dungeon>(reflect_profession(*contract, *output_dungeon.get_parent()));
+        output_dungeon.add_contract(dungeon);
+      }
+    }
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         reflect_function2(cast<underworld::Function>(*input_member.second));

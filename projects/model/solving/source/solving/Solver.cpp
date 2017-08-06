@@ -30,7 +30,7 @@ namespace solving {
     if (node.is_changed())
       return;
 
-    changed.push_back(&node);
+//    changed.push_back(&node);
     node.set_changed(true);
   }
 
@@ -110,18 +110,18 @@ namespace solving {
 
   Solver::Progress Solver::process_changed() {
     Progress progress = Progress::none;
-    while (changed.size() > 0) {
-      for (int i = 0; i < changed.size(); ++i) {
-        auto &node = *changed[i];
-        if (!node.is_changed())
-          continue;
+//    while (changed.size() > 0) {
+    for (int i = 0; i < changed.size(); ++i) {
+      auto &node = *changed[i];
+      if (!node.is_changed())
+        continue;
 
-        if (attempt_resolution(node))
-          progress = Progress::some;
+      if (attempt_resolution(node))
+        progress = Progress::some;
 
-        node_unchanged(node);
-      }
+      node_unchanged(node);
     }
+//    }
     return progress;
   }
 
@@ -135,13 +135,38 @@ namespace solving {
     return unresolved.size();
   }
 
+  int Solver::update_changed() {
+    changed.clear();
+    for (auto node : graph.get_nodes()) {
+      if (node->is_changed())
+        changed.push_back(node);
+    }
+
+    return changed.size();
+  }
+
+  bool Solver::double_check_unresolved() {
+    for (auto node:unresolved) {
+      if (node->is_resolved())
+        return false;
+    }
+
+    return true;
+  }
+
   bool Solver::solve() {
-    while (changed.size() != 0 || update_unresolved() != 0) {
+    while (update_changed() != 0 || update_unresolved() != 0) {
+      for(auto node : graph.get_nodes()) {
+        node->set_changed(false);
+      }
+
       auto progress1 = process_unresolved();
       auto progress2 = process_changed();
 
-      if (progress1 == Progress::none && progress2 == Progress::none)
-        return false;
+      if (progress1 == Progress::none && progress2 == Progress::none) {
+        if (double_check_unresolved())
+          return false;
+      }
     }
 
     return true;

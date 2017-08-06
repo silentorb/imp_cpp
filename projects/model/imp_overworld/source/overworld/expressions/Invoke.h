@@ -2,22 +2,22 @@
 
 #include <overworld/schema/Minion.h>
 #include "Expression.h"
+#include "Member_Expression.h"
 #include <vector>
 #include <overworld/schema/Function.h>
 #include <underworld/expressions/Invoke.h>
 
 namespace overworld {
-
   class Invoke : public Common_Expression {
-      Function &function;
+//      Function_Signature &signature;
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
       const underworld::Invoke &source;
 
   public:
-      Invoke(Expression_Owner &expression, Function &function, std::vector<Expression_Owner> &arguments,
+      Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
              const underworld::Invoke &source)
-        : expression(std::move(expression)), function(function), arguments(std::move(arguments)),
+        : expression(std::move(expression)), arguments(std::move(arguments)),
           source(source) {}
 
       virtual ~Invoke() {
@@ -28,8 +28,10 @@ namespace overworld {
         return Type::invoke;
       }
 
-      Function &get_function() const {
-        return function;
+      Function_Signature &get_signature() const {
+        auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
+        auto &member = member_expression.get_member();
+        return dynamic_cast<Function *>(&member)->get_signature();
       }
 
       const std::vector<Expression_Owner> &get_arguments() const {
@@ -37,7 +39,7 @@ namespace overworld {
       }
 
       Node *get_node() override {
-        return &function.get_node();
+        return &get_signature().get_node();
       }
 
       Expression &get_expression() const {

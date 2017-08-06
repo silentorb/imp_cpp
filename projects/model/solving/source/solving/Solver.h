@@ -32,6 +32,8 @@ namespace solving {
       bool process_node(Node &node);
 
       int update_unresolved();
+      int update_changed();
+      bool double_check_unresolved();
 
       void set_profession(Node &node, overworld::Profession &profession);
 

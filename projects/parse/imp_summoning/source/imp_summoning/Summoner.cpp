@@ -35,7 +35,7 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.left_brace)) {
 //      if (input.next().follows_terminator())
 //        throw Syntax_Exception(input.current());
-
+      input.next();
       process_dungeon(name, context);
     }
     else {
@@ -156,7 +156,6 @@ namespace imp_summoning {
     auto profession = std::unique_ptr<Profession>(dungeon);
     Child_Context new_context(context, *dungeon);
     context.get_scope().add_profession(profession, input.get_source_point());
-    input.next();
     input.next();
     while (input.current().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);

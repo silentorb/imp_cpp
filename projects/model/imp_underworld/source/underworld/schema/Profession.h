@@ -48,6 +48,26 @@ namespace underworld {
       }
   };
 
+  class Unknown : virtual public Profession {
+      const Source_Point source_point;
+
+  public:
+      Unknown(const Source_Point &source_point) :
+        source_point(source_point) {}
+
+      Profession_Type get_type() const override {
+        return Profession_Type::unknown;
+      }
+
+      const std::string get_name() const override {
+        return "unknown";
+      }
+
+      const Source_Point get_source_point() const override {
+        return source_point;
+      }
+  };
+
   class Dungeon_Reference_Profession : virtual public Profession {
       const std::string name;
       Profession_Owner child;

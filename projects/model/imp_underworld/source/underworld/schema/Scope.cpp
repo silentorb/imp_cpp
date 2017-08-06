@@ -42,12 +42,12 @@ namespace underworld {
     return result;
   }
 
-  Dungeon &Scope::create_dungeon(const std::string &name, const Source_Point &source) {
-    auto dungeon = new Dungeon(name, this);
-    auto pointer = unique_ptr<Profession>(dungeon);
-    add_profession(pointer, source);
-    return *dungeon;
-  }
+//  Dungeon &Scope::create_dungeon(const std::string &name, const Source_Point &source) {
+//    auto dungeon = new Dungeon(name, this);
+//    auto pointer = unique_ptr<Profession>(dungeon);
+//    add_profession(pointer, source);
+//    return *dungeon;
+//  }
 
   Function *Scope::get_function(const std::string &name) const {
     if (members.count(name) == 0)

@@ -30,7 +30,7 @@ namespace imp_summoning {
 
   underworld::Profession_Owner Base_Summoner::process_profession(Context &context) {
     if (input.current().is(lexicon.ampersand)) {
-      return Profession_Owner(new Reference(new Primitive(Primitive_Type::Unknown, get_source_point())));
+      return Profession_Owner(new Reference(new Unknown(get_source_point())));
     }
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown)

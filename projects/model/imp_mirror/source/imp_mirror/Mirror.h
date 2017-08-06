@@ -111,7 +111,8 @@ namespace imp_mirror {
                                                         overworld::Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
                                                         overworld::Scope &scope);
-      overworld::Function &get_function(overworld::Expression &expression);
+      overworld::Function_Signature &
+      get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {

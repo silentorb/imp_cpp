@@ -124,9 +124,16 @@ namespace overworld {
               : nullptr);
   }
 
-  Member *Scope::get_member(const std::string &name) {
+  Member *Scope::get_member_or_null(const std::string &name) {
     return members.count(name) != 0
            ? members.at(name)
            : nullptr;
+  }
+
+  Member &Scope::get_member(const std::string &name) {
+    if (members.count(name) != 0)
+      return *members.at(name);
+
+    throw std:: runtime_error("Could not find member: " + name);
   }
 }

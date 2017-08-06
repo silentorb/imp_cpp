@@ -157,6 +157,13 @@ namespace overworld {
       std::vector<Dungeon *> &get_contracts() {
         return contracts;
       }
+
+       Scope_Type get_scope_type() const override{
+        return Scope_Type::dungeon;
+      }
+
+      Minion &get_minion(const std::string &name) override;
+      Member &get_member(const std::string &name) override;
   };
 
   class Cpp_Dungeon : public Dungeon {

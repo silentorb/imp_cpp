@@ -126,7 +126,7 @@ namespace imp_rendering {
   }
 
   const std::string render_function_call(const overworld::Invoke &function_call) {
-    auto minions = function_call.get_function().get_parameters().begin();
+    auto minions = function_call.get_signature().get_parameters().begin();
     return render_expression(function_call.get_expression()) + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
              [& minions](const overworld::Expression_Owner &expression) {

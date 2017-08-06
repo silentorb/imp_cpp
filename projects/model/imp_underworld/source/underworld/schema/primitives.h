@@ -11,7 +11,7 @@ namespace underworld {
       Float,
       Int,
       String,
-      Unknown,
+      Unknown
   };
 
   const int Primitive_Type_Count = 6;

@@ -35,5 +35,29 @@ namespace overworld {
     return *result;
   }
 
+  Minion &Dungeon::get_minion(const std::string &name) {
+    for (auto &variable: minions) {
+      if (variable->get_name() == name)
+        return *variable;
+    }
+
+    if (base_dungeon) {
+      return base_dungeon->get_minion(name);
+    }
+
+    throw std::runtime_error("Could not find variable named " + name);
+  }
+
+  Member &Dungeon::get_member(const std::string &name) {
+    if (members.count(name) != 0)
+      return *members.at(name);
+
+    if (base_dungeon) {
+      return base_dungeon->get_member(name);
+    }
+
+    throw std::runtime_error("Could not find member: " + name);
+  }
+
 
 }
