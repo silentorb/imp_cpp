@@ -1,6 +1,12 @@
 #include "Solver.h"
 #include <algorithm>
 
+#if DEBUG_SOLVER
+
+#include <iostream>
+
+#endif
+
 using namespace overworld;
 
 namespace solving {
@@ -16,51 +22,17 @@ namespace solving {
     }
   }
 
-  void Solver::set_node_resolved(Node &node) {
-    if (node.is_resolved())
-      return;
-
-    if (node.get_profession_reference().get_profession().get_base().get_type() == overworld::Profession_Type::unknown)
-      throw std::runtime_error("Invalid resolution.");
-
-    node.set_resolved(true);
-  }
-
-  void Solver::node_changed(Node &node) {
-    if (node.is_changed())
-      return;
-
-//    changed.push_back(&node);
+  void Solver::set_changed(Node &node) {
     node.set_changed(true);
-  }
-
-  void Solver::node_unchanged(Node &node) {
-    if (!node.is_changed())
-      return;
-
-    changed.erase(std::remove(changed.begin(), changed.end(), &node), changed.end());
-    node.set_changed(false);
-
-  }
-
-//  void Solver::connection_conflicts(Connection &connection) {
-//
-//  }
-
-  void Solver::ripple_changed(Node &node) {
-    for (auto &connection: node.get_connections()) {
-      auto &neighbor = connection->get_other(node);
-      if (!neighbor.is_resolved()) {
-        node_changed(neighbor);
-      }
-    }
+    next_changed->push_back(&node);
   }
 
   void Solver::set_profession(Node &node, overworld::Profession &profession) {
-    if (node.get_profession_reference().get_source_point().get_row() == 12)
-      int k = 0;
+#if DEBUG_SOLVER
     if (profession.get_base().get_type() == overworld::Profession_Type::unknown)
       throw std::runtime_error("Invalid type.");
+#endif
+
     auto &previous = node.get_profession_reference().get_profession();
     if (previous.get_type() == Profession_Type::reference) {
       node.set_profession(profession_library.get_reference(profession.get_base()));
@@ -68,60 +40,52 @@ namespace solving {
     else {
       node.set_profession(profession);
     }
+
+    set_changed(node);
   }
 
-  bool Solver::process_node(Node &node) {
+  Progress Solver::inhale(Node &node) {
     for (auto other : node.get_neighbors()) {
       if (other->is_resolved()) {
+#if DEBUG_SOLVER
+        std::cout << "# " << node.get_debug_string() << " < " << other->get_debug_string() << std::endl;
+#endif
         auto &profession = other->get_profession_reference().get_profession();
         set_profession(node, profession);
-        return true;
+        return 1;
       }
     }
 
-    return false;
+    return 0;
   }
 
-  bool Solver::attempt_resolution(Node &node) {
-    if (process_node(node)) {
-      set_node_resolved(node);
-      ripple_changed(node);
-      return true;
+  Progress Solver::ripple(Node &node) {
+    Progress progress = 0;
+    for (auto other : node.get_neighbors()) {
+      if (!other->is_resolved()) {
+#if DEBUG_SOLVER
+        std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
+#endif
+        auto &profession = node.get_profession_reference().get_profession();
+        set_profession(*other, profession);
+        ++progress;
+      }
     }
-    else {
-      node_unchanged(node);
-      return false;
-    }
-  }
 
-//  Progress Solver::process_unresolved() {
-//    Progress progress = 0;
-//    for (int i = 0; i < unresolved.size(); ++i) {
-//      auto &node = *unresolved[i];
-//      if (node.is_resolved())
-//        continue;
-//
-//      if (attempt_resolution(node))
-//        ++progress;
-//    }
-//
-//    return progress;
-//  }
+    return progress;
+  }
 
   Progress Solver::process_changed() {
     Progress progress = 0;
-//    while (changed.size() > 0) {
-    for (int i = 0; i < changed.size(); ++i) {
-      auto &node = *changed[i];
-      if (!node.is_changed())
+    for (auto node : *changed) {
+      if (!node)
         continue;
 
-      if (attempt_resolution(node))
-        ++progress;
-
-      node_unchanged(node);
+      if (node->is_resolved())
+        progress += ripple(*node);
+      else
+        progress += inhale(*node);
     }
-//    }
     return progress;
   }
 
@@ -140,48 +104,76 @@ namespace solving {
   }
 
   int Solver::update_changed() {
-    changed.clear();
-    for (auto node : graph.get_nodes()) {
-      if (node->is_changed())
-        changed.push_back(node);
-    }
+    changed->clear();
 
-    return changed.size();
+    // Flip buffers
+    auto temp = changed;
+    changed = next_changed;
+    next_changed = temp;
+    return changed->size();
   }
 
-  bool Solver::double_check_unresolved() {
-    for (auto node : unresolved) {
-      if (node->is_resolved())
-        return false;
+  bool Solver::has_unresolved_nodes() {
+    for (auto node : graph.get_nodes()) {
+      if (!node->is_resolved())
+        return true;
     }
 
-    return true;
+    return false;
   }
 
   int Solver::update_conflicts() {
     return 0;
   }
 
+  void Solver::on_add(Node &node) {
+    set_changed(node);
+  }
+
+  void Solver::on_connect(Connection &connection) {
+    set_changed(connection.get_first());
+    set_changed(connection.get_second());
+  }
+
+  void Solver::on_remove(Node &node) {
+    for (auto i = 0; i < changed->size(); ++i) {
+      if ((*changed)[i] == &node) {
+        (*changed)[i] = nullptr;
+        break;
+      }
+    }
+//    for (auto &c : *changed) {
+//      if (c == &node) {
+//        c = nullptr;
+//        break;
+//      }
+//    }
+  }
+
   void Solver::initialize() {
     for (auto node : graph.get_nodes()) {
-      if (!node->is_resolved())
-        node->set_changed(true);
+      if (node->is_resolved())
+        set_changed(*node);
     }
+
+#if DEBUG_SOLVER
+    std::cout << "Changed Nodes:" << std::endl;
+
+    for (auto node : *next_changed) {
+      std::cout << "  " << node->get_debug_string() << std::endl;
+    }
+#endif
   }
 
   bool Solver::solve() {
     initialize();
 
     while (update_changed() || update_conflicts()) {
-//      for (auto node : graph.get_nodes()) {
-//        node->set_changed(false);
-//      }
-
-      auto progress = process_changed()
-                      + process_conflicts();
+      auto progress = process_changed() +
+                      process_conflicts();
 
       if (progress == 0) {
-        if (double_check_unresolved())
+        if (has_unresolved_nodes())
           return false;
       }
     }
@@ -189,4 +181,46 @@ namespace solving {
     return true;
   }
 
+  void log_node(overworld::Node &node) {
+//    auto &profession_reference = node.get_profession_reference();
+//    auto &profession = profession_reference.get_profession();
+//    auto & source_point =profession_reference.get_source_point();
+//
+//    if (source_point.get_source_file())
+//      std::cout << source_point.get_row() << ":" << source_point.get_column() << " ";
+
+#if DEBUG_SOLVER
+    std::cout << node.get_debug_string();
+    std::cout << std::endl;
+#endif
+  }
+
+  int get_row(overworld::Node &node) {
+    return node.get_profession_reference().get_source_point().get_row();
+  }
+
+  void insert_node(std::vector<overworld::Node *> &nodes, overworld::Node *node) {
+    for (auto i = nodes.begin(); i != nodes.end(); i++) {
+      if (get_row(*node) < get_row(**i)) {
+        nodes.insert(i, node);
+        return;
+      }
+    }
+
+    nodes.push_back(node);
+  }
+
+  void Solver::log_nodes() {
+    std::vector<overworld::Node *> nodes;
+    for (auto first: graph.get_nodes()) {
+      insert_node(nodes, first);
+    }
+    for (auto &node : nodes) {
+      log_node(*node);
+      for (auto &other : node->get_neighbors()) {
+        std::cout << " * ";
+        log_node(*other);
+      }
+    }
+  }
 }

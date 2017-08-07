@@ -7,19 +7,24 @@
 
 namespace imp_summoning {
 
+  struct Identifier {
+      const std::string name;
+      const underworld::Source_Point source_point;
+  };
+
   class Summoner : public Base_Summoner {
       Expression_Summoner expression_summoner;
 
-      underworld::Dungeon &process_dungeon(const std::string &name, Context &context);
+      underworld::Dungeon &process_dungeon(const Identifier &identifier, Context &context);
       void process_dungeon_member(Context &context);
       underworld::Function &process_function(const std::string &name, Context &context);
       void process_function_parameters(Context &context, underworld::Function &func);
       void process_root(Context &context);
-      void process_root_identifier(const std::string &name, Context &context);
-      void process_member(const std::string &name, Context &context, bool is_static);
-      underworld::Minion &process_minion(const std::string &name, Context &context);
-      void process_minion_or_dungeon(const std::string &name, Context &context);
-      void process_dungeon_with_contracts(const std::string &name, underworld::Profession_Owner first_contract,
+      void process_root_identifier(const Identifier &identifier, Context &context);
+      void process_member(const Identifier &identifier, Context &context, bool is_static);
+      underworld::Minion &process_minion(const Identifier &identifier, Context &context);
+      void process_minion_or_dungeon(const Identifier &identifier, Context &context);
+      void process_dungeon_with_contracts(const Identifier &identifier, underworld::Profession_Owner first_contract,
                                           Context &context);
       underworld::Profession_Owner process_optional_profession(Context &context);
 //      underworld::Profession *find_profession(Context &context);

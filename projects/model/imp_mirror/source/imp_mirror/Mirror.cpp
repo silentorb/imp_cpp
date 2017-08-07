@@ -190,7 +190,7 @@ namespace imp_mirror {
         for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
           auto &argument = arguments[i];
           auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
-          auto parameter = new overworld::Parameter("", argument_profession, underworld::Source_Point());
+          auto parameter = new overworld::Parameter("(temp)", argument_profession, underworld::Source_Point());
           temporary_member.add_parameter(parameter);
         }
         return signature;

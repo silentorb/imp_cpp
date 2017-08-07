@@ -2,15 +2,25 @@
 
 #include <vector>
 #include <memory>
+#include "Abstract_Graph.h"
+#include <functional>
 
 namespace graphing {
 
   template<typename Node, typename Connection>
   class Reference_Graph : public Abstract_Graph<Node, Connection> {
+  public:
+      using Node_Delegate = std::function<void(Node &)>;
+      using Connection_Delegate = std::function<void(Connection &)>;
+
+  private:
       using Connection_Pointer = std::unique_ptr<Connection>;
 
       std::vector<Node *> nodes;
       std::vector<Connection_Pointer> connections;
+      Node_Delegate on_add;
+      Node_Delegate on_remove;
+      Connection_Delegate on_connect;
 
       void _disconnect(Node &first, Node &second) {
         auto &first_nodes = first.get_neighbors();
@@ -61,6 +71,8 @@ namespace graphing {
       void add_node(Node &node) {
         nodes.push_back(&node);
         node.set_graph(this);
+        if (on_add)
+          on_add(node);
       }
 
       Connection &connect(Node &first, Node &second) override {
@@ -78,6 +90,9 @@ namespace graphing {
         connections.push_back(std::unique_ptr<Connection>(connection));
         first.add_connection(*connection);
         second.add_connection(*connection);
+        if (on_connect)
+          on_connect(*connection);
+
         return *connection;
       }
 
@@ -101,12 +116,13 @@ namespace graphing {
       }
 
       void remove(Node &node) override {
+        if (on_remove)
+          on_remove(node);
+
         auto &neighbors = node.get_neighbors();
-//        if (neighbors.size() > 0) {
-          for (auto i = neighbors.size(); i > 0; --i) {
-            neighbors[i - 1]->disconnect(node);
-          }
-//        }
+        for (auto i = neighbors.size(); i > 0; --i) {
+          neighbors[i - 1]->disconnect(node);
+        }
 
         for (auto i = nodes.begin(); i != nodes.end(); i++) {
           if (*i == &node) {
@@ -116,6 +132,16 @@ namespace graphing {
         }
       }
 
+      void set_on_add(const Node_Delegate &value) {
+        on_add = value;
+      }
 
+      void set_on_remove(const Node_Delegate &value) {
+        on_remove = value;
+      }
+
+      void set_on_connect(const Connection_Delegate &value) {
+        on_connect = value;
+      }
   };
 }

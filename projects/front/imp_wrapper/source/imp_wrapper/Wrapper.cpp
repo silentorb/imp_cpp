@@ -76,11 +76,12 @@ namespace imp_wrapper {
   }
 
   void Wrapper::solve() {
-    solving::Solver solver(graph.get_graph(), overworld_profession_library);
+    solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
-    std::cout << std::endl;
+//    solver.log_nodes();
     auto solved = solver.solve();
-    log_nodes(graph.get_graph().get_nodes());
+
+    solver.log_nodes();
 
     if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();
