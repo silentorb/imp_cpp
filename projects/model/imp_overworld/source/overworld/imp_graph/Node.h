@@ -26,6 +26,10 @@ namespace overworld {
         get_profession_reference().set_profession(value);
       }
 
+      Profession &get_profession() {
+        return get_profession_reference().get_profession();
+      }
+
       virtual bool is_resolved() const {
         return resolved;
       }

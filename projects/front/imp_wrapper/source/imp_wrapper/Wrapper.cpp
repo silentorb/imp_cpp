@@ -92,6 +92,13 @@ namespace imp_wrapper {
         throw std::runtime_error("Could not determine type of \"" + element.get_name() +
                                  "\" at " + element.get_source_point().to_string() + ".");
       }
+
+      auto &conflicts = solver.get_conflicts();
+      if (conflicts.size() > 0) {
+        auto conflict = conflicts[0];
+        throw std::runtime_error(conflict->get_first().get_debug_string() + " is not compatible with "
+                                 + conflict->get_second().get_debug_string());
+      }
     }
   }
 

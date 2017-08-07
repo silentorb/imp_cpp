@@ -39,10 +39,14 @@ namespace solving {
       void set_profession(Node &node, overworld::Profession &profession);
       void set_changed(Node &node);
 
+      bool assignment_is_compatible(overworld::Profession &first, overworld::Profession &second);
+      void check_node_conflicts(Node &node);
+      bool is_conflict(Connection &connection);
       void on_add(Node &node);
       void on_remove(Node &node);
-      void on_connect(Connection  & connection);
+      void on_connect(Connection &connection);
       Progress inhale(Node &node);
+      void add_conflict(Connection &connection);
 
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
@@ -53,8 +57,6 @@ namespace solving {
       }
 
       bool solve();
-//      void ripple_changed(Node &node);
-//      void connection_conflicts(Connection &connection);
 
       // Assumes that this is the first scan and there is not existing scan result data.
       void scan_fresh();
@@ -66,5 +68,9 @@ namespace solving {
       }
 
       void log_nodes();
+
+      const std::vector<Connection *> &get_conflicts() const {
+        return conflicts;
+      }
   };
 }

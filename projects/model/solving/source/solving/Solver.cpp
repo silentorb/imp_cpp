@@ -22,9 +22,44 @@ namespace solving {
     }
   }
 
+  void Solver::add_conflict(Connection &connection) {
+    for (auto conflict: conflicts) {
+      if (conflict == &connection)
+        return;
+    }
+
+    conflicts.push_back(&connection);
+  }
+
+  bool Solver::assignment_is_compatible(overworld::Profession &first, overworld::Profession &second) {
+    // Oversimplication for now
+    return &first.get_base() == &second.get_base();
+  }
+
+  bool Solver::is_conflict(Connection &connection) {
+    auto &first = connection.get_first();
+    auto &second = connection.get_second();
+    if (!first.is_resolved() || !second.is_resolved())
+      return false;
+
+    if (!assignment_is_compatible(first.get_profession(), second.get_profession())) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void Solver::check_node_conflicts(Node &node) {
+    for (auto connection: node.get_connections()) {
+      if (is_conflict(*connection))
+        add_conflict(*connection);
+    }
+  }
+
   void Solver::set_changed(Node &node) {
     node.set_changed(true);
     next_changed->push_back(&node);
+    check_node_conflicts(node);
   }
 
   void Solver::set_profession(Node &node, overworld::Profession &profession) {
@@ -123,7 +158,7 @@ namespace solving {
   }
 
   int Solver::update_conflicts() {
-    return 0;
+    return conflicts.size();
   }
 
   void Solver::on_add(Node &node) {
@@ -142,12 +177,6 @@ namespace solving {
         break;
       }
     }
-//    for (auto &c : *changed) {
-//      if (c == &node) {
-//        c = nullptr;
-//        break;
-//      }
-//    }
   }
 
   void Solver::initialize() {
@@ -173,7 +202,7 @@ namespace solving {
                       process_conflicts();
 
       if (progress == 0) {
-        if (has_unresolved_nodes())
+        if (has_unresolved_nodes() || conflicts.size() > 0)
           return false;
       }
     }
@@ -182,13 +211,6 @@ namespace solving {
   }
 
   void log_node(overworld::Node &node) {
-//    auto &profession_reference = node.get_profession_reference();
-//    auto &profession = profession_reference.get_profession();
-//    auto & source_point =profession_reference.get_source_point();
-//
-//    if (source_point.get_source_file())
-//      std::cout << source_point.get_row() << ":" << source_point.get_column() << " ";
-
 #if DEBUG_SOLVER
     std::cout << node.get_debug_string();
     std::cout << std::endl;
