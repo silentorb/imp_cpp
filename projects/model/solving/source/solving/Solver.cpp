@@ -23,12 +23,12 @@ namespace solving {
   }
 
   void Solver::add_conflict(Connection &connection) {
-    for (auto conflict: conflicts) {
-      if (conflict == &connection)
+    for (auto conflict: conflict_manager.conflicts) {
+      if (&conflict.get_connection() == &connection)
         return;
     }
 
-    conflicts.push_back(&connection);
+    conflict_manager.conflicts.push_back({connection, false});
   }
 
   bool Solver::assignment_is_compatible(overworld::Profession &first, overworld::Profession &second) {
@@ -124,8 +124,80 @@ namespace solving {
     return progress;
   }
 
+  void get_ancestors_recursive(Profession &profession, std::vector<Profession *> &buffer) {
+    auto contracts_or_null = profession.get_contracts();
+    if (!contracts_or_null)
+      return;
+
+    auto &contracts = *contracts_or_null;
+
+    for (auto contract : contracts) {
+      buffer.push_back(contract);
+    }
+
+    for (auto contract : contracts) {
+      get_ancestors_recursive(*contract, buffer);
+    }
+  }
+
+  void get_ancestors(Profession &profession, std::vector<Profession *> &buffer) {
+    buffer.clear();
+    get_ancestors_recursive(profession, buffer);
+  }
+
+  bool buffer_has_item(std::vector<Profession *> &buffer, Profession *item) {
+    for (auto entry: buffer) {
+      if (entry == item)
+        return true;
+    }
+
+    return false;
+  }
+
+  Profession *find_first_match(std::vector<Profession *> &first_buffer, std::vector<Profession *> &second_buffer) {
+    for (auto first_step : first_buffer) {
+      if (buffer_has_item(second_buffer, first_step))
+        return first_step;
+    }
+
+    return nullptr;
+  }
+
+  bool Solver::resolve_conflict(Connection &connection) {
+    auto &first = connection.get_first();
+    auto &second = connection.get_second();
+    auto &first_profession = first.get_profession();
+    auto &second_profession = second.get_profession();
+
+    get_ancestors(first_profession, ancestors_buffer1);
+    get_ancestors(second_profession, ancestors_buffer2);
+
+    auto common_ancestor = find_first_match(ancestors_buffer1, ancestors_buffer2);
+    if (!common_ancestor)
+      return false;
+
+    set_profession(first, *common_ancestor);
+    return true;
+  }
+
   Progress Solver::process_conflicts() {
-    return 0;
+    Progress progress = 0;
+    auto i = conflict_manager.conflicts.begin();
+    while (i != conflict_manager.conflicts.end()) {
+      auto &conflict = *i;
+      if (!conflict.attempted_resolution) {
+        if (resolve_conflict(conflict.get_connection())) {
+          ++progress;
+          conflict_manager.conflicts.erase(i++);
+          continue;
+        }
+        else {
+          conflict.attempted_resolution = true;
+        }
+      }
+      ++i;
+    }
+    return progress;
   }
 
   int Solver::update_unresolved() {
@@ -158,7 +230,7 @@ namespace solving {
   }
 
   int Solver::update_conflicts() {
-    return conflicts.size();
+    return conflict_manager.conflicts.size();
   }
 
   void Solver::on_add(Node &node) {
@@ -202,7 +274,7 @@ namespace solving {
                       process_conflicts();
 
       if (progress == 0) {
-        if (has_unresolved_nodes() || conflicts.size() > 0)
+        if (has_unresolved_nodes() || conflict_manager.conflicts.size() > 0)
           return false;
       }
     }
@@ -217,7 +289,7 @@ namespace solving {
 #endif
   }
 
-  int get_row(overworld::Node &node) {
+  unsigned int get_row(overworld::Node &node) {
     return node.get_profession_reference().get_source_point().get_row();
   }
 

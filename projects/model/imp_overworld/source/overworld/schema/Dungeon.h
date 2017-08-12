@@ -21,17 +21,17 @@ namespace overworld {
       bool _is_external = false;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
-      std::vector<Dungeon *> contracts;
+      std::vector<Profession *> contracts;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), node(*this,*this) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this) {}
 
       Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
-        name(name), Scope(nullptr, &parent), node(*this,*this), source_point(source_point) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), node(*this,*this) {}
+        name(name), Scope(nullptr, nullptr), node(*this, *this) {}
 
       virtual ~Dungeon() {}
 
@@ -91,7 +91,7 @@ namespace overworld {
         return *this;
       }
 
-      const underworld::Source_Point &get_source_point()const override {
+      const underworld::Source_Point &get_source_point() const override {
         return source_point;
       }
 
@@ -109,7 +109,7 @@ namespace overworld {
         _is_external = value;
       }
 
-            Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
+      Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
 
       void set_default_ownership(Ownership value) {
         this->default_ownership = value;
@@ -150,15 +150,15 @@ namespace overworld {
         contracts.push_back(&dungeon);
       }
 
-      const std::vector<Dungeon *> &get_contracts() const {
-        return contracts;
+      const std::vector<Profession *> *get_contracts() const override {
+        return &contracts;
       }
 
-      std::vector<Dungeon *> &get_contracts() {
-        return contracts;
+      std::vector<Profession *> *get_contracts() override {
+        return &contracts;
       }
 
-       Scope_Type get_scope_type() const override{
+      Scope_Type get_scope_type() const override {
         return Scope_Type::dungeon;
       }
 

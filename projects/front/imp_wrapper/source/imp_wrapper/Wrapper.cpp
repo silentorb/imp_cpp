@@ -93,12 +93,12 @@ namespace imp_wrapper {
                                  "\" at " + element.get_source_point().to_string() + ".");
       }
 
-      auto &conflicts = solver.get_conflicts();
-      if (conflicts.size() > 0) {
-        auto conflict = conflicts[0];
-        throw std::runtime_error(conflict->get_first().get_debug_string() + " is not compatible with "
-                                 + conflict->get_second().get_debug_string());
-      }
+//      auto &conflicts = solver.get_conflicts();
+//      if (conflicts.size() > 0) {
+//        auto &conflict = conflicts.front();
+//        throw std::runtime_error(conflict.get_connection().get_first().get_debug_string() + " is not compatible with "
+//                                 + conflict.get_connection().get_second().get_debug_string());
+//      }
     }
   }
 

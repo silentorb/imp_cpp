@@ -45,5 +45,13 @@ namespace overworld {
       virtual Ownership get_ownership() const = 0;
       virtual Profession &get_base()  = 0;
       virtual const Profession &get_base() const = 0;
+
+      virtual std::vector<Profession *> *get_contracts() {
+        return nullptr;
+      }
+
+      virtual const std::vector<Profession *> *get_contracts() const {
+        return nullptr;
+      }
   };
 }

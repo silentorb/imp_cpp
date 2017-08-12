@@ -3,6 +3,7 @@
 #include "overworld/imp_graph/Node.h"
 #include "overworld/imp_graph/Connection.h"
 #include <vector>
+#include <list>
 #include <graphing/Reference_Graph.h>
 #include <overworld/schema/professions/Profession_Library.h>
 
@@ -13,14 +14,37 @@ namespace solving {
 
   using Progress = unsigned int;
 
+  struct Conflict {
+      Connection *connection;
+      bool attempted_resolution;
+
+      Conflict(Connection &connection, bool attempted_resolution = false) :
+        connection(&connection), attempted_resolution(attempted_resolution) {}
+
+      Connection &get_connection() {
+        return *connection;
+      }
+
+      const Connection &get_connection() const {
+        return *connection;
+      }
+  };
+
+  // Working around a bug in CLion debugger not being able to render lists.
+  struct Conflict_Manager {
+      std::list<Conflict> conflicts;
+  };
+
   class Solver {
       graphing::Reference_Graph<Node, Connection> &graph;
       std::vector<Node *> unresolved;
       std::vector<Node *> changed_buffers[2];
       std::vector<Node *> *changed = &changed_buffers[0];
       std::vector<Node *> *next_changed = &changed_buffers[1];
-      std::vector<Connection *> conflicts;
       overworld::Profession_Library &profession_library;
+      Conflict_Manager conflict_manager;
+      std::vector<overworld::Profession *> ancestors_buffer1;
+      std::vector<overworld::Profession *> ancestors_buffer2;
 
 #ifdef DEBUG_SOLVER
       std::vector<Node *> resolved;
@@ -36,6 +60,7 @@ namespace solving {
       int update_conflicts();
       bool has_unresolved_nodes();
 
+      bool resolve_conflict(Connection &connection);
       void set_profession(Node &node, overworld::Profession &profession);
       void set_changed(Node &node);
 
@@ -69,8 +94,8 @@ namespace solving {
 
       void log_nodes();
 
-      const std::vector<Connection *> &get_conflicts() const {
-        return conflicts;
-      }
+//      const std::list<Conflict> &get_conflicts() const {
+//        return conflicts;
+//      }
   };
 }

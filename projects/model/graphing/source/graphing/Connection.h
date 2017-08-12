@@ -26,6 +26,14 @@ namespace graphing {
         return *nodes[1];
       }
 
+      const Node &get_first() const {
+        return *nodes[0];
+      }
+
+      const Node &get_second() const {
+        return *nodes[1];
+      }
+
       Node &get_other(const Node &node) {
         return &node == nodes[1]
                ? *nodes[0] : *nodes[1];

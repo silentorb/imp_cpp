@@ -3,11 +3,11 @@
 #include <vector>
 #include <memory>
 
-class Hero;
+class Creature;
 
 class World {
     std::vector creatures;
 
 public:
-    void add_creature(std::unique_ptr<Hero> &creature);
+    void add_creature(std::unique_ptr<Creature> &creature);
 };
