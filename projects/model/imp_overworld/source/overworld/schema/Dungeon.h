@@ -3,6 +3,7 @@
 #include <underworld/schema/Dungeon.h>
 #include "Scope.h"
 #include "File.h"
+#include "Generic_Parameter.h"
 #include <vector>
 
 namespace overworld {
@@ -22,6 +23,7 @@ namespace overworld {
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
+      std::vector<Generic_Parameter_Owner> generic_parameters;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -164,6 +166,12 @@ namespace overworld {
 
       Minion &get_minion(const std::string &name) override;
       Member &get_member(const std::string &name) override;
+
+      Generic_Parameter &add_generic_parameter(Profession &profession) {
+        auto parameter = new Generic_Parameter(profession);
+        generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
+        return *parameter;
+      }
   };
 
   class Cpp_Dungeon : public Dungeon {

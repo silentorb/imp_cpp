@@ -14,16 +14,26 @@ namespace cpp_stl {
     set_is_external(true);
   }
 
-  void Standard_Library::initialize(overworld::Profession_Library &profession_library) {
+  void Standard_Library::initialize_vector(overworld::Profession_Library &profession_library, overworld::Graph &graph) {
     underworld::Source_Point source_point(standard_library_file, 0, 0);
-
     auto &vector = add_dungeon(std::unique_ptr<Dungeon>(new Cpp_Dungeon("vector", "std::vector", *this)));
     vector_type = &vector;
     vector.set_file(vector_file);
     vector.set_default_ownership(Ownership::value);
+    auto &generic_parameter = vector.add_generic_parameter(profession_library.get_unknown());
     auto &void_type = profession_library.get_void();
     auto &push_back = vector.create_function("push_back", void_type, source_point);
-    push_back.add_parameter(new Owning_Parameter("item", profession_library.get_unknown(), source_point));
+    auto parameter = std::unique_ptr<Owning_Parameter>(
+      new Owning_Parameter("item", profession_library.get_unknown(), source_point)
+    );
+    graph.connect(generic_parameter.get_node(), parameter->get_node());
+    push_back.add_parameter(std::move(parameter));
+  }
+
+  void Standard_Library::initialize(overworld::Profession_Library &profession_library, overworld::Graph &graph) {
+    underworld::Source_Point source_point(standard_library_file, 0, 0);
+
+    initialize_vector(profession_library, graph);
 
     // Currently only used to track include file references.
     unique_pointer = &add_dungeon(std::unique_ptr<Dungeon>(

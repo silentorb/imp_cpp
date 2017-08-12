@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <vector>
+#include <stdexcept>
+
 namespace overworld {
 
   class Dungeon;
@@ -7,6 +11,8 @@ namespace overworld {
   class File;
 
   class Scope;
+
+  class Node;
 
   enum class Ownership {
       unknown,
@@ -54,4 +60,6 @@ namespace overworld {
         return nullptr;
       }
   };
+
+  bool can_cast(Profession &target, Profession &source);
 }

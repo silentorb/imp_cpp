@@ -14,10 +14,12 @@ namespace cpp_stl {
       overworld::Dungeon *unique_pointer = nullptr;
       overworld::Dungeon *string_type = nullptr;
 
+      void initialize_vector(overworld::Profession_Library &profession_library,overworld::Graph &graph);
+
   public:
       Standard_Library(overworld::Scope &parent);
 
-      void initialize(overworld::Profession_Library &profession_library);
+      void initialize(overworld::Profession_Library &profession_library,overworld::Graph &graph);
 
       const underworld::Source_File &get_source_file() const {
         return standard_library_file;

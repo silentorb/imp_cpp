@@ -94,8 +94,8 @@ namespace solving {
 
       void log_nodes();
 
-//      const std::list<Conflict> &get_conflicts() const {
-//        return conflicts;
-//      }
+      const std::list<Conflict> &get_conflicts() const {
+        return conflict_manager.conflicts;
+      }
   };
 }

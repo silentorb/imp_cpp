@@ -93,9 +93,9 @@ namespace overworld {
         signature.add_parameter(parameter);
       }
 
-      void add_parameter(Parameter *parameter) {
-        scope.add_minion(parameter);
+      void add_parameter(std::unique_ptr<Parameter> parameter) {
         signature.add_parameter(*parameter);
+        scope.add_minion(std::move(parameter));
       }
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
@@ -116,7 +116,7 @@ namespace overworld {
         signature.set_return_type(value);
       }
 
-      const underworld::Source_Point &get_source_point()const override {
+      const underworld::Source_Point &get_source_point() const override {
         return source_point;
       }
 

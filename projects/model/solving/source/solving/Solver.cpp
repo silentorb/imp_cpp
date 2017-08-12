@@ -32,8 +32,7 @@ namespace solving {
   }
 
   bool Solver::assignment_is_compatible(overworld::Profession &first, overworld::Profession &second) {
-    // Oversimplication for now
-    return &first.get_base() == &second.get_base();
+    return can_cast(first, second);
   }
 
   bool Solver::is_conflict(Connection &connection) {
@@ -305,16 +304,20 @@ namespace solving {
   }
 
   void Solver::log_nodes() {
-    std::vector<overworld::Node *> nodes;
+#if DEBUG_SOLVER
+		std::vector<overworld::Node *> nodes;
     for (auto first: graph.get_nodes()) {
       insert_node(nodes, first);
     }
     for (auto &node : nodes) {
       log_node(*node);
       for (auto &other : node->get_neighbors()) {
-        std::cout << " * ";
+
+				std::cout << " * ";
+
         log_node(*other);
       }
     }
+#endif
   }
 }

@@ -54,7 +54,7 @@ namespace overworld {
     members[minion->get_name()] = minion;
   }
 
-  void Scope::add_minion(std::unique_ptr<Minion> &minion) {
+  void Scope::add_minion(std::unique_ptr<Minion> minion) {
     members[minion->get_name()] = minion.get();
     minions.push_back(std::move(minion));
   }

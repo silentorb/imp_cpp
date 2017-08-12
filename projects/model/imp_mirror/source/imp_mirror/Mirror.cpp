@@ -18,6 +18,7 @@
 #include "Code_Error.h"
 
 namespace imp_mirror {
+
   void Mirror::apply_node_assignment(overworld::Node &target, overworld::Node &value) {
     graph.connect(target, value);
 
@@ -33,8 +34,8 @@ namespace imp_mirror {
     }
   }
 
-  overworld::Expression_Owner
-  Mirror::reflect_assignment(const underworld::Assignment &input_assignment, overworld::Scope &scope) {
+  overworld::Expression_Owner Mirror::reflect_assignment(const underworld::Assignment &input_assignment,
+                                                         overworld::Scope &scope) {
     auto target = reflect_expression(*input_assignment.get_target(), scope);
     auto &last = target->get_last();
     auto operator_type = reflect_operator(input_assignment.get_operator());
@@ -204,8 +205,8 @@ namespace imp_mirror {
     throw std::runtime_error("Expression is not a function.");
   }
 
-  overworld::Expression_Owner Mirror::reflect_function_call(const underworld::Invoke &function_call,
-                                                            overworld::Scope &scope) {
+  overworld::Expression_Owner Mirror::reflect_invoke(const underworld::Invoke &function_call,
+                                                     overworld::Scope &scope) {
     auto &input_expression = function_call.get_expression();
     auto output_expression = reflect_expression(input_expression, scope);
 
@@ -401,8 +402,8 @@ namespace imp_mirror {
     switch (input_expression.get_type()) {
 
       case underworld::Expression::Type::invoke:
-        return reflect_function_call(*dynamic_cast<const underworld::Invoke *>(&input_expression),
-                                     scope);
+        return reflect_invoke(*dynamic_cast<const underworld::Invoke *>(&input_expression),
+                              scope);
 
       case underworld::Expression::Type::instantiation:
         return reflect_instantiation(*dynamic_cast<const underworld::Instantiation *>(&input_expression),

@@ -107,8 +107,8 @@ namespace imp_mirror {
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
-      overworld::Expression_Owner reflect_function_call(const underworld::Invoke &function_call,
-                                                        overworld::Scope &scope);
+      overworld::Expression_Owner reflect_invoke(const underworld::Invoke &function_call,
+                                                 overworld::Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
                                                         overworld::Scope &scope);
       overworld::Function_Signature &

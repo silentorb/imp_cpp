@@ -43,7 +43,7 @@ namespace overworld {
 //      Minion &create_minion(const underworld::Minion &input);
       Minion &create_minion(const std::string &name, Profession &profession);
       void add_minion(Minion *minion);
-      void add_minion(std::unique_ptr<Minion> &minion);
+      void add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
 //      void add_profession(std::unique_ptr<Profession> &profession);
