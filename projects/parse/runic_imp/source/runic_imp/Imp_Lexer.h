@@ -12,10 +12,12 @@ namespace runic_imp {
   using Char = char;
   using Match = runic::Match<Whisper>;
 
-//  enum class Match_Result {
-//      success,
-//      end_of_file
-//  };
+  enum class Token_Result {
+      finished,
+      token,
+      loop,
+      error, // Not yet used but might be someday.
+  };
 
   class Imp_Lexer {
       runic::Lexer<Char> lexer;
@@ -23,12 +25,12 @@ namespace runic_imp {
       bool follows_whitespace = false;
 
       void consume_whitespace();
-      void match_non_whitespace(Match &result);
+      Token_Result match_non_whitespace(Match &result);
       void match_identifier(Match &result);
       void match_number(Match &result);
       void match_string(Match &result);
-      void consumer_to_end_of_line();
-      void match_comment_or_division(Match &result);
+      void consume_to_end_of_line();
+      Token_Result match_comment_or_division(Match &result);
 
       bool match_special_symbols(Match &result);
       bool match_any(Match &result, Token &token);

@@ -138,13 +138,14 @@ namespace runic_imp {
     return value != '\n' && value != End_Of_File;
   }
 
-  void Imp_Lexer::consumer_to_end_of_line() {
+  void Imp_Lexer::consume_to_end_of_line() {
     while (lexer.next_character() != End_Of_File && lexer.get_character() != '\n');
   }
 
-  void Imp_Lexer::match_comment_or_division(Match &result) {
+  Token_Result Imp_Lexer::match_comment_or_division(Match &result) {
     if (lexer.next_character() == '/') {
-      consumer_to_end_of_line();
+      consume_to_end_of_line();
+      return Token_Result::loop;
     }
     else if (lexer.get_character() == '=') {
       result.set_type(lexicon.patterns.divide_equals);
@@ -152,9 +153,11 @@ namespace runic_imp {
     else {
       result.set_type(lexicon.patterns.divide);
     }
+
+    return Token_Result::token;
   }
 
-  void Imp_Lexer::match_non_whitespace(Match &result) {
+  Token_Result Imp_Lexer::match_non_whitespace(Match &result) {
     auto &value = lexer.get_character();
 
     if (runic_cpp::matching::is_identifier_start(value)) {
@@ -164,31 +167,34 @@ namespace runic_imp {
       match_number(result);
     }
     else if (value == '/') {
-      match_comment_or_division(result);
+      return match_comment_or_division(result);
     }
-    else if (value == '"')
+    else if (value == '"') {
       match_string(result);
-
-    else if (match_special_symbols(result))
-      return;
+    }
+    else if (match_special_symbols(result)) {
+    }
     else {
       throw std::runtime_error("Bad syntax at " + lexer.get_position().get_string() + ".");
     }
+
+    return Token_Result::token;
   }
 
   bool Imp_Lexer::match_any(Match &result, Token &token) {
-    auto &value = lexer.get_character();
+    do {
+      auto &value = lexer.get_character();
 
-    if (is_whitespace_or_semicolon(value))
-      consume_whitespace();
+      if (is_whitespace_or_semicolon(value))
+        consume_whitespace();
 
-    token.get_match().set_text("");
-    token.get_range().set_start(lexer.get_position());
+      token.get_match().set_text("");
+      token.get_range().set_start(lexer.get_position());
 
-    if (value == End_Of_File || value == 1)
-      return false;
+      if (value == End_Of_File || value == 1)
+        return false;
 
-    match_non_whitespace(result);
+    } while (match_non_whitespace(result) == Token_Result::loop);
 
     return true;
   }

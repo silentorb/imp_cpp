@@ -1,0 +1,42 @@
+// In certain cases Imp will create a generic copy of a class to resolve conflicts.  This code raises two cases where
+// Imp would normally create a generic copy but should instead detect fundamental incompatibilities that should
+// prevent a generic solution.  (Or any solution since generic copying is Imp's final resolution option.)
+
+House {
+  inhabitant
+
+  set_inhabitant(value) {
+    inhabitant = value
+    value.smile()
+  }
+}
+
+Princess {
+  smile() {}
+}
+
+Frog {
+  smile() {}
+}
+
+Monster {}
+
+General {
+
+  main() {
+    var princess_house = House {}
+    var princess = Princess {}
+    var frog = Frog {}
+
+    princess_house.set_inhabitant(princess)
+
+    // This should fail because the same house cannot support two unrelated types.
+    princess_house.set_inhabitant(frog)
+
+    var monster_house = House {}
+    var monster = Monster {}
+
+    // This should fail because monsters do not smile.
+    monster_house.set_inhabitant(monster)
+  }
+}

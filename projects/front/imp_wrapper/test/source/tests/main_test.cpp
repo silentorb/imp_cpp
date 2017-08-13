@@ -23,7 +23,11 @@ TEST(Main_Test, game) {
 //  compare(string(RESOURCE_PATH) + "game/Creature.h", string(OUTPUT_PATH) + "Creature.h");
 }
 
-TEST(Main_Test, generic_function) {
-  compile("generic_function/generic_function.imp");
+TEST(Main_Test, fail_generic_dungeon) {
+  compile("fail_generic_dungeon/fail_generic_dungeon.imp");
+}
+
+TEST(Main_Test, generic_dungeon) {
+//  compile("generic_dungeon/generic_dungeon.imp");
 
 }
