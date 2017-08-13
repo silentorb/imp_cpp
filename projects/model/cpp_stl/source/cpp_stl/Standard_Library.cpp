@@ -26,7 +26,7 @@ namespace cpp_stl {
     auto parameter = std::unique_ptr<Owning_Parameter>(
       new Owning_Parameter("item", profession_library.get_unknown(), source_point)
     );
-    graph.connect(generic_parameter.get_node(), parameter->get_node());
+    graph.connect_without_adding(generic_parameter.get_node(), parameter->get_node());
     push_back.add_parameter(std::move(parameter));
   }
 

@@ -21,16 +21,21 @@ namespace overworld {
       }
   };
 
-  template<typename T>
+  template<typename T, typename Static_Functions>
   class Literal_Implementation : public virtual Literal, public virtual Profession_Reference {
       T value;
-      Profession_Node<Literal_Implementation> node;
+      Profession_Node <Literal_Implementation> node;
       const underworld::Literal &source;
 
   public:
       Literal_Implementation(T value, const underworld::Literal &source) :
-        value(value), node(*this, get_profession()), source(source) {
+        value(value),
+        node(*this, Profession_Library::get_primitive(Static_Functions::_get_primitive_type())), source(source) {
         node.set_resolved(true);
+      }
+
+      Primitive_Type get_primitive_type() const override {
+        return Static_Functions::_get_primitive_type();
       }
 
       virtual ~Literal_Implementation() {
@@ -57,18 +62,19 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      const underworld::Source_Point &get_source_point()const override {
+      const underworld::Source_Point &get_source_point() const override {
         return source.get_source_point();
       }
 
   };
 
-  class Literal_Int : public Literal_Implementation<int> {
+  class Literal_Int : public Literal_Implementation<int, Literal_Int> {
+
   public:
       Literal_Int(int value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
-      Primitive_Type get_primitive_type() const override {
+      static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Int;
       }
 
@@ -77,12 +83,12 @@ namespace overworld {
       }
   };
 
-  class Literal_String : public Literal_Implementation<const std::string> {
+  class Literal_String : public Literal_Implementation<const std::string, Literal_String> {
   public:
       Literal_String(const std::string &value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
-      Primitive_Type get_primitive_type() const override {
+      static Primitive_Type _get_primitive_type() {
         return Primitive_Type::String;
       }
 
@@ -91,12 +97,12 @@ namespace overworld {
       }
   };
 
-  class Literal_Bool : public Literal_Implementation<bool> {
+  class Literal_Bool : public Literal_Implementation<bool, Literal_Bool> {
   public:
       Literal_Bool(const bool &value, const underworld::Literal &source) :
         Literal_Implementation(value, source) {}
 
-      Primitive_Type get_primitive_type() const override {
+      static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Bool;
       }
 

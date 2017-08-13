@@ -58,7 +58,7 @@ namespace imp_mirror {
 
       case underworld::Primitive_Type::Int:
         expression = new overworld::Literal_Int(
-          (*dynamic_cast<const underworld::Literal_Int *>(&input_literal)).get_value(), input_literal);
+          (*(const underworld::Literal_Int *)&input_literal).get_value(), input_literal);
         break;
 
       case underworld::Primitive_Type::String:
@@ -567,7 +567,7 @@ namespace imp_mirror {
   void Mirror::reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
     auto output_minion = create_minion(input_minion, output_scope);
     element_map.add(&input_minion, output_minion.get());
-    output_scope.add_minion(output_minion);
+    output_scope.add_minion(std::move(output_minion));
   }
 
   void Mirror::reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope) {

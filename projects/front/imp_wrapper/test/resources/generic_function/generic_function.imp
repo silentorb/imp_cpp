@@ -1,0 +1,28 @@
+House {
+  inhabitant
+
+  set_inhabitant(value) {
+    inhabitant = value
+  }
+}
+
+Princess { }
+
+Frog { }
+
+General {
+
+  level_up(target) {
+    target.add_level(1)
+  }
+
+  main() {
+    var princess_house = House {}
+    var frog_house = House {}
+    var princess = Princess {}
+    var frog = Frog {}
+
+    frog_house.set_inhabitant(frog)
+    princess_house.set_inhabitant(princess)
+  }
+}

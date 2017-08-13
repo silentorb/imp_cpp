@@ -16,7 +16,7 @@ namespace imp_wrapper {
     overworld_root("") {
     standard_library = new cpp_stl::Standard_Library(overworld_root);
     overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library));
-    standard_library->initialize(overworld_profession_library);
+    standard_library->initialize(overworld_profession_library, graph);
   }
 
   void Wrapper::load_file(const std::string &path) {
