@@ -17,6 +17,8 @@ namespace overworld {
       dungeon
   };
 
+  using Member_Array  = std::vector<Member *>;
+
   class Scope {
       const underworld::Scope *source;
 
@@ -26,7 +28,9 @@ namespace overworld {
       std::vector<Variable_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
-      std::map<std::string, Member *> members;
+      std::map<std::string, Member_Array> members;
+
+      void add_member(const std::string &name, Member &member);
 
   public:
       Scope(const underworld::Scope *source, Scope *parent);

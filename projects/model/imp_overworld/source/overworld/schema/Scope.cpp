@@ -27,6 +27,14 @@ namespace overworld {
     int k = 0;
   }
 
+  void Scope::add_member(const std::string &name, Member &member) {
+    if (members.count(name) == 0) {
+      members[name] = std::vector<Member *>();
+    }
+
+    members[name].push_back(&member);
+  }
+
   Function &Scope::create_function(const std::string &name, Profession &profession,
                                    const underworld::Source_Point &source_point) {
     auto function = new Function(name, profession, *this, source_point);
@@ -34,7 +42,7 @@ namespace overworld {
 //    if (!function->is_constructor())
 //      graph.add_node(function->get_node());
 
-    members[name] = function;
+    add_member(name, *function);
     return *function;
   }
 
@@ -45,17 +53,19 @@ namespace overworld {
   Function &Scope::create_function(const underworld::Function &input) {
     auto function = new Function(input.get_name(), *this, input.get_source_point());
     functions.push_back(unique_ptr<Function>(function));
-    members[input.get_name()] = function;
+    add_member(input.get_name(), *function);
     return *function;
   }
 
   void Scope::add_minion(Minion *minion) {
     minions.push_back(unique_ptr<Minion>(minion));
-    members[minion->get_name()] = minion;
+    add_member(minion->get_name(), *minion);
+//    members[minion->get_name()] = minion;
   }
 
   void Scope::add_minion(std::unique_ptr<Minion> minion) {
-    members[minion->get_name()] = minion.get();
+    add_member(minion->get_name(), *minion);
+//    members[minion->get_name()] = minion.get();
     minions.push_back(std::move(minion));
   }
 
@@ -65,7 +75,8 @@ namespace overworld {
     auto minion = new Minion(input, profession);
     minions.push_back(unique_ptr<Minion>(minion));
 //    graph.add_node(minion->get_node());
-    members[minion->get_name()] = minion;
+    add_member(minion->get_name(), *minion);
+//    members[minion->get_name()] = minion;
     return *minion;
   }
 
@@ -99,7 +110,7 @@ namespace overworld {
   }
 
   void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
-    members[dungeon->get_name()] = dungeon.get();
+    add_member(dungeon->get_name(), *dungeon);
     dungeons.push_back(std::move(dungeon));
   }
 
@@ -118,7 +129,7 @@ namespace overworld {
 
   Member *Scope::find_member(const std::string &name) {
     return members.count(name) != 0
-           ? members.at(name)
+           ? members.at(name)[0]
            : (parent
               ? parent->find_member(name)
               : nullptr);
@@ -126,14 +137,14 @@ namespace overworld {
 
   Member *Scope::get_member_or_null(const std::string &name) {
     return members.count(name) != 0
-           ? members.at(name)
+           ? members.at(name)[0]
            : nullptr;
   }
 
   Member &Scope::get_member(const std::string &name) {
     if (members.count(name) != 0)
-      return *members.at(name);
+      return *members.at(name)[0];
 
-    throw std:: runtime_error("Could not find member: " + name);
+    throw std::runtime_error("Could not find member: " + name);
   }
 }

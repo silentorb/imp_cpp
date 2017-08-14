@@ -11,11 +11,6 @@ Princess { }
 Frog { }
 
 General {
-
-  level_up(target) {
-    target.add_level(1)
-  }
-
   main() {
     var princess_house = House {}
     var frog_house = House {}

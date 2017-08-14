@@ -50,7 +50,7 @@ namespace overworld {
 
   Member &Dungeon::get_member(const std::string &name) {
     if (members.count(name) != 0)
-      return *members.at(name);
+      return *members.at(name)[0];
 
     if (base_dungeon) {
       return base_dungeon->get_member(name);
