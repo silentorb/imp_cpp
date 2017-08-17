@@ -27,6 +27,7 @@ namespace overworld {
       dungeon,
       reference,
       function,
+      variant,
       Void,
   };
 

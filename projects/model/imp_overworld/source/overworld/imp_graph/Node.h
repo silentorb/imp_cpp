@@ -84,5 +84,46 @@ namespace overworld {
 //      }
   };
 
-  using Node_Pointer = std::unique_ptr<Node>;
+  class Node_Copy : public Node, public virtual Profession_Reference {
+      Node &original;
+      Profession *profession;
+
+  public:
+      Node_Copy(Node &original, Profession &profession) :
+        original(original), profession(&profession) {}
+
+      Profession_Reference &get_profession_reference() override {
+        return *this;
+      }
+
+      const Profession_Reference &get_profession_reference() const override {
+        return *this;
+      }
+
+      bool is_resolved() const override {
+        return profession->get_base().get_type() != overworld::Profession_Type::unknown;
+      }
+
+      Profession &get_profession() override {
+        return *profession;
+      }
+
+      const Profession &get_profession() const override {
+        return *profession;
+      }
+
+      void set_profession(Profession &value) override {
+        profession = &value;
+      }
+
+      const underworld::Source_Point &get_source_point() const override {
+        return original.get_profession_reference().get_source_point();
+      }
+
+      const std::string get_name() const override {
+        return original.get_profession_reference().get_name();
+      }
+  };
+
+  using Node_Owner = std::unique_ptr<Node>;
 }
