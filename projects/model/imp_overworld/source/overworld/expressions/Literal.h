@@ -2,7 +2,6 @@
 
 #include <overworld/schema/professions/professions.h>
 #include <overworld/schema/professions/Profession_Library.h>
-#include <underworld/expressions/Literal.h>
 #include "Expression.h"
 
 namespace overworld {
@@ -25,12 +24,14 @@ namespace overworld {
   class Literal_Implementation : public virtual Literal, public virtual Profession_Reference {
       T value;
       Profession_Node <Literal_Implementation> node;
-      const underworld::Literal &source;
+//      const underworld::Literal &source;
+      const underworld::Source_Point source_point;
 
   public:
-      Literal_Implementation(T value, const underworld::Literal &source) :
+      Literal_Implementation(T value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point) :
         value(value),
-        node(*this, Profession_Library::get_primitive(Static_Functions::_get_primitive_type())), source(source) {
+        node(*this, Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), dungeon),
+        source_point(source_point) {
         node.set_resolved(true);
       }
 
@@ -63,7 +64,7 @@ namespace overworld {
       }
 
       const underworld::Source_Point &get_source_point() const override {
-        return source.get_source_point();
+        return source_point;
       }
 
   };
@@ -71,8 +72,8 @@ namespace overworld {
   class Literal_Int : public Literal_Implementation<int, Literal_Int> {
 
   public:
-      Literal_Int(int value, const underworld::Literal &source) :
-        Literal_Implementation(value, source) {}
+      Literal_Int(int value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point) :
+        Literal_Implementation(value, dungeon, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Int;
@@ -85,8 +86,9 @@ namespace overworld {
 
   class Literal_String : public Literal_Implementation<const std::string, Literal_String> {
   public:
-      Literal_String(const std::string &value, const underworld::Literal &source) :
-        Literal_Implementation(value, source) {}
+      Literal_String(const std::string &value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point)
+        :
+        Literal_Implementation(value, dungeon, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::String;
@@ -99,8 +101,8 @@ namespace overworld {
 
   class Literal_Bool : public Literal_Implementation<bool, Literal_Bool> {
   public:
-      Literal_Bool(const bool &value, const underworld::Literal &source) :
-        Literal_Implementation(value, source) {}
+      Literal_Bool(const bool &value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point) :
+        Literal_Implementation(value, dungeon, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Bool;

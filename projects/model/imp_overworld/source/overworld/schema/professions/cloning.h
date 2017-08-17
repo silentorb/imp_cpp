@@ -1,11 +1,11 @@
 #pragma once
 
 #include <overworld/schema/Dungeon.h>
-#include "Variant.h"
+#include "../Dungeon_Variant.h"
 
 namespace overworld {
 
-  Node &clone_function(Function &function, Variant &variant);
+//  Node &clone_function(Function &function, Variant &variant);
 
-  Node &clone_dungeon(Dungeon_Variant &variant);
+  Node &clone_dungeon(overworld::Dungeon_Variant &variant, Graph &graph);
 }

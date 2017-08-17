@@ -11,7 +11,8 @@ namespace overworld {
       underworld::Source_Point source_point;
 
   public:
-      Generic_Parameter(Profession &profession) : profession(&profession), node(*this, profession) {}
+      Generic_Parameter(Profession &profession, Dungeon_Interface & dungeon) :
+        profession(&profession), node(*this, profession, dungeon) {}
 
       Profession &get_profession() override {
         return *profession;

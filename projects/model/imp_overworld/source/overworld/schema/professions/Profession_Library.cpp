@@ -47,8 +47,8 @@ namespace overworld {
     return *reference;
   }
 
-  Dungeon_Variant &Profession_Library::get_or_create_variants(Dungeon &dungeon,
-                                                              std::vector<Profession *> &professions) {
+  Dungeon_Variant &Profession_Library::get_or_create_variants(Dungeon &dungeon, std::vector<Profession *> &professions,
+                                                              Graph &graph) {
     Variant_Array *variants;
 
     if (!dungeon_variants.count(&dungeon)) {
@@ -65,6 +65,7 @@ namespace overworld {
 
     auto variant = new Dungeon_Variant(dungeon, professions);
     variants->push_back(Dungeon_Variant_Owner(variant));
-    clone_dungeon(*variant);
+    clone_dungeon(*variant, graph);
+    return *variant;
   }
 }

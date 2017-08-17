@@ -5,15 +5,18 @@
 #include <graphing/Node.h>
 #include "Connection.h"
 #include <overworld/schema/professions/Profession_Reference.h>
+#include <overworld/schema/Dungeon_Interface.h>
 
 namespace overworld {
 
   class Node : public graphing::Node<Node, Connection> {
       bool resolved = false;
       bool changed = false;
+      Dungeon_Interface *dungeon = nullptr;
+//      Function *function = nullptr;
 
   public:
-      Node() {
+      Node(Dungeon_Interface &dungeon) : dungeon(&dungeon) {
 
       }
 
@@ -47,6 +50,10 @@ namespace overworld {
       }
 
       std::string get_debug_string() const;
+
+      Dungeon_Interface &get_dungeon() const {
+        return *dungeon;
+      }
 //      virtual const std::string get_name() const = 0;
   };
 
@@ -56,8 +63,8 @@ namespace overworld {
       Profession *original_profession;
 
   public:
-      Profession_Node(T &element, Profession &original_profession) :
-        element(element), original_profession(&original_profession) {}
+      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface &dungeon) :
+        Node(dungeon), element(element), original_profession(&original_profession) {}
 
       Profession_Reference &get_profession_reference() override {
         return element;
@@ -89,8 +96,8 @@ namespace overworld {
       Profession *profession;
 
   public:
-      Node_Copy(Node &original, Profession &profession) :
-        original(original), profession(&profession) {}
+      Node_Copy(Node &original, Profession &profession, Dungeon_Interface &dungeon) :
+        Node(dungeon), original(original), profession(&profession) {}
 
       Profession_Reference &get_profession_reference() override {
         return *this;

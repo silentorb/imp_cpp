@@ -4,6 +4,7 @@
 #include "Scope.h"
 #include "File.h"
 #include "Generic_Parameter.h"
+#include "Dungeon_Interface.h"
 #include <vector>
 
 namespace overworld {
@@ -13,7 +14,7 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Profession, public virtual Profession_Reference,
+  class Dungeon : public Scope, public virtual Dungeon_Interface, public virtual Profession_Reference,
                   public virtual Member {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
@@ -27,13 +28,13 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), node(*this, *this) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this, *this) {}
 
       Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
-        name(name), Scope(nullptr, &parent), node(*this, *this), source_point(source_point) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this, *this), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), node(*this, *this) {}
+        name(name), Scope(nullptr, nullptr), node(*this, *this, *this) {}
 
       virtual ~Dungeon() {}
 
@@ -160,6 +161,9 @@ namespace overworld {
         return &contracts;
       }
 
+      Function &create_function(const std::string &name, Profession &profession,
+                                const underworld::Source_Point &source_point = underworld::Source_Point());
+
       Scope_Type get_scope_type() const override {
         return Scope_Type::dungeon;
       }
@@ -168,7 +172,7 @@ namespace overworld {
       Member &get_member(const std::string &name) override;
 
       Generic_Parameter &add_generic_parameter(Profession &profession) {
-        auto parameter = new Generic_Parameter(profession);
+        auto parameter = new Generic_Parameter(profession, *this);
         generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
         return *parameter;
       }

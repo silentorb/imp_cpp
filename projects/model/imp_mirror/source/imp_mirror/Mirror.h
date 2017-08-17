@@ -49,7 +49,8 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 
-      overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal);
+      overworld::Expression_Owner
+      reflect_literal(const underworld::Literal &input_literal, overworld::Dungeon &dungeon);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
                                                  overworld::Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
@@ -99,7 +100,7 @@ namespace imp_mirror {
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
-                                                       overworld::Scope &output_scope);
+                                                       overworld::Scope &scope);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
       void reflect_function2(const underworld::Function &input_function);
       void reflect_function3(const underworld::Function &input_function);
@@ -112,7 +113,8 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
                                                         overworld::Scope &scope);
       overworld::Function_Signature &
-      get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments);
+      get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments,
+                                   overworld::Scope &scope);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {

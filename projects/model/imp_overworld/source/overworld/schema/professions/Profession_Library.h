@@ -24,6 +24,6 @@ namespace overworld {
 
       Reference &get_reference(Profession &profession);
 
-      Dungeon_Variant &get_or_create_variants(Dungeon &dungeon, std::vector<Profession *> &professions);
+      Dungeon_Variant &get_or_create_variants(Dungeon &dungeon, std::vector<Profession *> &professions, Graph &graph);
   };
 }

@@ -4,24 +4,13 @@
 
 namespace overworld {
 
-  class Dungeon_Variant : public virtual Profession {
+  class Dungeon_Variant : public virtual Dungeon_Interface {
       Dungeon &original;
       std::vector<Profession *> professions;
       std::string name;
+      std::vector<Node_Owner> nodes;
 
-      void format_name() {
-        name = original.get_name() + "<";
-        auto first = true;
-        for (auto profession : professions) {
-          if (first)
-            first = false;
-          else
-            name += ", ";
-
-          name += profession->get_name();
-        }
-        name += ">";
-      }
+      void format_name();
 
   public:
       Dungeon_Variant(Dungeon &original, const std::vector<Profession *> &professions) :
@@ -60,7 +49,20 @@ namespace overworld {
       const std::vector<Profession *> &get_professions() const {
         return professions;
       }
+
+      Dungeon &get_original() {
+        return original;
+      }
+
+      Node &add_node(Node_Owner node) {
+        auto &result = *node;
+        nodes.push_back(std::move(node));
+        return result;
+      }
   };
 
   using Dungeon_Variant_Owner = std::unique_ptr<Dungeon_Variant>;
+
+  bool professions_match(const std::vector<Profession *> &first, const std::vector<Profession *> &second);
+
 }

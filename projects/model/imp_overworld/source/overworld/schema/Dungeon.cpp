@@ -15,6 +15,17 @@ namespace overworld {
 //    throw std::runtime_error("Could not find constructor.");
   }
 
+  Function &Dungeon::create_function(const std::string &name, Profession &profession,
+                                   const underworld::Source_Point &source_point) {
+    auto function = new Function(name, profession, *this, *this, source_point);
+    functions.push_back(unique_ptr<Function>(function));
+//    if (!function->is_constructor())
+//      graph.add_node(function->get_node());
+
+    add_member(name, *function);
+    return *function;
+  }
+
 //  Dungeon &Dungeon::create_dungeon(const std::string &name) {
 //    auto dungeon = new Dungeon(name, *this);
 //    auto pointer = unique_ptr<Dungeon>(dungeon);

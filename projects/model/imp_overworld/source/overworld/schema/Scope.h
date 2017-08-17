@@ -37,15 +37,12 @@ namespace overworld {
       Scope(Scope *parent);
       virtual ~Scope();
 
-      Function &create_function(const underworld::Function &input, Profession &profession);
+//      Function &create_function(const underworld::Function &input, Profession &profession);
       Function &create_function(const underworld::Function &input);
 
-      Function &create_function(const std::string &name, Profession &profession,
-                                const underworld::Source_Point &source_point = underworld::Source_Point());
-
-      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
+//      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
 //      Minion &create_minion(const underworld::Minion &input);
-      Minion &create_minion(const std::string &name, Profession &profession);
+//      Minion &create_minion(const std::string &name, Profession &profession);
       void add_minion(Minion *minion);
       void add_minion(std::unique_ptr<Minion> minion);
 

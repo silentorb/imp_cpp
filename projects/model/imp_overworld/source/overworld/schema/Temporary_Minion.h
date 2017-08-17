@@ -12,8 +12,9 @@ namespace overworld {
       std::vector<std::unique_ptr<Parameter>> parameters;
 
   public:
-      Temporary_Minion(const std::string &name, Profession &profession, const underworld::Source_Point source_point) :
-        Minion(name, profession, source_point) {}
+      Temporary_Minion(const std::string &name, Profession &profession, Dungeon_Interface &dungeon,
+                       const underworld::Source_Point source_point) :
+        Minion(name, profession, dungeon, source_point) {}
 
       virtual ~Temporary_Minion() {}
 

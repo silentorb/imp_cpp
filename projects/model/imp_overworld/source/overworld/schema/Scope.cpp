@@ -35,23 +35,12 @@ namespace overworld {
     members[name].push_back(&member);
   }
 
-  Function &Scope::create_function(const std::string &name, Profession &profession,
-                                   const underworld::Source_Point &source_point) {
-    auto function = new Function(name, profession, *this, source_point);
-    functions.push_back(unique_ptr<Function>(function));
-//    if (!function->is_constructor())
-//      graph.add_node(function->get_node());
-
-    add_member(name, *function);
-    return *function;
-  }
-
-  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
-    return create_function(input.get_name(), profession, input.get_source_point());
-  }
+//  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
+//    return create_function(input.get_name(), profession, input.get_source_point());
+//  }
 
   Function &Scope::create_function(const underworld::Function &input) {
-    auto function = new Function(input.get_name(), *this, input.get_source_point());
+    auto function = new Function(input.get_name(), *this, get_dungeon(), input.get_source_point());
     functions.push_back(unique_ptr<Function>(function));
     add_member(input.get_name(), *function);
     return *function;
@@ -69,16 +58,12 @@ namespace overworld {
     minions.push_back(std::move(minion));
   }
 
-  Minion &Scope::create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph) {
-//    check_has_member(name);
-
-    auto minion = new Minion(input, profession);
-    minions.push_back(unique_ptr<Minion>(minion));
-//    graph.add_node(minion->get_node());
-    add_member(minion->get_name(), *minion);
-//    members[minion->get_name()] = minion;
-    return *minion;
-  }
+//  Minion &Scope::create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph) {
+//    auto minion = new Minion(input, profession);
+//    minions.push_back(unique_ptr<Minion>(minion));
+//    add_member(minion->get_name(), *minion);
+//    return *minion;
+//  }
 
 //  Minion &Scope::create_minion(const underworld::Minion &input) {
 //    auto minion = new Minion(input);

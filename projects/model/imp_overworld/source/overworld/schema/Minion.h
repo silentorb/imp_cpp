@@ -12,19 +12,20 @@ namespace overworld {
   class Dungeon;
 
   class Minion : public virtual Member, public virtual Profession_Reference {
-      const underworld::Minion *source;
+//      const underworld::Minion *source;
       Profession *profession;
       Profession_Node<Minion> node;
       const std::string name;
       const underworld::Source_Point source_point;
 
   public:
-      Minion(const underworld::Minion &source, Profession &profession) :
-        source(&source), profession(&profession), node(*this, profession), name(source.get_name()),
-        source_point(source.get_source_point()) {}
+//      Minion(const underworld::Minion &source, Profession &profession, Dungeon_Interface &dungeon) :
+//        source(&source), profession(&profession), node(*this, profession, dungeon), name(source.get_name()),
+//        source_point(source.get_source_point()) {}
 
-      Minion(const std::string &name, Profession &profession, const underworld::Source_Point &source_point) :
-        source(nullptr), profession(&profession), node(*this, profession), name(name),
+      Minion(const std::string &name, Profession &profession, Dungeon_Interface &dungeon,
+             const underworld::Source_Point &source_point) :
+        profession(&profession), node(*this, profession, dungeon), name(name),
         source_point(source_point) {}
 
       virtual ~Minion() {
@@ -51,7 +52,7 @@ namespace overworld {
         profession = &value;
       }
 
-      virtual const underworld::Source_Point &get_source_point()const override {
+      virtual const underworld::Source_Point &get_source_point() const override {
         return source_point;
       }
 
@@ -61,6 +62,10 @@ namespace overworld {
 
       virtual bool is_parameter() const {
         return false;
+      }
+
+      Dungeon &get_dungeon(){
+        return (Dungeon&)node.get_dungeon();
       }
   };
 
