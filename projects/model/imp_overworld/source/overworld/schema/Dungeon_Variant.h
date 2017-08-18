@@ -27,7 +27,7 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        return name;
+        return Variant:: get_name();
       }
 
       Ownership get_ownership() const override {
@@ -42,18 +42,8 @@ namespace overworld {
         return *this;
       }
 
-      const std::vector<Profession *> &get_professions() const {
-        return professions;
-      }
-
       Dungeon &get_original() {
         return original;
-      }
-
-      Node &add_node(Node_Owner node) {
-        auto &result = *node;
-        nodes.push_back(std::move(node));
-        return result;
       }
   };
 

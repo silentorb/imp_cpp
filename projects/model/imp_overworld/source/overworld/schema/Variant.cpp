@@ -2,7 +2,7 @@
 
 namespace overworld {
 
-  const std::string &Variant::format_name(const std::string &original_name) {
+  const std::string Variant::format_name(const std::string &original_name) {
     auto name = original_name + "<";
     auto first = true;
     for (auto profession : professions) {

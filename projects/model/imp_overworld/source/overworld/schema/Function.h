@@ -50,13 +50,14 @@ namespace overworld {
       bool _is_static = false;
       bool returns_a_value() const;
       const underworld::Source_Point source_point;
+      std::vector<Generic_Parameter_Owner> generic_parameters;
 
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope, Dungeon_Interface &dungeon,
-      const underworld::Source_Point &source_point) :
+               const underworld::Source_Point &source_point) :
         name(name), signature(node, &return_type),
         scope(parent_scope, *this), block(scope),
-        node(*this, return_type, dungeon,this), source_point(source_point) {}
+        node(*this, return_type, dungeon, this), source_point(source_point) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const underworld::Source_Point &source_point) :
@@ -145,6 +146,16 @@ namespace overworld {
 
       const Function_Signature &get_function_signature() const {
         return signature;
+      }
+
+      Generic_Parameter &add_generic_parameter(Profession &profession) {
+        auto parameter = new Generic_Parameter(profession, node.get_dungeon(), this);
+        generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
+        return *parameter;
+      }
+
+      const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const override {
+        return generic_parameters;
       }
   };
 

@@ -177,7 +177,6 @@ namespace solving {
       return true;
     }
 
-
     return false;
   }
 

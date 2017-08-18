@@ -49,8 +49,8 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 
-      overworld::Expression_Owner
-      reflect_literal(const underworld::Literal &input_literal, overworld::Dungeon &dungeon);
+      overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal,
+                                                  overworld::Dungeon &dungeon, overworld::Function_Interface *function);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
                                                  overworld::Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
@@ -114,7 +114,7 @@ namespace imp_mirror {
                                                         overworld::Scope &scope);
       overworld::Function_Signature &
       get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments,
-                                   overworld::Scope &scope);
+                             overworld::Scope &scope);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {

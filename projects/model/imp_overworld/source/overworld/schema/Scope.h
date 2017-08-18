@@ -78,8 +78,8 @@ namespace overworld {
         return parent;
       }
 
-      virtual Function &get_function() {
-        throw std::runtime_error("Not supported.");
+      virtual Function * get_function() {
+        return nullptr;
       }
 
       const std::vector<std::unique_ptr<Profession>> &get_professions() const {
@@ -105,8 +105,8 @@ namespace overworld {
   public:
       Function_Scope(Scope &parent, Function &function);
 
-      virtual Function &get_function() override {
-        return *function;
+      virtual Function * get_function() override {
+        return function;
       }
   };
 

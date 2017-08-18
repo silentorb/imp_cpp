@@ -5,6 +5,8 @@
 
 namespace overworld {
 
+  class Function_Interface;
+
   class Generic_Parameter : public virtual Profession_Reference {
       Profession *profession;
       Profession_Node <Generic_Parameter> node;

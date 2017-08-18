@@ -12,12 +12,26 @@ namespace overworld {
       std::string name;
       std::vector<Node_Owner> nodes;
 
-      const std::string &format_name(const std::string &original_name);
+      const std::string format_name(const std::string &original_name);
 
   public:
       Variant(const std::string &original_name, const std::vector<Profession *> &professions) :
         professions(professions) {
-        format_name(original_name);
+        name = format_name(original_name);
+      }
+
+      const std::vector<Profession *> &get_professions() const {
+        return professions;
+      }
+
+      const std::string get_name() const {
+        return name;
+      }
+
+      Node &add_node(Node_Owner node) {
+        auto &result = *node;
+        nodes.push_back(std::move(node));
+        return result;
       }
   };
 

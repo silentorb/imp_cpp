@@ -6,9 +6,10 @@
 #include "Connection.h"
 #include <overworld/schema/professions/Profession_Reference.h>
 #include <overworld/schema/Dungeon_Interface.h>
-#include <overworld/schema/Function_Interface.h>
 
 namespace overworld {
+
+  class Function_Interface;
 
   class Node : public graphing::Node<Node, Connection> {
       bool resolved = false;
@@ -53,6 +54,10 @@ namespace overworld {
 
       Dungeon_Interface &get_dungeon() const {
         return *dungeon;
+      }
+
+      Function_Interface *get_function() const {
+        return function;
       }
 //      virtual const std::string get_name() const = 0;
   };
