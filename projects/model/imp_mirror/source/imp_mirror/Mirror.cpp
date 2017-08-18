@@ -146,7 +146,8 @@ namespace imp_mirror {
     auto variable = new overworld::Minion(input_minion.get_name(),
                                           reflect_profession(input_minion.get_profession(), scope),
                                           scope.get_dungeon(),
-                                          input_minion.get_source_point());
+                                          input_minion.get_source_point(),
+                                          &scope.get_function());
     scope.add_minion(variable);
     auto expression = reflect_expression(input_declaration.get_expression(), scope);
     apply_node_assignment(variable->get_node(), *expression->get_node());
@@ -199,7 +200,7 @@ namespace imp_mirror {
           auto &argument = arguments[i];
           auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
           auto parameter = new overworld::Parameter("(temp)", argument_profession, scope.get_dungeon(),
-                                                    underworld::Source_Point());
+                                                    underworld::Source_Point(), scope.get_function());
           temporary_member.add_parameter(parameter);
         }
         return signature;

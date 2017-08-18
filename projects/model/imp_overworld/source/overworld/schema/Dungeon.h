@@ -28,13 +28,13 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), node(*this, *this, *this) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this, *this, nullptr) {}
 
       Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
-        name(name), Scope(nullptr, &parent), node(*this, *this, *this), source_point(source_point) {}
+        name(name), Scope(nullptr, &parent), node(*this, *this, *this, nullptr), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), node(*this, *this, *this) {}
+        name(name), Scope(nullptr, nullptr), node(*this, *this, *this, nullptr) {}
 
       virtual ~Dungeon() {}
 
@@ -172,7 +172,7 @@ namespace overworld {
       Member &get_member(const std::string &name) override;
 
       Generic_Parameter &add_generic_parameter(Profession &profession) {
-        auto parameter = new Generic_Parameter(profession, *this);
+        auto parameter = new Generic_Parameter(profession, *this, nullptr);
         generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
         return *parameter;
       }

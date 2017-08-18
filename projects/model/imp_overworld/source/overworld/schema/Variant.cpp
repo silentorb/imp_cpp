@@ -1,9 +1,9 @@
-#include "Dungeon_Variant.h"
+#include "Variant.h"
 
-namespace overworld  {
+namespace overworld {
 
-  void Dungeon_Variant::format_name() {
-    name = original.get_name() + "<";
+  const std::string &Variant::format_name(const std::string &original_name) {
+    auto name = original_name + "<";
     auto first = true;
     for (auto profession : professions) {
       if (first)
@@ -14,6 +14,8 @@ namespace overworld  {
       name += profession->get_name();
     }
     name += ">";
+
+    return name;
   }
 
   bool professions_match(const std::vector<Profession *> &first, const std::vector<Profession *> &second) {

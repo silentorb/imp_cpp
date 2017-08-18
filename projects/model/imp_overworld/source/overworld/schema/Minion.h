@@ -24,8 +24,8 @@ namespace overworld {
 //        source_point(source.get_source_point()) {}
 
       Minion(const std::string &name, Profession &profession, Dungeon_Interface &dungeon,
-             const underworld::Source_Point &source_point) :
-        profession(&profession), node(*this, profession, dungeon), name(name),
+             const underworld::Source_Point &source_point, Function_Interface *function) :
+        profession(&profession), node(*this, profession, dungeon, function), name(name),
         source_point(source_point) {}
 
       virtual ~Minion() {
@@ -64,8 +64,8 @@ namespace overworld {
         return false;
       }
 
-      Dungeon &get_dungeon(){
-        return (Dungeon&)node.get_dungeon();
+      Dungeon &get_dungeon() {
+        return (Dungeon &) node.get_dungeon();
       }
   };
 

@@ -1,21 +1,17 @@
 #pragma once
 
 #include <overworld/schema/Dungeon.h>
+#include "Variant.h"
 
 namespace overworld {
 
-  class Dungeon_Variant : public virtual Dungeon_Interface {
+  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface {
       Dungeon &original;
-      std::vector<Profession *> professions;
-      std::string name;
-      std::vector<Node_Owner> nodes;
-
-      void format_name();
 
   public:
       Dungeon_Variant(Dungeon &original, const std::vector<Profession *> &professions) :
-        original(original), professions(professions) {
-        format_name();
+        Variant(original.get_name(), professions),
+        original(original) {
       }
 
       Profession_Type get_type() const override {
@@ -62,7 +58,4 @@ namespace overworld {
   };
 
   using Dungeon_Variant_Owner = std::unique_ptr<Dungeon_Variant>;
-
-  bool professions_match(const std::vector<Profession *> &first, const std::vector<Profession *> &second);
-
 }

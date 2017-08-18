@@ -13,8 +13,8 @@ namespace overworld {
 
   public:
       Temporary_Minion(const std::string &name, Profession &profession, Dungeon_Interface &dungeon,
-                       const underworld::Source_Point source_point) :
-        Minion(name, profession, dungeon, source_point) {}
+                       const underworld::Source_Point source_point, Function_Interface &function) :
+        Minion(name, profession, dungeon, source_point, &function) {}
 
       virtual ~Temporary_Minion() {}
 

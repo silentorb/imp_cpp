@@ -9,8 +9,8 @@ namespace overworld {
 
   public:
       Parameter(const std::string &name, Profession &profession, Dungeon & dungeon,
-                const underworld::Source_Point &source_point) :
-        Minion(name, profession, dungeon, source_point) {}
+                const underworld::Source_Point &source_point, Function_Interface  & function) :
+        Minion(name, profession, dungeon, source_point, &function) {}
 
       virtual ~Parameter();
 
@@ -36,8 +36,9 @@ namespace overworld {
 
   class Owning_Parameter : public Parameter {
   public:
-      Owning_Parameter(const std::string &name, Profession &profession, Dungeon & dungeon, const underworld::Source_Point &source_point) :
-        Parameter(name, profession, dungeon, source_point) {}
+      Owning_Parameter(const std::string &name, Profession &profession, Dungeon & dungeon,
+                       const underworld::Source_Point &source_point, Function_Interface & function) :
+        Parameter(name, profession, dungeon, source_point, function) {}
 
       bool transfers_ownership() const override {
         return true;

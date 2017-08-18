@@ -172,11 +172,13 @@ namespace solving {
     get_ancestors(second_profession, ancestors_buffer2);
 
     auto common_ancestor = find_first_match(ancestors_buffer1, ancestors_buffer2);
-    if (!common_ancestor)
-      return false;
+    if (common_ancestor) {
+      set_profession(first, *common_ancestor);
+      return true;
+    }
 
-    set_profession(first, *common_ancestor);
-    return true;
+
+    return false;
   }
 
   Progress Solver::process_conflicts() {
@@ -305,7 +307,7 @@ namespace solving {
 
   void Solver::log_nodes() {
 #if DEBUG_SOLVER
-		std::vector<overworld::Node *> nodes;
+    std::vector<overworld::Node *> nodes;
     for (auto first: graph.get_nodes()) {
       insert_node(nodes, first);
     }
@@ -313,7 +315,7 @@ namespace solving {
       log_node(*node);
       for (auto &other : node->get_neighbors()) {
 
-				std::cout << " * ";
+        std::cout << " * ";
 
         log_node(*other);
       }

@@ -6,6 +6,7 @@
 #include "Connection.h"
 #include <overworld/schema/professions/Profession_Reference.h>
 #include <overworld/schema/Dungeon_Interface.h>
+#include <overworld/schema/Function_Interface.h>
 
 namespace overworld {
 
@@ -13,12 +14,11 @@ namespace overworld {
       bool resolved = false;
       bool changed = false;
       Dungeon_Interface *dungeon = nullptr;
-//      Function *function = nullptr;
+      Function_Interface *function = nullptr;
 
   public:
-      Node(Dungeon_Interface &dungeon) : dungeon(&dungeon) {
-
-      }
+      Node(Dungeon_Interface &dungeon, Function_Interface *function) :
+        dungeon(&dungeon), function(function) {}
 
       virtual ~Node() {}
 
@@ -63,8 +63,9 @@ namespace overworld {
       Profession *original_profession;
 
   public:
-      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface &dungeon) :
-        Node(dungeon), element(element), original_profession(&original_profession) {}
+      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface &dungeon,
+                      Function_Interface *function) :
+        Node(dungeon, function), element(element), original_profession(&original_profession) {}
 
       Profession_Reference &get_profession_reference() override {
         return element;
@@ -96,8 +97,8 @@ namespace overworld {
       Profession *profession;
 
   public:
-      Node_Copy(Node &original, Profession &profession, Dungeon_Interface &dungeon) :
-        Node(dungeon), original(original), profession(&profession) {}
+      Node_Copy(Node &original, Profession &profession, Dungeon_Interface &dungeon, Function_Interface *function) :
+        Node(dungeon, function), original(original), profession(&profession) {}
 
       Profession_Reference &get_profession_reference() override {
         return *this;
@@ -129,6 +130,10 @@ namespace overworld {
 
       const std::string get_name() const override {
         return original.get_profession_reference().get_name();
+      }
+
+      Node &get_original() const {
+        return original;
       }
   };
 
