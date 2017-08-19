@@ -47,25 +47,45 @@ namespace overworld {
     return *reference;
   }
 
-  Dungeon_Variant &Profession_Library::get_or_create_variants(Dungeon &dungeon, std::vector<Profession *> &professions,
-                                                              Graph &graph) {
-    Variant_Array *variants;
-
-    if (!dungeon_variants.count(&dungeon)) {
-      variants = &dungeon_variants.emplace(&dungeon, Variant_Array()).first->second;
+  template<typename A, typename B>
+  B &get_or_create_variant_map(std::unordered_map<A *, B> &generic_map, A &item) {
+    if (!generic_map.count(&item)) {
+      return generic_map.emplace(&item, B()).first->second;
     }
     else {
-      variants = &dungeon_variants.at(&dungeon);
+      return generic_map.at(&item);
     }
+  };
 
-    for (auto &variant : *variants) {
-      if (professions_match(variant->get_professions(), professions))
+  Dungeon_Variant &Profession_Library::get_or_create_dungeon_variant(Dungeon &dungeon,
+                                                                     std::vector<Profession *> &professions,
+                                                                     Graph &graph) {
+    auto &variants = get_or_create_variant_map(dungeon_variants, dungeon);
+
+    for (auto &variant : variants) {
+      if (professions_match(variant->get_generic_parameters(), professions))
         return *variant;
     }
 
     auto variant = new Dungeon_Variant(dungeon, professions);
-    variants->push_back(Dungeon_Variant_Owner(variant));
+    variants.push_back(Dungeon_Variant_Owner(variant));
     clone_dungeon(*variant, graph);
+    return *variant;
+
+  }
+
+  Function_Variant &Profession_Library::get_or_create_function_variant(Function_Interface &function, std::vector<Profession *> &professions,
+                                                                         Node &starting_node, Profession &new_profession, Graph &graph) {
+    auto &variants = get_or_create_variant_map(function_variants, function);
+
+    for (auto &variant : variants) {
+      if (professions_match(variant->get_generic_parameters(), professions))
+        return *variant;
+    }
+
+    auto variant = new Function_Variant(function.get_original(), starting_node.get_dungeon(), professions);
+    variants.push_back(Function_Variant_Owner(variant));
+    clone_function(*variant, starting_node, new_profession, graph);
     return *variant;
   }
 }

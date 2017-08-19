@@ -162,6 +162,28 @@ namespace solving {
     return nullptr;
   }
 
+  std::vector<Profession *>
+  to_professions(const Generic_Parameter_Array &generic_parameters, size_t additional_space = 0) {
+    std::vector<Profession *> result;
+    result.reserve(generic_parameters.size() + additional_space);
+    for (auto &parameter: generic_parameters) {
+      result.push_back(&parameter->get_profession());
+    }
+
+    return result;
+  }
+
+  void Solver::resolve_with_template_function(Connection &connection) {
+    auto &first = connection.get_first();
+    auto &second = connection.get_second();
+
+    auto &original_function = *first.get_function();
+    auto professions = to_professions(original_function.get_generic_parameters(), 1);
+    professions.push_back(&second.get_profession());
+    auto &variant = profession_library.get_or_create_function_variant(original_function, professions, first,
+                                                                      second.get_profession(), graph);
+  }
+
   bool Solver::resolve_conflict(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
@@ -177,6 +199,11 @@ namespace solving {
       return true;
     }
 
+    if (first.get_profession_reference().get_element_type() == Element_Type::parameter
+        && first.get_function() != second.get_function()) {
+      resolve_with_template_function(connection);
+      return true;
+    }
     return false;
   }
 

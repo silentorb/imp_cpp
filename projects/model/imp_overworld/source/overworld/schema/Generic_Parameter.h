@@ -46,4 +46,5 @@ namespace overworld {
   };
 
   using Generic_Parameter_Owner = std::unique_ptr<Generic_Parameter>;
+  using Generic_Parameter_Array = std::vector<Generic_Parameter_Owner>;
 }

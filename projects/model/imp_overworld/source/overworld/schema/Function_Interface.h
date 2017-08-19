@@ -4,8 +4,11 @@
 
 namespace overworld {
 
+  class Function;
+
   class Function_Interface {
   public:
-      virtual const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const = 0;
+      virtual const Generic_Parameter_Array &get_generic_parameters() const = 0;
+      virtual Function &get_original() = 0;
   };
 }

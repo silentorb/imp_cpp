@@ -9,7 +9,7 @@ namespace overworld {
       Dungeon &original;
 
   public:
-      Dungeon_Variant(Dungeon &original, const std::vector<Profession *> &professions) :
+      Dungeon_Variant(Dungeon &original, std:: vector<Profession *> &professions) :
         Variant(original.get_name(), professions),
         original(original) {
       }

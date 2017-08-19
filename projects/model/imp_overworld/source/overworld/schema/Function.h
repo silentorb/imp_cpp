@@ -17,12 +17,12 @@ namespace overworld {
 
   public:
 
+      Function_Signature(Node &node, Profession *return_type = nullptr) :
+        node(node), return_type(return_type) {}
+
       const std::vector<Parameter *> &get_parameters() const {
         return parameters;
       }
-
-      Function_Signature(Node &node, Profession *return_type = nullptr) :
-        node(node), return_type(return_type) {}
 
       Profession *get_return_type() const {
         return return_type;
@@ -156,6 +156,10 @@ namespace overworld {
 
       const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const override {
         return generic_parameters;
+      }
+
+      Function &get_original() override {
+        return *this;
       }
   };
 

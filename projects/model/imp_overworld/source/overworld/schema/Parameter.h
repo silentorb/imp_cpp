@@ -32,6 +32,10 @@ namespace overworld {
 
       void set_profession(Profession &value) override;
       Dungeon &get_or_create_interface();
+
+      Element_Type get_element_type() const override {
+        return Element_Type::parameter;
+      }
   };
 
   class Owning_Parameter : public Parameter {

@@ -73,6 +73,8 @@ namespace solving {
       Progress inhale(Node &node);
       void add_conflict(Connection &connection);
 
+      void resolve_with_template_function(Connection &connection);
+
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library) {
