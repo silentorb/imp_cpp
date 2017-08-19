@@ -6,6 +6,7 @@
 namespace overworld {
 
   enum class Element_Type {
+      instantiation,
       parameter,
       other
   };

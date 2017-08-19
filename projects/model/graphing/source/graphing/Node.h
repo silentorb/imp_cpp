@@ -32,6 +32,10 @@ namespace graphing {
         return nodes;
       }
 
+      const std::vector<N *> &get_neighbors() const {
+        return nodes;
+      }
+
       void add_connection(Connection &connection) {
         connections.push_back(&connection);
         nodes.push_back(&connection.get_other(*static_cast<N *>(this)));
@@ -64,11 +68,11 @@ namespace graphing {
       }
 
       void replace_with(N &other) {
-          for (auto i = nodes.size(); i > 0; --i) {
-            auto node = nodes[i - 1];
-            disconnect(*node);
-            node->connect(other);
-          }
+        for (auto i = nodes.size(); i > 0; --i) {
+          auto node = nodes[i - 1];
+          disconnect(*node);
+          node->connect(other);
+        }
       }
 
       void set_graph(Abstract_Graph<N, Connection> *value) {

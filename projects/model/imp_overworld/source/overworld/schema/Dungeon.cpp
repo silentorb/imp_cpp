@@ -16,7 +16,7 @@ namespace overworld {
   }
 
   Function &Dungeon::create_function(const std::string &name, Profession &profession,
-                                   const underworld::Source_Point &source_point) {
+                                     const underworld::Source_Point &source_point) {
     auto function = new Function(name, profession, *this, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
 //    if (!function->is_constructor())
@@ -26,6 +26,17 @@ namespace overworld {
     return *function;
   }
 
+  bool Dungeon::is_class() const {
+    if (get_minions().size() > 0)
+      return true;
+
+    for (auto neighbor : node.get_neighbors()) {
+      auto &element = neighbor->get_profession_reference();
+      if (element.get_element_type() == Element_Type::instantiation)
+        return true;
+    }
+    return false;
+  }
 //  Dungeon &Dungeon::create_dungeon(const std::string &name) {
 //    auto dungeon = new Dungeon(name, *this);
 //    auto pointer = unique_ptr<Dungeon>(dungeon);

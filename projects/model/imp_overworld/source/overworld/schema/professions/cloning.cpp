@@ -26,12 +26,12 @@ namespace overworld {
   };
 
   template<typename Functions, typename V>
-  void expand(Node_Copy &node, V &variant, Graph &graph, std::set<Node *> nodes) {
-    nodes.insert(&node);
+  void expand(Node_Copy &node, V &variant, Graph &graph, std::set<Node *> original_nodes) {
+    original_nodes.insert(&node.get_original());
 
     for (auto connection : node.get_original().get_connections()) {
       auto &other = connection->get_other(node);
-      if (&Functions::get_context(other) == &variant.get_original() && !nodes.count(&other)) {
+      if (&Functions::get_context(other) == &variant.get_original() && !original_nodes.count(&other)) {
         auto new_node = Functions::create_node(other, variant);
         variant.add_node(Node_Owner(new_node));
         if (&node == &connection->get_first()) {
@@ -41,7 +41,7 @@ namespace overworld {
           graph.connect(*new_node, node);
         }
 
-        expand<Functions>(*new_node, variant, graph, nodes);
+        expand<Functions>(*new_node, variant, graph, original_nodes);
       }
     }
   }

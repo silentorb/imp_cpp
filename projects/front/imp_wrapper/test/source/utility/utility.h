@@ -1,4 +1,5 @@
 #pragma once
+
 #include "gtest/gtest.h"
 #include <boost/filesystem/operations.hpp>
 #include <windows.h>
@@ -30,18 +31,21 @@ void compare(const std::string &first_file, const std::string &second_file) {
     std::cout << std::endl << command << std::endl;
     STARTUPINFO info = {sizeof(info)};
     PROCESS_INFORMATION processInfo;
-    if (CreateProcess(nullptr, const_cast<char *>(command.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo)) {
+    if (CreateProcess(nullptr, const_cast<char *>(command.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info,
+                      &processInfo)) {
     }
     EXPECT_EQ(first, second);
   }
 }
 
-void compile(const std::string &input_file){
+void compile(const std::string &input_name) {
+  auto full_output_path = string(OUTPUT_PATH) + '/' + input_name;
   boost::filesystem::create_directory(string(OUTPUT_PATH));
+  boost::filesystem::create_directory(full_output_path);
   imp_wrapper::Wrapper wrapper;
   imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-  wrapper.load_file(string(RESOURCE_PATH) + input_file);
+  wrapper.load_file(string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp");
   wrapper.mirror(temporary_interface_manager);
   wrapper.solve();
-  wrapper.render(string(OUTPUT_PATH));
+  wrapper.render(full_output_path);
 }

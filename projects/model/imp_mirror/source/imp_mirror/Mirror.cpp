@@ -247,8 +247,10 @@ namespace imp_mirror {
       throw Code_Error("Could not instantiate type " + input_profession.get_name(), instantiation.get_source_point());
 
     auto &source_arguments = instantiation.get_dictionary();
-    auto output_instantiation = new overworld::Instantiation(output_profession, instantiation.get_source_point());
+    auto output_instantiation = new overworld::Instantiation(output_profession, instantiation.get_source_point(),
+                                                             scope.get_dungeon(), scope.get_function());
     overworld::Expression_Owner result(output_instantiation);
+    graph.connect(*output_instantiation->get_node(), output_profession.get_node());
 
     for (auto &pair : source_arguments) {
       auto name = pair.first;

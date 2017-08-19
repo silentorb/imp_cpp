@@ -46,9 +46,7 @@ namespace overworld {
         return name;
       }
 
-      bool is_class() const {
-        return get_minions().size() > 0;
-      }
+      bool is_class() const;
 
       void set_file(File *value) {
         header_file = value;
