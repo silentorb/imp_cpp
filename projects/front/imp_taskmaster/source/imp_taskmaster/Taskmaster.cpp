@@ -55,8 +55,8 @@ namespace imp_taskmaster {
 
   void Taskmaster::render_and_write_strokes(const imp_artisan::building::Stroke_Owner &stroke,
                                             const std::string &file_path) {
-    imp_artisan::Artisan artisan;
-    auto text = artisan.render(stroke);
+//    imp_artisan::Artisan artisan;
+    auto text = stroke.render("");
     std::ofstream output_stream(file_path, std::ios_base::binary | std::ios_base::out);
     if (output_stream.is_open()) {
       output_stream << text;

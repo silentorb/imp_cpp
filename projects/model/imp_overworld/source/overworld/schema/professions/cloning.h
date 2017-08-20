@@ -6,7 +6,7 @@
 
 namespace overworld {
 
-  Node &clone_function(Function_Variant &variant, Node &starting_node, Profession &new_profession, Graph &graph);
+  Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession &new_profession, Graph &graph);
 
   Node &clone_dungeon(Dungeon_Variant &variant, Graph &graph);
 }

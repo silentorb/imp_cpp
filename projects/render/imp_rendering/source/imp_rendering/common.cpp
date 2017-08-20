@@ -50,9 +50,10 @@ namespace imp_rendering {
 
   const std::string render_parameter(const overworld::Minion &minion) {
     auto &profession = minion.get_profession();
-    std::string separator = profession.get_ownership() == Ownership::owner
-                            ? " &"
-                            : " ";
+    std::string separator =
+      profession.get_ownership() == Ownership::owner || profession.get_ownership() == Ownership::reference
+      ? " &"
+      : " ";
 
     return render_profession(profession) + separator + minion.get_name();
   }
@@ -285,11 +286,14 @@ namespace imp_rendering {
 
       case Profession_Type::reference: {
         auto reference = *dynamic_cast<const Reference *>(&profession);
-        return render_profession_internal(reference.get_profession()) + " *";
+        return render_profession_internal(reference.get_profession());// + " *";
       }
 
+      case overworld::Profession_Type::generic_parameter:
+        return profession.get_name();
+
       default:
-        return "unknown";
+        return "!unknown!";
     }
 //    throw std::runtime_error(" Not implemented.");
   }
@@ -320,12 +324,35 @@ namespace imp_rendering {
     return name;
   }
 
+  std::string render_template_prefix(const Function &function) {
+    std::string parameter_string = join(function.get_generic_parameters(), Joiner<Generic_Parameter_Owner>(
+      [](const overworld::Generic_Parameter_Owner &parameter) {
+        return "typename " + parameter->get_name();
+      }), ", ");
+
+    return "template <" + parameter_string + ">";
+  }
+
   Stroke render_function_definition(const overworld::Function &function) {
-    auto function_signature = render_function_return_signature(function)
+    auto static_clause = function.is_inline() && function.is_static() ? "static " : "";
+    auto function_signature = static_clause + render_function_return_signature(function)
                               + sanitize_name(function.get_name())
                               + render_function_parameters(function);
 
-    return render_block(function_signature, function.get_block());
+    if (function.get_generic_parameters().size() > 0) {
+//      Stroke result;
+//      result << render_template_prefix(function);
+//      result << render_block(function_signature, function.get_block());
+//      return result;
+      return Stroke(new imp_artisan::Tight_Group(
+        {
+          render_template_prefix(function),
+          render_block(function_signature, function.get_block())
+        }));
+    }
+    else {
+      return render_block(function_signature, function.get_block());
+    }
   }
 
 

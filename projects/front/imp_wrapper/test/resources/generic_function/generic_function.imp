@@ -6,7 +6,7 @@ Frog { }
 General {
 
   static kiss(kissee: &) {
-
+    var temp = kissee
   }
 
   static main() {

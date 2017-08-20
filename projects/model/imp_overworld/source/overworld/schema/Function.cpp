@@ -14,8 +14,8 @@ namespace overworld {
     return false;
   }
 
-  bool Function::is_inline() {
-    return block.get_expressions().size() < 2;
+  bool Function::is_inline() const {
+    return generic_parameters.size() > 0 || block.get_expressions().size() < 2;
   }
 
   bool Function::returns_a_value() const {

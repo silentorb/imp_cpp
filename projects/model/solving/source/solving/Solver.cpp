@@ -1,5 +1,7 @@
 #include "Solver.h"
 #include <algorithm>
+#include <overworld/schema/Function.h>
+#include <overworld/schema/professions/cloning.h>
 
 #if DEBUG_SOLVER
 
@@ -173,15 +175,50 @@ namespace solving {
     return result;
   }
 
+  void Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
+                                       Node &starting_node, Profession &profession) {
+    auto professions = to_professions(function.get_generic_parameters(), 1);
+    professions.push_back(&profession);
+    auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
+    if (!variant) {
+      variant = &Profession_Library::create_function_variant(
+        variant_array, function, starting_node.get_dungeon(), professions
+      );
+      clone_function_graph(*variant, starting_node, profession, graph);
+    }
+  }
+
   void Solver::resolve_with_template_function(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
 
-    auto &original_function = *first.get_function();
-    auto professions = to_professions(original_function.get_generic_parameters(), 1);
-    professions.push_back(&second.get_profession());
-    auto &variant = profession_library.get_or_create_function_variant(original_function, professions, first,
-                                                                      second.get_profession(), graph);
+    auto &function = first.get_function()->get_original();
+    auto &variant_array = profession_library.get_function_variant_array(function);
+    if (variant_array.size() == 0) {
+      auto &parameter = function.add_generic_parameter();
+      set_profession(first, parameter);
+      create_function_variant(variant_array, function, first, first.get_profession().get_base());
+    }
+    create_function_variant(variant_array, function, first, second.get_profession().get_base());
+//    if (variant_array.size() == 0) {
+//      auto professions = to_professions(original_function.get_generic_parameters(), 1);
+//      professions.push_back(&first.get_profession());
+//      auto &variant = Profession_Library::create_function_variant(
+//        variant_array, original_function, first.get_dungeon(), professions
+//      );
+//      clone_function_graph(variant, first, first.get_profession(), graph);
+//    }
+//    {
+//      auto professions = to_professions(original_function.get_generic_parameters(), 1);
+//      professions.push_back(&second.get_profession());
+//      auto variant = Profession_Library::get_function_variant(variant_array, original_function, professions);
+//      if (!variant) {
+//        variant = &Profession_Library::create_function_variant(
+//          variant_array, original_function, first.get_dungeon(), professions
+//        );
+//        clone_function_graph(*variant, first, second.get_profession(), graph);
+//      }
+//    }
   }
 
   bool Solver::resolve_conflict(Connection &connection) {

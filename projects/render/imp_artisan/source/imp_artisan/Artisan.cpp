@@ -19,7 +19,7 @@ static const char * newline_e = "e\n";
 using namespace std;
 
 namespace imp_artisan {
-
+/*
   std::string Artisan::render_block(const internal::Block &block, const Indent &indent) {
     auto new_indent = indent;
     for (int i = 0; i < block.get_indent(); ++i) {
@@ -84,7 +84,7 @@ namespace imp_artisan {
     string result = render_stroke(*last, indent);
     for (auto it = strokes.begin() + 1; it != strokes.end(); it++) {
       auto &stroke = (*it);
-      if (is_paragraph(stroke) || is_paragraph(*last)) {
+      if (stroke.is_paragraph() || last->is_paragraph()) {
         result += newline_d;
       }
       result += newline_e + render_stroke(stroke, indent);
@@ -97,4 +97,5 @@ namespace imp_artisan {
   std::string Artisan::render(const building::Stroke_Owner &stroke) {
     return render_stroke(stroke, "");
   }
+  */
 }

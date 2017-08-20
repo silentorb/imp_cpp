@@ -62,6 +62,10 @@ namespace imp_rendering {
         const string get_end() const override {
           return "";
         }
+
+        bool is_paragraph() const override {
+          return false;
+        }
     };
 
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {

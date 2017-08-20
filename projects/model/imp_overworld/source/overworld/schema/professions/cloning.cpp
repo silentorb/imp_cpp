@@ -46,7 +46,7 @@ namespace overworld {
     }
   }
 
-  Node &clone_function(Function_Variant &variant, Node &starting_node, Profession &new_profession, Graph &graph) {
+  Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession &new_profession, Graph &graph) {
     auto &function = variant.get_original();
     auto node = new Node_Copy(starting_node, new_profession, starting_node.get_dungeon(), &variant);
     variant.add_node(Node_Owner(node));

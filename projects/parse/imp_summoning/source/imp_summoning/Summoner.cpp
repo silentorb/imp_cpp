@@ -130,7 +130,7 @@ namespace imp_summoning {
     while (!input.next().is(lexicon.right_paren)) {
 //     throw Syntax_Exception(input.current());
       auto source_point = input.get_source_point();
-      auto &name = input.current().get_text();
+      auto name = input.current().get_text();
       auto profession = process_optional_profession(context);
       auto &minion = func.add_parameter(name, profession, source_point);
     }

@@ -28,6 +28,13 @@ namespace imp_rendering {
 
   using Reference_Strength_Map = std::map<const overworld::Profession *, Reference_Type>;
 
+  bool needs_reference(const Profession &profession) {
+    if (profession.get_type() != Profession_Type::dungeon)
+      return false;
+
+    return true;
+  }
+
   class Include_Helper {
       Reference_Strength_Map &references;
       const Dungeon &dungeon;
@@ -37,7 +44,7 @@ namespace imp_rendering {
         references(references), dungeon(dungeon) {}
 
       void add_full(const Profession &profession) {
-        if (&profession == &dungeon)
+        if (&profession == &dungeon || !needs_reference(profession))
           return;
 
         if (!references.count(&profession) || references[&profession] == Reference_Type::partial) {
@@ -46,7 +53,7 @@ namespace imp_rendering {
       }
 
       void add_partial(const Profession &profession) {
-        if (&profession == &dungeon)
+        if (&profession == &dungeon || !needs_reference(profession))
           return;
 
         if (!references.count(&profession)) {
@@ -110,7 +117,7 @@ namespace imp_rendering {
 //        }
       }
 
-      void explore_block(const Block & block){
+      void explore_block(const Block &block) {
         exploring::Profession_Explorer explorer([this](const Profession &profession) {
           process_profession(profession);
         });

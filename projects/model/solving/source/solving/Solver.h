@@ -75,6 +75,10 @@ namespace solving {
 
       void resolve_with_template_function(Connection &connection);
 
+      void create_function_variant(overworld::Function_Variant_Array &variant_array,
+                                   overworld::Function &function,
+                                   Node &starting_node, overworld::Profession &profession);
+
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library) {

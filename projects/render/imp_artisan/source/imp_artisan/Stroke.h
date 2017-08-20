@@ -4,18 +4,28 @@
 #include <memory>
 
 namespace imp_artisan {
+
+  const std::string tab_string = "  ";
+  using Indent = std::string;
+
+  namespace building {
+    class Stroke_Owner;
+  }
+
   namespace internal {
 
     class Stroke {
     public:
-        enum class Type {
-            block,
-            group,
-            special,
-            text,
-        };
+//        enum class Type {
+//            block,
+//            group,
+//            special,
+//            text,
+//        };
 
-        virtual Type get_type() const = 0;
+//        virtual Type get_type() const = 0;
+        virtual bool is_paragraph() const = 0;
+        virtual std::string render(const Indent &indent) const = 0;
 
         virtual ~Stroke() {
 
@@ -26,7 +36,7 @@ namespace imp_artisan {
   }
 
   namespace building {
-//  using Stroke_Owner = std::unique_ptr<Stroke>;
+
     class Stroke_Owner {
         std::unique_ptr<internal::Stroke> stroke;
 
@@ -55,9 +65,9 @@ namespace imp_artisan {
           return *this;
         }
 
-        internal::Stroke::Type get_type() const {
-          return stroke->get_type();
-        }
+//        internal::Stroke::Type get_type() const {
+//          return stroke->get_type();
+//        }
 
         const internal::Stroke *get_pointer() const {
           return stroke.get();
@@ -69,7 +79,15 @@ namespace imp_artisan {
 
         inline void add(Stroke_Owner &other);
 
-        const std::string &get_value() const;
+//        const std::string &get_value() const;
+
+        bool is_paragraph() const {
+          return stroke->is_paragraph();
+        }
+
+        const std::string render(const Indent &indent) const {
+          return stroke->render(indent);
+        }
     };
 
     using Strokes = std::vector<Stroke_Owner>;
@@ -91,8 +109,16 @@ namespace imp_artisan {
           return value;
         }
 
-        Type get_type() const override {
-          return Type::text;
+//        Type get_type() const override {
+//          return Type::text;
+//        }
+
+        bool is_paragraph() const override {
+          return false;
+        }
+
+        std::string render(const Indent &indent) const override {
+          return indent + value;
         }
     };
 
@@ -110,8 +136,16 @@ namespace imp_artisan {
           return value;
         }
 
-        Type get_type() const override {
-          return Type::special;
+//        Type get_type() const override {
+//          return Type::special;
+//        }
+
+        bool is_paragraph() const override {
+          return false;
+        }
+
+        std::string render(const Indent &indent) const override {
+          return indent.substr(tab_string.size()) + value;
         }
     };
 
@@ -129,6 +163,10 @@ namespace imp_artisan {
         }
 
         void add_stroke(building::Stroke_Owner &stroke) {
+          strokes.push_back(std::move(stroke));
+        }
+
+        void add_stroke_owner(building::Stroke_Owner stroke) {
           strokes.push_back(std::move(stroke));
         }
 
@@ -163,9 +201,15 @@ namespace imp_artisan {
         virtual const std::string get_end() const = 0;
         virtual int get_indent() const = 0;
 
-        Type get_type() const override {
-          return Type::block;
+//        Type get_type() const override {
+//          return Type::block;
+//        }
+
+        bool is_paragraph() const override {
+          return true;
         }
+
+        std::string render(const Indent &indent) const override;
     };
 
     class Standard_Block : public virtual Block {
@@ -208,11 +252,31 @@ namespace imp_artisan {
           }
         }
 
-        Type get_type() const override {
-          return Type::group;
+        bool is_paragraph() const override {
+          return true;
         }
+
+        std::string render(const Indent &indent) const override;
     };
+
   }
+
+  class Tight_Group : public internal::Group {
+
+  public:
+      Tight_Group() {}
+
+      Tight_Group(std::initializer_list<internal::Stroke *> new_strokes) :
+        Group(new_strokes) {}
+
+      Tight_Group(std::initializer_list<building::Stroke_Owner> new_strokes) {
+        for (auto &stroke: new_strokes) {
+          add_stroke_owner(std::move(*const_cast<building::Stroke_Owner *>(&stroke)));
+        }
+      }
+
+      std::string render(const Indent &indent) const override;
+  };
 
   namespace building {
     inline Stroke_Owner::Stroke_Owner() : stroke(new internal::Group()) {}
@@ -243,14 +307,15 @@ namespace imp_artisan {
       return *dynamic_cast<internal::Stroke_Stream *>(stroke.get());
     }
 
-    inline const std::string &Stroke_Owner::get_value() const {
-      if (stroke->get_type() == internal::Stroke::Type::text) {
-        return dynamic_cast<const internal::Text_Stroke *>(stroke.get())->get_value();
-      }
-      else {
-        return dynamic_cast<const internal::Special_Text *>(stroke.get())->get_value();
-      }
-    }
+//    inline const std::string &Stroke_Owner::get_value() const {
+//      return stroke->get_value();
+////      if (stroke->get_type() == internal::Stroke::Type::text) {
+////        return dynamic_cast<const internal::Text_Stroke *>(stroke.get())->get_value();
+////      }
+////      else {
+////        return dynamic_cast<const internal::Special_Text *>(stroke.get())->get_value();
+////      }
+//    }
 
   }
 }

@@ -85,7 +85,7 @@ namespace overworld {
 
       bool is_constructor() const;
 
-      bool is_inline();
+      bool is_inline() const;
 
       const std::vector<Parameter *> &get_parameters() const {
         return signature.get_parameters();
@@ -148,7 +148,7 @@ namespace overworld {
         return signature;
       }
 
-      Generic_Parameter &add_generic_parameter(Profession &profession) {
+      Generic_Parameter &add_generic_parameter() {
         return add_generic_parameter_to_vector(generic_parameters, node.get_dungeon(), this);
       }
 
