@@ -25,6 +25,10 @@ namespace imp_rendering {
     "void"
   };
 
+  const std::string render_reference_symbol(const Reference &reference) {
+    return reference.is_pointer() ? "*" : "&";
+  }
+
   Stroke render_block(const std::string &header, const overworld::Block &block) {
     Stroke result(new imp_artisan::internal::Standard_Block(header));
     render_statements(result, block.get_expressions(), block.get_scope());
@@ -50,12 +54,12 @@ namespace imp_rendering {
 
   const std::string render_parameter(const overworld::Minion &minion) {
     auto &profession = minion.get_profession();
-    std::string separator =
-      profession.get_ownership() == Ownership::owner || profession.get_ownership() == Ownership::reference
-      ? " &"
-      : " ";
+//    std::string separator =
+//      profession.get_ownership() == Ownership::owner || profession.get_ownership() == Ownership::reference
+//      ? " &"
+//      : " ";
 
-    return render_profession(profession) + separator + minion.get_name();
+    return render_profession(profession) + minion.get_name();
   }
 
   const std::string render_function_parameters(const overworld::Function &function) {
@@ -115,7 +119,13 @@ namespace imp_rendering {
 
   const std::string render_variable_declaration(const overworld::Minion_Declaration &declaration,
                                                 const overworld::Scope &scope) {
-    return "auto " + declaration.get_minion().get_name();
+    auto &minion = declaration.get_minion();
+    auto &profession = minion.get_profession();
+    auto reference_symbol = profession.get_type() == Profession_Type::reference
+                            ? render_reference_symbol(*dynamic_cast<const Reference *>(&profession))
+                            : "";
+
+    return "auto " + reference_symbol + minion.get_name();
   }
 
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter) {
@@ -286,7 +296,7 @@ namespace imp_rendering {
 
       case Profession_Type::reference: {
         auto reference = *dynamic_cast<const Reference *>(&profession);
-        return render_profession_internal(reference.get_profession());// + " *";
+        return render_profession_internal(reference.get_profession()) + " " + render_reference_symbol(reference);
       }
 
       case overworld::Profession_Type::generic_parameter:

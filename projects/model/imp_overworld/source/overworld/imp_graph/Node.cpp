@@ -14,6 +14,9 @@ namespace overworld {
     result += profession_reference.get_name()
               + ":" + profession.get_name();
 
+    if (profession.get_type() == Profession_Type::reference)
+      result += "&";
+    
     return result;
   }
 }

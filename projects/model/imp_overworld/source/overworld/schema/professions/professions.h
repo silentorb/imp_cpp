@@ -122,10 +122,11 @@ namespace overworld {
 
   class Reference : public virtual Profession {
       Profession &profession;
+      bool _is_pointer = false;
 
   public:
-      Reference(Profession &profession) :
-        profession(profession) {}
+      Reference(Profession &profession, bool is_pointer = false) :
+        profession(profession), _is_pointer(is_pointer) {}
 
       virtual ~Reference() {}
 
@@ -150,7 +151,7 @@ namespace overworld {
       }
 
       const std::string get_debug_name() const override {
-        return "&" + profession.get_debug_name();
+        return (_is_pointer ? "*" : "&") + profession.get_debug_name();
       }
 
       Profession &get_base() override {
@@ -164,21 +165,10 @@ namespace overworld {
       const Profession &get_profession() const {
         return profession;
       }
-  };
 
-//  class Function_Signature : public virtual Profession {
-//  public:
-//      Type get_type() const override {
-//        return Type::function;
-//      }
-//
-//      Scope *get_scope() override {
-//        return nullptr;
-//      }
-//
-//      File *get_file() const override {
-//        return nullptr;
-//      }
-//  };
+      bool is_pointer() const {
+        return _is_pointer;
+      }
+  };
 
 }
