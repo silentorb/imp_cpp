@@ -149,9 +149,7 @@ namespace overworld {
       }
 
       Generic_Parameter &add_generic_parameter(Profession &profession) {
-        auto parameter = new Generic_Parameter(profession, node.get_dungeon(), this);
-        generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
-        return *parameter;
+        return add_generic_parameter_to_vector(generic_parameters, node.get_dungeon(), this);
       }
 
       const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const override {

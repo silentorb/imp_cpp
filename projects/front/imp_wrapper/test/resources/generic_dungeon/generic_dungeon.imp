@@ -11,7 +11,7 @@ Princess { }
 Frog { }
 
 General {
-  main() {
+  static main() {
     var princess_house = House {}
     var frog_house = House {}
     var princess = Princess {}

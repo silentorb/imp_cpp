@@ -30,6 +30,9 @@ namespace overworld {
     if (get_minions().size() > 0)
       return true;
 
+    if (get_functions().size() > 0)
+      return true;
+
     for (auto neighbor : node.get_neighbors()) {
       auto &element = neighbor->get_profession_reference();
       if (element.get_element_type() == Element_Type::instantiation)

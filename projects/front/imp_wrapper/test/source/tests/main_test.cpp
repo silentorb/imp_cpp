@@ -30,3 +30,10 @@ TEST(Main_Test, fail_generic_dungeon) {
 TEST(Main_Test, generic_dungeon) {
   compile("generic_dungeon");
 }
+
+TEST(Main_Test, generic_function) {
+  compile("generic_function");
+  Comparison test("generic_function");
+  test.compare("General.h");
+  test.compare("General.cpp");
+}

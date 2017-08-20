@@ -23,10 +23,11 @@ namespace overworld {
 
   enum class Profession_Type {
       unknown,
-      primitive,
       dungeon,
-      reference,
       function,
+      generic_parameter,
+      primitive,
+      reference,
       variant,
       Void,
   };

@@ -19,7 +19,7 @@ const std::string load_file(const std::string &file_path) {
   return stream.str();
 }
 
-void compare(const std::string &first_file, const std::string &second_file) {
+void _compare(const std::string &first_file, const std::string &second_file) {
   auto first = load_file(first_file);
   auto second = load_file(second_file);
   if (first == second) {
@@ -37,6 +37,18 @@ void compare(const std::string &first_file, const std::string &second_file) {
     EXPECT_EQ(first, second);
   }
 }
+
+class Comparison {
+    std::string name;
+
+public:
+    Comparison(const string &name) : name(name) {}
+
+    void compare(const std::string &filename) {
+      _compare(string(RESOURCE_PATH) + name + "/" + filename, string(OUTPUT_PATH) + name + "/" + filename);
+    }
+};
+
 
 void compile(const std::string &input_name) {
   auto full_output_path = string(OUTPUT_PATH) + '/' + input_name;

@@ -170,9 +170,7 @@ namespace overworld {
       Member &get_member(const std::string &name) override;
 
       Generic_Parameter &add_generic_parameter(Profession &profession) {
-        auto parameter = new Generic_Parameter(profession, *this, nullptr);
-        generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
-        return *parameter;
+        return add_generic_parameter_to_vector(generic_parameters, *this, nullptr);
       }
   };
 
@@ -182,6 +180,8 @@ namespace overworld {
   public:
       Cpp_Dungeon(const std::string &name, const std::string &cpp_name, Scope &parent) :
         Dungeon(name, parent), cpp_name(cpp_name) {}
+
+      virtual ~Cpp_Dungeon() {}
 
       const std::string get_cpp_name() const override {
         return cpp_name;

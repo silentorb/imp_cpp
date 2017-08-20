@@ -1,0 +1,19 @@
+
+Princess { }
+
+Frog { }
+
+General {
+
+  static kiss(kissee: &) {
+
+  }
+
+  static main() {
+    var princess = Princess {}
+    var frog = Frog {}
+
+    kiss(frog)
+    kiss(princess)
+  }
+}
