@@ -27,7 +27,7 @@ namespace imp_rendering {
     }
 
 
-    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File *> &files) {
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File_Reference> &files) {
       Stroke result;
       result << render_includes(files);
       for (auto &function : dungeon.get_functions()) {

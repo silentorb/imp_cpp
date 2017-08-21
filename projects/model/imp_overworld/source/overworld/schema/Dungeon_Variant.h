@@ -9,8 +9,8 @@ namespace overworld {
       Dungeon &original;
 
   public:
-      Dungeon_Variant(Dungeon &original, std:: vector<Profession *> &professions) :
-        Variant(original.get_name(), professions),
+      Dungeon_Variant(Dungeon &original, std::vector<Profession *> &professions) :
+        Variant(original.get_name(), original.get_generic_parameters(), professions),
         original(original) {
       }
 
@@ -27,7 +27,7 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        return Variant:: get_name();
+        return Variant::get_name();
       }
 
       Ownership get_ownership() const override {

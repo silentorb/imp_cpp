@@ -40,7 +40,6 @@ namespace overworld {
         else {
           graph.connect(*new_node, node);
         }
-
         expand<Functions>(*new_node, variant, graph, original_nodes);
       }
     }

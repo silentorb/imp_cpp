@@ -79,6 +79,10 @@ namespace solving {
                                    overworld::Function &function,
                                    Node &starting_node, overworld::Profession &profession);
 
+      void migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
+                                                              overworld::Function &function,
+                                                              overworld::Generic_Parameter &parameter);
+
   public:
       Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library) {

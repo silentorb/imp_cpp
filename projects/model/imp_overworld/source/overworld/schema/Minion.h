@@ -67,6 +67,10 @@ namespace overworld {
       Dungeon &get_dungeon() {
         return (Dungeon &) node.get_dungeon();
       }
+
+      Element_Type get_element_type() const override {
+        return Element_Type ::minion;
+      }
   };
 
   using Variable_Owner = std::unique_ptr<Minion>;

@@ -20,7 +20,7 @@ namespace cpp_stl {
     vector_type = &vector;
     vector.set_file(vector_file);
     vector.set_default_ownership(Ownership::value);
-    auto &generic_parameter = vector.add_generic_parameter(profession_library.get_unknown());
+    auto &generic_parameter = vector.add_generic_parameter();
     auto &void_type = profession_library.get_void();
     auto &push_back = vector.create_function("push_back", void_type, source_point);
     auto parameter = std::unique_ptr<Owning_Parameter>(

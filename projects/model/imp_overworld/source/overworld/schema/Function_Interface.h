@@ -8,7 +8,7 @@ namespace overworld {
 
   class Function_Interface {
   public:
-      virtual const Generic_Parameter_Array &get_generic_parameters() const = 0;
+      virtual const std::vector<Generic_Parameter *> &get_generic_parameters() const = 0;
       virtual Function &get_original() = 0;
   };
 }

@@ -5,5 +5,5 @@ namespace overworld {
 
   Function_Variant::Function_Variant(Function &original, Dungeon_Interface &dungeon,
                                      const std::vector<Profession *> &professions) :
-    Variant(original.get_name(), professions), original(original), dungeon(&dungeon) {}
+    Variant(original.get_name(),original.get_generic_parameters(), professions), original(original), dungeon(&dungeon) {}
 }

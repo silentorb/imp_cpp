@@ -28,7 +28,11 @@ TEST(Main_Test, fail_generic_dungeon) {
 }
 
 TEST(Main_Test, generic_dungeon) {
-//  compile("generic_dungeon");
+  compile("generic_dungeon");
+  Comparison test("generic_dungeon");
+  test.compare("House.h");
+  test.compare("General.h");
+  test.compare("General.cpp");
 }
 
 TEST(Main_Test, generic_function) {

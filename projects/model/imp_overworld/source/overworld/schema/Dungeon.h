@@ -24,7 +24,8 @@ namespace overworld {
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
-      std::vector<Generic_Parameter_Owner> generic_parameters;
+      std::vector<Generic_Parameter_Owner> owned_generic_parameters;
+      Generic_Parameter_Array generic_parameters;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -169,8 +170,32 @@ namespace overworld {
       Minion &get_minion(const std::string &name) override;
       Member &get_member(const std::string &name) override;
 
-      Generic_Parameter &add_generic_parameter(Profession &profession) {
-        return add_generic_parameter_to_vector(generic_parameters, *this, nullptr);
+      Generic_Parameter &add_generic_parameter() {
+        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, *this, nullptr);
+        generic_parameters.push_back(&result);
+        return result;
+      }
+
+      void add_generic_parameter(Generic_Parameter_Owner parameter) {
+        generic_parameters.push_back(parameter.get());
+        owned_generic_parameters.push_back(std::move(parameter));
+        rename_generic_parameters(owned_generic_parameters);
+      }
+
+      std::vector<Generic_Parameter *> &get_generic_parameters() {
+        return generic_parameters;
+      }
+
+      const std::vector<Generic_Parameter *> &get_generic_parameters() const {
+        return generic_parameters;
+      }
+
+      bool has_generic_parameter(Generic_Parameter &parameter) {
+        for (auto &item : generic_parameters) {
+          if (item == &parameter)
+            return true;
+        }
+        return false;
       }
   };
 

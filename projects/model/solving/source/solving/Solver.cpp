@@ -64,8 +64,9 @@ namespace solving {
   }
 
   void Solver::set_profession(Node &node, overworld::Profession &profession) {
+    auto &base_profession = profession.get_base();
 #if DEBUG_SOLVER
-    if (profession.get_base().get_type() == overworld::Profession_Type::unknown)
+    if (base_profession.get_type() == overworld::Profession_Type::unknown)
       throw std::runtime_error("Invalid type.");
 #endif
 
@@ -77,7 +78,23 @@ namespace solving {
       node.set_profession(profession);
     }
 
+    if (node.get_profession_reference().get_element_type() == Element_Type::minion
+        && base_profession.get_type() == Profession_Type::generic_parameter) {
+      auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
+      auto &dungeon = *dynamic_cast<Dungeon *>(&node.get_dungeon());
+      if (!dungeon.has_generic_parameter(generic_parameter)) {
+        auto &function = *dynamic_cast<Function *>(generic_parameter.get_node().get_function());
+        migrate_generic_parameter_from_function_to_dungeon(dungeon, function, generic_parameter);
+      }
+    }
     set_changed(node);
+  }
+
+  void Solver::migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
+                                                                  overworld::Function &function,
+                                                                  overworld::Generic_Parameter &parameter) {
+    auto parameter_owner = function.detach_generic_parameter(parameter);
+    dungeon.add_generic_parameter(std::move(parameter_owner));
   }
 
   Progress Solver::inhale(Node &node) {
@@ -102,7 +119,7 @@ namespace solving {
 #if DEBUG_SOLVER
         std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
 #endif
-        auto &profession = node.get_profession_reference().get_profession();
+        auto &profession = node.get_profession();
         set_profession(*other, profession);
         ++progress;
       }
@@ -200,25 +217,6 @@ namespace solving {
       create_function_variant(variant_array, function, first, first.get_profession().get_base());
     }
     create_function_variant(variant_array, function, first, second.get_profession().get_base());
-//    if (variant_array.size() == 0) {
-//      auto professions = to_professions(original_function.get_generic_parameters(), 1);
-//      professions.push_back(&first.get_profession());
-//      auto &variant = Profession_Library::create_function_variant(
-//        variant_array, original_function, first.get_dungeon(), professions
-//      );
-//      clone_function_graph(variant, first, first.get_profession(), graph);
-//    }
-//    {
-//      auto professions = to_professions(original_function.get_generic_parameters(), 1);
-//      professions.push_back(&second.get_profession());
-//      auto variant = Profession_Library::get_function_variant(variant_array, original_function, professions);
-//      if (!variant) {
-//        variant = &Profession_Library::create_function_variant(
-//          variant_array, original_function, first.get_dungeon(), professions
-//        );
-//        clone_function_graph(*variant, first, second.get_profession(), graph);
-//      }
-//    }
   }
 
   bool Solver::resolve_conflict(Connection &connection) {

@@ -54,12 +54,17 @@ namespace imp_rendering {
 
   const std::string render_parameter(const overworld::Minion &minion) {
     auto &profession = minion.get_profession();
+    auto profession_string = render_profession(profession);
+    auto last_character = profession_string[profession_string.size() - 1];
+    auto separator = last_character == '&' || last_character == '*'
+                     ? ""
+                     : " ";
 //    std::string separator =
 //      profession.get_ownership() == Ownership::owner || profession.get_ownership() == Ownership::reference
 //      ? " &"
 //      : " ";
 
-    return render_profession(profession) + minion.get_name();
+    return profession_string + separator + minion.get_name();
   }
 
   const std::string render_function_parameters(const overworld::Function &function) {
@@ -334,13 +339,27 @@ namespace imp_rendering {
     return name;
   }
 
-  std::string render_template_prefix(const Function &function) {
-    std::string parameter_string = join(function.get_generic_parameters(), Joiner<Generic_Parameter_Owner>(
-      [](const overworld::Generic_Parameter_Owner &parameter) {
+  std::string render_template_prefix(const std::vector<overworld::Generic_Parameter *> &generic_parameters) {
+    std::string parameter_string = join(generic_parameters, Joiner<Generic_Parameter *>(
+      [](const overworld::Generic_Parameter *parameter) {
         return "typename " + parameter->get_name();
       }), ", ");
 
     return "template <" + parameter_string + ">";
+  }
+
+  Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
+                                       Stroke stroke) {
+    if (generic_parameters.size() > 0) {
+      return Stroke(new imp_artisan::Tight_Group(
+        {
+          render_template_prefix(generic_parameters),
+          std::move(stroke)
+        }));
+    }
+    else {
+      return stroke;
+    }
   }
 
   Stroke render_function_definition(const overworld::Function &function) {
@@ -349,27 +368,20 @@ namespace imp_rendering {
                               + sanitize_name(function.get_name())
                               + render_function_parameters(function);
 
-    if (function.get_generic_parameters().size() > 0) {
-//      Stroke result;
-//      result << render_template_prefix(function);
-//      result << render_block(function_signature, function.get_block());
-//      return result;
-      return Stroke(new imp_artisan::Tight_Group(
-        {
-          render_template_prefix(function),
-          render_block(function_signature, function.get_block())
-        }));
-    }
-    else {
-      return render_block(function_signature, function.get_block());
-    }
+    return render_possible_generic_block(function.get_generic_parameters(),
+                                         render_block(function_signature, function.get_block())
+    );
   }
 
-
-  Stroke render_includes(const std::vector<File *> &files) {
+  Stroke render_includes(const std::vector<File_Reference> &files) {
     Stroke result;
-    for (auto file : files) {
-      result << "#include <" + file->get_filename() + ">";
+    for (auto &file : files) {
+      if (file.is_local()) {
+        result << "#include \"" + file.get_filename() + "\"";
+      }
+      else {
+        result << "#include <" + file.get_filename() + ">";
+      }
     }
     return result;
   }

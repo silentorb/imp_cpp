@@ -50,7 +50,8 @@ namespace overworld {
       bool _is_static = false;
       bool returns_a_value() const;
       const underworld::Source_Point source_point;
-      std::vector<Generic_Parameter_Owner> generic_parameters;
+      std::vector<Generic_Parameter_Owner> owned_generic_parameters;
+      Generic_Parameter_Array generic_parameters;
 
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope, Dungeon_Interface &dungeon,
@@ -149,10 +150,35 @@ namespace overworld {
       }
 
       Generic_Parameter &add_generic_parameter() {
-        return add_generic_parameter_to_vector(generic_parameters, node.get_dungeon(), this);
+        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, node.get_dungeon(), this);
+        generic_parameters.push_back(&result);
+        return result;
       }
 
-      const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const override {
+      Generic_Parameter_Owner detach_generic_parameter(Generic_Parameter &parameter) {
+        for (auto i = generic_parameters.begin(); i != generic_parameters.end(); i++) {
+          if ((*i) == &parameter) {
+            generic_parameters.erase(i);
+            break;
+          }
+        }
+
+        for (auto i = owned_generic_parameters.begin(); i != owned_generic_parameters.end(); i++) {
+          if ((*i).get() == &parameter) {
+            auto result = std::move(*i);
+            owned_generic_parameters.erase(i);
+            return std::move(result);
+          }
+        }
+
+        throw std::runtime_error("Could not find generic_parameter " + parameter.get_name() + ".");
+      }
+
+      std::vector<Generic_Parameter *> &get_generic_parameters() {
+        return generic_parameters;
+      }
+
+      const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
         return generic_parameters;
       }
 

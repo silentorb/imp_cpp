@@ -27,9 +27,11 @@ namespace imp_rendering {
   std::string sanitize_name(const std::string &name);
 
   Stroke render_function_definition(const overworld::Function &function);
+  Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
+                                       Stroke stroke);
   const std::string render_minion_with_signature(const overworld::Minion &minion);
   const std::string render_parameter(const overworld::Minion &minion);
-  Stroke render_includes(const std::vector<overworld::File *> &files);
+  Stroke render_includes(const std::vector<overworld::File_Reference> &files);
 
   inline Stroke wrap(const std::string &text) {
     Stroke result;

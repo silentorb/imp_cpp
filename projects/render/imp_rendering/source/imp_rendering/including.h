@@ -14,8 +14,8 @@ namespace imp_rendering {
 
   class Include_Manager {
       const overworld::Dungeon &dungeon;
-      std::vector<overworld::File *> header_includes;
-      std::vector<overworld::File *> source_includes;
+      std::vector<overworld::File_Reference> header_includes;
+      std::vector<overworld::File_Reference> source_includes;
       overworld::Profession_File_Map &header_file_map;
       std::vector<const overworld::Profession *> forward_declarations;
 
@@ -30,11 +30,11 @@ namespace imp_rendering {
 
 //      void prepare(std::vector<const overworld::Profession *> dependencies, overworld::Profession_File_Map & file_map);
 
-      const std::vector<overworld::File *> &get_header_includes() const {
+      const std::vector<overworld::File_Reference> &get_header_includes() const {
         return header_includes;
       }
 
-      const std::vector<overworld::File *> &get_source_includes() const {
+      const std::vector<overworld::File_Reference> &get_source_includes() const {
         return source_includes;
       }
 

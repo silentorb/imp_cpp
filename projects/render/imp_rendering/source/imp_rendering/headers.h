@@ -8,7 +8,7 @@ namespace imp_rendering {
 
   namespace headers {
 
-    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File *> &files,
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File_Reference> &files,
                   const std::vector<const overworld::Profession *> &forward_declarations);
   }
 }

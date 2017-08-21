@@ -107,7 +107,7 @@ namespace imp_rendering {
       return result;
     }
 
-    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File *> &files,
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File_Reference> &files,
                   const vector<const Profession *> &forward_declarations) {
 //      return Stroke()
 //        << (Stroke() << "#pragma once")
@@ -121,7 +121,7 @@ namespace imp_rendering {
       if (forward_declarations.size() > 0)
         result << render_forward_declarations(forward_declarations);
 
-      result << render_dungeon_body(dungeon);
+      result << render_possible_generic_block(dungeon.get_generic_parameters(), render_dungeon_body(dungeon));
 
       return result;
     }

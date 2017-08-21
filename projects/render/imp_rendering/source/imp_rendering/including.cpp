@@ -6,9 +6,9 @@ using namespace overworld;
 
 namespace imp_rendering {
 
-  bool has_file(std::vector<File *> &files, File &file) {
+  bool has_file(std::vector<File_Reference> &files, File &file) {
     for (auto item: files) {
-      if (item == &file)
+      if (&item.get_file() == &file)
         return true;;
     }
 
@@ -161,7 +161,7 @@ namespace imp_rendering {
       }
   };
 
-  void add_include(std::vector<overworld::File *> &includes, const Profession &profession,
+  void add_include(std::vector<overworld::File_Reference> &includes, const Profession &profession,
                    overworld::Profession_File_Map &header_file_map) {
 
     auto file = profession.get_file();
@@ -171,7 +171,7 @@ namespace imp_rendering {
     if (file) {
       if (!has_file(includes, *file)) {
         profession.get_file();
-        includes.push_back(file);
+        includes.push_back({*file, !file->is_external()});
       }
     }
   }
@@ -200,7 +200,7 @@ namespace imp_rendering {
       add_include(source_includes, *entry.first, header_file_map);
     }
 
-    source_includes.push_back(dungeon.get_file());
+    source_includes.push_back({*dungeon.get_file(), true});
   }
 
 }

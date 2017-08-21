@@ -9,21 +9,26 @@ namespace overworld {
 
   class Variant {
   protected:
-      std::vector<Generic_Parameter_Owner> generic_parameters;
-//      std::vector<Profession *> professions;
+      Generic_Parameter_Array &generic_parameters;
+      std::vector<Profession *> professions;
       std::string name;
       std::vector<Node_Owner> nodes;
 
       const std::string format_name(const std::string &original_name);
 
   public:
-      Variant(const std::string &original_name, const std::vector<Profession *> &professions) {
+      Variant(const std::string &original_name, Generic_Parameter_Array &generic_parameters,
+              const std::vector<Profession *> &professions) :
+        generic_parameters(generic_parameters), professions(professions) {
         name = format_name(original_name);
-
       }
 
-      const std::vector<Generic_Parameter_Owner> &get_generic_parameters() const {
+      const Generic_Parameter_Array &get_generic_parameters() const {
         return generic_parameters;
+      }
+
+      std::vector<Profession *> &get_professions() {
+        return professions;
       }
 
       const std::string get_name() const {
