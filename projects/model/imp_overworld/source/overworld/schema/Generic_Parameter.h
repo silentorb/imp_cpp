@@ -13,7 +13,7 @@ namespace overworld {
       Profession_Node <Generic_Parameter> node;
 
   public:
-      Generic_Parameter(const std::string &name, Dungeon_Interface &dungeon, Function_Interface *function)
+      Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function)
         : node(*this, *this, dungeon, function), name(name) {}
 
       virtual ~Generic_Parameter() {}
@@ -79,9 +79,9 @@ namespace overworld {
   using Generic_Parameter_Array = std::vector<Generic_Parameter*>;
 
   Generic_Parameter &add_generic_parameter_to_vector(std::vector<Generic_Parameter_Owner> &generic_parameters,
-                                           Dungeon_Interface &dungeon, Function_Interface *function);
+                                                     Dungeon_Interface *dungeon, Function_Interface *function);
 
-  Generic_Parameter &rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
+  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
 
 //  class Contained_Generic_Parameter : public Generic_Parameter {
 //

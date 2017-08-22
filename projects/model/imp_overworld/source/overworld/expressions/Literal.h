@@ -28,7 +28,7 @@ namespace overworld {
       const underworld::Source_Point source_point;
 
   public:
-      Literal_Implementation(T value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point,
+      Literal_Implementation(T value, Dungeon_Interface *dungeon, const underworld::Source_Point &source_point,
       Function_Interface*function) :
         value(value),
         node(*this, Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), dungeon, function),
@@ -73,7 +73,7 @@ namespace overworld {
   class Literal_Int : public Literal_Implementation<int, Literal_Int> {
 
   public:
-      Literal_Int(int value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point,
+      Literal_Int(int value, Dungeon_Interface *dungeon, const underworld::Source_Point &source_point,
                   Function_Interface*function) :
         Literal_Implementation(value, dungeon, source_point, function) {}
 
@@ -88,7 +88,7 @@ namespace overworld {
 
   class Literal_String : public Literal_Implementation<const std::string, Literal_String> {
   public:
-      Literal_String(const std::string &value, Dungeon_Interface &dungeon,
+      Literal_String(const std::string &value, Dungeon_Interface *dungeon,
                      const underworld::Source_Point &source_point,Function_Interface*function)
         :
         Literal_Implementation(value, dungeon, source_point, function) {}
@@ -104,7 +104,7 @@ namespace overworld {
 
   class Literal_Bool : public Literal_Implementation<bool, Literal_Bool> {
   public:
-      Literal_Bool(const bool &value, Dungeon_Interface &dungeon, const underworld::Source_Point &source_point,
+      Literal_Bool(const bool &value, Dungeon_Interface *dungeon, const underworld::Source_Point &source_point,
                    Function_Interface*function) :
         Literal_Implementation(value, dungeon, source_point, function) {}
 

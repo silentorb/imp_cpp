@@ -55,19 +55,19 @@ namespace imp_mirror {
 
       case underworld::Primitive_Type::Bool:
         expression = new overworld::Literal_Bool(
-          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value(), dungeon,
+          (*dynamic_cast<const underworld::Literal_Bool *>(&input_literal)).get_value(), &dungeon,
           input_literal.get_source_point(), function);
         break;
 
       case underworld::Primitive_Type::Int:
         expression = new overworld::Literal_Int(
           (*(const underworld::Literal_Int *) &input_literal).get_value(),
-          dungeon, input_literal.get_source_point(), function);
+          &dungeon, input_literal.get_source_point(), function);
         break;
 
       case underworld::Primitive_Type::String:
         expression = new overworld::Literal_String(
-          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value(), dungeon,
+          (*dynamic_cast<const underworld::Literal_String *>(&input_literal)).get_value(), &dungeon,
           input_literal.get_source_point(), function);
         break;
 
@@ -147,7 +147,7 @@ namespace imp_mirror {
     auto &input_minion = input_declaration.get_minion();
     auto variable = new overworld::Minion(input_minion.get_name(),
                                           reflect_profession(input_minion.get_profession(), scope),
-                                          scope.get_dungeon(),
+                                          nullptr,
                                           input_minion.get_source_point(),
                                           scope.get_function());
     scope.add_minion(variable);
@@ -201,7 +201,7 @@ namespace imp_mirror {
         for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
           auto &argument = arguments[i];
           auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
-          auto parameter = new overworld::Parameter("(temp)", argument_profession, scope.get_dungeon(),
+          auto parameter = new overworld::Parameter("(temp)", argument_profession,
                                                     underworld::Source_Point(), *scope.get_function());
           temporary_member.add_parameter(parameter);
         }
@@ -247,8 +247,9 @@ namespace imp_mirror {
       throw Code_Error("Could not instantiate type " + input_profession.get_name(), instantiation.get_source_point());
 
     auto &source_arguments = instantiation.get_dictionary();
+    auto function = scope.get_function();
     auto output_instantiation = new overworld::Instantiation(output_profession, instantiation.get_source_point(),
-                                                             scope.get_dungeon(), scope.get_function());
+                                                             function ? nullptr : &scope.get_dungeon(), function);
     overworld::Expression_Owner result(output_instantiation);
     graph.connect(*output_instantiation->get_node(), output_profession.get_node());
 
@@ -276,7 +277,6 @@ namespace imp_mirror {
       auto &interface = minion.get_or_create_interface();
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
-                                                        minion.get_dungeon(),
                                                         member_expression.get_source_point(), *scope.get_function());
       interface.add_minion(new_member);
       auto result = new overworld::Member_Expression(*new_member);

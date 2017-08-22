@@ -18,8 +18,8 @@ namespace overworld {
       Function_Interface *function = nullptr;
 
   public:
-      Node(Dungeon_Interface &dungeon, Function_Interface *function) :
-        dungeon(&dungeon), function(function) {}
+      Node(Dungeon_Interface *dungeon, Function_Interface *function) :
+        dungeon(dungeon), function(function) {}
 
       virtual ~Node() {}
 
@@ -52,8 +52,8 @@ namespace overworld {
 
       std::string get_debug_string() const;
 
-      Dungeon_Interface &get_dungeon() const {
-        return *dungeon;
+      Dungeon_Interface *get_dungeon() const {
+        return dungeon;
       }
 
       Function_Interface *get_function() const {
@@ -68,7 +68,7 @@ namespace overworld {
       Profession *original_profession;
 
   public:
-      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface &dungeon,
+      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface *dungeon,
                       Function_Interface *function) :
         Node(dungeon, function), element(element), original_profession(&original_profession) {}
 
@@ -102,7 +102,7 @@ namespace overworld {
       Profession *profession;
 
   public:
-      Node_Copy(Node &original, Profession &profession, Dungeon_Interface &dungeon, Function_Interface *function) :
+      Node_Copy(Node &original, Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function) :
         Node(dungeon, function), original(original), profession(&profession) {}
 
       Profession_Reference &get_profession_reference() override {

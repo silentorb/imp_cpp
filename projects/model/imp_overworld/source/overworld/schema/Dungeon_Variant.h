@@ -42,7 +42,7 @@ namespace overworld {
         return *this;
       }
 
-      Dungeon &get_original() {
+      Dungeon &get_original() override{
         return original;
       }
   };

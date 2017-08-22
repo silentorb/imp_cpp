@@ -56,44 +56,14 @@ namespace overworld {
     }
   };
 
-  Dungeon_Variant &Profession_Library::get_or_create_dungeon_variant(Dungeon &dungeon,
-                                                                     std::vector<Profession *> &professions,
-                                                                     Graph &graph) {
-    auto &variants = get_or_create_variant_map(dungeon_variants, dungeon);
-
-    for (auto &variant : variants) {
-      if (professions_match(variant->get_generic_parameters(), professions))
-        return *variant;
-    }
-
-    auto variant = new Dungeon_Variant(dungeon, professions);
-    variants.push_back(Dungeon_Variant_Owner(variant));
-//    clone_dungeon(*variant, graph);
-    return *variant;
-
-  }
-
   Function_Variant_Array &Profession_Library::get_function_variant_array(Function_Interface &function) {
     return get_or_create_variant_map(function_variants, function);
   }
 
-  Function_Variant &Profession_Library::get_or_create_function_variant(Function_Interface &function,
-                                                                       std::vector<Profession *> &professions,
-                                                                       Dungeon_Interface &dungeon, bool &is_new) {
-    auto &variants = get_function_variant_array(function);
-
-    for (auto &variant : variants) {
-      if (professions_match(variant->get_generic_parameters(), professions)) {
-        is_new = false;
-        return *variant;
-      }
-    }
-
-    auto variant = new Function_Variant(function.get_original(), dungeon, professions);
-    variants.push_back(Function_Variant_Owner(variant));
-    is_new = true;
-    return *variant;
+  Dungeon_Variant_Array &Profession_Library::get_dungeon_variant_array(Dungeon_Interface &dungeon) {
+    return get_or_create_variant_map(dungeon_variants, dungeon);
   }
+
 
   Function_Variant &Profession_Library::create_function_variant(Function_Variant_Array &variant_array,
                                                                 Function_Interface &function,
@@ -105,9 +75,8 @@ namespace overworld {
     return *variant;
   }
 
-  Function_Variant *Profession_Library::get_function_variant(Function_Variant_Array &variant_array,
-                                                             Function_Interface &function,
-                                                             std::vector<Profession *> &professions) {
+  template<typename A>
+  A *find_variant(std::vector<std::unique_ptr<A>> &variant_array, std::vector<Profession *> &professions) {
     for (auto &variant : variant_array) {
       if (professions_match(variant->get_generic_parameters(), professions))
         return variant.get();
@@ -116,12 +85,34 @@ namespace overworld {
     return nullptr;
   }
 
-//  Function_Variant &Profession_Library::create_function_variant(Function_Interface &function,
-//                                                                std::vector<Profession *> &professions,
-//                                                                Dungeon &dungeon, Profession &new_profession) {
-//    auto &variants = get_or_create_variant_map(function_variants, function);
-//    auto variant = new Function_Variant(function.get_original(), dungeon, professions);
-//    variants.push_back(Function_Variant_Owner(variant));
-//    return *variant;
-//  }
+  Function_Variant *Profession_Library::get_function_variant(Function_Variant_Array &variant_array,
+                                                             Function_Interface &function,
+                                                             std::vector<Profession *> &professions) {
+    return find_variant(variant_array, professions);
+//    for (auto &variant : variant_array) {
+//      if (professions_match(variant->get_generic_parameters(), professions))
+//        return variant.get();
+//    }
+//
+//    return nullptr;
+  }
+
+  Dungeon_Variant &Profession_Library::create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                              Dungeon_Interface &dungeon,
+                                                              std::vector<Profession *> &professions) {
+    auto variant = new Dungeon_Variant(dungeon.get_original(), professions);
+    variant_array.push_back(Dungeon_Variant_Owner(variant));
+    return *variant;
+  }
+
+  Dungeon_Variant *Profession_Library::get_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                           std::vector<Profession *> &professions) {
+    return find_variant(variant_array, professions);
+//    for (auto &variant : variant_array) {
+//      if (professions_match(variant->get_generic_parameters(), professions))
+//        return variant.get();
+//    }
+//
+//    return nullptr;
+  }
 }

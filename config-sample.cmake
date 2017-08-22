@@ -1,5 +1,5 @@
 get_filename_component(CPP_ROOT ".." ABSOLUTE)
 set(CMAKE_TOOLS_PATH "${CPP_ROOT}/cmake-tools")
-set(CMAKE_BOOST "${CPP_ROOT}/third-party/cmake-boost")
-set(GTEST_DIR "${CPP_ROOT}/third-party/googletest")
+set(CMAKE_BOOST_DIR "${CPP_ROOT}/shared/boost")
+set(GTEST_DIR "${CPP_ROOT}/shared/googletest")
 set(DIFF_VIEWER_PATH "")

@@ -14,7 +14,7 @@ namespace overworld {
       Profession_Node <Instantiation> node;
 
   public:
-      Instantiation(Profession &profession, const underworld::Source_Point &source_point, Dungeon_Interface &dungeon,
+      Instantiation(Profession &profession, const underworld::Source_Point &source_point, Dungeon_Interface *dungeon,
                     Function_Interface *function) :
         profession(&profession), source_point(source_point), node(*this, profession, dungeon, function) {}
 

@@ -28,6 +28,7 @@ namespace overworld {
       generic_parameter,
       primitive,
       reference,
+      Union,
       variant,
       Void,
   };

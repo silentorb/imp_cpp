@@ -12,19 +12,13 @@ TEST(Main_Test, pizza) {
 }
 
 TEST(Main_Test, game) {
-//  compile("game");
-//
-//  compare(string(RESOURCE_PATH) + "game/World.cpp", string(OUTPUT_PATH) + "World.cpp");
-//  compare(string(RESOURCE_PATH) + "game/World.h", string(OUTPUT_PATH) + "World.h");
-//
-//  compare(string(RESOURCE_PATH) + "game/Game.cpp", string(OUTPUT_PATH) + "Game.cpp");
-//  compare(string(RESOURCE_PATH) + "game/Game.h", string(OUTPUT_PATH) + "Game.h");
-//
-//  compare(string(RESOURCE_PATH) + "game/Creature.h", string(OUTPUT_PATH) + "Creature.h");
-}
-
-TEST(Main_Test, fail_generic_dungeon) {
-//  compile("fail_generic_dungeon");
+  compile("game");
+  Comparison test("game");
+  test.compare("Game.cpp");
+  test.compare("Game.h");
+  test.compare("World.h");
+  test.compare("World.cpp");
+  test.compare("Creature.h");
 }
 
 TEST(Main_Test, generic_dungeon) {
@@ -41,3 +35,7 @@ TEST(Main_Test, generic_function) {
   test.compare("General.h");
   test.compare("General.cpp");
 }
+
+//TEST(Main_Test, fail_generic_dungeon) {
+//  compile("fail_generic_dungeon");
+//}

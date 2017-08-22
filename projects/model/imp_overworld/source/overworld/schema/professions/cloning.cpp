@@ -6,22 +6,22 @@
 namespace overworld {
 
   struct Dungeon_Functions {
-      static Dungeon_Interface &get_context(Node &node) {
+      static Dungeon_Interface *get_context(Node &node) {
         return node.get_dungeon();
       }
 
       static Node_Copy *create_node(Node &other, Dungeon_Variant &variant) {
-        return new Node_Copy(other, other.get_profession(), variant, nullptr);
+        return new Node_Copy(other, other.get_profession(), &variant, nullptr);
       }
   };
 
   struct Function_Functions {
-      static Function_Interface &get_context(Node &node) {
-        return *node.get_function();
+      static Function_Interface *get_context(Node &node) {
+        return node.get_function();
       }
 
       static Node_Copy *create_node(Node &other, Function_Variant &variant) {
-        return new Node_Copy(other, other.get_profession(), variant.get_dungeon(), &variant);
+        return new Node_Copy(other, other.get_profession(), &variant.get_dungeon(), &variant);
       }
   };
 
@@ -31,7 +31,7 @@ namespace overworld {
 
     for (auto connection : node.get_original().get_connections()) {
       auto &other = connection->get_other(node);
-      if (&Functions::get_context(other) == &variant.get_original() && !original_nodes.count(&other)) {
+      if (Functions::get_context(other) == &variant.get_original() && !original_nodes.count(&other)) {
         auto new_node = Functions::create_node(other, variant);
         variant.add_node(Node_Owner(new_node));
         if (&node == &connection->get_first()) {
@@ -54,9 +54,9 @@ namespace overworld {
     return *node;
   }
 
-  Node &clone_dungeon(Dungeon_Variant &variant, Graph &graph) {
+  Node &clone_dungeon_graph(Dungeon_Variant &variant, Graph &graph) {
     auto &dungeon = variant.get_original();
-    auto node = new Node_Copy(dungeon.get_node(), variant, variant, nullptr);
+    auto node = new Node_Copy(dungeon.get_node(), variant, &variant, nullptr);
     variant.add_node(Node_Owner(node));
     std::set<Node *> nodes;
     expand<Dungeon_Functions>(*node, variant, graph, nodes);

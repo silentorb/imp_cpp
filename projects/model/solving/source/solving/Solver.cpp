@@ -205,6 +205,19 @@ namespace solving {
     }
   }
 
+  void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
+                                      Node &starting_node, overworld::Profession &profession) {
+    auto professions = to_professions(dungeon.get_generic_parameters(), 1);
+    professions.push_back(&profession);
+    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
+    if (!variant) {
+      variant = &Profession_Library::create_dungeon_variant(
+        variant_array, dungeon, professions
+      );
+      clone_dungeon_graph(*variant, graph);
+    }
+  }
+
   void Solver::resolve_with_template_function(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
@@ -217,6 +230,14 @@ namespace solving {
       create_function_variant(variant_array, function, first, first.get_profession().get_base());
     }
     create_function_variant(variant_array, function, first, second.get_profession().get_base());
+  }
+
+  void Solver::resolve_with_template_dungeon(Connection &connection) {
+    auto &first = connection.get_first();
+    auto &second = connection.get_second();
+    auto &dungeon = first.get_dungeon();
+    auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
+    create_dungeon_variant(variant_array, dungeon.get_original(), first, second.get_profession());
   }
 
   bool Solver::resolve_conflict(Connection &connection) {
@@ -233,12 +254,17 @@ namespace solving {
       set_profession(first, *common_ancestor);
       return true;
     }
+    if (first_profession.get_type() == Profession_Type::generic_parameter) {
+      resolve_with_template_dungeon(connection);
+      return true;
+    }
 
     if (first.get_profession_reference().get_element_type() == Element_Type::parameter
         && first.get_function() != second.get_function()) {
       resolve_with_template_function(connection);
       return true;
     }
+
     return false;
   }
 

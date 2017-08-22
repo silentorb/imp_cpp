@@ -58,13 +58,13 @@ namespace overworld {
                const underworld::Source_Point &source_point) :
         name(name), signature(node, &return_type),
         scope(parent_scope, *this), block(scope),
-        node(*this, return_type, dungeon, this), source_point(source_point) {}
+        node(*this, return_type, &dungeon, this), source_point(source_point) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const underworld::Source_Point &source_point) :
         name(name), signature(node, nullptr),
         scope(parent_scope, *this), block(scope),
-        node(*this, Profession_Library::get_void(), dungeon, this), source_point(source_point) {}
+        node(*this, Profession_Library::get_void(), &dungeon, this), source_point(source_point) {}
 
       ~Function() {}
 

@@ -7,7 +7,7 @@ namespace overworld {
   }
 
   Generic_Parameter &add_generic_parameter_to_vector(std::vector<Generic_Parameter_Owner> &generic_parameters,
-                                                     Dungeon_Interface &dungeon,
+                                                     Dungeon_Interface *dungeon,
                                                      Function_Interface *function) {
     if (generic_parameters.size() > 25)
       throw std::runtime_error("Too many generic parameters.");
@@ -18,7 +18,7 @@ namespace overworld {
     return *parameter;
   }
 
-  Generic_Parameter &rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters) {
+  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters) {
     size_t i = 0;
     for (auto &parameter: generic_parameters) {
       parameter->set_name(get_generic_parameter_name(i++));

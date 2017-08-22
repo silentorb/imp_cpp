@@ -14,7 +14,7 @@ namespace overworld {
   class Profession_Library {
       static Primitive primitives[Primitive_Type_Count];
       std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
-      std::unordered_map<Dungeon *, Dungeon_Variant_Array> dungeon_variants;
+      std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
 
   public:
@@ -28,14 +28,15 @@ namespace overworld {
 
       Reference &get_reference(Profession &profession);
 
-      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
-                                                     Graph &graph);
+//      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
+//                                                     Graph &graph);
 
       Function_Variant_Array &get_function_variant_array(Function_Interface &function);
+      Dungeon_Variant_Array &get_dungeon_variant_array(Dungeon_Interface &dungeon);
 
-      Function_Variant &get_or_create_function_variant(Function_Interface &function,
-                                                       std::vector<Profession *> &professions,
-                                                       Dungeon_Interface &dungeon, bool &is_new);
+//      Function_Variant &get_or_create_function_variant(Function_Interface &function,
+//                                                       std::vector<Profession *> &professions,
+//                                                       Dungeon_Interface &dungeon, bool &is_new);
 
       static Function_Variant &create_function_variant(Function_Variant_Array &variant_array,
                                                        Function_Interface &function,
@@ -43,6 +44,14 @@ namespace overworld {
                                                        std::vector<Profession *> &professions);
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
                                                     std::vector<Profession *> &professions);
+
+      static Dungeon_Variant &create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                     Dungeon_Interface &dungeon,
+                                                     std::vector<Profession *> &professions);
+
+      static Dungeon_Variant *get_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                  std::vector<Profession *> &professions);
+
 //      Function_Variant &create_function_variant(Function_Interface &function, std::vector<Profession *> &professions,
 //                                                      Dungeon &dungeon, Profession &new_profession);
   };
