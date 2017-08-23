@@ -81,7 +81,7 @@ namespace solving {
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
-      auto &dungeon = *dynamic_cast<Dungeon *>(&node.get_dungeon());
+      auto &dungeon = *dynamic_cast<Dungeon *>(node.get_dungeon());
       if (!dungeon.has_generic_parameter(generic_parameter)) {
         auto &function = *dynamic_cast<Function *>(generic_parameter.get_node().get_function());
         migrate_generic_parameter_from_function_to_dungeon(dungeon, function, generic_parameter);
@@ -199,7 +199,7 @@ namespace solving {
     auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
     if (!variant) {
       variant = &Profession_Library::create_function_variant(
-        variant_array, function, starting_node.get_dungeon(), professions
+        variant_array, function, *starting_node.get_dungeon(), professions
       );
       clone_function_graph(*variant, starting_node, profession, graph);
     }
@@ -235,7 +235,7 @@ namespace solving {
   void Solver::resolve_with_template_dungeon(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
-    auto &dungeon = first.get_dungeon();
+    auto &dungeon = *first.get_dungeon();
     auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
     create_dungeon_variant(variant_array, dungeon.get_original(), first, second.get_profession());
   }

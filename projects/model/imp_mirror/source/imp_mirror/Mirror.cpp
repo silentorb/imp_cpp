@@ -572,12 +572,13 @@ namespace imp_mirror {
     auto &profession = reflect_profession(input_minion.get_profession(), scope);
     if (input_minion.is_parameter()) {
       return std::unique_ptr<overworld::Minion>(
-        new overworld::Parameter(input_minion.get_name(), profession, scope.get_dungeon(),
+        new overworld::Parameter(input_minion.get_name(), profession,
                                  input_minion.get_source_point(), *scope.get_function())
       );
     }
+    auto function = scope.get_function();
     return std::unique_ptr<overworld::Minion>(
-      new overworld::Minion(input_minion.get_name(), profession, scope.get_dungeon(),
+      new overworld::Minion(input_minion.get_name(), profession, function ? nullptr : &scope.get_dungeon(),
                             input_minion.get_source_point(), scope.get_function())
     );
   }
