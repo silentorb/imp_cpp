@@ -121,12 +121,12 @@ namespace overworld {
   };
 
   class Reference : public virtual Profession {
+  protected:
       Profession &profession;
-      bool _is_pointer = false;
 
   public:
-      Reference(Profession &profession, bool is_pointer = false) :
-        profession(profession), _is_pointer(is_pointer) {}
+      Reference(Profession &profession) :
+        profession(profession) {}
 
       virtual ~Reference() {}
 
@@ -151,7 +151,7 @@ namespace overworld {
       }
 
       const std::string get_debug_name() const override {
-        return (_is_pointer ? "*" : "&") + profession.get_debug_name();
+        return "&" + profession.get_debug_name();
       }
 
       Profession &get_base() override {
@@ -166,9 +166,21 @@ namespace overworld {
         return profession;
       }
 
-      bool is_pointer() const {
-        return _is_pointer;
+      virtual bool is_pointer() const {
+        return false;
       }
   };
 
+  class Pointer : public Reference {
+  public:
+      Pointer(Profession &profession) : Reference(profession) {}
+
+      const std::string get_debug_name() const override {
+        return "*" + profession.get_debug_name();
+      }
+
+      bool is_pointer() const override {
+        return true;
+      }
+  };
 }

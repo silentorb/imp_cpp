@@ -14,6 +14,7 @@ namespace overworld {
   class Profession_Library {
       static Primitive primitives[Primitive_Type_Count];
       std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
+      std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
       std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
 
@@ -27,6 +28,7 @@ namespace overworld {
       static Primitive &get_primitive(Primitive_Type type);
 
       Reference &get_reference(Profession &profession);
+      Pointer &get_pointer(Profession &profession);
 
 //      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
 //                                                     Graph &graph);

@@ -46,6 +46,15 @@ namespace overworld {
     return *reference;
   }
 
+  Pointer &Profession_Library::get_pointer(Profession &profession) {
+    if (pointers.count(&profession))
+      return *pointers[&profession];
+
+    auto pointer = new Pointer(profession);
+    pointers[&profession] = std::unique_ptr<Pointer>(pointer);
+    return *pointer;
+  }
+
   template<typename A, typename B>
   B &get_or_create_variant_map(std::unordered_map<A *, B> &generic_map, A &item) {
     if (!generic_map.count(&item)) {

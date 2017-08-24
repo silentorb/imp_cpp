@@ -111,7 +111,17 @@ namespace imp_rendering {
         dungeon(dungeon), standard_library(standard_library), helper(helper) {}
 
       void process_profession(const overworld::Profession &profession) {
-        helper.add_full(profession);
+        auto &base_profession = profession.get_base();
+//        helper.add_full(profession);
+        if (profession.get_ownership() == Ownership::owner) {
+          helper.add_full(standard_library.get_unique_pointer());
+        }
+        if (profession.get_ownership() == Ownership::value) {
+          helper.add_full(base_profession);
+        }
+        else {
+          helper.add_partial(base_profession);
+        }
 //        switch (profession.get_type()) {
 ////      case Expression::Type::return_with_value:
 //        }

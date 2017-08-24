@@ -1,6 +1,6 @@
-#include <Frog.h>
-#include <Princess.h>
-#include <General.h>
+#include "Frog.h"
+#include "Princess.h"
+#include "General.h"
 
 void General::main() {
   auto princess = std::unique_ptr<Princess>(new Princess());

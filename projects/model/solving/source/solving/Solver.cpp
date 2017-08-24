@@ -70,9 +70,13 @@ namespace solving {
       throw std::runtime_error("Invalid type.");
 #endif
 
-    auto &previous = node.get_profession_reference().get_profession();
+    auto &previous = node.get_profession();
     if (previous.get_type() == Profession_Type::reference) {
-      node.set_profession(profession_library.get_reference(profession.get_base()));
+      auto &reference = *dynamic_cast<Reference *>(&previous);
+      auto &new_profession = reference.is_pointer()
+                             ? (Reference &) profession_library.get_pointer(profession.get_base())
+                             : profession_library.get_reference(profession.get_base());
+      node.set_profession(new_profession);
     }
     else {
       node.set_profession(profession);
@@ -81,10 +85,10 @@ namespace solving {
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
-      auto &dungeon = *dynamic_cast<Dungeon *>(node.get_dungeon());
-      if (!dungeon.has_generic_parameter(generic_parameter)) {
+      auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
+      if (dungeon && !dungeon->has_generic_parameter(generic_parameter)) {
         auto &function = *dynamic_cast<Function *>(generic_parameter.get_node().get_function());
-        migrate_generic_parameter_from_function_to_dungeon(dungeon, function, generic_parameter);
+        migrate_generic_parameter_from_function_to_dungeon(*dungeon, function, generic_parameter);
       }
     }
     set_changed(node);
@@ -235,9 +239,11 @@ namespace solving {
   void Solver::resolve_with_template_dungeon(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
-    auto &dungeon = *first.get_dungeon();
-    auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
-    create_dungeon_variant(variant_array, dungeon.get_original(), first, second.get_profession());
+    auto dungeon = first.get_dungeon();
+    if (dungeon) {
+      auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
+      create_dungeon_variant(variant_array, dungeon->get_original(), first, second.get_profession());
+    }
   }
 
   bool Solver::resolve_conflict(Connection &connection) {

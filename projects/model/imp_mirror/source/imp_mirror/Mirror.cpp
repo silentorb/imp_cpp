@@ -567,18 +567,21 @@ namespace imp_mirror {
     output_function.finalize(profession_library);
   }
 
-  std::unique_ptr<overworld::Minion>
-  Mirror::create_minion(const underworld::Minion &input_minion, overworld::Scope &scope) {
-    auto &profession = reflect_profession(input_minion.get_profession(), scope);
+  std::unique_ptr<overworld::Minion> Mirror::create_minion(const underworld::Minion &input_minion,
+                                                           overworld::Scope &scope) {
+    auto profession = &reflect_profession(input_minion.get_profession(), scope);
     if (input_minion.is_parameter()) {
       return std::unique_ptr<overworld::Minion>(
-        new overworld::Parameter(input_minion.get_name(), profession,
+        new overworld::Parameter(input_minion.get_name(), *profession,
                                  input_minion.get_source_point(), *scope.get_function())
       );
     }
+    if (profession->get_type() == overworld::Profession_Type::reference)
+      profession = &profession_library.get_pointer(profession->get_base());
+
     auto function = scope.get_function();
     return std::unique_ptr<overworld::Minion>(
-      new overworld::Minion(input_minion.get_name(), profession, function ? nullptr : &scope.get_dungeon(),
+      new overworld::Minion(input_minion.get_name(), *profession, function ? nullptr : &scope.get_dungeon(),
                             input_minion.get_source_point(), scope.get_function())
     );
   }
