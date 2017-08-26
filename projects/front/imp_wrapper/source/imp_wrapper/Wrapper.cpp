@@ -61,20 +61,6 @@ namespace imp_wrapper {
     nodes.push_back(node);
   }
 
-  void log_nodes(const std::vector<overworld::Node *> &original_nodes) {
-    std::vector<overworld::Node *> nodes;
-    for (auto first: original_nodes) {
-      insert_node(nodes, first);
-    }
-    for (auto &node : nodes) {
-      log_node(*node);
-      for (auto &other : node->get_neighbors()) {
-        std::cout << " * ";
-        log_node(*other);
-      }
-    }
-  }
-
   void Wrapper::solve() {
     solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();

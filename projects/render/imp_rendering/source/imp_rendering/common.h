@@ -15,6 +15,8 @@ namespace imp_rendering {
   const std::string render_profession(const overworld::Profession &profession);
   const std::string render_profession_owner(const overworld::Profession &profession);
   const std::string render_separator(const overworld::Profession &profession);
+  const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
+                                const std:: string &  value);
 //  const std::string render_profession_as_owner_reference(const overworld::Profession &profession);
 
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter);

@@ -42,9 +42,18 @@ namespace overworld {
         return *this;
       }
 
-      Dungeon &get_original() override{
+      Dungeon &get_original() override {
         return original;
       }
+
+      const Dungeon &get_original() const {
+        return original;
+      }
+
+      Dungeon_Type get_dungeon_type() const override {
+        return Dungeon_Type::variant;
+      }
+
   };
 
   using Dungeon_Variant_Owner = std::unique_ptr<Dungeon_Variant>;

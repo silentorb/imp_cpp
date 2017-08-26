@@ -183,4 +183,9 @@ namespace overworld {
         return true;
       }
   };
+
+//  bool profession_is_pointer(const Profession &profession) {
+//    return profession.get_type() == Profession_Type::reference
+//           && dynamic_cast<const Reference &>(profession).is_pointer();
+//  }
 }

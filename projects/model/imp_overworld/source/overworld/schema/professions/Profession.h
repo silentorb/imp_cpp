@@ -26,6 +26,7 @@ namespace overworld {
       dungeon,
       function,
       generic_parameter,
+      pointer,
       primitive,
       reference,
       Union,

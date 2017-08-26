@@ -21,20 +21,20 @@ TEST(Main_Test, game) {
   test.compare("Creature.h");
 }
 
-TEST(Main_Test, generic_dungeon) {
-  compile("generic_dungeon");
-  Comparison test("generic_dungeon");
-  test.compare("House.h");
-  test.compare("General.h");
-  test.compare("General.cpp");
-}
-
-TEST(Main_Test, generic_function) {
-  compile("generic_function");
-  Comparison test("generic_function");
-  test.compare("General.h");
-  test.compare("General.cpp");
-}
+//TEST(Main_Test, generic_dungeon) {
+//  compile("generic_dungeon");
+//  Comparison test("generic_dungeon");
+//  test.compare("House.h");
+//  test.compare("General.h");
+//  test.compare("General.cpp");
+//}
+//
+//TEST(Main_Test, generic_function) {
+//  compile("generic_function");
+//  Comparison test("generic_function");
+//  test.compare("General.h");
+//  test.compare("General.cpp");
+//}
 
 //TEST(Main_Test, fail_generic_dungeon) {
 //  compile("fail_generic_dungeon");

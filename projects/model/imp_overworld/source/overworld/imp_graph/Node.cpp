@@ -1,4 +1,5 @@
 #include "Node.h"
+#include <overworld/schema/professions/professions.h>
 
 namespace overworld {
 
@@ -15,8 +16,8 @@ namespace overworld {
               + ":" + profession.get_name();
 
     if (profession.get_type() == Profession_Type::reference)
-      result += "&";
-    
+      result += dynamic_cast<const Reference *>(&profession)->is_pointer() ? "*" : "&";
+
     return result;
   }
 }

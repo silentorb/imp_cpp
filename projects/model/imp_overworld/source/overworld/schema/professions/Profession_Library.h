@@ -30,6 +30,7 @@ namespace overworld {
       Reference &get_reference(Profession &profession);
       Pointer &get_pointer(Profession &profession);
 
+      void assign(Node &node, overworld::Profession &profession);
 //      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
 //                                                     Graph &graph);
 

@@ -70,17 +70,7 @@ namespace solving {
       throw std::runtime_error("Invalid type.");
 #endif
 
-    auto &previous = node.get_profession();
-    if (previous.get_type() == Profession_Type::reference) {
-      auto &reference = *dynamic_cast<Reference *>(&previous);
-      auto &new_profession = reference.is_pointer()
-                             ? (Reference &) profession_library.get_pointer(profession.get_base())
-                             : profession_library.get_reference(profession.get_base());
-      node.set_profession(new_profession);
-    }
-    else {
-      node.set_profession(profession);
-    }
+    profession_library.assign(node, profession);
 
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
@@ -352,11 +342,11 @@ namespace solving {
     }
 
 #if DEBUG_SOLVER
-    std::cout << "Changed Nodes:" << std::endl;
-
-    for (auto node : *next_changed) {
-      std::cout << "  " << node->get_debug_string() << std::endl;
-    }
+//    std::cout << "\nChanged Nodes:" << std::endl;
+//
+//    for (auto node : *next_changed) {
+//      std::cout << "  " << node->get_debug_string() << std::endl;
+//    }
 #endif
   }
 

@@ -175,7 +175,9 @@ namespace imp_rendering {
     const overworld::Assignment &declaration, const overworld::Scope &scope) {
     return render_expression(*declaration.get_target()) + ' '
            + render_operator(declaration.get_operator()) + ' '
-           + render_expression(*declaration.get_value())
+           + render_cast(declaration.get_target()->get_node()->get_profession(),
+                         declaration.get_value()->get_node()->get_profession(),
+                         render_expression(*declaration.get_value()))
            + ";";
   }
 
@@ -207,6 +209,20 @@ namespace imp_rendering {
       default:
         return ".";
     }
+  }
+
+  const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
+                                const std::string &value) {
+    if (target.get_type() == Profession_Type::reference && source.get_type() == Profession_Type::reference) {
+      auto &target_reference = dynamic_cast<const Reference &>(target);
+      auto &source_reference = dynamic_cast<const Reference &>(source);
+      if (target_reference.is_pointer()) {
+        if (!source_reference.is_pointer()) {
+          return "&" + value;
+        }
+      }
+    }
+    return value;
   }
 
   std::string render_chain(const overworld::Chain &chain) {
@@ -292,15 +308,27 @@ namespace imp_rendering {
         return primitive_names[(int) index];
       }
       case overworld::Profession_Type::dungeon: {
-        auto &dungeon = *dynamic_cast<const overworld::Dungeon *>(&profession);
-        return dungeon.get_cpp_name();
+        auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
+        if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
+          auto &variant = dynamic_cast<const Dungeon_Variant &>(profession);
+          std::string parameter_string = join(variant.get_professions(), Joiner<Profession *>(
+            [](const Profession *profession) {
+              return render_profession(*profession);
+            }), ", ");
+
+          return variant.get_original().get_cpp_name() + "<" + parameter_string + ">";
+        }
+        else {
+          auto &dungeon = dynamic_cast<const Dungeon &>(profession);
+          return dungeon.get_cpp_name();
+        }
       }
 
       case overworld::Profession_Type::Void:
         return "void";
 
       case Profession_Type::reference: {
-        auto reference = *dynamic_cast<const Reference *>(&profession);
+        auto &reference = *dynamic_cast<const Reference *>(&profession);
         return render_profession_internal(reference.get_profession()) + " " + render_reference_symbol(reference);
       }
 

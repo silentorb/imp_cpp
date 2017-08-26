@@ -31,6 +31,10 @@ namespace overworld {
         return professions;
       }
 
+      const std::vector<Profession *> &get_professions() const {
+        return professions;
+      }
+
       const std::string get_name() const {
         return name;
       }

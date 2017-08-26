@@ -55,6 +55,20 @@ namespace overworld {
     return *pointer;
   }
 
+  void Profession_Library::assign(Node &node, overworld::Profession &profession) {
+    auto &previous = node.get_profession();
+    if (previous.get_type() == Profession_Type::reference) {
+      auto &reference = *dynamic_cast<Reference *>(&previous);
+      auto &new_profession = reference.is_pointer()
+                             ? (Reference &) get_pointer(profession.get_base())
+                             : get_reference(profession.get_base());
+      node.set_profession(new_profession);
+    }
+    else {
+      node.set_profession(profession);
+    }
+  }
+
   template<typename A, typename B>
   B &get_or_create_variant_map(std::unordered_map<A *, B> &generic_map, A &item) {
     if (!generic_map.count(&item)) {

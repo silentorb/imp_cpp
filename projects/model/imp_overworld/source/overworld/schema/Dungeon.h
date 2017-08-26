@@ -113,6 +113,10 @@ namespace overworld {
 
       Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
 
+      Dungeon_Type get_dungeon_type() const override {
+        return Dungeon_Type::original;
+      }
+
       void set_default_ownership(Ownership value) {
         this->default_ownership = value;
       }
