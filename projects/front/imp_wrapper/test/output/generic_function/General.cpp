@@ -1,5 +1,6 @@
-#include "Frog.h"
 #include "Princess.h"
+#include <memory>
+#include "Frog.h"
 #include "General.h"
 
 void General::main() {

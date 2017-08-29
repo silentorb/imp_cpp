@@ -24,9 +24,9 @@ namespace cpp_stl {
     auto &void_type = profession_library.get_void();
     auto &push_back = vector.create_function("push_back", void_type, source_point);
     auto parameter = std::unique_ptr<Owning_Parameter>(
-      new Owning_Parameter("item", profession_library.get_unknown(), source_point, push_back)
+      new Owning_Parameter("item", generic_parameter, source_point, push_back)
     );
-    graph.connect_without_adding(generic_parameter.get_node(), parameter->get_node());
+//    graph.connect_without_adding(generic_parameter.get_node(), parameter->get_node());
     push_back.add_parameter(std::move(parameter));
   }
 

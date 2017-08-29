@@ -14,11 +14,11 @@ TEST(Main_Test, pizza) {
 TEST(Main_Test, game) {
   compile("game");
   Comparison test("game");
-  test.compare("Game.cpp");
-  test.compare("Game.h");
-  test.compare("World.h");
-  test.compare("World.cpp");
-  test.compare("Creature.h");
+//  test.compare("Game.cpp");
+//  test.compare("Game.h");
+//  test.compare("World.h");
+//  test.compare("World.cpp");
+//  test.compare("Creature.h");
 }
 
 //TEST(Main_Test, generic_dungeon) {

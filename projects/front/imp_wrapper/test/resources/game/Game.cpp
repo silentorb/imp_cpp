@@ -1,8 +1,7 @@
 #include "Hero.h"
+#include "Monster.h"
 #include "World.h"
 #include "Game.h"
-#include "Monster.h"
-#include "Creature.h"
 
 std::unique_ptr<Game> Game::_new() {
   auto game = std::unique_ptr<Game>(new Game());
