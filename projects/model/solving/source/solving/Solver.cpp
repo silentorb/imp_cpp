@@ -193,7 +193,7 @@ namespace solving {
     return result;
   }
 
-  void Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
+  Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
                                        Node &starting_node, Profession &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
     professions.push_back(&profession);
@@ -204,6 +204,8 @@ namespace solving {
       );
       clone_function_graph(*variant, starting_node, profession, graph);
     }
+
+    return *variant;
   }
 
   void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
@@ -233,6 +235,19 @@ namespace solving {
     create_function_variant(variant_array, function, first, second.get_profession().get_base());
   }
 
+  void Solver::resolve_with_existing_template_function(Connection &connection) {
+    auto &first = connection.get_first();
+    auto &second = connection.get_second();
+
+    auto &function = first.get_function()->get_original();
+    auto &variant_array = profession_library.get_function_variant_array(function);
+    if (variant_array.size() == 0) {
+      auto &variant = create_function_variant(variant_array, function, first, first.get_profession().get_base());
+      set_profession(first, variant.);
+    }
+    create_function_variant(variant_array, function, first, second.get_profession().get_base());
+  }
+
   void Solver::resolve_with_template_dungeon(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
@@ -254,6 +269,13 @@ namespace solving {
     auto &first_profession = first.get_profession();
     auto &second_profession = second.get_profession();
 
+    if (first.get_profession_reference().get_element_type() == Element_Type::parameter
+        && first.get_function() != second.get_function()
+        && first.get_profession().get_type() == Profession_Type::generic_parameter) {
+      resolve_with_existing_template_function(connection);
+      return true;
+    }
+
 #if DEBUG_SOLVER
     std::cout << "C " << first.get_debug_string() << " != " << second.get_debug_string() << std::endl;
 #endif
@@ -268,12 +290,6 @@ namespace solving {
     }
     if (first_profession.get_type() == Profession_Type::generic_parameter) {
       resolve_with_template_dungeon(connection);
-      return true;
-    }
-
-    if (first.get_profession_reference().get_element_type() == Element_Type::parameter
-        && first.get_function() != second.get_function()) {
-      resolve_with_template_function(connection);
       return true;
     }
 

@@ -1,4 +1,5 @@
 #include "Hero.h"
+#include "Monster.h"
 #include "World.h"
 #include "Game.h"
 
