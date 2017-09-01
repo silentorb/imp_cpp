@@ -13,6 +13,13 @@ using namespace overworld;
 
 namespace solving {
 
+  void log_node(overworld::Node &node) {
+#if DEBUG_SOLVER
+    std::cout << node.get_debug_string();
+    std::cout << std::endl;
+#endif
+  }
+
   void Solver::add_node(Node &node) {
     if (!node.is_resolved())
       unresolved.push_back(&node);
@@ -175,8 +182,8 @@ namespace solving {
     return nullptr;
   }
 
-  std::vector<Profession *>
-  to_professions(const Generic_Parameter_Array &generic_parameters, size_t additional_space = 0) {
+  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+                                           size_t additional_space = 0) {
     std::vector<Profession *> result;
     result.reserve(generic_parameters.size() + additional_space);
     for (auto &parameter: generic_parameters) {
@@ -234,6 +241,11 @@ namespace solving {
       auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
       create_dungeon_variant(variant_array, dungeon->get_original(), first, second.get_profession());
     }
+    else {
+      auto &function = *first.get_function();
+      auto &variant_array = profession_library.get_function_variant_array(function);
+      create_function_variant(variant_array, function.get_original(), first, second.get_profession().get_base());
+    }
   }
 
   bool Solver::resolve_conflict(Connection &connection) {
@@ -241,6 +253,10 @@ namespace solving {
     auto &second = connection.get_second();
     auto &first_profession = first.get_profession();
     auto &second_profession = second.get_profession();
+
+#if DEBUG_SOLVER
+    std::cout << "C " << first.get_debug_string() << " != " << second.get_debug_string() << std::endl;
+#endif
 
     get_ancestors(first_profession, ancestors_buffer1);
     get_ancestors(second_profession, ancestors_buffer2);
@@ -366,13 +382,6 @@ namespace solving {
     return true;
   }
 
-  void log_node(overworld::Node &node) {
-#if DEBUG_SOLVER
-    std::cout << node.get_debug_string();
-    std::cout << std::endl;
-#endif
-  }
-
   unsigned int get_row(overworld::Node &node) {
     return node.get_profession_reference().get_source_point().get_row();
   }
@@ -390,6 +399,8 @@ namespace solving {
 
   void Solver::log_nodes() {
 #if DEBUG_SOLVER
+    std::cout << std::endl << "Logging nodes:" << std::endl;
+
     std::vector<overworld::Node *> nodes;
     for (auto first: graph.get_nodes()) {
       insert_node(nodes, first);
