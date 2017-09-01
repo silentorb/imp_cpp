@@ -194,7 +194,7 @@ namespace solving {
   }
 
   Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
-                                       Node &starting_node, Profession &profession) {
+                                                    Node &starting_node, Profession &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
     professions.push_back(&profession);
     auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
@@ -207,6 +207,21 @@ namespace solving {
 
     return *variant;
   }
+
+//  overworld::Dungeon_Variant &Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
+//                                                             overworld::Dungeon &dungeon,
+//                                                             overworld::Profession &profession) {
+//    auto professions = to_professions(dungeon.get_generic_parameters(), 1);
+//    professions.push_back(&profession);
+//    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
+//    if (!variant) {
+//      return Profession_Library::create_dungeon_variant(
+//        variant_array, dungeon, professions
+//      );
+//    }
+//
+//    return *variant;
+//  }
 
   void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
                                       Node &starting_node, overworld::Profession &profession) {
@@ -240,12 +255,16 @@ namespace solving {
     auto &second = connection.get_second();
 
     auto &function = first.get_function()->get_original();
-    auto &variant_array = profession_library.get_function_variant_array(function);
-    if (variant_array.size() == 0) {
-      auto &variant = create_function_variant(variant_array, function, first, first.get_profession().get_base());
-      set_profession(first, variant.);
+    auto &dungeon = function.get_node().get_dungeon()->get_original();
+    if (dungeon.get_generic_parameters().size() > 0) {
+      auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
+      create_dungeon_variant(variant_array, dungeon, first, second.get_profession().get_base());
     }
-    create_function_variant(variant_array, function, first, second.get_profession().get_base());
+    else {
+//      auto &variant_array = profession_library.get_function_variant_array(function);
+//      auto &variant = create_function_variant(variant_array, function, first, first.get_profession().get_base());
+    }
+//      set_profession(first, variant.);
   }
 
   void Solver::resolve_with_template_dungeon(Connection &connection) {
