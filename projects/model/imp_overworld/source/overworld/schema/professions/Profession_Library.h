@@ -55,6 +55,9 @@ namespace overworld {
       static Dungeon_Variant *get_dungeon_variant(Dungeon_Variant_Array &variant_array,
                                                   std::vector<Profession *> &professions);
 
+      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
+                                                           overworld::Graph &graph);
+
 //      Function_Variant &create_function_variant(Function_Interface &function, std::vector<Profession *> &professions,
 //                                                      Dungeon &dungeon, Profession &new_profession);
   };

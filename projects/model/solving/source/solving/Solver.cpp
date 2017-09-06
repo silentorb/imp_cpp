@@ -182,17 +182,6 @@ namespace solving {
     return nullptr;
   }
 
-  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
-                                           size_t additional_space = 0) {
-    std::vector<Profession *> result;
-    result.reserve(generic_parameters.size() + additional_space);
-    for (auto &parameter: generic_parameters) {
-      result.push_back(&parameter->get_profession());
-    }
-
-    return result;
-  }
-
   Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
                                                     Node &starting_node, Profession &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
@@ -207,21 +196,6 @@ namespace solving {
 
     return *variant;
   }
-
-//  overworld::Dungeon_Variant &Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
-//                                                             overworld::Dungeon &dungeon,
-//                                                             overworld::Profession &profession) {
-//    auto professions = to_professions(dungeon.get_generic_parameters(), 1);
-//    professions.push_back(&profession);
-//    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
-//    if (!variant) {
-//      return Profession_Library::create_dungeon_variant(
-//        variant_array, dungeon, professions
-//      );
-//    }
-//
-//    return *variant;
-//  }
 
   void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
                                       Node &starting_node, overworld::Profession &profession) {

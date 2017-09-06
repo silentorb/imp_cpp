@@ -70,6 +70,10 @@ namespace overworld {
       virtual Minion &get_minion(const std::string &name);
       virtual Dungeon &get_dungeon();
 
+      Dungeon *get_dungeon_if_not_function() {
+        return get_function() ? nullptr : &get_dungeon();
+      }
+
       Scope *get_parent() {
         return parent;
       }
@@ -78,7 +82,7 @@ namespace overworld {
         return parent;
       }
 
-      virtual Function * get_function() {
+      virtual Function *get_function() {
         return nullptr;
       }
 
@@ -105,7 +109,7 @@ namespace overworld {
   public:
       Function_Scope(Scope &parent, Function &function);
 
-      virtual Function * get_function() override {
+      virtual Function *get_function() override {
         return function;
       }
   };

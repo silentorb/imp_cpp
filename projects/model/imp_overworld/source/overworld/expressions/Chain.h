@@ -5,13 +5,16 @@
 
 namespace overworld {
 
-  class Chain : public virtual Expression {
+  class Chain : public Expression, public Profession_Reference {
       Expression_Owner first;
       Expression_Owner second;
+      Profession_Node <Chain> node;
 
   public:
-      Chain(Expression_Owner &first, Expression_Owner &second) :
-        first(std::move(first)), second(std::move(second)) {}
+      Chain(Expression_Owner &first, Expression_Owner &second, Dungeon_Interface *dungeon,
+            Function_Interface *function) :
+        first(std::move(first)), second(std::move(second)),
+        node(*this, this->first->get_node()->get_profession(), dungeon, function) {}
 
       virtual ~Chain() {
 
@@ -39,6 +42,26 @@ namespace overworld {
 
       bool is_statement() const override {
         return false;
+      }
+
+      Profession &get_profession() override {
+        return first->get_node()->get_profession();
+      }
+
+      const Profession &get_profession() const override {
+        return first->get_node()->get_profession();
+      }
+
+      void set_profession(Profession &value) override {
+        first->get_node()->set_profession(value);
+      }
+
+      const underworld::Source_Point &get_source_point() const override {
+        return second->get_node()->get_profession_reference().get_source_point();
+      }
+
+      const std::string get_name() const override {
+        return "chain";
       }
   };
 }

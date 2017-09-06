@@ -16,7 +16,7 @@ TEST(Main_Test, game) {
   Comparison test("game");
 //  test.compare("Game.cpp");
 //  test.compare("Game.h");
-//  test.compare("World.h");
+  test.compare("World.h");
 //  test.compare("World.cpp");
 //  test.compare("Creature.h");
 }

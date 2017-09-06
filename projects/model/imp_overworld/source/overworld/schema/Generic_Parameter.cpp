@@ -24,4 +24,15 @@ namespace overworld {
       parameter->set_name(get_generic_parameter_name(i++));
     }
   }
+
+  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+                                           size_t additional_space) {
+    std::vector<Profession *> result;
+    result.reserve(generic_parameters.size() + additional_space);
+    for (auto &parameter: generic_parameters) {
+      result.push_back(&parameter->get_profession());
+    }
+
+    return result;
+  }
 }

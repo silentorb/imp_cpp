@@ -1,12 +1,11 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 
 class Creature;
 
 class World {
-    std::vector creatures;
+    !unknown! creatures;
 
 public:
     void add_creature(std::unique_ptr<Creature> creature);

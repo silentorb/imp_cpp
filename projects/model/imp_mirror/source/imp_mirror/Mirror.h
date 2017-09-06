@@ -40,10 +40,18 @@ namespace imp_mirror {
         return const_cast<overworld::Dungeon *> (&dungeon);
       }
 
+      overworld::Dungeon_Interface *get_dungeon_interface(overworld::Expression &expression) {
+        auto &profession = expression.get_node()->get_profession_reference().get_profession();
+        auto &dungeon = cast<const overworld::Dungeon_Interface>(profession);
+        return const_cast<overworld::Dungeon_Interface *> (&dungeon);
+      }
+
       overworld::Dungeon &get_dungeon(overworld::Member &member) {
         auto &dungeon = cast<const overworld::Dungeon>(member);
         return *const_cast<overworld::Dungeon *> (&dungeon);
       }
+
+      overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
 
       void apply_node_assignment(overworld::Node &target, overworld::Node &value);
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
@@ -97,6 +105,9 @@ namespace imp_mirror {
 
       overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
                                                        overworld::Scope &scope);
+
+      overworld::Profession &reflect_dungeon_usage(const underworld::Token_Profession &profession,
+                                                   overworld::Scope &scope);
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,

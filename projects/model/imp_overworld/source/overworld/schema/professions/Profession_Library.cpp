@@ -1,4 +1,5 @@
 #include "Profession_Library.h"
+#include "cloning.h"
 
 namespace overworld {
 
@@ -137,5 +138,17 @@ namespace overworld {
 //    }
 //
 //    return nullptr;
+  }
+
+  Dungeon_Variant &Profession_Library::get_or_create_dungeon_variant(Dungeon &dungeon,
+                                                                     std::vector<Profession *> &professions,
+                                                                     overworld::Graph &graph) {
+    auto &variant_array = get_dungeon_variant_array(dungeon);
+    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
+    if (!variant) {
+      variant = &Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
+      clone_dungeon_graph(*variant, graph);
+    }
+    return *variant;
   }
 }

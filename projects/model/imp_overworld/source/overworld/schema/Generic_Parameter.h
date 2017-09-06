@@ -76,12 +76,14 @@ namespace overworld {
   };
 
   using Generic_Parameter_Owner = std::unique_ptr<Generic_Parameter>;
-  using Generic_Parameter_Array = std::vector<Generic_Parameter*>;
+  using Generic_Parameter_Array = std::vector<Generic_Parameter *>;
 
   Generic_Parameter &add_generic_parameter_to_vector(std::vector<Generic_Parameter_Owner> &generic_parameters,
                                                      Dungeon_Interface *dungeon, Function_Interface *function);
 
   void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
+  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+                                           size_t additional_space = 0);
 
 //  class Contained_Generic_Parameter : public Generic_Parameter {
 //

@@ -81,10 +81,6 @@ namespace solving {
                                                            overworld::Function &function,
                                                            Node &starting_node, overworld::Profession &profession);
 
-//      overworld::Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
-//                                                         overworld::Dungeon &dungeon,
-//                                                         overworld::Profession &profession);
-
       void create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                   overworld::Dungeon &dungeon,
                                   Node &starting_node, overworld::Profession &profession);
