@@ -64,6 +64,7 @@ namespace overworld {
 
   template<typename T>
   class Profession_Node : public Node {
+  protected:
       T &element;
       Profession *original_profession;
 

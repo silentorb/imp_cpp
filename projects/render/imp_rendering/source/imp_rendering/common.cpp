@@ -307,7 +307,8 @@ namespace imp_rendering {
         auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
         return primitive_names[(int) index];
       }
-      case overworld::Profession_Type::dungeon: {
+      case overworld::Profession_Type::dungeon:
+      case overworld::Profession_Type::variant:{
         auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
         if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
           auto &variant = dynamic_cast<const Dungeon_Variant &>(profession);

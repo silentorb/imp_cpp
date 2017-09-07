@@ -184,6 +184,13 @@ namespace imp_mirror {
     throw std::runtime_error("Expression is not a function.");
   }
 
+  overworld::Minion &find_member_container(overworld::Expression &expression) {
+    auto &chain = dynamic_cast<overworld::Chain &>(expression);
+    auto &member_expression = dynamic_cast<overworld::Member_Expression &>( chain.get_first());
+    auto &minion = *static_cast<overworld::Minion *>(&member_expression.get_member());
+    return minion;
+  }
+
   overworld::Expression_Owner Mirror::reflect_invoke(const underworld::Invoke &function_call,
                                                      overworld::Scope &scope) {
     auto &input_expression = function_call.get_expression();
@@ -198,13 +205,30 @@ namespace imp_mirror {
 
     auto &overworld_function = get_function_signature(output_expression->get_last(), arguments, scope);
 
+    auto invoke = new overworld::Invoke(output_expression, arguments,
+                                        function_call);
+    auto result = overworld::Expression_Owner(invoke);
+
     auto &parameters = overworld_function.get_parameters();
-    for (int i = 0; i < arguments.size(); ++i) {
-      graph.connect(parameters[i]->get_node(), *arguments[i]->get_node());
+    for (int i = 0; i < invoke->get_arguments().size(); ++i) {
+      auto &first = parameters[i]->get_node();
+      auto &second = *invoke->get_arguments()[i]->get_node();
+
+      if (first.get_profession_reference().get_element_type() == overworld::Element_Type::parameter
+          && first.get_function() != second.get_function()
+          && first.get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
+        auto &member_container = find_member_container(invoke->get_expression());
+        auto argument_node = new overworld::Argument_Node(first.get_profession(), member_container,
+                                                          scope.get_function(), profession_library);
+        invoke->add_argument_node(std::unique_ptr<overworld::Argument_Node>(argument_node));
+        graph.connect(*argument_node, second);
+      }
+      else {
+        graph.connect(first, second);
+      }
     }
 
-    return overworld::Expression_Owner(new overworld::Invoke(output_expression, arguments,
-                                                             function_call));
+    return result;
   }
 
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
@@ -299,7 +323,7 @@ namespace imp_mirror {
                                       scope.get_dungeon_if_not_function(),
                                       scope.get_function());
     overworld::Expression_Owner result(chain);
-    graph.connect(*first->get_node(), *second->get_node()).set_type(overworld::Connection_Type::member);
+//    graph.connect(*first->get_node(), *second->get_node()).set_type(overworld::Connection_Type::member);
     return result;
   }
 

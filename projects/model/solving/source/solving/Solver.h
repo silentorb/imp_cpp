@@ -73,7 +73,6 @@ namespace solving {
       Progress inhale(Node &node);
       void add_conflict(Connection &connection);
 
-      void resolve_with_existing_template_function(Connection &connection);
       void resolve_with_template_function(Connection &connection);
       void resolve_with_template_dungeon(Connection &connection);
 

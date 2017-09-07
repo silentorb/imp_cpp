@@ -17,9 +17,10 @@ namespace overworld {
       std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
       std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
+      Graph &graph;
 
   public:
-      Profession_Library();
+      Profession_Library(Graph &graph);
 
       static Unknown &get_unknown();
       static Void &get_void();
@@ -56,7 +57,11 @@ namespace overworld {
                                                   std::vector<Profession *> &professions);
 
       Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
-                                                           overworld::Graph &graph);
+                                                     overworld::Graph &graph);
+      Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
+                                              overworld::Dungeon &dungeon,
+                                              Node &starting_node, overworld::Profession &profession);
+      Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
 
 //      Function_Variant &create_function_variant(Function_Interface &function, std::vector<Profession *> &professions,
 //                                                      Dungeon &dungeon, Profession &new_profession);

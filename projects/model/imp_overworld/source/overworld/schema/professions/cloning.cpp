@@ -62,4 +62,5 @@ namespace overworld {
     expand<Dungeon_Functions>(*node, variant, graph, nodes);
     return *node;
   }
+
 }

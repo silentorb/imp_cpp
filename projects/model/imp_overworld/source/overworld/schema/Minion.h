@@ -11,7 +11,7 @@ namespace overworld {
 
   class Dungeon;
 
-  class Minion : public virtual Member, public virtual Profession_Reference {
+  class Minion : public Member, public virtual Profession_Reference {
 //      const underworld::Minion *source;
       Profession *profession;
       Profession_Node<Minion> node;

@@ -17,10 +17,10 @@ namespace imp_wrapper {
       underworld::Dungeon underworld_root;
       overworld::Dungeon overworld_root;
       imp_summoning::Lookup lookup;
+      overworld::Graph graph;
       overworld::Profession_Library overworld_profession_library;
       imp_mirror::Element_Map element_map;
       std::vector<std::unique_ptr<underworld::Source_File>> source_files;
-      overworld::Graph graph;
       cpp_stl::Standard_Library *standard_library;
 
   public:

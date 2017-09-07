@@ -3,16 +3,19 @@
 #include <overworld/schema/Minion.h>
 #include "Expression.h"
 #include "Member_Expression.h"
+#include "Argument_Node.h"
 #include <vector>
 #include <overworld/schema/Function.h>
 #include <underworld/expressions/Invoke.h>
 
 namespace overworld {
+
   class Invoke : public Common_Expression {
 //      Function_Signature &signature;
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
       const underworld::Invoke &source;
+      std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
@@ -44,6 +47,10 @@ namespace overworld {
 
       Expression &get_expression() const {
         return *expression;
+      }
+
+      void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
+        argument_nodes.push_back(std::move(argument_node));
       }
   };
 }
