@@ -11,12 +11,12 @@ namespace overworld {
         return *method;
     }
 
-    return create_function(get_name(), *this, underworld::Source_Point());
+    return create_function(get_name(), *this, source_mapping::Source_Point());
 //    throw std::runtime_error("Could not find constructor.");
   }
 
   Function &Dungeon::create_function(const std::string &name, Profession &profession,
-                                     const underworld::Source_Point &source_point) {
+                                     const source_mapping::Source_Point &source_point) {
     auto function = new Function(name, profession, *this, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
 //    if (!function->is_constructor())

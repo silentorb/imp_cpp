@@ -11,7 +11,7 @@ TEST(Summoning_Test, summoning) {
   Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
   underworld::Dungeon root("", nullptr);
 //  underworld::Profession_Library profession_library;
-  underworld::Source_File source_file(string(RESOURCE_PATH) + "pizza.imp");
+  source_mapping::Source_File source_file(string(RESOURCE_PATH) + "pizza.imp");
   imp_summoning::Stream stream(lexer, source_file);
   imp_summoning::Lookup lookup;
   imp_summoning::Summoner summoner(stream, lookup);

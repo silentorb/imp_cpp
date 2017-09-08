@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace underworld {
+namespace source_mapping {
 
   class Source_File {
       const std::string file_path;

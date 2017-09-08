@@ -20,7 +20,7 @@ namespace imp_summoning {
       underworld::Profession_Owner process_profession(Context &context);
       underworld::Profession_Owner parse_profession_path(std::vector<std::string> &path, Context &context);
 
-      underworld::Source_Point get_source_point() {
+      source_mapping::Source_Point get_source_point() {
         return input.get_source_point();
       }
 

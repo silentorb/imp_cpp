@@ -1,15 +1,15 @@
 #pragma once
 #include <memory>
-#include "underworld/Source_Point.h"
+#include "source_mapping/Source_Point.h"
 #include "Profession.h"
 
 namespace underworld {
 
   class Member {
-      Source_Point source_point;
+      source_mapping::Source_Point source_point;
 
   public:
-      Member(const Source_Point &source_point) : source_point(source_point) {}
+      Member(const source_mapping::Source_Point &source_point) : source_point(source_point) {}
 
       enum class Type {
           function,
@@ -21,7 +21,7 @@ namespace underworld {
       virtual const std::string get_name() const = 0;
       virtual const Profession * get_profession() const = 0;
 
-      const Source_Point &get_source_point() const {
+      const source_mapping::Source_Point &get_source_point() const {
         return source_point;
       }
 

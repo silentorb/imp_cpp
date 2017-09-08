@@ -11,7 +11,7 @@ namespace underworld {
       Profession_Owner profession;
 
   public:
-      Profession_Member(std::unique_ptr<Profession> &profession, const Source_Point &source_point) :
+      Profession_Member(std::unique_ptr<Profession> &profession, const source_mapping::Source_Point &source_point) :
         Member(source_point), profession(std::move(profession)) {
       }
 

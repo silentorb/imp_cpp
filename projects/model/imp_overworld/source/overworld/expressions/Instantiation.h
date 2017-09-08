@@ -3,18 +3,18 @@
 #include "Expression.h"
 #include "../schema/professions/Profession.h"
 #include <map>
-#include <underworld/Source_Point.h>
+#include <source_mapping/Source_Point.h>
 
 namespace overworld {
 
   class Instantiation : public Common_Expression, public virtual Profession_Reference {
       Profession *profession;
       std::map<Minion *, Expression_Owner> dictionary;
-      const underworld::Source_Point source_point;
+      const source_mapping::Source_Point source_point;
       Profession_Node <Instantiation> node;
 
   public:
-      Instantiation(Profession &profession, const underworld::Source_Point &source_point, Dungeon_Interface *dungeon,
+      Instantiation(Profession &profession, const source_mapping::Source_Point &source_point, Dungeon_Interface *dungeon,
                     Function_Interface *function) :
         profession(&profession), source_point(source_point), node(*this, profession, dungeon, function) {}
 
@@ -36,7 +36,7 @@ namespace overworld {
         return *profession;
       }
 
-      const underworld::Source_Point &get_source_point() const {
+      const source_mapping::Source_Point &get_source_point() const {
         return source_point;
       }
 

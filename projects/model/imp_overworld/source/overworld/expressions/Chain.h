@@ -56,7 +56,7 @@ namespace overworld {
         first->get_node()->set_profession(value);
       }
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return second->get_node()->get_profession_reference().get_source_point();
       }
 

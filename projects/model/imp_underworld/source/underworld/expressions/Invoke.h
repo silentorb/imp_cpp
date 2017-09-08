@@ -12,10 +12,10 @@ namespace underworld {
       Expression_Owner expression;
 //      Function &function;
       std::vector<Expression_Owner> arguments;
-      Source_Point source;
+      source_mapping::Source_Point source;
 
   public:
-      Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments, const Source_Point &source)
+      Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments, const source_mapping::Source_Point &source)
         : expression(std::move(expression)), arguments(std::move(arguments)), source(source) {}
 
       virtual ~Invoke() {

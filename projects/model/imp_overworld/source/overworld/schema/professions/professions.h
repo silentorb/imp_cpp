@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <underworld/Source_Point.h>
+#include <source_mapping/Source_Point.h>
 #include <overworld/schema/Dungeon.h>
 #include "Profession.h"
 

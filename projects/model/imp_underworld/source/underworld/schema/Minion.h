@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <underworld/Source_Point.h>
+#include <source_mapping/Source_Point.h>
 #include "Member.h"
 #include "primitives.h"
 
@@ -13,10 +13,10 @@ namespace underworld {
       bool _is_static = false;
 
   public:
-      Minion(const std::string &name, Profession_Owner &profession, const Source_Point &source_point) :
+      Minion(const std::string &name, Profession_Owner &profession, const source_mapping::Source_Point &source_point) :
         name(name), profession(std::move(profession)), Member(source_point) {}
 
-      Minion(const std::string &name, const Source_Point &source_point) :
+      Minion(const std::string &name, const source_mapping::Source_Point &source_point) :
         name(name), Member(source_point) {}
 
       Type get_type() const override {

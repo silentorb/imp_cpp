@@ -6,7 +6,7 @@
 #include <overworld/schema/professions/Profession_Library.h>
 #include <imp_summoning/Lookup.h>
 #include <imp_mirror/Element_Map.h>
-#include <underworld/Source_Point.h>
+#include <source_mapping/Source_Point.h>
 #include <overworld/imp_graph/Graph.h>
 #include <imp_mirror/Temporary_Interface_Manager.h>
 #include <cpp_stl/Standard_Library.h>
@@ -20,7 +20,7 @@ namespace imp_wrapper {
       overworld::Graph graph;
       overworld::Profession_Library overworld_profession_library;
       imp_mirror::Element_Map element_map;
-      std::vector<std::unique_ptr<underworld::Source_File>> source_files;
+      std::vector<std::unique_ptr<source_mapping::Source_File>> source_files;
       cpp_stl::Standard_Library *standard_library;
 
   public:

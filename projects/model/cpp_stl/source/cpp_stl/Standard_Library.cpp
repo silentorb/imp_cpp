@@ -15,7 +15,7 @@ namespace cpp_stl {
   }
 
   void Standard_Library::initialize_vector(overworld::Profession_Library &profession_library, overworld::Graph &graph) {
-    underworld::Source_Point source_point(standard_library_file, 0, 0);
+    source_mapping::Source_Point source_point(standard_library_file, 0, 0);
     auto &vector = add_dungeon(std::unique_ptr<Dungeon>(new Cpp_Dungeon("vector", "std::vector", *this)));
     vector_type = &vector;
     vector.set_file(vector_file);
@@ -31,7 +31,7 @@ namespace cpp_stl {
   }
 
   void Standard_Library::initialize(overworld::Profession_Library &profession_library, overworld::Graph &graph) {
-    underworld::Source_Point source_point(standard_library_file, 0, 0);
+    source_mapping::Source_Point source_point(standard_library_file, 0, 0);
 
     initialize_vector(profession_library, graph);
 

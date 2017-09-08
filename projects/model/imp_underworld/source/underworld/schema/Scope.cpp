@@ -12,7 +12,7 @@ namespace underworld {
   }
 
   Function &Scope::create_function(const std::string &member_name, Profession_Owner &profession,
-                                   const Source_Point &source) {
+                                   const source_mapping::Source_Point &source) {
     auto function = new Function(member_name, profession, source, *this);
     check_has_member(function->get_name());
 
@@ -26,7 +26,7 @@ namespace underworld {
     members[minion->get_name()] = std::move(minion);
   }
 
-  Minion &Scope::create_minion(const std::string &name, const Source_Point &source) {
+  Minion &Scope::create_minion(const std::string &name, const source_mapping::Source_Point &source) {
     check_has_member(name);
 
     auto portal = new Minion(name, source);
@@ -34,7 +34,7 @@ namespace underworld {
     return *portal;
   }
 
-  Profession_Member &Scope::add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source) {
+  Profession_Member &Scope::add_profession(std::unique_ptr<Profession> &profession, const source_mapping::Source_Point &source) {
     auto &prof = *profession;
     auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
     auto &result = *member;
@@ -42,7 +42,7 @@ namespace underworld {
     return result;
   }
 
-//  Dungeon &Scope::create_dungeon(const std::string &name, const Source_Point &source) {
+//  Dungeon &Scope::create_dungeon(const std::string &name, const source_mapping::Source_Point &source) {
 //    auto dungeon = new Dungeon(name, this);
 //    auto pointer = unique_ptr<Profession>(dungeon);
 //    add_profession(pointer, source);

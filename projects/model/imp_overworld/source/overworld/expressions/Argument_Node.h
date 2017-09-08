@@ -8,7 +8,7 @@ namespace overworld {
 
   class Argument_Node : public Profession_Node<Argument_Node>, public Profession_Reference {
       Profession *profession;
-      underworld::Source_Point source_point;
+      source_mapping::Source_Point source_point;
       Minion &member_container;
       Profession_Library &profession_library;
 
@@ -28,7 +28,7 @@ namespace overworld {
 
       void set_profession(Profession &value) override;
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return source_point;
       }
 

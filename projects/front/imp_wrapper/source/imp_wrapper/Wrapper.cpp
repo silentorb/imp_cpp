@@ -22,8 +22,8 @@ namespace imp_wrapper {
 
   void Wrapper::load_file(const std::string &path) {
     runic_imp::Imp_Lexer lexer(new runic::File_Text_Source<>(path));
-    auto source_file = new underworld::Source_File(path);
-    source_files.push_back(std::unique_ptr<underworld::Source_File>(source_file));
+    auto source_file = new source_mapping::Source_File(path);
+    source_files.push_back(std::unique_ptr<source_mapping::Source_File>(source_file));
     imp_summoning::Stream stream(lexer, *source_file);
     imp_summoning::Summoner summoner(stream, lookup);
     summoner.summon(underworld_root);
@@ -35,15 +35,7 @@ namespace imp_wrapper {
   }
 
   void log_node(overworld::Node &node) {
-//    auto &profession_reference = node.get_profession_reference();
-//    auto &profession = profession_reference.get_profession();
-//    auto & source_point =profession_reference.get_source_point();
-//
-//    if (source_point.get_source_file())
-//      std::cout << source_point.get_row() << ":" << source_point.get_column() << " ";
-
     std::cout << node.get_debug_string();
-
     std::cout << std::endl;
   }
 

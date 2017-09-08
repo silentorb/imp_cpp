@@ -9,7 +9,7 @@ namespace imp_summoning {
 
   struct Identifier {
       const std::string name;
-      const underworld::Source_Point source_point;
+      const source_mapping::Source_Point source_point;
   };
 
   class Summoner : public Base_Summoner {

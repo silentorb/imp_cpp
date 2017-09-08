@@ -1,9 +1,9 @@
-#include <runic/matching.h>
-#include "Imp_Lexer.h"
+#include <runic_cpp/matching.h>
+#include "Cpp_Lexer.h"
 
 using namespace std;
 
-namespace runic_imp {
+namespace runic_cpp {
 
   static const char End_Of_File = 0;
 
@@ -12,19 +12,19 @@ namespace runic_imp {
       Premature_End_Of_File() : runtime_error("Premature end of file during lexing.") {}
   };
 
-  Imp_Lexer::Imp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source) :
+  Cpp_Lexer::Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source) :
     lexer(source),
     lexicon(Lexicon::get_instance()) {}
 
-  Imp_Lexer::Imp_Lexer(runic::Text_Source<Char> *source) :
+  Cpp_Lexer::Cpp_Lexer(runic::Text_Source<Char> *source) :
     lexer(source),
     lexicon(Lexicon::get_instance()) {}
 
   bool is_whitespace_or_semicolon(char value) {
-    return runic::matching::is_whitespace(value) || value == ';';
+    return runic_cpp::matching::is_whitespace(value) || value == ';';
   }
 
-  void Imp_Lexer::consume_whitespace() {
+  void Cpp_Lexer::consume_whitespace() {
     Char value = lexer.get_character();
     if (value == '\n' || value == ';')
       follows_whitespace = true;
@@ -49,7 +49,7 @@ namespace runic_imp {
     return false;
   }
 
-  bool Imp_Lexer::match_special_symbols(Match &result) {
+  bool Cpp_Lexer::match_special_symbols(Match &result) {
     auto &first = lexer.get_character();
     if (lookup(lexicon.lookup.single_symbols, first, result)) {
       const char data[3] = {first, lexer.next_character(), 0};
@@ -63,12 +63,12 @@ namespace runic_imp {
     return false;
   }
 
-  void Imp_Lexer::match_identifier(Match &result) {
+  void Cpp_Lexer::match_identifier(Match &result) {
 //    token.get_range().set_start(lexer.get_position());
     std::string text(1, lexer.get_character());
     Char value;
 
-    while (runic::matching::is_identifier_continuing(value = lexer.next_character())) {
+    while (runic_cpp::matching::is_identifier_continuing(value = lexer.next_character())) {
       text += value;
     }
 
@@ -79,12 +79,12 @@ namespace runic_imp {
     result.set_text(text);
   }
 
-  void Imp_Lexer::match_number(Match &result) {
+  void Cpp_Lexer::match_number(Match &result) {
     std::string text(1, lexer.get_character());
     Char value;
     bool has_dot = false;
 
-    while (runic::matching::is_number_continuing(value = lexer.next_character())) {
+    while (runic_cpp::matching::is_number_continuing(value = lexer.next_character())) {
       text += value;
       if (value == '.') {
         if (has_dot)
@@ -93,7 +93,7 @@ namespace runic_imp {
         has_dot = true;
       }
       if (value == 'f') {
-        if (runic::matching::is_identifier_continuing(lexer.next_character()))
+        if (runic_cpp::matching::is_identifier_continuing(lexer.next_character()))
           throw runtime_error("Invalid numeric character.");
 
         result.set_type(lexicon.patterns.literal_float);
@@ -119,7 +119,7 @@ namespace runic_imp {
     return value != '"' || last_value == '\\';
   }
 
-  void Imp_Lexer::match_string(Match &result) {
+  void Cpp_Lexer::match_string(Match &result) {
     std::string text;
     Char value = '"';
 
@@ -138,11 +138,11 @@ namespace runic_imp {
     return value != '\n' && value != End_Of_File;
   }
 
-  void Imp_Lexer::consume_to_end_of_line() {
+  void Cpp_Lexer::consume_to_end_of_line() {
     while (lexer.next_character() != End_Of_File && lexer.get_character() != '\n');
   }
 
-  Token_Result Imp_Lexer::match_comment_or_division(Match &result) {
+  Token_Result Cpp_Lexer::match_comment_or_division(Match &result) {
     if (lexer.next_character() == '/') {
       consume_to_end_of_line();
       return Token_Result::loop;
@@ -157,13 +157,13 @@ namespace runic_imp {
     return Token_Result::token;
   }
 
-  Token_Result Imp_Lexer::match_non_whitespace(Match &result) {
+  Token_Result Cpp_Lexer::match_non_whitespace(Match &result) {
     auto &value = lexer.get_character();
 
-    if (runic::matching::is_identifier_start(value)) {
+    if (runic_cpp::matching::is_identifier_start(value)) {
       match_identifier(result);
     }
-    else if (runic::matching::is_number_start(value)) {
+    else if (runic_cpp::matching::is_number_start(value)) {
       match_number(result);
     }
     else if (value == '/') {
@@ -181,7 +181,7 @@ namespace runic_imp {
     return Token_Result::token;
   }
 
-  bool Imp_Lexer::match_any(Match &result, Token &token) {
+  bool Cpp_Lexer::match_any(Match &result, Token &token) {
     do {
       auto &value = lexer.get_character();
 
@@ -199,7 +199,7 @@ namespace runic_imp {
     return true;
   }
 
-  bool Imp_Lexer::next_token(Token &token) {
+  bool Cpp_Lexer::next_token(Token &token) {
     follows_whitespace = false;
     auto &result = token.get_match();
     if (!match_any(result, token)) {
@@ -216,7 +216,7 @@ namespace runic_imp {
     return true;
   }
 
-  void Imp_Lexer::get_all_tokens(std::vector<Token> &tokens) {
+  void Cpp_Lexer::get_all_tokens(std::vector<Token> &tokens) {
     Token token;
     while (next_token(token)) {
       tokens.push_back(token);

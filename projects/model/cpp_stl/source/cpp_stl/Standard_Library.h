@@ -5,7 +5,7 @@
 namespace cpp_stl {
 
   class Standard_Library : public overworld::Dungeon {
-      underworld::Source_File standard_library_file;
+      source_mapping::Source_File standard_library_file;
       overworld::External_File vector_file;
       overworld::External_File string_file;
       overworld::External_File memory_file;
@@ -21,7 +21,7 @@ namespace cpp_stl {
 
       void initialize(overworld::Profession_Library &profession_library, overworld::Graph &graph);
 
-      const underworld::Source_File &get_source_file() const {
+      const source_mapping::Source_File &get_source_file() const {
         return standard_library_file;
       }
 

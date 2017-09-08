@@ -49,19 +49,19 @@ namespace overworld {
       const std::string name;
       bool _is_static = false;
       bool returns_a_value() const;
-      const underworld::Source_Point source_point;
+      const source_mapping::Source_Point source_point;
       std::vector<Generic_Parameter_Owner> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
 
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope, Dungeon_Interface &dungeon,
-               const underworld::Source_Point &source_point) :
+               const source_mapping::Source_Point &source_point) :
         name(name), signature(node, &return_type),
         scope(parent_scope, *this), block(scope),
         node(*this, return_type, &dungeon, this), source_point(source_point) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
-               const underworld::Source_Point &source_point) :
+               const source_mapping::Source_Point &source_point) :
         name(name), signature(node, nullptr),
         scope(parent_scope, *this), block(scope),
         node(*this, Profession_Library::get_void(), &dungeon, this), source_point(source_point) {}
@@ -119,7 +119,7 @@ namespace overworld {
         signature.set_return_type(value);
       }
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return source_point;
       }
 

@@ -1,2 +1,2 @@
 create_library(runic_imp)
-require(runic runic_cpp)
+require(runic)

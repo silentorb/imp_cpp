@@ -9,7 +9,7 @@ namespace underworld {
 
   class Parameter : public Minion {
   public:
-      Parameter(const std::string &name, Profession_Owner &profession, const Source_Point &source_point)
+      Parameter(const std::string &name, Profession_Owner &profession, const source_mapping::Source_Point &source_point)
         : Minion(name, profession, source_point) {}
 
       bool is_parameter() const override {
@@ -25,7 +25,7 @@ namespace underworld {
       bool _is_static = false;
 
   public:
-      Function(const std::string &name, Profession_Owner &return_type, const Source_Point &source, Scope &parent) :
+      Function(const std::string &name, Profession_Owner &return_type, const source_mapping::Source_Point &source, Scope &parent) :
         name(name), return_type(std::move(return_type)), Member(source), block(parent) {}
 
       Block &get_block() {
@@ -44,7 +44,7 @@ namespace underworld {
         return name;
       }
 
-      Parameter &add_parameter(const std::string &name, Profession_Owner &profession, const Source_Point &source);
+      Parameter &add_parameter(const std::string &name, Profession_Owner &profession, const source_mapping::Source_Point &source);
 
       const std::vector<Parameter *> &get_parameters() const {
         return parameters;

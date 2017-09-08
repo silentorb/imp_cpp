@@ -8,7 +8,7 @@ namespace overworld {
   class Function_Interface;
 
   class Generic_Parameter : public virtual Profession_Reference, public virtual Profession {
-      underworld::Source_Point source_point;
+      source_mapping::Source_Point source_point;
       std::string name;
       Profession_Node <Generic_Parameter> node;
 
@@ -46,7 +46,7 @@ namespace overworld {
         throw std::runtime_error("Not supported");
       }
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return source_point;
       }
 

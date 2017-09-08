@@ -130,7 +130,7 @@ namespace overworld {
         profession = &value;
       }
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return original.get_profession_reference().get_source_point();
       }
 

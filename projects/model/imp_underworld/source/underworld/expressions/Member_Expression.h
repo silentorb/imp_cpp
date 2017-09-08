@@ -7,10 +7,10 @@ namespace underworld {
 
   class Member_Expression : public virtual Common_Expression {
       const std::string name;
-      Source_Point point;
+      source_mapping::Source_Point point;
 
   public:
-      Member_Expression(const std::string &name, const Source_Point &point) :
+      Member_Expression(const std::string &name, const source_mapping::Source_Point &point) :
         name(name), point(point) {}
 
       virtual ~Member_Expression() {
@@ -25,7 +25,7 @@ namespace underworld {
         return name;
       }
 
-      const Source_Point &get_source_point() const {
+      const source_mapping::Source_Point &get_source_point() const {
         return point;
       }
   };

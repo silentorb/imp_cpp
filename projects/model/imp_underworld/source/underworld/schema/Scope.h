@@ -29,12 +29,12 @@ namespace underworld {
       Scope(Scope *parent) : parent(parent) {}
 
       Function &create_function(const std::string &member_name, Profession_Owner &profession,
-                                const Source_Point &source);
-      Minion &create_minion(const std::string &name, const Source_Point &source);
-      Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const Source_Point &source);
+                                const source_mapping::Source_Point &source);
+      Minion &create_minion(const std::string &name, const source_mapping::Source_Point &source);
+      Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const source_mapping::Source_Point &source);
       void add_minion(std::unique_ptr<Minion> minion);
 
-//      Dungeon &create_dungeon(const std::string &name, const Source_Point &source);
+//      Dungeon &create_dungeon(const std::string &name, const source_mapping::Source_Point &source);
 
       std::map<std::string, Member_Owner> &get_members() {
         return members;

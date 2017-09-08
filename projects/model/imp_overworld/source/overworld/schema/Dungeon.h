@@ -19,7 +19,7 @@ namespace overworld {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
       const std::string name;
-      const underworld::Source_Point source_point;
+      const source_mapping::Source_Point source_point;
       bool _is_external = false;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
@@ -31,7 +31,7 @@ namespace overworld {
       Dungeon(const std::string &name, Scope &parent) :
         name(name), Scope(nullptr, &parent), node(*this, *this, this, nullptr) {}
 
-      Dungeon(const std::string &name, Scope &parent, const underworld::Source_Point source_point) :
+      Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Point source_point) :
         name(name), Scope(nullptr, &parent), node(*this, *this, this, nullptr), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
@@ -93,7 +93,7 @@ namespace overworld {
         return *this;
       }
 
-      const underworld::Source_Point &get_source_point() const override {
+      const source_mapping::Source_Point &get_source_point() const override {
         return source_point;
       }
 
@@ -165,7 +165,7 @@ namespace overworld {
       }
 
       Function &create_function(const std::string &name, Profession &profession,
-                                const underworld::Source_Point &source_point = underworld::Source_Point());
+                                const source_mapping::Source_Point &source_point = source_mapping::Source_Point());
 
       Scope_Type get_scope_type() const override {
         return Scope_Type::dungeon;

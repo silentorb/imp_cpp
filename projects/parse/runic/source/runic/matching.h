@@ -1,6 +1,6 @@
 #pragma once
 
-namespace runic_cpp {
+namespace runic {
   namespace matching {
 
 
