@@ -51,4 +51,13 @@ add_subdirectory(projects/front/imp_wrapper/test)
 
 add_subdirectory(${CMAKE_BOOST_DIR}/projects/system projects2/system)
 
+macro(add_if_exists dir)
+  if (EXISTS ${CMAKE_SOURCE_DIR}/${dir})
+    message("Adding ${dir}")
+    add_subdirectory(${dir})
+  endif ()
+endmacro()
+
+add_if_exists(projects/front/imp_wrapper/test/output/game)
+
 finish_cmake()

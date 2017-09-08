@@ -25,6 +25,40 @@ namespace imp_rendering {
     "void"
   };
 
+  enum class Reference_Type {
+      none,
+      pointer,
+      reference
+  };
+
+  Reference_Type get_reference_type(const Profession &profession) {
+    if (profession.get_type() == Profession_Type::reference) {
+      auto &reference = dynamic_cast<const Reference &>(profession);
+      return reference.is_pointer()
+             ? Reference_Type::pointer
+             : Reference_Type::reference;
+    }
+    return Reference_Type::none;
+  }
+
+  Reference_Type get_reference_type(const Expression &expression) {
+    if (expression.get_type() == Expression::Type::self)
+      return Reference_Type::pointer;
+
+    return get_reference_type(const_cast<Expression&>(expression).get_node()->get_profession());
+  }
+
+  template<typename A, typename B>
+  const std::string render_cast(const A &target, const B &source, const std::string &text) {
+    auto target_type = get_reference_type(target);
+    auto source_type = get_reference_type(source);
+
+    if (target_type == Reference_Type::reference && source_type == Reference_Type::pointer)
+      return "*" + text;
+
+    return text;
+  }
+
   const std::string render_reference_symbol(const Reference &reference) {
     return reference.is_pointer() ? "*" : "&";
   }
@@ -138,7 +172,7 @@ namespace imp_rendering {
     if (parameter.transfers_ownership())
       return "std::move(" + result + ")";
 
-    return result;
+    return render_cast(parameter.get_profession(), argument, result);
   }
 
   const std::string render_function_call(const overworld::Invoke &function_call) {
@@ -308,7 +342,7 @@ namespace imp_rendering {
         return primitive_names[(int) index];
       }
       case overworld::Profession_Type::dungeon:
-      case overworld::Profession_Type::variant:{
+      case overworld::Profession_Type::variant: {
         auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
         if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
           auto &variant = dynamic_cast<const Dungeon_Variant &>(profession);

@@ -45,14 +45,15 @@ public:
     Comparison(const string &name) : name(name) {}
 
     void compare(const std::string &filename) {
-      _compare(string(RESOURCE_PATH) + name + "/" + filename, string(OUTPUT_PATH) + name + "/" + filename);
+      _compare(string(RESOURCE_PATH) + name + "/" + filename, string(OUTPUT_PATH) + name + "/source/" + filename);
     }
 };
 
-
 void compile(const std::string &input_name) {
-  auto full_output_path = string(OUTPUT_PATH) + '/' + input_name;
+  string output_folder = string(OUTPUT_PATH) + '/' + input_name;
+  auto full_output_path = output_folder + "/source";
   boost::filesystem::create_directory(string(OUTPUT_PATH));
+  boost::filesystem::create_directory(output_folder);
   boost::filesystem::create_directory(full_output_path);
   imp_wrapper::Wrapper wrapper;
   imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
@@ -60,4 +61,9 @@ void compile(const std::string &input_name) {
   wrapper.mirror(temporary_interface_manager);
   wrapper.solve();
   wrapper.render(full_output_path);
+  std::ofstream output_stream(output_folder + "/CMakeLists.txt", std::ios_base::binary | std::ios_base::out);
+  if (output_stream.is_open()) {
+    output_stream << "create_library(generated_" + input_name + "_test)";
+    output_stream.close();
+  }
 }

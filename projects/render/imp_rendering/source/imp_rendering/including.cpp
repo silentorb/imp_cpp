@@ -44,6 +44,10 @@ namespace imp_rendering {
         references(references), dungeon(dungeon) {}
 
       void add_full(const Profession &profession) {
+        if (profession.get_type() == Profession_Type::variant) {
+          add_full(dynamic_cast<const Dungeon_Variant &>(profession).get_original());
+          return;
+        }
         if (&profession == &dungeon || !needs_reference(profession))
           return;
 
@@ -136,6 +140,10 @@ namespace imp_rendering {
       }
 
       void gather_header_references() {
+        if (dungeon.get_base_dungeon()) {
+          helper.add_full(*dungeon.get_base_dungeon());
+        }
+
         for (auto &function : dungeon.get_functions()) {
           process_function_declaration(*function);
           if (function->is_inline()) {

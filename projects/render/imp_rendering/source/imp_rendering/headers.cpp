@@ -68,8 +68,16 @@ namespace imp_rendering {
         }
     };
 
+    std::string render_dungeon_definition_header(const overworld::Dungeon &dungeon) {
+      string ancestors = "";
+      if (dungeon.get_base_dungeon()) {
+        ancestors = " : public " + dungeon.get_base_dungeon()->get_cpp_name();
+      }
+      return "class " + dungeon.get_name() + ancestors;
+    }
+
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
-      Stroke block(new Class_Block("class " + dungeon.get_name()));
+      Stroke block(new Class_Block(render_dungeon_definition_header(dungeon)));
       Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
@@ -95,7 +103,10 @@ namespace imp_rendering {
       }
 
       block.add(private_block);
-      block.add(public_block);
+
+      if (dungeon.get_minions().size() + dungeon.get_functions().size() > 0) {
+        block.add(public_block);
+      }
       return block;
     }
 
