@@ -36,8 +36,8 @@ namespace runic_cpp {
       bool match_any(Match &result, Token &token);
 
   public:
-      Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source);
-      Cpp_Lexer(runic::Text_Source<Char> *source);
+      Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> source);
+//      Cpp_Lexer(runic::Text_Source<Char> *source);
       bool next_token(Token &token);
       void get_all_tokens(std::vector<Token> &tokens);
 

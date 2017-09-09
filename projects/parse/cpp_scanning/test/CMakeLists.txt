@@ -1,0 +1,4 @@
+create_executable(cpp_scanning_test)
+require(cpp_scanning boost_filesystem googletest)
+
+add_definitions(-DIMP_ROOT=\"${imp_root}\")

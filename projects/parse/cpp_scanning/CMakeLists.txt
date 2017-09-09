@@ -1,2 +1,2 @@
-create_library(cpp_header_scanning)
+create_library(cpp_scanning)
 require(runic runic_cpp source_mapping)

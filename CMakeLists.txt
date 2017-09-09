@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.6)
 enable_language(CXX) # SINCE Compiler/Platform variables do not normally exist before a project command in CMake.
 
+set(imp_root ${CMAKE_SOURCE_DIR})
 get_filename_component(PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 get_filename_component(CPP_ROOT "../.." ABSOLUTE)
-
 include(config.cmake)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -50,6 +50,7 @@ add_subdirectory(projects/parse/runic_imp/test)
 add_subdirectory(projects/parse/imp_summoning/test)
 add_subdirectory(projects/model/imp_mirror/test)
 add_subdirectory(projects/front/imp_wrapper/test)
+add_subdirectory(projects/parse/cpp_scanning/test)
 
 add_subdirectory(${CMAKE_BOOST_DIR}/projects/system projects2/system)
 

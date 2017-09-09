@@ -1,4 +1,4 @@
-#include <runic_cpp/matching.h>
+#include <runic/matching.h>
 #include "Cpp_Lexer.h"
 
 using namespace std;
@@ -12,16 +12,16 @@ namespace runic_cpp {
       Premature_End_Of_File() : runtime_error("Premature end of file during lexing.") {}
   };
 
-  Cpp_Lexer::Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source) :
+  Cpp_Lexer::Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> source) :
     lexer(source),
     lexicon(Lexicon::get_instance()) {}
 
-  Cpp_Lexer::Cpp_Lexer(runic::Text_Source<Char> *source) :
-    lexer(source),
-    lexicon(Lexicon::get_instance()) {}
+//  Cpp_Lexer::Cpp_Lexer(runic::Text_Source<Char> *source) :
+//    lexer(source),
+//    lexicon(Lexicon::get_instance()) {}
 
   bool is_whitespace_or_semicolon(char value) {
-    return runic_cpp::matching::is_whitespace(value) || value == ';';
+    return runic::matching::is_whitespace(value) || value == ';';
   }
 
   void Cpp_Lexer::consume_whitespace() {
@@ -68,7 +68,7 @@ namespace runic_cpp {
     std::string text(1, lexer.get_character());
     Char value;
 
-    while (runic_cpp::matching::is_identifier_continuing(value = lexer.next_character())) {
+    while (runic::matching::is_identifier_continuing(value = lexer.next_character())) {
       text += value;
     }
 
@@ -84,7 +84,7 @@ namespace runic_cpp {
     Char value;
     bool has_dot = false;
 
-    while (runic_cpp::matching::is_number_continuing(value = lexer.next_character())) {
+    while (runic::matching::is_number_continuing(value = lexer.next_character())) {
       text += value;
       if (value == '.') {
         if (has_dot)
@@ -93,7 +93,7 @@ namespace runic_cpp {
         has_dot = true;
       }
       if (value == 'f') {
-        if (runic_cpp::matching::is_identifier_continuing(lexer.next_character()))
+        if (runic::matching::is_identifier_continuing(lexer.next_character()))
           throw runtime_error("Invalid numeric character.");
 
         result.set_type(lexicon.patterns.literal_float);
@@ -160,10 +160,10 @@ namespace runic_cpp {
   Token_Result Cpp_Lexer::match_non_whitespace(Match &result) {
     auto &value = lexer.get_character();
 
-    if (runic_cpp::matching::is_identifier_start(value)) {
+    if (runic::matching::is_identifier_start(value)) {
       match_identifier(result);
     }
-    else if (runic_cpp::matching::is_number_start(value)) {
+    else if (runic::matching::is_number_start(value)) {
       match_number(result);
     }
     else if (value == '/') {
