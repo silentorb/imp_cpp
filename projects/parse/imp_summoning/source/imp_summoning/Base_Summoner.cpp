@@ -1,5 +1,5 @@
 #include "Base_Summoner.h"
-#include "exceptions.h"
+#include "runic/common/exceptions.h"
 
 using namespace std;
 using namespace underworld;
@@ -9,7 +9,7 @@ namespace imp_summoning {
   Base_Summoner::Base_Summoner(Stream &input, Lookup &lookup) :
     input(input),
     lookup(lookup),
-    lexicon(runic_imp::Lexicon::get_instance().patterns) {
+    lexicon(runic_imp::Common_Lexicon::get_instance().patterns) {
 
   }
 

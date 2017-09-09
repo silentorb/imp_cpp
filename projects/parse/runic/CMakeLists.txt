@@ -1,1 +1,2 @@
 create_header_library(runic)
+require(source_mapping)

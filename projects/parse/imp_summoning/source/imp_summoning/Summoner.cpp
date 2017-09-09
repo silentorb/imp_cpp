@@ -1,5 +1,5 @@
 #include "Summoner.h"
-#include "exceptions.h"
+#include "runic/common/exceptions.h"
 #include "Expression_Summoner.h"
 #include <underworld/schema/Function.h>
 #include <underworld/expressions/Literal.h>

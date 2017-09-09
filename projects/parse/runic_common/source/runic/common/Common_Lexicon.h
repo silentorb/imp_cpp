@@ -4,7 +4,7 @@
 #include "Whisper.h"
 #include <set>
 
-namespace runic_imp {
+namespace runic {
 
   using Whisper_Dictionary = std::map<std::string, const Whisper *>;
   using Whisper_Dictionary_Char = std::map<char, const Whisper *>;
@@ -98,7 +98,7 @@ namespace runic_imp {
       Whisper_Dictionary_Char single_symbols;
   };
 
-  class Lexicon {
+  class Common_Lexicon {
 
       struct Internal_Symbols {
           Keywords keywords;
@@ -114,7 +114,7 @@ namespace runic_imp {
       Lookup lookup;
       const Symbols &patterns;
 
-      Lexicon();
-      static Lexicon &get_instance();
+      Common_Lexicon();
+      static Common_Lexicon &get_instance();
   };
 }

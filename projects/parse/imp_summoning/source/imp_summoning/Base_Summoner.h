@@ -2,7 +2,7 @@
 
 #include <underworld/schema/Profession_Library.h>
 #include <underworld/schema/Member.h>
-#include "Stream.h"
+#include "runic/common/Stream.h"
 #include "Lookup.h"
 #include "Context.h"
 

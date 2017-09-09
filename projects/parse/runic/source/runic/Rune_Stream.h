@@ -2,6 +2,7 @@
 
 #include <list>
 #include "exceptions.h"
+#include "Position.h"
 
 namespace runic {
 

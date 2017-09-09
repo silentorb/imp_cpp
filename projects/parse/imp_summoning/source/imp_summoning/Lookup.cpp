@@ -1,4 +1,4 @@
-#include <runic_imp/Lexicon.h>
+#include "runic/common/Common_Lexicon.h"
 #include "Lookup.h"
 
 using namespace underworld;
@@ -6,7 +6,7 @@ using namespace underworld;
 namespace imp_summoning {
 
   Lookup::Lookup() :
-    lexicon(runic_imp::Lexicon::get_instance().patterns),
+    lexicon(runic_imp::Common_Lexicon::get_instance().patterns),
         primitive_map(
       {
         {&lexicon.Bool, Primitive_Type::Bool},

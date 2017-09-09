@@ -1,9 +1,9 @@
 #include <runic/matching.h>
-#include "Imp_Lexer.h"
+#include "Common_Lexer.h"
 
 using namespace std;
 
-namespace runic_imp {
+namespace runic {
 
   static const char End_Of_File = 0;
 
@@ -12,19 +12,19 @@ namespace runic_imp {
       Premature_End_Of_File() : runtime_error("Premature end of file during lexing.") {}
   };
 
-  Imp_Lexer::Imp_Lexer(std::unique_ptr<runic::Text_Source<Char>> &source) :
+  Common_Lexer::Common_Lexer(std::unique_ptr<runic::Text_Source<Char>> source) :
     lexer(source),
-    lexicon(Lexicon::get_instance()) {}
+    lexicon(runic::Common_Lexicon::get_instance()) {}
 
-  Imp_Lexer::Imp_Lexer(runic::Text_Source<Char> *source) :
-    lexer(source),
-    lexicon(Lexicon::get_instance()) {}
+//  Common_Lexer::Common_Lexer(runic::Text_Source<Char> *source) :
+//    lexer(source),
+//    lexicon(runic::Common_Lexicon::get_instance()) {}
 
   bool is_whitespace_or_semicolon(char value) {
     return runic::matching::is_whitespace(value) || value == ';';
   }
 
-  void Imp_Lexer::consume_whitespace() {
+  void Common_Lexer::consume_whitespace(bool &follows_whitespace) {
     Char value = lexer.get_character();
     if (value == '\n' || value == ';')
       follows_whitespace = true;
@@ -49,7 +49,7 @@ namespace runic_imp {
     return false;
   }
 
-  bool Imp_Lexer::match_special_symbols(Match &result) {
+  bool Common_Lexer::match_special_symbols(Match &result) {
     auto &first = lexer.get_character();
     if (lookup(lexicon.lookup.single_symbols, first, result)) {
       const char data[3] = {first, lexer.next_character(), 0};
@@ -63,7 +63,7 @@ namespace runic_imp {
     return false;
   }
 
-  void Imp_Lexer::match_identifier(Match &result) {
+  void Common_Lexer::match_identifier(Match &result) {
 //    token.get_range().set_start(lexer.get_position());
     std::string text(1, lexer.get_character());
     Char value;
@@ -79,7 +79,7 @@ namespace runic_imp {
     result.set_text(text);
   }
 
-  void Imp_Lexer::match_number(Match &result) {
+  void Common_Lexer::match_number(Match &result) {
     std::string text(1, lexer.get_character());
     Char value;
     bool has_dot = false;
@@ -119,7 +119,7 @@ namespace runic_imp {
     return value != '"' || last_value == '\\';
   }
 
-  void Imp_Lexer::match_string(Match &result) {
+  void Common_Lexer::match_string(Match &result) {
     std::string text;
     Char value = '"';
 
@@ -138,11 +138,11 @@ namespace runic_imp {
     return value != '\n' && value != End_Of_File;
   }
 
-  void Imp_Lexer::consume_to_end_of_line() {
+  void Common_Lexer::consume_to_end_of_line() {
     while (lexer.next_character() != End_Of_File && lexer.get_character() != '\n');
   }
 
-  Token_Result Imp_Lexer::match_comment_or_division(Match &result) {
+  Token_Result Common_Lexer::match_comment_or_division(Match &result) {
     if (lexer.next_character() == '/') {
       consume_to_end_of_line();
       return Token_Result::loop;
@@ -157,7 +157,7 @@ namespace runic_imp {
     return Token_Result::token;
   }
 
-  Token_Result Imp_Lexer::match_non_whitespace(Match &result) {
+  Token_Result Common_Lexer::match_non_whitespace(Match &result) {
     auto &value = lexer.get_character();
 
     if (runic::matching::is_identifier_start(value)) {
@@ -181,12 +181,12 @@ namespace runic_imp {
     return Token_Result::token;
   }
 
-  bool Imp_Lexer::match_any(Match &result, Token &token) {
+  bool Common_Lexer::match_any(Match &result, Token &token, bool &follows_whitespace) {
     do {
       auto &value = lexer.get_character();
 
       if (is_whitespace_or_semicolon(value))
-        consume_whitespace();
+        consume_whitespace(follows_whitespace);
 
       token.get_match().set_text("");
       token.get_range().set_start(lexer.get_position());
@@ -199,10 +199,10 @@ namespace runic_imp {
     return true;
   }
 
-  bool Imp_Lexer::next_token(Token &token) {
-    follows_whitespace = false;
+  bool Common_Lexer::next_token(Token &token) {
+    bool follows_whitespace = false;
     auto &result = token.get_match();
-    if (!match_any(result, token)) {
+    if (!match_any(result, token, follows_whitespace)) {
       token.get_match().set_type(lexicon.patterns.end_of_file);
       return false;
     }
@@ -216,7 +216,7 @@ namespace runic_imp {
     return true;
   }
 
-  void Imp_Lexer::get_all_tokens(std::vector<Token> &tokens) {
+  void Common_Lexer::get_all_tokens(std::vector<Token> &tokens) {
     Token token;
     while (next_token(token)) {
       tokens.push_back(token);

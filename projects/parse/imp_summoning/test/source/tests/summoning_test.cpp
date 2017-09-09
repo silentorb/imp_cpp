@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <runic_imp/Imp_Lexer.h>
+#include <runic/common/Common_Lexer.h>
 #include <imp_summoning/Summoner.h>
 #include <runic/File_Text_Source.h>
 
@@ -8,7 +8,7 @@ using namespace runic_imp;
 
 TEST(Summoning_Test, summoning) {
 
-  Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
+  Common_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
   underworld::Dungeon root("", nullptr);
 //  underworld::Profession_Library profession_library;
   source_mapping::Source_File source_file(string(RESOURCE_PATH) + "pizza.imp");

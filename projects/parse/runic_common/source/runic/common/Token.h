@@ -3,7 +3,7 @@
 #include <runic/Rune.h>
 #include "Whisper.h"
 
-namespace runic_cpp {
+namespace runic {
 
   class Token : public runic::Rune<Whisper> {
       bool _follows_terminator = false;

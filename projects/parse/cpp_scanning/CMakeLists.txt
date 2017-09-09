@@ -1,2 +1,2 @@
 create_library(cpp_scanning)
-require(runic runic_cpp source_mapping)
+require(runic runic_cpp source_mapping imp_underworld)

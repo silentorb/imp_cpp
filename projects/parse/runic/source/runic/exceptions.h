@@ -22,12 +22,12 @@ namespace runic {
   };
 
 
-  template<typename Token, typename Whisper>
-  class Expected_Exception : public Token_Exception<Token> {
-      const Whisper &whisper;
-
-  public:
-      Expected_Exception(const Token &token, const Whisper &whisper) :
-        Token_Exception<Token>(token, "Unexpected end of file."), whisper(whisper) {}
-  };
+//  template<typename Token, typename Whisper>
+//  class Expected_Exception : public Token_Exception<Token> {
+//      const Whisper &whisper;
+//
+//  public:
+//      Expected_Exception(const Token &token, const Whisper &whisper) :
+//        Token_Exception<Token>(token, "Unexpected end of file."), whisper(whisper) {}
+//  };
 }

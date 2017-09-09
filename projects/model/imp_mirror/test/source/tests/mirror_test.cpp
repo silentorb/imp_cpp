@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <runic_imp/Imp_Lexer.h>
+#include <runic/common/Common_Lexer.h>
 #include <imp_summoning/Summoner.h>
 #include <runic/File_Text_Source.h>
 #include <overworld/schema/Dungeon.h>
@@ -11,7 +11,7 @@ using namespace imp_mirror;
 
 TEST(Mirror_Test, mirroring) {
 
-  Imp_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
+  Common_Lexer lexer(new runic::File_Text_Source<>(string(RESOURCE_PATH) + "pizza.imp"));
   underworld::Dungeon root("", nullptr);
   source_mapping::Source_File source_file(string(RESOURCE_PATH) + "pizza.imp");
   imp_summoning::Stream stream(lexer, source_file);

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace runic_imp {
+namespace runic {
 
   class Whisper {
       std::string name;

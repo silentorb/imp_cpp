@@ -8,21 +8,21 @@ namespace runic {
 
   template<typename Whisper>
   class Rune {
-      Match<Whisper> match;
+      Generic_Match<Whisper> match;
       Range range;
 
   public:
 //      Rune(Source *source) : source(source) {}
 
-      Match<Whisper> &get_match() {
+      Generic_Match<Whisper> &get_match() {
         return match;
       }
 
-      const Match<Whisper> &get_match() const {
+      const Generic_Match<Whisper> &get_match() const {
         return match;
       }
 
-      void set_match(const Match<Whisper> &value) {
+      void set_match(const Generic_Match<Whisper> &value) {
         match = value;
       }
 

@@ -9,7 +9,7 @@
 #include <underworld/expressions/Self.h>
 #include <underworld/expressions/Instantiation.h>
 #include "Expression_Summoner.h"
-#include "exceptions.h"
+#include "runic/common/exceptions.h"
 
 using namespace underworld;
 

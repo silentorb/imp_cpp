@@ -14,7 +14,9 @@ namespace runic {
 
   public:
       Lexer(std::unique_ptr<Text_Source<Character>> &source) :
-        source(std::move(source)) {}
+        source(std::move(source)) {
+        character = this->source->next_character();
+      }
 
       Lexer(Text_Source<Character> *source) :
         source(source) {

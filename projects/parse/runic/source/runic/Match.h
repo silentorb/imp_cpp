@@ -4,7 +4,7 @@
 namespace runic {
 
   template<typename Whisper>
-  class Match {
+  class Generic_Match {
       const Whisper *type = nullptr;
       std::string text;
 

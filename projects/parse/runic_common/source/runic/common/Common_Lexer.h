@@ -3,14 +3,14 @@
 #include <runic/Lexer.h>
 #include <runic/Rune.h>
 #include "Whisper.h"
-#include "Lexicon.h"
+#include "Common_Lexicon.h"
 #include "Token.h"
 #include <vector>
 
-namespace runic_cpp {
+namespace runic {
 
   using Char = char;
-  using Match = runic::Match<Whisper>;
+  using Match = runic::Generic_Match<runic::Whisper>;
 
   enum class Token_Result {
       finished,
@@ -19,12 +19,11 @@ namespace runic_cpp {
       error, // Not yet used but might be someday.
   };
 
-  class Cpp_Lexer {
+  class Common_Lexer {
       runic::Lexer<Char> lexer;
-      Lexicon &lexicon;
-      bool follows_whitespace = false;
+      runic::Common_Lexicon &lexicon;
 
-      void consume_whitespace();
+      void consume_whitespace(bool &follows_whitespace);
       Token_Result match_non_whitespace(Match &result);
       void match_identifier(Match &result);
       void match_number(Match &result);
@@ -33,13 +32,13 @@ namespace runic_cpp {
       Token_Result match_comment_or_division(Match &result);
 
       bool match_special_symbols(Match &result);
-      bool match_any(Match &result, Token &token);
+      bool match_any(Match &result, runic::Token &token, bool &follows_whitespace);
 
   public:
-      Cpp_Lexer(std::unique_ptr<runic::Text_Source<Char>> source);
-//      Cpp_Lexer(runic::Text_Source<Char> *source);
-      bool next_token(Token &token);
-      void get_all_tokens(std::vector<Token> &tokens);
+      Common_Lexer(std::unique_ptr<runic::Text_Source<Char>> source);
+//      Common_Lexer(runic::Text_Source<Char> *source);
+      bool next_token(runic::Token &token);
+      void get_all_tokens(std::vector<runic::Token> &tokens);
 
       const runic::Position &get_position() const {
         return lexer.get_position();

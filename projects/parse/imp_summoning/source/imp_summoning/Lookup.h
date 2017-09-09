@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include <runic_imp/Whisper.h>
+#include <runic/common/Whisper.h>
 #include <underworld/schema/Profession.h>
 #include <underworld/schema/primitives.h>
 #include <underworld/schema/Profession_Library.h>

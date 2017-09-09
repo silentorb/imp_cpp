@@ -2,7 +2,7 @@
 
 #include <underworld/schema/Profession.h>
 #include <underworld/schema/Scope.h>
-#include "Stream.h"
+#include "runic/common/Stream.h"
 
 namespace imp_summoning {
 

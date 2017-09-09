@@ -1,8 +1,8 @@
-#include "Lexicon.h"
+#include "Common_Lexicon.h"
 
-namespace runic_cpp {
+namespace runic {
 
-  static Lexicon instance;
+  static Common_Lexicon instance;
 
   struct String_Assignor {
       static void assign(Whisper_Dictionary &dictionary, const Whisper *whisper) {
@@ -27,11 +27,11 @@ namespace runic_cpp {
     }
   }
 
-  Lexicon &Lexicon::get_instance() {
+  Common_Lexicon &Common_Lexicon::get_instance() {
     return instance;
   }
 
-  Lexicon::Lexicon() : patterns(*(Symbols *) &internal_patterns) {
+  Common_Lexicon::Common_Lexicon() : patterns(*(Symbols *) &internal_patterns) {
     add<String_Assignor>(lookup.keywords, internal_patterns.keywords);
     add<String_Assignor>(lookup.double_symbols, internal_patterns.double_symbols);
     add<Char_Assignor>(lookup.single_symbols, internal_patterns.single_symbols);

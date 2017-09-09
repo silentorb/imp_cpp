@@ -1,4 +1,4 @@
-#include <imp_summoning/Stream.h>
+#include <runic/common/Stream.h>
 #include <runic/File_Text_Source.h>
 #include <imp_summoning/Summoner.h>
 #include <imp_mirror/Mirror.h>
@@ -21,7 +21,7 @@ namespace imp_wrapper {
   }
 
   void Wrapper::load_file(const std::string &path) {
-    runic_imp::Imp_Lexer lexer(new runic::File_Text_Source<>(path));
+    runic_imp::Common_Lexer lexer(new runic::File_Text_Source<>(path));
     auto source_file = new source_mapping::Source_File(path);
     source_files.push_back(std::unique_ptr<source_mapping::Source_File>(source_file));
     imp_summoning::Stream stream(lexer, *source_file);
