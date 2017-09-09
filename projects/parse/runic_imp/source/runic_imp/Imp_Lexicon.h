@@ -1,8 +1,9 @@
 #pragma once
+#include <runic/common/Common_Lexicon.h>
 
 namespace runic_imp {
 
-  class Imp_Lexicon : public runic::Common_Lexicon {
-
+  struct Symbols : public runic::Symbols {
+      runic::Whisper pound_sign = "#";
   };
 }

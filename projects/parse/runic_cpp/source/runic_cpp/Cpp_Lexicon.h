@@ -5,10 +5,7 @@
 namespace runic_cpp {
 
   struct Symbols : public runic::Symbols {
-
+      runic::Whisper pound_sign = "#";
   };
 
-  class Cpp_Lexicon: public runic::Common_Lexicon {
-  public:
-  };
 }

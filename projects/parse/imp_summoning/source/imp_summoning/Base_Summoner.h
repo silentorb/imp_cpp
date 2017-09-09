@@ -2,6 +2,7 @@
 
 #include <underworld/schema/Profession_Library.h>
 #include <underworld/schema/Member.h>
+#include <runic_imp/Imp_Lexicon.h>
 #include "runic/common/Stream.h"
 #include "Lookup.h"
 #include "Context.h"
@@ -10,7 +11,7 @@ namespace imp_summoning {
 
   class Base_Summoner {
   protected:
-      Stream &input;
+      runic::Stream &input;
       const runic_imp::Symbols &lexicon;
       Lookup &lookup;
 //      underworld::Profession_Library &profession_library;
@@ -28,7 +29,7 @@ namespace imp_summoning {
       inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,
                      const std::string &message) {
         if (expression.get_type() != type)
-          throw imp_summoning::Invalid_Token_Exception(input.current(), message);
+          throw runic::Invalid_Token_Exception(input.current(), message);
 
         return *dynamic_cast<T *>(&expression);
       }
@@ -49,7 +50,7 @@ namespace imp_summoning {
 //      }
 
   public:
-      Base_Summoner(Stream &input, Lookup &lookup);
+      Base_Summoner(runic::Stream &input, Lookup &lookup);
 
   };
 

@@ -1,2 +1,2 @@
-create_library(runic_common)
+create_header_library(runic_common)
 require(runic)

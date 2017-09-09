@@ -10,7 +10,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Summoner::Summoner(Stream &input, Lookup &lookup) :
+  Summoner::Summoner(runic::Stream &input, Lookup &lookup) :
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 
@@ -89,7 +89,7 @@ namespace imp_summoning {
   void Summoner::process_member(const Identifier &identifier, Context &context, bool is_static) {
     if (input.peek().is(lexicon.left_paren)) {
       if (input.next().follows_terminator())
-        throw Syntax_Exception(input.current());
+        throw runic::Syntax_Exception(input.current());
 
       auto &function = process_function(identifier.name, context);
       if (is_static)
@@ -122,7 +122,7 @@ namespace imp_summoning {
       process_root_identifier(identifier, context);
     }
     else {
-      throw Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current());
     }
   }
 

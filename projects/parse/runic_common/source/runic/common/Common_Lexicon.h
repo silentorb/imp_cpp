@@ -92,29 +92,67 @@ namespace runic {
   struct Symbols : Keywords, Double_Symbols, Single_Symbols, Special_Symbols, Dynamic_Whispers {
   };
 
+  struct String_Assignor {
+      static void assign(Whisper_Dictionary &dictionary, const Whisper *whisper) {
+        dictionary[whisper->get_name()] = whisper;
+      }
+  };
+
+  struct Char_Assignor {
+      static void assign(Whisper_Dictionary_Char &dictionary, const Whisper *whisper) {
+        dictionary[whisper->get_name()[0]] = whisper;
+      }
+  };
+
+  template<typename Assignor, typename T, typename Element>
+  void add(std::map<Element, const Whisper *> &dictionary, const T &structure) {
+    auto count = sizeof(T) / sizeof(Whisper);
+    auto *whisper = ((const Whisper *) &structure);
+    auto end = whisper + count;
+    while (whisper != end) {
+      Assignor::assign(dictionary, whisper);
+      ++whisper;
+    }
+  }
+
   struct Lookup {
       Whisper_Dictionary keywords;
       Whisper_Dictionary double_symbols;
       Whisper_Dictionary_Char single_symbols;
-  };
 
-  class Common_Lexicon {
-
-      struct Internal_Symbols {
-          Keywords keywords;
-          Double_Symbols double_symbols;
-          Single_Symbols single_symbols;
-          Special_Symbols special_symbols;
-          Dynamic_Whispers dynamic;
+      template<typename Keywords, typename Double_Symbols, typename Single_Symbols, typename Symbols>
+      static void initialize(Lookup &lookup, Symbols &symbols) {
+        add<String_Assignor>(lookup.keywords, static_cast<Keywords>(symbols));
+        add<String_Assignor>(lookup.double_symbols, static_cast<Double_Symbols>(symbols));
+        add<Char_Assignor>(lookup.single_symbols, static_cast<Single_Symbols>(symbols));
       };
-
-      Internal_Symbols internal_patterns;
-
-  public:
-      Lookup lookup;
-      const Symbols &patterns;
-
-      Common_Lexicon();
-      static Common_Lexicon &get_instance();
   };
+
+  template<typename Symbols>
+  struct Lexer_Bundle {
+     const Symbols &lexicon;
+      Lookup &lookup;
+
+      Lexer_Bundle(const Symbols &lexicon, Lookup &lookup) : lexicon(lexicon), lookup(lookup) {}
+  };
+
+//  class Common_Lexicon {
+//
+//      struct Internal_Symbols {
+//          Keywords keywords;
+//          Double_Symbols double_symbols;
+//          Single_Symbols single_symbols;
+//          Special_Symbols special_symbols;
+//          Dynamic_Whispers dynamic;
+//      };
+//
+//      Internal_Symbols internal_patterns;
+//
+//  public:
+//      Lookup lookup;
+//      const Symbols &patterns;
+//
+//      Common_Lexicon();
+//      static Common_Lexicon &get_instance();
+//  };
 }

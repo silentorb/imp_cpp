@@ -62,6 +62,8 @@ macro(add_if_exists dir)
   endif ()
 endmacro()
 
-add_if_exists(projects/front/imp_wrapper/test/output/game)
+if (MINGW)
+  add_if_exists(projects/front/imp_wrapper/test/output/game)
+endif ()
 
 finish_cmake()

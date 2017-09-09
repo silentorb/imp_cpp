@@ -23,7 +23,7 @@ namespace imp_summoning {
       Expression_Owner process_identifier(Context &context);
 
   public:
-      Expression_Summoner(Stream &input, Lookup &lookup);
+      Expression_Summoner(runic::Stream &input, Lookup &lookup);
 
       void process_block(underworld::Block &block, Context &context);
       Expression_Owner process_block_or_single_expression(Context &context);

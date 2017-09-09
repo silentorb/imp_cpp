@@ -6,10 +6,10 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Base_Summoner::Base_Summoner(Stream &input, Lookup &lookup) :
+  Base_Summoner::Base_Summoner(runic::Stream &input, Lookup &lookup) :
     input(input),
     lookup(lookup),
-    lexicon(runic_imp::Common_Lexicon::get_instance().patterns) {
+    lexicon(lookup.get_lexicon()) {
 
   }
 
@@ -18,7 +18,7 @@ namespace imp_summoning {
     if (input.peek().is(lexicon.dot)) {
       input.next();
       if (input.next().is_not(lexicon.identifier))
-        throw Syntax_Exception(input.current());
+        throw runic::Syntax_Exception(input.current());
 
       auto child = process_profession_token(context);
       return Profession_Owner(new Dungeon_Reference_Profession(name, child, get_source_point()));
@@ -38,7 +38,7 @@ namespace imp_summoning {
 
     return process_profession_token(context);
 
-    throw Syntax_Exception(input.current());
+    throw runic::Syntax_Exception(input.current());
   }
 
 //  underworld::Profession_Owner Base_Summoner::parse_profession_path(std::vector<std::string> &path, Context &context) {

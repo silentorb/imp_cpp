@@ -6,27 +6,28 @@
 #include <underworld/schema/primitives.h>
 #include <underworld/schema/Profession_Library.h>
 #include <underworld/expressions/Operator.h>
-
-namespace runic_imp {
-  struct Symbols;
-}
+#include <runic_imp/Imp_Lexicon.h>
 
 namespace imp_summoning {
 
-  using Operator_Map = std::map<const runic_imp::Whisper *, underworld::Operator_Type>;
+  using Operator_Map = std::map<const runic::Whisper *, underworld::Operator_Type>;
 
   class Lookup {
 //      underworld::Profession_Library &profession_library;
       const runic_imp::Symbols &lexicon;
-      std::map<const runic_imp::Whisper *, underworld::Primitive_Type> primitive_map;
+      std::map<const runic::Whisper *, underworld::Primitive_Type> primitive_map;
       Operator_Map expression_operator_map;
       Operator_Map assignment_operator_map;
 
   public:
-      Lookup();
+      Lookup(const runic_imp::Symbols &lexicon);
 
-      underworld::Primitive_Type get_primitive(const runic_imp::Whisper *whisper);
-      bool get_expression_operator(const runic_imp::Whisper *whisper, underworld::Operator_Type &result);
-      bool get_assignment_operator(const runic_imp::Whisper *whisper, underworld::Operator_Type &result);
+      underworld::Primitive_Type get_primitive(const runic::Whisper *whisper);
+      bool get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result);
+      bool get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result);
+
+      const runic_imp::Symbols &get_lexicon() const {
+        return lexicon;
+      }
   };
 }

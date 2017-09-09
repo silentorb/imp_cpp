@@ -1,3 +1,4 @@
+#include <runic_imp/Imp_Lexicon.h>
 #include "runic/common/Common_Lexicon.h"
 #include "Lookup.h"
 
@@ -5,9 +6,9 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Lookup::Lookup() :
-    lexicon(runic_imp::Common_Lexicon::get_instance().patterns),
-        primitive_map(
+  Lookup::Lookup(const runic_imp::Symbols &lexicon) :
+    lexicon(lexicon),
+    primitive_map(
       {
         {&lexicon.Bool, Primitive_Type::Bool},
         {&lexicon.Double, Primitive_Type::Double},
@@ -25,7 +26,7 @@ namespace imp_summoning {
       }) {
   }
 
-  underworld::Primitive_Type Lookup::get_primitive(const runic_imp::Whisper *whisper) {
+  underworld::Primitive_Type Lookup::get_primitive(const runic::Whisper *whisper) {
     auto search = primitive_map.find(whisper);
     if (search != primitive_map.end()) {
       return (*search).second;
@@ -34,7 +35,7 @@ namespace imp_summoning {
     return Primitive_Type::Unknown;
   }
 
-  bool find(const Operator_Map &operator_map, const runic_imp::Whisper *whisper, underworld::Operator_Type &result) {
+  bool find(const Operator_Map &operator_map, const runic::Whisper *whisper, underworld::Operator_Type &result) {
     auto search = operator_map.find(whisper);
     if (search != operator_map.end()) {
       result = (*search).second;
@@ -44,11 +45,11 @@ namespace imp_summoning {
     return false;
   }
 
-  bool Lookup::get_expression_operator(const runic_imp::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Lookup::get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(expression_operator_map, whisper, result);
   }
 
-  bool Lookup::get_assignment_operator(const runic_imp::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Lookup::get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(assignment_operator_map, whisper, result);
   }
 }

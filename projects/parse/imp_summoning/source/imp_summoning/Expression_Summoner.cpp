@@ -15,7 +15,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Expression_Summoner::Expression_Summoner(Stream &input, Lookup &lookup) :
+  Expression_Summoner::Expression_Summoner(runic::Stream &input, Lookup &lookup) :
     Base_Summoner(input, lookup) {}
 
   Expression_Owner Expression_Summoner::process_variable_declaration(Context &context) {
@@ -99,14 +99,14 @@ namespace imp_summoning {
 //      }
     }
     else {
-      throw Syntax_Exception(token);
+      throw runic::Syntax_Exception(token);
     }
   }
 
   Operator_Type Expression_Summoner::process_expression_operator(Context &context) {
     Operator_Type result;
     if (!lookup.get_expression_operator(input.next().get_type(), result)) {
-      throw Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current());
     }
     return result;
   }
@@ -114,7 +114,7 @@ namespace imp_summoning {
   Operator_Type Expression_Summoner::process_assignment_operator(Context &context) {
     Operator_Type result;
     if (!lookup.get_assignment_operator(input.next().get_type(), result)) {
-      throw Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current());
     }
     return result;
   }
@@ -182,7 +182,7 @@ namespace imp_summoning {
   Expression_Owner Expression_Summoner::process_instantiation(Context &context) {
     auto profession = process_profession(context);
     if (profession->get_type() == underworld::Profession_Type::unknown)
-      throw Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current());
 
     input.next();
     auto instantiation = new underworld::Instantiation(profession, get_source_point());
@@ -229,7 +229,7 @@ namespace imp_summoning {
 //      }
     }
     else {
-      throw Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current());
     }
   }
 
@@ -256,7 +256,7 @@ namespace imp_summoning {
     Child_Context new_context(context, block.get_scope());
 
     if (!input.next().is(lexicon.left_brace))
-      throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
+      throw runic::Expected_Whisper_Exception(input.current(), lexicon.left_brace);
 
     while (input.until(lexicon.right_brace)) {
       block.add_expression(process_statement(new_context));

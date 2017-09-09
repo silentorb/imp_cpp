@@ -9,11 +9,11 @@
 
 namespace runic {
 
-  class Stream : public runic::Rune_Stream<Common_Lexer, Token, Whisper> {
+  class Stream : public runic::Rune_Stream<Lexer_Interface, Token, Whisper> {
       source_mapping::Source_File &source_file;
 
   public:
-      Stream(Common_Lexer &lexer, source_mapping::Source_File &source_file) :
+      Stream(Lexer_Interface &lexer, source_mapping::Source_File &source_file) :
         Rune_Stream(lexer), source_file(source_file) {}
 
       ~Stream() {}
