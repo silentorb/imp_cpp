@@ -122,9 +122,9 @@ namespace runic {
 
       template<typename Keywords, typename Double_Symbols, typename Single_Symbols, typename Symbols>
       static void initialize(Lookup &lookup, Symbols &symbols) {
-        add<String_Assignor>(lookup.keywords, static_cast<Keywords>(symbols));
-        add<String_Assignor>(lookup.double_symbols, static_cast<Double_Symbols>(symbols));
-        add<Char_Assignor>(lookup.single_symbols, static_cast<Single_Symbols>(symbols));
+        add<String_Assignor>(lookup.keywords, *static_cast<const Keywords*>(&symbols));
+        add<String_Assignor>(lookup.double_symbols, *static_cast<const Double_Symbols*>(&symbols));
+        add<Char_Assignor>(lookup.single_symbols, *static_cast<const Single_Symbols*>(&symbols));
       };
   };
 
