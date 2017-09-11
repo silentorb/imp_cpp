@@ -51,6 +51,15 @@ namespace runic {
         return buffer.front();
       }
 
+      inline bool if_is(const Whisper &whisper) {
+        if (current().is(whisper)) {
+          next();
+          return true;
+        }
+
+        return false;
+      }
+
       bool until(const Whisper &whisper) {
         if (!peek().is(whisper)) {
           return true;

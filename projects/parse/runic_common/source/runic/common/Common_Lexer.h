@@ -51,18 +51,7 @@ namespace runic {
   class Common_Lexer : public Lexer_Interface {
       runic::Lexer<Char> lexer;
       const Symbols &lexicon;
-      Lookup &lookup;
-
-//      void consume_whitespace(bool &follows_whitespace);
-//      Token_Result match_non_whitespace(Match &result);
-//      void match_identifier(Match &result);
-//      void match_number(Match &result);
-//      void match_string(Match &result);
-//      void consume_to_end_of_line();
-//      Token_Result match_comment_or_division(Match &result);
-//
-//      bool match_special_symbols(Match &result);
-//      bool match_any(Match &result, runic::Token &token, bool &follows_whitespace);
+      Lexer_Lookup &lookup;
 
       void consume_whitespace(bool &follows_whitespace) {
         Char value = lexer.get_character();
@@ -82,7 +71,9 @@ namespace runic {
         auto &first = lexer.get_character();
         if (lookup_symbol(lookup.single_symbols, first, result)) {
           const char data[3] = {first, lexer.next_character(), 0};
-          lookup_symbol(lookup.double_symbols, std::string(data), result);
+          if (lookup_symbol(lookup.double_symbols, std::string(data), result)) {
+            lexer.next_character();
+          }
           return true;
         }
         else if (first == '!' && lexer.next_character() == '=') {

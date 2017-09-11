@@ -15,7 +15,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Expression_Summoner::Expression_Summoner(runic::Stream &input, Lookup &lookup) :
+  Expression_Summoner::Expression_Summoner(runic::Stream &input, Paser_Lookup &lookup) :
     Base_Summoner(input, lookup) {}
 
   Expression_Owner Expression_Summoner::process_variable_declaration(Context &context) {

@@ -28,18 +28,19 @@ namespace underworld {
   public:
       Scope(Scope *parent) : parent(parent) {}
 
+      void add_member(std::unique_ptr<Member> member);
       Function &create_function(const std::string &member_name, Profession_Owner &profession,
                                 const source_mapping::Source_Point &source);
       Minion &create_minion(const std::string &name, const source_mapping::Source_Point &source);
-      Profession_Member &add_profession(std::unique_ptr<Profession> &profession, const source_mapping::Source_Point &source);
-      void add_minion(std::unique_ptr<Minion> minion);
+      Profession_Member &add_profession(std::unique_ptr<Profession> profession,
+                                        const source_mapping::Source_Point &source);
+//      void add_minion(std::unique_ptr<Minion> minion);
 
 //      Dungeon &create_dungeon(const std::string &name, const source_mapping::Source_Point &source);
 
       std::map<std::string, Member_Owner> &get_members() {
         return members;
       }
-
 
       const std::map<std::string, Member_Owner> &get_members() const {
         return members;

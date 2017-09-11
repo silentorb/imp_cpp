@@ -7,8 +7,9 @@ namespace underworld {
   class Dungeon : public Scope, public virtual Profession {
       const std::string name;
       const source_mapping::Source_Point source_point;
-
+      bool _is_external = false;
       std::vector<Profession_Owner> contracts;
+      std::vector<std::string> generic_parameters;
 
   protected:
       void throw_already_exists(const std::string &member_name) const override;
@@ -47,6 +48,5 @@ namespace underworld {
       }
   };
 
-//  using Dungeons = std::map<std::string, std::unique_ptr<Dungeon>>;
   using Dungeon_Pointer = std::unique_ptr<Dungeon>;
 }

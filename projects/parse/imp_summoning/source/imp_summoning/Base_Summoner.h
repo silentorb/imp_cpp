@@ -4,7 +4,7 @@
 #include <underworld/schema/Member.h>
 #include <runic_imp/Imp_Lexicon.h>
 #include "runic/common/Stream.h"
-#include "Lookup.h"
+#include "Paser_Lookup.h"
 #include "Context.h"
 
 namespace imp_summoning {
@@ -13,7 +13,7 @@ namespace imp_summoning {
   protected:
       runic::Stream &input;
       const runic_imp::Symbols &lexicon;
-      Lookup &lookup;
+      Paser_Lookup &lookup;
 //      underworld::Profession_Library &profession_library;
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
@@ -50,7 +50,7 @@ namespace imp_summoning {
 //      }
 
   public:
-      Base_Summoner(runic::Stream &input, Lookup &lookup);
+      Base_Summoner(runic::Stream &input, Paser_Lookup &lookup);
 
   };
 

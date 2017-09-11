@@ -13,18 +13,23 @@ namespace underworld {
 
   Function &Scope::create_function(const std::string &member_name, Profession_Owner &profession,
                                    const source_mapping::Source_Point &source) {
-    auto function = new Function(member_name, profession, source, *this);
+    auto function = new Function(member_name, std::move(profession), source, *this);
     check_has_member(function->get_name());
 
     members[function->get_name()] = Function_Owner(function);
     return *function;
   }
 
-  void Scope::add_minion(std::unique_ptr<Minion> minion) {
-    check_has_member(minion->get_name());
-
-    members[minion->get_name()] = std::move(minion);
+  void Scope::add_member(std::unique_ptr<Member> member) {
+    check_has_member(member->get_name());
+    members[member->get_name()] = std::move(member);
   }
+
+//  void Scope::add_minion(std::unique_ptr<Minion> minion) {
+//    check_has_member(minion->get_name());
+//
+//    members[minion->get_name()] = std::move(minion);
+//  }
 
   Minion &Scope::create_minion(const std::string &name, const source_mapping::Source_Point &source) {
     check_has_member(name);
@@ -34,7 +39,8 @@ namespace underworld {
     return *portal;
   }
 
-  Profession_Member &Scope::add_profession(std::unique_ptr<Profession> &profession, const source_mapping::Source_Point &source) {
+  Profession_Member &Scope::add_profession(unique_ptr<Profession> profession,
+                                           const source_mapping::Source_Point &source) {
     auto &prof = *profession;
     auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
     auto &result = *member;

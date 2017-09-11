@@ -39,7 +39,7 @@ namespace runic {
 
       Whisper plus = "+";
       Whisper minus = "-";
-      Whisper multiply = "*";
+      Whisper asterisk = "*";
       Whisper modulus = "%";
 
       Whisper assignment = "=";
@@ -115,25 +115,25 @@ namespace runic {
     }
   }
 
-  struct Lookup {
+  struct Lexer_Lookup {
       Whisper_Dictionary keywords;
       Whisper_Dictionary double_symbols;
       Whisper_Dictionary_Char single_symbols;
 
       template<typename Keywords, typename Double_Symbols, typename Single_Symbols, typename Symbols>
-      static void initialize(Lookup &lookup, Symbols &symbols) {
-        add<String_Assignor>(lookup.keywords, *static_cast<const Keywords*>(&symbols));
-        add<String_Assignor>(lookup.double_symbols, *static_cast<const Double_Symbols*>(&symbols));
-        add<Char_Assignor>(lookup.single_symbols, *static_cast<const Single_Symbols*>(&symbols));
+      static void initialize(Lexer_Lookup &lookup, Symbols &symbols) {
+        add<String_Assignor>(lookup.keywords, *static_cast<const Keywords *>(&symbols));
+        add<String_Assignor>(lookup.double_symbols, *static_cast<const Double_Symbols *>(&symbols));
+        add<Char_Assignor>(lookup.single_symbols, *static_cast<const Single_Symbols *>(&symbols));
       };
   };
 
   template<typename Symbols>
   struct Lexer_Bundle {
-     const Symbols &lexicon;
-      Lookup &lookup;
+      const Symbols &lexicon;
+      Lexer_Lookup &lookup;
 
-      Lexer_Bundle(const Symbols &lexicon, Lookup &lookup) : lexicon(lexicon), lookup(lookup) {}
+      Lexer_Bundle(const Symbols &lexicon, Lexer_Lookup &lookup) : lexicon(lexicon), lookup(lookup) {}
   };
 
 //  class Common_Lexicon {

@@ -11,11 +11,13 @@ namespace underworld {
       primitive,
       dungeon,
       dungeon_reference,
-      reference,
+      Enum,
       function,
+      pointer,
+      reference,
       token,
+      variant,
   };
-
 
   class Profession {
   public:
@@ -68,7 +70,7 @@ namespace underworld {
       }
   };
 
-  class Dungeon_Reference_Profession : virtual public Profession {
+  class Dungeon_Reference_Profession : public Profession {
       const std::string name;
       Profession_Owner child;
       const source_mapping::Source_Point source_point;

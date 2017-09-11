@@ -25,6 +25,13 @@ namespace runic {
         return current();
       }
 
+      const Token &expect(const Whisper &whisper) {
+        if (!current().is(whisper))
+          throw Expected_Whisper_Exception(current(), whisper);
+
+        return current();
+      }
+
       const source_mapping::Source_File &get_source_file() const {
         return source_file;
       }

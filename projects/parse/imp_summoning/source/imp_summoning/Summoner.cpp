@@ -10,7 +10,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Summoner::Summoner(runic::Stream &input, Lookup &lookup) :
+  Summoner::Summoner(runic::Stream &input, Paser_Lookup &lookup) :
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 

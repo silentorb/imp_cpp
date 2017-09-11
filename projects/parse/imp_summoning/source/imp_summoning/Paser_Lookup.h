@@ -12,7 +12,7 @@ namespace imp_summoning {
 
   using Operator_Map = std::map<const runic::Whisper *, underworld::Operator_Type>;
 
-  class Lookup {
+  class Paser_Lookup {
 //      underworld::Profession_Library &profession_library;
       const runic_imp::Symbols &lexicon;
       std::map<const runic::Whisper *, underworld::Primitive_Type> primitive_map;
@@ -20,7 +20,7 @@ namespace imp_summoning {
       Operator_Map assignment_operator_map;
 
   public:
-      Lookup(const runic_imp::Symbols &lexicon);
+      Paser_Lookup(const runic_imp::Symbols &lexicon);
 
       underworld::Primitive_Type get_primitive(const runic::Whisper *whisper);
       bool get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result);

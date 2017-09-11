@@ -6,10 +6,11 @@ using namespace std;
 using namespace cpp_scanning;
 
 TEST(Main_Test, exploring) {
-  Header_Scanner scanner;
+  underworld::Dungeon root_dungeon("", nullptr);
+  Header_Scanner scanner(root_dungeon);
   runic_cpp::Symbols lexicon;
-  runic::Lookup lookup;
-  runic::Lookup::initialize<runic::Keywords, runic::Double_Symbols, runic::Single_Symbols>(lookup, lexicon);
+  runic::Lexer_Lookup lookup;
+  runic::Lexer_Lookup::initialize<runic_cpp::Keywords, runic_cpp::Double_Symbols, runic_cpp::Single_Symbols>(lookup, lexicon);
   scanner.load_header(string(IMP_ROOT) + "/projects/parse/cpp_scanning/source/cpp_scanning/Header_Scanner.h",
                       {lexicon, lookup});
 }

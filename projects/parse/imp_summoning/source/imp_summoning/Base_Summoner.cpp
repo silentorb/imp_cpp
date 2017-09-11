@@ -6,7 +6,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Base_Summoner::Base_Summoner(runic::Stream &input, Lookup &lookup) :
+  Base_Summoner::Base_Summoner(runic::Stream &input, Paser_Lookup &lookup) :
     input(input),
     lookup(lookup),
     lexicon(lookup.get_lexicon()) {

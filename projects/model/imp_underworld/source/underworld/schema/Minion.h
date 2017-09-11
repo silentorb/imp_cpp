@@ -13,7 +13,7 @@ namespace underworld {
       bool _is_static = false;
 
   public:
-      Minion(const std::string &name, Profession_Owner &profession, const source_mapping::Source_Point &source_point) :
+      Minion(const std::string &name, Profession_Owner profession, const source_mapping::Source_Point &source_point) :
         name(name), profession(std::move(profession)), Member(source_point) {}
 
       Minion(const std::string &name, const source_mapping::Source_Point &source_point) :

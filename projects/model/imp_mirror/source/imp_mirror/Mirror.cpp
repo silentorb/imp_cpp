@@ -489,6 +489,11 @@ namespace imp_mirror {
         auto &child_profession = cast<underworld::Reference>(profession).get_profession();
         return profession_library.get_reference(reflect_profession(child_profession, scope));
       }
+
+      case underworld::Profession_Type::pointer: {
+        auto &child_profession = static_cast<underworld::Pointer&>(profession).get_profession();
+        return profession_library.get_pointer(reflect_profession(child_profession, scope));
+      }
     }
 
     throw std::runtime_error("Not implemented");

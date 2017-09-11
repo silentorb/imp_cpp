@@ -13,7 +13,7 @@ namespace imp_wrapper{
     lookup(lexicon),
     overworld_root(""),
     overworld_profession_library(graph) {
-    runic::Lookup::initialize<runic::Keywords, runic::Double_Symbols, runic::Single_Symbols>(runic_lookup, lexicon);
+    runic::Lexer_Lookup::initialize<runic::Keywords, runic::Double_Symbols, runic::Single_Symbols>(runic_lookup, lexicon);
     standard_library = new cpp_stl::Standard_Library(overworld_root);
     overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library));
     standard_library->initialize(overworld_profession_library, graph);

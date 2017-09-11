@@ -1,12 +1,10 @@
-#include <runic_imp/Imp_Lexicon.h>
-#include "runic/common/Common_Lexicon.h"
-#include "Lookup.h"
+#include "Parser_Lookup.h"
 
 using namespace underworld;
 
-namespace imp_summoning {
+namespace cpp_scanning {
 
-  Lookup::Lookup(const runic_imp::Symbols &lexicon) :
+  Parser_Lookup::Parser_Lookup(const runic_cpp::Symbols &lexicon) :
     lexicon(lexicon),
     primitive_map(
       {
@@ -26,7 +24,7 @@ namespace imp_summoning {
       }) {
   }
 
-  underworld::Primitive_Type Lookup::get_primitive(const runic::Whisper *whisper) {
+  underworld::Primitive_Type Parser_Lookup::get_primitive(const runic::Whisper *whisper) {
     auto search = primitive_map.find(whisper);
     if (search != primitive_map.end()) {
       return (*search).second;
@@ -45,11 +43,11 @@ namespace imp_summoning {
     return false;
   }
 
-  bool Lookup::get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Parser_Lookup::get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(expression_operator_map, whisper, result);
   }
 
-  bool Lookup::get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Parser_Lookup::get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(assignment_operator_map, whisper, result);
   }
 }

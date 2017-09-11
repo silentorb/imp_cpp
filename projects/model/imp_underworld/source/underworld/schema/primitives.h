@@ -16,7 +16,7 @@ namespace underworld {
 
   const int Primitive_Type_Count = 6;
 
-  class Primitive : public virtual Profession {
+  class Primitive : public Profession {
       Primitive_Type primitive_type;
       const source_mapping::Source_Point source_point;
 
@@ -41,15 +41,12 @@ namespace underworld {
       }
   };
 
-  class Reference : public virtual Profession {
+  class Reference : public Profession {
       Profession_Owner profession;
 
   public:
       Reference(Profession_Owner profession) :
         profession(std::move(profession)) {}
-
-      Reference(Profession *profession) :
-        profession(std::unique_ptr<Profession>(profession)) {}
 
       Profession_Type get_type() const override {
         return Profession_Type::reference;
@@ -65,6 +62,15 @@ namespace underworld {
 
       const Profession &get_profession() const {
         return *profession;
+      }
+  };
+
+  class Pointer : public Reference {
+  public:
+      Pointer(Profession_Owner profession) : Reference(std::move(profession)) {}
+
+      Profession_Type get_type() const override {
+        return Profession_Type::pointer;
       }
   };
 
