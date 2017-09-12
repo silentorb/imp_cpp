@@ -1,7 +1,6 @@
 #pragma once
 
 #include <underworld/schema/primitives.h>
-#include <underworld/schema/Profession_Library.h>
 #include <source_mapping/Source_Point.h>
 #include "Expression.h"
 

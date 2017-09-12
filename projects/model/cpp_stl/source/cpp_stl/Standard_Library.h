@@ -1,10 +1,13 @@
 #pragma once
 
 #include <overworld/schema/professions/Profession_Library.h>
+#include <imp_summoning/Zookeeper.h>
 
 namespace cpp_stl {
 
-  class Standard_Library : public overworld::Dungeon {
+  class Standard_Library {
+      std::unique_ptr<overworld::Dungeon> overworld_dungeon;
+
       source_mapping::Source_File standard_library_file;
       overworld::External_File vector_file;
       overworld::External_File string_file;
@@ -17,9 +20,12 @@ namespace cpp_stl {
       void initialize_vector(overworld::Profession_Library &profession_library, overworld::Graph &graph);
 
   public:
-      Standard_Library(overworld::Scope &parent);
+      Standard_Library();
 
-      void initialize(overworld::Profession_Library &profession_library, overworld::Graph &graph);
+      void
+      initialize(overworld::Scope &parent, overworld::Profession_Library &profession_library, overworld::Graph &graph);
+
+      void initialize_underworld(imp_summoning::Zookeeper &zookeeper);
 
       const source_mapping::Source_File &get_source_file() const {
         return standard_library_file;
@@ -37,5 +43,8 @@ namespace cpp_stl {
         return *vector_type;
       }
 
+      const std::unique_ptr<overworld::Dungeon> &get_overworld_dungeon() const {
+        return overworld_dungeon;
+      }
   };
 }

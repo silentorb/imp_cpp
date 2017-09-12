@@ -6,17 +6,17 @@
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Solver.h>
 
-namespace imp_wrapper{
+namespace imp_wrapper {
 
   Wrapper_Internal::Wrapper_Internal() :
     underworld_root("", nullptr),
-    lookup(lexicon),
     overworld_root(""),
-    overworld_profession_library(graph) {
-    runic::Lexer_Lookup::initialize<runic::Keywords, runic::Double_Symbols, runic::Single_Symbols>(runic_lookup, lexicon);
-    standard_library = new cpp_stl::Standard_Library(overworld_root);
+    overworld_profession_library(graph),
+    zookeeper(underworld_root) {
+
+    standard_library = new cpp_stl::Standard_Library();
     overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library));
-    standard_library->initialize(overworld_profession_library, graph);
+    standard_library->initialize(overworld_root, overworld_profession_library, graph);
   }
 
   Wrapper_Internal::~Wrapper_Internal() {
@@ -24,14 +24,7 @@ namespace imp_wrapper{
   }
 
   void Wrapper_Internal::load_file(const std::string &path) {
-    runic::Common_Lexer<runic_imp::Symbols> lexer(
-      std::unique_ptr<runic::Text_Source<runic::Char>>(new runic::File_Text_Source<>(path)), {lexicon, runic_lookup}
-    );
-    auto source_file = new source_mapping::Source_File(path);
-    source_files.push_back(std::unique_ptr<source_mapping::Source_File>(source_file));
-    runic::Stream stream(lexer, *source_file);
-    imp_summoning::Summoner summoner(stream, lookup);
-    summoner.summon(underworld_root);
+    zookeeper.load_file(path);
   }
 
   void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager) {
@@ -72,7 +65,6 @@ namespace imp_wrapper{
       if (unknowns.size() > 0) {
         auto &unknown = *unknowns[0];
         auto &element = unknown.get_profession_reference();
-        auto temp = this->source_files[0].get();
         throw std::runtime_error("Could not determine type of \"" + element.get_name() +
                                  "\" at " + element.get_source_point().to_string() + ".");
       }

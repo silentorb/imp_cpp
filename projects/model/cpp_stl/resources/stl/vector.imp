@@ -1,0 +1,7 @@
+
+@extern stl {
+
+  vector<T> {
+    push_back(item:T)
+  }
+}

@@ -6,7 +6,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Base_Summoner::Base_Summoner(runic::Stream &input, Paser_Lookup &lookup) :
+  Base_Summoner::Base_Summoner(runic::Stream &input, Parser_Lookup &lookup) :
     input(input),
     lookup(lookup),
     lexicon(lookup.get_lexicon()) {
@@ -30,27 +30,13 @@ namespace imp_summoning {
 
   underworld::Profession_Owner Base_Summoner::process_profession(Context &context) {
     if (input.current().is(lexicon.ampersand)) {
-      return Profession_Owner(new Reference(new Unknown(get_source_point())));
+      return Profession_Owner(new Reference(Profession_Owner(new Unknown(get_source_point()))));
     }
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown)
       return Profession_Owner(new Primitive(primitive, get_source_point()));
 
     return process_profession_token(context);
-
-    throw runic::Syntax_Exception(input.current());
   }
-
-//  underworld::Profession_Owner Base_Summoner::parse_profession_path(std::vector<std::string> &path, Context &context) {
-//    path.clear();
-//    while(input.current().is(lexicon.identifier)) {
-//      path.push_back(input.current().get_text());
-//      if(input.peek().is_not(lexicon.dot))
-//        break;
-//
-//      input.next();
-//      input.next();
-//    }
-//  }
 
 }

@@ -31,7 +31,7 @@ namespace imp_summoning {
 //      underworld::Profession *find_profession();
 
   public:
-      Summoner(runic::Stream &lexer, Paser_Lookup &lookup);
+      Summoner(runic::Stream &lexer, Parser_Lookup &lookup);
       void summon(underworld::Dungeon &root);
   };
 }

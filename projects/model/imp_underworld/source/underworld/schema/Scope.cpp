@@ -25,12 +25,6 @@ namespace underworld {
     members[member->get_name()] = std::move(member);
   }
 
-//  void Scope::add_minion(std::unique_ptr<Minion> minion) {
-//    check_has_member(minion->get_name());
-//
-//    members[minion->get_name()] = std::move(minion);
-//  }
-
   Minion &Scope::create_minion(const std::string &name, const source_mapping::Source_Point &source) {
     check_has_member(name);
 
@@ -47,13 +41,6 @@ namespace underworld {
     members[prof.get_name()] = std::move(member);
     return result;
   }
-
-//  Dungeon &Scope::create_dungeon(const std::string &name, const source_mapping::Source_Point &source) {
-//    auto dungeon = new Dungeon(name, this);
-//    auto pointer = unique_ptr<Profession>(dungeon);
-//    add_profession(pointer, source);
-//    return *dungeon;
-//  }
 
   Function *Scope::get_function(const std::string &name) const {
     if (members.count(name) == 0)

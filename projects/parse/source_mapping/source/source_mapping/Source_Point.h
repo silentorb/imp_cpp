@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <memory>
+#include <vector>
 
 namespace source_mapping {
 
@@ -26,9 +28,8 @@ namespace source_mapping {
 
   public:
       Source_Point(const Source_File &source_file, unsigned long row, unsigned long column) :
-        source_file(&source_file), column(column), row(row)
-      {
-				int k = 0;
+        source_file(&source_file), column(column), row(row) {
+        int k = 0;
       }
 
       Source_Point() : source_file(nullptr), row(0), column(0) {}
@@ -50,4 +51,6 @@ namespace source_mapping {
                + " (" + std::to_string(row) + ":" + std::to_string(column) + ")";
       }
   };
+
+  using Source_File_Storage = std::vector<std::unique_ptr<source_mapping::Source_File>>;
 }

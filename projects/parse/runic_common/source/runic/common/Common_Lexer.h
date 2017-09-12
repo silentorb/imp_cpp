@@ -220,8 +220,8 @@ namespace runic {
       }
 
   public:
-      Common_Lexer(std::unique_ptr<runic::Text_Source<Char>> source, Lexer_Bundle<Symbols> lexer_bundle) :
-        lexer(source), lexicon(lexer_bundle.lexicon), lookup(lexer_bundle.lookup) {}
+      Common_Lexer(std::unique_ptr<runic::Text_Source<Char>> source, const Symbols &lexicon, Lexer_Lookup &lookup) :
+        lexer(source), lexicon(lexicon), lookup(lookup) {}
 
 //      bool next_token(runic::Token &token);
 //      void get_all_tokens(std::vector<runic::Token> &tokens);

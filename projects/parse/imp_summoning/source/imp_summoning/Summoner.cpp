@@ -10,7 +10,7 @@ using namespace underworld;
 
 namespace imp_summoning {
 
-  Summoner::Summoner(runic::Stream &input, Paser_Lookup &lookup) :
+  Summoner::Summoner(runic::Stream &input, Parser_Lookup &lookup) :
     Base_Summoner(input, lookup),
     expression_summoner(input, lookup) {}
 
@@ -132,7 +132,7 @@ namespace imp_summoning {
       auto source_point = input.get_source_point();
       auto name = input.current().get_text();
       auto profession = process_optional_profession(context);
-      auto &minion = func.add_parameter(name, profession, source_point);
+      auto &minion = func.add_parameter(name, std::move(profession), source_point);
     }
 //    input.next();
   }
@@ -155,7 +155,7 @@ namespace imp_summoning {
     auto dungeon = new Dungeon(identifier.name, &context.get_scope(), identifier.source_point);
     auto profession = std::unique_ptr<Profession>(dungeon);
     Child_Context new_context(context, *dungeon);
-    context.get_scope().add_profession(profession, input.get_source_point());
+    context.get_scope().add_profession(std::move(profession), input.get_source_point());
     input.next();
     while (input.current().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);

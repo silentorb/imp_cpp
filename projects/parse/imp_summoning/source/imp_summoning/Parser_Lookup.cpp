@@ -1,10 +1,10 @@
-#include "Paser_Lookup.h"
+#include "Parser_Lookup.h"
 
 using namespace underworld;
 
 namespace imp_summoning {
 
-  Paser_Lookup::Paser_Lookup(const runic_imp::Symbols &lexicon) :
+  Parser_Lookup::Parser_Lookup(const runic_imp::Symbols &lexicon) :
     lexicon(lexicon),
     primitive_map(
       {
@@ -24,7 +24,7 @@ namespace imp_summoning {
       }) {
   }
 
-  underworld::Primitive_Type Paser_Lookup::get_primitive(const runic::Whisper *whisper) {
+  underworld::Primitive_Type Parser_Lookup::get_primitive(const runic::Whisper *whisper) {
     auto search = primitive_map.find(whisper);
     if (search != primitive_map.end()) {
       return (*search).second;
@@ -43,11 +43,11 @@ namespace imp_summoning {
     return false;
   }
 
-  bool Paser_Lookup::get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Parser_Lookup::get_expression_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(expression_operator_map, whisper, result);
   }
 
-  bool Paser_Lookup::get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
+  bool Parser_Lookup::get_assignment_operator(const runic::Whisper *whisper, underworld::Operator_Type &result) {
     return find(assignment_operator_map, whisper, result);
   }
 }
