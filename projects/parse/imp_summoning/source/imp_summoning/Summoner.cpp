@@ -39,6 +39,7 @@ namespace imp_summoning {
       process_dungeon(identifier, context);
     }
     else {
+      input.next();
       process_member(identifier, context, false);
     }
   }
@@ -59,7 +60,7 @@ namespace imp_summoning {
   }
 
   void Summoner::process_minion_or_dungeon(const Identifier &identifier, Context &context) {
-    if (input.next().is(lexicon.colon)) {
+    if (input.current().is(lexicon.colon)) {
       input.next();
       auto profession = process_profession(context);
       if (input.next().is(lexicon.comma)) {
@@ -86,15 +87,52 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_member(const Identifier &identifier, Context &context, bool is_static) {
-    if (input.peek().is(lexicon.left_paren)) {
-      if (input.next().follows_terminator())
-        throw runic::Syntax_Exception(input.current());
+  std::vector<std::string> Summoner::process_generic_parameters(Context &context) {
+    std::vector<std::string> parameters;
+    while (true) {
+      auto text = input.expect_next(lexicon.identifier).get_text();
+      parameters.push_back(text);
 
+      if (input.next().is_not(lexicon.comma))
+        break;
+    }
+
+    input.expect(lexicon.greater_than);
+    input.next();
+
+    return parameters;
+  }
+
+  void Summoner::process_generic_member(const Identifier &identifier, Context &context, bool is_static) {
+    auto parameters = process_generic_parameters(context);
+    if (input.current().is(lexicon.left_paren)) {
       auto &function = process_function(identifier.name, context);
       if (is_static)
         function.set_is_static(true);
 
+      for (auto parameter : parameters) {
+        function.add_generic_parameter(parameter);
+      }
+    }
+    else {
+      if (is_static)
+        throw runic::Token_Exception<runic::Token>(input.current(), "Dungeons are already static.");
+
+      auto &dungeon = process_dungeon(identifier, context);
+      for (auto parameter : parameters) {
+        dungeon.add_generic_parameter(parameter);
+      }
+    }
+  }
+
+  void Summoner::process_member(const Identifier &identifier, Context &context, bool is_static) {
+    if (input.current().is(lexicon.lesser_than)) {
+      process_generic_member(identifier, context, is_static);
+    }
+    else if (input.current().is(lexicon.left_paren)) {
+      auto &function = process_function(identifier.name, context);
+      if (is_static)
+        function.set_is_static(true);
     }
     else {
       if (is_static) {
@@ -110,11 +148,12 @@ namespace imp_summoning {
   void Summoner::process_dungeon_member(Context &context) {
     if (input.current().is(lexicon.at_sign)) {
       input.expect_next(lexicon.identifier);
-      input.expect_next(lexicon.colon);
+      input.if_is(lexicon.colon);
       input.next();
     }
     else if (input.current().is(lexicon.Static)) {
       Identifier identifier = {input.next().get_text(), get_source_point()};
+      input.next();
       process_member(identifier, context, true);
     }
     else if (input.current().is(lexicon.identifier)) {
@@ -126,29 +165,34 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_function_parameters(Context &context, Function &func) {
+  void Summoner::process_function_parameters(Context &context, vector<unique_ptr<Parameter>> &parameters) {
     while (!input.next().is(lexicon.right_paren)) {
 //     throw Syntax_Exception(input.current());
       auto source_point = input.get_source_point();
       auto name = input.current().get_text();
       auto profession = process_optional_profession(context);
-      auto &minion = func.add_parameter(name, std::move(profession), source_point);
+      parameters.push_back(std::unique_ptr<Parameter>(new Parameter(name, std::move(profession), source_point)));
     }
-//    input.next();
+    input.next();
   }
 
-  Function &Summoner::process_function(const std::string &name, Context &context) {
+  Virtual_Function &Summoner::process_function(const std::string &name, Context &context) {
     auto profession = process_optional_profession(context);
-    auto &function = context.get_scope().create_function(name, profession, input.get_source_point());
-    process_function_parameters(context, function);
-//    input.current().get_text();
-//    input.next();
-    expression_summoner.process_block(function.get_block(), context);
+    vector<unique_ptr<Parameter>> parameters;
+    process_function_parameters(context, parameters);
+    if(input.if_is(lexicon.left_brace)) {
+      auto function = new Function(name, std::move(profession), input.get_source_point(), context.get_scope());
+      context.get_scope().add_member(std::unique_ptr<Member>(function));
 
-//    if (!input.current().is(lexicon.left_brace))
-//      throw Expected_Whisper_Exception(input.current(), lexicon.left_brace);
-    input.next();
-    return function;
+      expression_summoner.process_block(function->get_block(), context);
+      input.next();
+      return *function;
+    }
+    else {
+      auto function = new Virtual_Function(name, std::move(profession), input.get_source_point(), context.get_scope());
+      context.get_scope().add_member(std::unique_ptr<Member>(function));
+      return *function;
+    }
   }
 
   Dungeon &Summoner::process_dungeon(const Identifier &identifier, Context &context) {
@@ -160,18 +204,19 @@ namespace imp_summoning {
     while (input.current().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);
     }
-
+    input.next();
     return *dungeon;
   }
 
   void Summoner::process_root(Context &context) {
-    while (input.next().is_not(lexicon.end_of_file)) {
+    while (input.current().is_not(lexicon.end_of_file)) {
       process_dungeon_member(context);
     }
   }
 
   void Summoner::summon(underworld::Dungeon &root) {
     Root_Context context(root);
+    input.next();
     process_root(context);
   }
 }

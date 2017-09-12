@@ -11,14 +11,14 @@ namespace underworld {
     throw std::runtime_error("Local scope already has a member named " + member_name + ".");
   }
 
-  Function &Scope::create_function(const std::string &member_name, Profession_Owner &profession,
-                                   const source_mapping::Source_Point &source) {
-    auto function = new Function(member_name, std::move(profession), source, *this);
-    check_has_member(function->get_name());
-
-    members[function->get_name()] = Function_Owner(function);
-    return *function;
-  }
+//  Function &Scope::create_function(const std::string &member_name, Profession_Owner &profession,
+//                                   const source_mapping::Source_Point &source) {
+//    auto function = new Function(member_name, std::move(profession), source, *this);
+//    check_has_member(function->get_name());
+//
+//    members[function->get_name()] = Function_Owner(function);
+//    return *function;
+//  }
 
   void Scope::add_member(std::unique_ptr<Member> member) {
     check_has_member(member->get_name());
