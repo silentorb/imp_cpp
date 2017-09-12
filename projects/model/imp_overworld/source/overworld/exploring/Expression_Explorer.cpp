@@ -50,8 +50,10 @@ namespace overworld {
       }
     }
 
-    void Expression_Explorer::explore_function(const Function &function) {
-      explore_block(function.get_block());
+    void Expression_Explorer::explore_function(const Virtual_Function &function) {
+      auto with_block = dynamic_cast<const Function_With_Block*>(&function);
+      if (with_block)
+        explore_block(with_block->get_block());
     }
 
 //    void Expression_Explorer::explore(const overworld::Dungeon &dungeon) {

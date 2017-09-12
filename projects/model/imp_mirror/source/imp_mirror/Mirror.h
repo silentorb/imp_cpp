@@ -113,8 +113,8 @@ namespace imp_mirror {
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        overworld::Scope &scope);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
-      void reflect_function2(const underworld::Function &input_function);
-      void reflect_function3(const underworld::Function &input_function);
+      void reflect_function2(const underworld::Virtual_Function &input_function);
+      void reflect_function3(const underworld::Virtual_Function &input_function);
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);

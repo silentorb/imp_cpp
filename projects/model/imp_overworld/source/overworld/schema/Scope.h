@@ -10,7 +10,7 @@
 
 namespace overworld {
 
-  class Function;
+  class Virtual_Function;
 
   enum class Scope_Type {
       scope,
@@ -20,11 +20,9 @@ namespace overworld {
   using Member_Array  = std::vector<Member *>;
 
   class Scope {
-      const underworld::Scope *source;
-
   protected:
       Scope *parent;
-      std::vector<std::unique_ptr<Function>> functions;
+      std::vector<std::unique_ptr<Virtual_Function>> functions;
       std::vector<Variable_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
@@ -33,13 +31,12 @@ namespace overworld {
       void add_member(const std::string &name, Member &member);
 
   public:
-      Scope(const underworld::Scope *source, Scope *parent);
       Scope(Scope *parent);
       virtual ~Scope();
 
 //      Function &create_function(const underworld::Function &input, Profession &profession);
-      Function &create_function(const underworld::Function &input);
-
+//      Function &create_function(const underworld::Function &input);
+      void add_function(std::unique_ptr<Virtual_Function> function);
 //      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
 //      Minion &create_minion(const underworld::Minion &input);
 //      Minion &create_minion(const std::string &name, Profession &profession);
@@ -48,12 +45,12 @@ namespace overworld {
 
       void add_profession(std::unique_ptr<Profession> &profession);
 //      void add_profession(std::unique_ptr<Profession> &profession);
-      void add_dungeon(std::unique_ptr<Dungeon> &dungeon);
+      void add_dungeon(std::unique_ptr<Dungeon> dungeon);
       Member *find_member(const std::string &name);
       Member *get_member_or_null(const std::string &name);
       virtual Member &get_member(const std::string &name);
 
-      const std::vector<std::unique_ptr<Function>> &get_functions() const {
+      const std::vector<std::unique_ptr<Virtual_Function>> &get_functions() const {
         return functions;
       }
 
@@ -61,7 +58,7 @@ namespace overworld {
         return Scope_Type::scope;
       }
 
-      Function *get_function(const std::string &function_name);
+      Virtual_Function *get_function(const std::string &function_name);
 
       const std::vector<Variable_Owner> &get_minions() const {
         return minions;
@@ -82,7 +79,7 @@ namespace overworld {
         return parent;
       }
 
-      virtual Function *get_function() {
+      virtual Virtual_Function *get_function() {
         return nullptr;
       }
 
@@ -104,12 +101,12 @@ namespace overworld {
   };
 
   class Function_Scope : public Scope {
-      Function *function = nullptr;
+      Virtual_Function *function = nullptr;
 
   public:
-      Function_Scope(Scope &parent, Function &function);
+      Function_Scope(Scope &parent, Virtual_Function &function);
 
-      virtual Function *get_function() override {
+      virtual Virtual_Function *get_function() override {
         return function;
       }
   };

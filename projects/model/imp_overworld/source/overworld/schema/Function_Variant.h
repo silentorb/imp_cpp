@@ -4,20 +4,20 @@
 
 namespace overworld {
 
-  class Function;
+  class Virtual_Function;
 
   class Function_Variant : public Variant, public virtual Function_Interface {
-      Function &original;
+      Virtual_Function &original;
       Dungeon_Interface *dungeon = nullptr;
 
   public:
-      Function_Variant(Function &original, Dungeon_Interface &dungeon, const std::vector<Profession *> &professions);
+      Function_Variant(Virtual_Function &original, Dungeon_Interface &dungeon, const std::vector<Profession *> &professions);
 
       const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
         return Variant::get_generic_parameters();
       }
 
-      Function &get_original() override {
+      Virtual_Function &get_original() override {
         return original;
       }
 

@@ -29,13 +29,13 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(nullptr, &parent), node(*this, *this, this, nullptr) {}
+        name(name), Scope(&parent), node(*this, *this, this, nullptr) {}
 
       Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Point source_point) :
-        name(name), Scope(nullptr, &parent), node(*this, *this, this, nullptr), source_point(source_point) {}
+        name(name), Scope(&parent), node(*this, *this, this, nullptr), source_point(source_point) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr, nullptr), node(*this, *this, this, nullptr) {}
+        name(name), Scope(nullptr), node(*this, *this, this, nullptr) {}
 
       virtual ~Dungeon() {}
 
@@ -97,7 +97,7 @@ namespace overworld {
         return source_point;
       }
 
-      Function &get_or_create_constructor();
+      Virtual_Function &get_or_create_constructor();
 
       Member_Type get_member_type() const override {
         return Member_Type::dungeon;
@@ -164,7 +164,7 @@ namespace overworld {
         return &contracts;
       }
 
-      Function &create_function(const std::string &name, Profession &profession,
+      Virtual_Function &create_function(const std::string &name, Profession &profession,
                                 const source_mapping::Source_Point &source_point = source_mapping::Source_Point());
 
       Scope_Type get_scope_type() const override {

@@ -9,22 +9,20 @@ using namespace std;
 
 namespace overworld {
 
-  Scope::Scope(const underworld::Scope *source, Scope *parent) :
-    source(source), parent(parent) {
-    int k = 0;
-  }
-
   Scope::Scope(Scope *parent) :
-    source(nullptr), parent(parent) {
+    parent(parent) {
   }
 
-  Function_Scope::Function_Scope(Scope &parent, Function &function) :
+//  Scope::Scope(Scope *parent) :
+//    source(nullptr), parent(parent) {
+//  }
+
+  Function_Scope::Function_Scope(Scope &parent, Virtual_Function &function) :
     Scope(&parent), function(&function) {
 
   }
 
   Scope::~Scope() {
-    int k = 0;
   }
 
   void Scope::add_member(const std::string &name, Member &member) {
@@ -39,11 +37,16 @@ namespace overworld {
 //    return create_function(input.get_name(), profession, input.get_source_point());
 //  }
 
-  Function &Scope::create_function(const underworld::Function &input) {
-    auto function = new Function(input.get_name(), *this, get_dungeon(), input.get_source_point());
-    functions.push_back(unique_ptr<Function>(function));
-    add_member(input.get_name(), *function);
-    return *function;
+//  Function &Scope::create_function(const underworld::Function &input) {
+//    auto function = new Function(input.get_name(), *this, get_dungeon(), input.get_source_point());
+//    functions.push_back(std::move((function));
+//    add_member(input.get_name(), *function);
+//    return *function;
+//  }
+
+  void Scope::add_function(std::unique_ptr<Virtual_Function> function) {
+    add_member(function->get_name(), *function);
+    functions.push_back(std::move(function));
   }
 
   void Scope::add_minion(Minion *minion) {
@@ -94,7 +97,7 @@ namespace overworld {
     professions.push_back(std::move(profession));
   }
 
-  void Scope::add_dungeon(std::unique_ptr<Dungeon> &dungeon) {
+  void Scope::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
     add_member(dungeon->get_name(), *dungeon);
     dungeons.push_back(std::move(dungeon));
   }
@@ -103,7 +106,7 @@ namespace overworld {
     return parent->get_dungeon();
   }
 
-  Function *Scope::get_function(const std::string &function_name) {
+  Virtual_Function *Scope::get_function(const std::string &function_name) {
     for (auto &function: functions) {
       if (function->get_name() == function_name)
         return function.get();

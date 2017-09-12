@@ -100,7 +100,7 @@ namespace imp_rendering {
       cpp_stl::Standard_Library &standard_library;
       Helper &helper;
 
-      void process_function_declaration(const Function &function) {
+      void process_function_declaration(const Virtual_Function &function) {
         for (auto &parameter: function.get_parameters()) {
           auto &profession = parameter->get_profession();
           if (profession.get_ownership() == Ownership::owner) {

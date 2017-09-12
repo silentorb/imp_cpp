@@ -84,7 +84,7 @@ namespace solving {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
       auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
       if (dungeon && !dungeon->has_generic_parameter(generic_parameter)) {
-        auto &function = *dynamic_cast<Function *>(generic_parameter.get_node().get_function());
+        auto &function = *dynamic_cast<Virtual_Function *>(generic_parameter.get_node().get_function());
         migrate_generic_parameter_from_function_to_dungeon(*dungeon, function, generic_parameter);
       }
     }
@@ -92,7 +92,7 @@ namespace solving {
   }
 
   void Solver::migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
-                                                                  overworld::Function &function,
+                                                                  overworld::Virtual_Function &function,
                                                                   overworld::Generic_Parameter &parameter) {
     auto parameter_owner = function.detach_generic_parameter(parameter);
     dungeon.add_generic_parameter(std::move(parameter_owner));
@@ -182,7 +182,7 @@ namespace solving {
     return nullptr;
   }
 
-  Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
+  Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Virtual_Function &function,
                                                     Node &starting_node, Profession &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
     professions.push_back(&profession);

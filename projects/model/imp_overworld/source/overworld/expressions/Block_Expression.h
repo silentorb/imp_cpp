@@ -35,8 +35,8 @@ namespace overworld {
       Block block;
 
   public:
-      Block_Expression(const underworld::Scope &source, Scope *parent) :
-        Scope(&source, parent), block(*this) {}
+      Block_Expression(Scope *parent) :
+        Scope(parent), block(*this) {}
 
       virtual ~Block_Expression() {
 

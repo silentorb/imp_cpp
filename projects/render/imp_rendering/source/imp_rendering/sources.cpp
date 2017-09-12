@@ -17,7 +17,7 @@ namespace imp_rendering {
 //      return result;
 //    }
 
-    Stroke render_function(const overworld::Function &function, const overworld::Dungeon &dungeon) {
+    Stroke render_function(const overworld::Virtual_Function &function, const overworld::Dungeon &dungeon) {
       auto function_signature = render_function_return_signature(function)
                                 + dungeon.get_name() + "::"
                                 + sanitize_name(function.get_name())

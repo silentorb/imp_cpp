@@ -96,5 +96,5 @@ namespace underworld {
       }
   };
 
-  using Function_Owner = std::unique_ptr<Function>;
+  using Function_Owner = std::unique_ptr<Virtual_Function>;
 }

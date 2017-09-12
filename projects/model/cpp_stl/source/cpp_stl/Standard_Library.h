@@ -6,7 +6,7 @@
 namespace cpp_stl {
 
   class Standard_Library {
-      std::unique_ptr<overworld::Dungeon> overworld_dungeon;
+      overworld::Dungeon *overworld_dungeon = nullptr;
 
       source_mapping::Source_File standard_library_file;
       overworld::External_File vector_file;
@@ -43,7 +43,11 @@ namespace cpp_stl {
         return *vector_type;
       }
 
-      const std::unique_ptr<overworld::Dungeon> &get_overworld_dungeon() const {
+      overworld::Dungeon *get_overworld_dungeon() {
+        return overworld_dungeon;
+      }
+
+      const overworld::Dungeon *get_overworld_dungeon() const {
         return overworld_dungeon;
       }
   };

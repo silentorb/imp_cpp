@@ -41,40 +41,34 @@ namespace overworld {
       }
   };
 
-  class Function : public virtual Member, public virtual Profession_Reference, public virtual Function_Interface {
+  class Virtual_Function
+    : public virtual Member, public virtual Profession_Reference, public virtual Function_Interface {
+  protected:
       Function_Scope scope;
-      Block block;
       Function_Signature signature;
-      Profession_Node<Function> node;
+      Profession_Node<Virtual_Function> node;
       const std::string name;
       bool _is_static = false;
-      bool returns_a_value() const;
+      virtual bool returns_a_value() const;
       const source_mapping::Source_Point source_point;
       std::vector<Generic_Parameter_Owner> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
 
   public:
-      Function(const std::string &name, Profession &return_type, Scope &parent_scope, Dungeon_Interface &dungeon,
-               const source_mapping::Source_Point &source_point) :
+      Virtual_Function(const std::string &name, Profession &return_type, Scope &parent_scope,
+                       Dungeon_Interface &dungeon,
+                       const source_mapping::Source_Point &source_point) :
         name(name), signature(node, &return_type),
-        scope(parent_scope, *this), block(scope),
+        scope(parent_scope, *this),
         node(*this, return_type, &dungeon, this), source_point(source_point) {}
 
-      Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
-               const source_mapping::Source_Point &source_point) :
+      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+                       const source_mapping::Source_Point &source_point) :
         name(name), signature(node, nullptr),
-        scope(parent_scope, *this), block(scope),
+        scope(parent_scope, *this),
         node(*this, Profession_Library::get_void(), &dungeon, this), source_point(source_point) {}
 
-      ~Function() {}
-
-      Block &get_block() {
-        return block;
-      }
-
-      const Block &get_block() const {
-        return block;
-      }
+      ~Virtual_Function() {}
 
       Member_Type get_member_type() const override {
         return Member_Type::function;
@@ -86,7 +80,9 @@ namespace overworld {
 
       bool is_constructor() const;
 
-      bool is_inline() const;
+      virtual bool is_inline() const {
+        return false;
+      }
 
       const std::vector<Parameter *> &get_parameters() const {
         return signature.get_parameters();
@@ -103,7 +99,7 @@ namespace overworld {
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
 
-      Profession_Node<Function> &get_node() override {
+      Profession_Node<Virtual_Function> &get_node() override {
         return node;
       }
 
@@ -182,10 +178,37 @@ namespace overworld {
         return generic_parameters;
       }
 
-      Function &get_original() override {
+      Virtual_Function &get_original() override {
         return *this;
       }
   };
 
-  using Function_Owner = std::unique_ptr<Function>;
+  using Function_Owner = std::unique_ptr<Virtual_Function>;
+
+  class Function_With_Block : public Virtual_Function {
+      Block block;
+
+  public:
+      Function_With_Block(const std::string &name, Profession &return_type, Scope &parent_scope,
+                          Dungeon_Interface &dungeon, const source_mapping::Source_Point &source_point)
+        : Virtual_Function(name, return_type, parent_scope, dungeon, source_point), block(scope) {}
+
+      Function_With_Block(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+                          const source_mapping::Source_Point &source_point) :
+        Virtual_Function(name, parent_scope, dungeon, source_point), block(scope) {}
+
+      virtual ~Function_With_Block() {}
+
+      Block &get_block() {
+        return block;
+      }
+
+      const Block &get_block() const {
+        return block;
+      }
+
+      bool is_inline() const override;
+  protected:
+      bool returns_a_value() const override;
+  };
 }

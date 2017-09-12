@@ -5,7 +5,7 @@ using namespace std;
 
 namespace overworld {
 
-  Function &Dungeon::get_or_create_constructor() {
+  Virtual_Function &Dungeon::get_or_create_constructor() {
     for (auto &method: functions) {
       if (method->get_name() == get_name())
         return *method;
@@ -15,10 +15,10 @@ namespace overworld {
 //    throw std::runtime_error("Could not find constructor.");
   }
 
-  Function &Dungeon::create_function(const std::string &name, Profession &profession,
+  Virtual_Function &Dungeon::create_function(const std::string &name, Profession &profession,
                                      const source_mapping::Source_Point &source_point) {
-    auto function = new Function(name, profession, *this, *this, source_point);
-    functions.push_back(unique_ptr<Function>(function));
+    auto function = new Virtual_Function(name, profession, *this, *this, source_point);
+    functions.push_back(unique_ptr<Virtual_Function>(function));
 //    if (!function->is_constructor())
 //      graph.add_node(function->get_node());
 
@@ -56,7 +56,7 @@ namespace overworld {
       dungeon->set_is_external(true);
 
     auto result = dungeon.get();
-    Scope::add_dungeon(dungeon);
+    Scope::add_dungeon(std::move(dungeon));
     return *result;
   }
 

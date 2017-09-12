@@ -5,7 +5,7 @@
 
 namespace overworld {
 
-  bool Function::is_constructor() const {
+  bool Virtual_Function::is_constructor() const {
     auto dungeon = dynamic_cast<const Dungeon *>(scope.get_parent());
     if (dungeon) {
       return dungeon->get_name() == get_name();
@@ -14,15 +14,19 @@ namespace overworld {
     return false;
   }
 
-  bool Function::is_inline() const {
+  bool Function_With_Block::is_inline() const {
     return generic_parameters.size() > 0 || block.get_expressions().size() < 2;
   }
 
-  bool Function::returns_a_value() const {
-//    for (auto &connection: node.get_connections()) {
-//      if (&connection->get_first() == &node)
-//        return true;
-//    }
+  bool Virtual_Function::returns_a_value() const {
+    auto return_type = signature.get_return_type();
+    return return_type && return_type->get_type() != Profession_Type::unknown;
+  }
+
+  bool Function_With_Block::returns_a_value() const {
+    auto return_type = signature.get_return_type();
+    if (return_type && return_type->get_type() != Profession_Type::unknown)
+      return true;
 
     bool result = false;
 
@@ -34,7 +38,7 @@ namespace overworld {
     return result;
   }
 
-  void Function::finalize(overworld::Profession_Library &profession_library) {
+  void Virtual_Function::finalize(overworld::Profession_Library &profession_library) {
     if (!returns_a_value()) {
       set_profession(profession_library.get_void());
       node.set_resolved(true);

@@ -33,7 +33,8 @@ namespace cpp_stl {
 
   void Standard_Library::initialize(overworld::Scope &parent, overworld::Profession_Library &profession_library,
                                     overworld::Graph &graph) {
-    overworld_dungeon = std::unique_ptr<overworld::Dungeon>(new overworld::Dungeon("stl", parent));
+    overworld_dungeon = new overworld::Dungeon("stl", parent);
+    parent.add_dungeon(std::unique_ptr<overworld::Dungeon>(overworld_dungeon));
     overworld_dungeon->set_is_external(true);
 
     source_mapping::Source_Point source_point(standard_library_file, 0, 0);
@@ -49,6 +50,5 @@ namespace cpp_stl {
       new Cpp_Dungeon("string", "std::string", *overworld_dungeon)
     ));
     string_type->set_file(string_file);
-
   }
 }
