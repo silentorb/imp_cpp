@@ -15,12 +15,12 @@ namespace imp_wrapper {
     zookeeper(underworld_root) {
 
     standard_library = new cpp_stl::Standard_Library();
-    overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library->get_overworld_dungeon()));
-    standard_library->initialize(overworld_root, overworld_profession_library, graph);
+    standard_library->initialize_underworld(zookeeper);
+    standard_library->initialize_overworld(overworld_root, overworld_profession_library, graph);
+//    overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library->get_overworld_dungeon()));
   }
 
   Wrapper_Internal::~Wrapper_Internal() {
-
   }
 
   void Wrapper_Internal::load_file(const std::string &path) {

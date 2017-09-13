@@ -148,8 +148,8 @@ namespace imp_summoning {
   void Summoner::process_dungeon_member(Context &context) {
     if (input.current().is(lexicon.at_sign)) {
       input.expect_next(lexicon.identifier);
-      input.if_is(lexicon.colon);
       input.next();
+      input.if_is(lexicon.colon);
     }
     else if (input.current().is(lexicon.Static)) {
       Identifier identifier = {input.next().get_text(), get_source_point()};
@@ -181,8 +181,9 @@ namespace imp_summoning {
     vector<unique_ptr<Parameter>> parameters;
     process_function_parameters(context, parameters);
     if(input.if_is(lexicon.left_brace)) {
-      auto function = new Function(name, std::move(profession), input.get_source_point(), context.get_scope());
+      auto function = new Function_With_Block(name, std::move(profession), input.get_source_point(), context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
+      function->add_parameters(parameters);
 
       expression_summoner.process_block(function->get_block(), context);
       input.next();
@@ -191,6 +192,7 @@ namespace imp_summoning {
     else {
       auto function = new Virtual_Function(name, std::move(profession), input.get_source_point(), context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
+      function->add_parameters(parameters);
       return *function;
     }
   }

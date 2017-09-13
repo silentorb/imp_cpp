@@ -8,7 +8,7 @@
 
 namespace underworld {
 
-  class Function;
+  class Function_With_Block;
 
   class Virtual_Function;
 

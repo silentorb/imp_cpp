@@ -147,7 +147,9 @@ namespace imp_rendering {
         for (auto &function : dungeon.get_functions()) {
           process_function_declaration(*function);
           if (function->is_inline()) {
-            explore_block(function->get_block());
+            auto with_block = static_cast<const overworld::Function_With_Block *>(function.get());
+            if (with_block)
+              explore_block(with_block->get_block());
           }
         }
 
@@ -173,7 +175,9 @@ namespace imp_rendering {
         for (auto &function : dungeon.get_functions()) {
           process_function_declaration(*function);
           if (!function->is_inline()) {
-            explore_block(function->get_block());
+            auto with_block = static_cast<const overworld::Function_With_Block *>(function.get());
+            if (with_block)
+              explore_block(with_block->get_block());
           }
         }
       }

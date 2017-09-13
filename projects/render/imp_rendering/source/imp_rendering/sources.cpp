@@ -23,7 +23,8 @@ namespace imp_rendering {
                                 + sanitize_name(function.get_name())
                                 + render_function_parameters(function);
 
-      return render_block(function_signature, function.get_block());
+      auto with_block = static_cast<const overworld:: Function_With_Block*>(& function);
+      return render_block(function_signature, with_block->get_block());
     }
 
 

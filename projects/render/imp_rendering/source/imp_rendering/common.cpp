@@ -431,8 +431,9 @@ namespace imp_rendering {
                               + sanitize_name(function.get_name())
                               + render_function_parameters(function);
 
+    auto with_block = static_cast<const overworld:: Function_With_Block*>(& function);
     return render_possible_generic_block(function.get_generic_parameters(),
-                                         render_block(function_signature, function.get_block())
+                                         render_block(function_signature, with_block->get_block())
     );
   }
 

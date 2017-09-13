@@ -31,8 +31,9 @@ namespace cpp_stl {
     zookeeper.load_file("resources/stl/vector.imp");
   }
 
-  void Standard_Library::initialize(overworld::Scope &parent, overworld::Profession_Library &profession_library,
-                                    overworld::Graph &graph) {
+  void Standard_Library::initialize_overworld(overworld::Scope &parent,
+                                              overworld::Profession_Library &profession_library,
+                                              overworld::Graph &graph) {
     overworld_dungeon = new overworld::Dungeon("stl", parent);
     parent.add_dungeon(std::unique_ptr<overworld::Dungeon>(overworld_dungeon));
     overworld_dungeon->set_is_external(true);

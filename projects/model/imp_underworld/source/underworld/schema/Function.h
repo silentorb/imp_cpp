@@ -65,27 +65,48 @@ namespace underworld {
       const std::vector<std::string> &get_generic_parameters() const {
         return generic_parameters;
       }
+
+      virtual bool has_block() const {
+        return false;
+      }
+
+      virtual void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
+        for (auto &parameter: new_parameters) {
+          parameters.push_back(std::move(parameter));
+        }
+      }
+
+      virtual Parameter &add_parameter(const std::string &name, Profession_Owner profession,
+                                       const source_mapping::Source_Point &source);
   };
 
-  class Function : public Virtual_Function {
+  class Function_With_Block : public Virtual_Function {
       Block block;
       std::vector<Parameter *> parameters;
 
   public:
-      Function(const std::string &name, Profession_Owner return_type, const source_mapping::Source_Point &source,
-               Scope &parent) :
+      Function_With_Block(const std::string &name, Profession_Owner return_type,
+                          const source_mapping::Source_Point &source,
+                          Scope &parent) :
         Virtual_Function(name, std::move(return_type), source, parent), block(parent) {}
 
-      Function(const std::string &name, const source_mapping::Source_Point &source,
-               Scope &parent) :
+      Function_With_Block(const std::string &name, const source_mapping::Source_Point &source,
+                          Scope &parent) :
         Virtual_Function(name, source, parent), block(parent) {}
 
       Block &get_block() {
         return block;
       }
 
+      void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) override {
+        for (auto &parameter: new_parameters) {
+          parameters.push_back(parameter.get());
+          block.get_scope().add_member(std::move(parameter));
+        }
+      }
+
       Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                               const source_mapping::Source_Point &source);
+                               const source_mapping::Source_Point &source) override;
 
       const std::vector<Parameter *> &get_parameters() const {
         return parameters;
@@ -93,6 +114,10 @@ namespace underworld {
 
       const Block &get_block() const {
         return block;
+      }
+
+      bool has_block() const override {
+        return true;
       }
   };
 
