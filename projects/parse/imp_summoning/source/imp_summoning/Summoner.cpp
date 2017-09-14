@@ -15,9 +15,7 @@ namespace imp_summoning {
     expression_summoner(input, lookup) {}
 
   Profession_Owner Summoner::process_optional_profession(Context &context) {
-    if (input.peek().is(lexicon.colon)) {
-      input.next();
-      input.next();
+    if (input.if_is(lexicon.colon)) {
       return process_profession(context);
     }
     else {
@@ -32,10 +30,9 @@ namespace imp_summoning {
   }
 
   void Summoner::process_root_identifier(const Identifier &identifier, Context &context) {
-    if (input.peek().is(lexicon.left_brace)) {
+    if (input.if_is(lexicon.left_brace)) {
 //      if (input.next().follows_terminator())
 //        throw Syntax_Exception(input.current());
-      input.next();
       process_dungeon(identifier, context);
     }
     else {
@@ -60,10 +57,10 @@ namespace imp_summoning {
   }
 
   void Summoner::process_minion_or_dungeon(const Identifier &identifier, Context &context) {
-    if (input.current().is(lexicon.colon)) {
-      input.next();
+    if (input.if_is(lexicon.colon)) {
+
       auto profession = process_profession(context);
-      if (input.next().is(lexicon.comma)) {
+      if (input.current().is(lexicon.comma)) {
         process_dungeon_with_contracts(identifier, std::move(profession), context);
         return;
       }
@@ -166,10 +163,12 @@ namespace imp_summoning {
   }
 
   void Summoner::process_function_parameters(Context &context, vector<unique_ptr<Parameter>> &parameters) {
-    while (!input.next().is(lexicon.right_paren)) {
+    input.if_is(lexicon.left_paren);
+    while (input.current().is_not(lexicon.right_paren) && input.current().is_not(lexicon.end_of_file)) {
 //     throw Syntax_Exception(input.current());
+      auto name = input.expect(lexicon.identifier).get_text();
       auto source_point = input.get_source_point();
-      auto name = input.current().get_text();
+      input.next();
       auto profession = process_optional_profession(context);
       parameters.push_back(std::unique_ptr<Parameter>(new Parameter(name, std::move(profession), source_point)));
     }
@@ -177,20 +176,20 @@ namespace imp_summoning {
   }
 
   Virtual_Function &Summoner::process_function(const std::string &name, Context &context) {
+    auto source_point = input.get_source_point();
     auto profession = process_optional_profession(context);
-    vector<unique_ptr<Parameter>> parameters;
+    std::vector<std::unique_ptr<Parameter>> parameters;
     process_function_parameters(context, parameters);
-    if(input.if_is(lexicon.left_brace)) {
-      auto function = new Function_With_Block(name, std::move(profession), input.get_source_point(), context.get_scope());
+    if (input.if_is(lexicon.left_brace)) {
+      auto function = new Function_With_Block(name, std::move(profession), source_point, context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
 
       expression_summoner.process_block(function->get_block(), context);
-      input.next();
       return *function;
     }
     else {
-      auto function = new Virtual_Function(name, std::move(profession), input.get_source_point(), context.get_scope());
+      auto function = new Virtual_Function(name, std::move(profession), source_point, context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
       return *function;

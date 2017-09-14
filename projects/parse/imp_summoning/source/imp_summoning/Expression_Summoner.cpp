@@ -23,7 +23,7 @@ namespace imp_summoning {
 //                                                      input.get_source_point());
     auto name = input.expect_next(lexicon.identifier).get_text();
     Minion_Owner minion(new Minion(name, input.get_source_point()));
-    if (input.peek().is(lexicon.assignment)) {
+    if (input.next().is(lexicon.assignment)) {
       input.next();
       auto expression = process_expression(context);
       return Expression_Owner(new Minion_Declaration_And_Assignment(minion, expression));
@@ -35,7 +35,7 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_identifier(Context &context) {
     auto path = process_path(context);
-    if (input.peek().is(lexicon.left_paren)) {
+    if (input.current().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
       if (last.get_type() == Expression::Type::member) {
@@ -47,10 +47,10 @@ namespace imp_summoning {
         throw std::runtime_error(last.get_name() + " is not a function.");
       }
     }
-    else if (input.peek().is(lexicon.left_brace)) {
+    else if (input.current().is(lexicon.left_brace)) {
       return process_instantiation(context);
     }
-    else if (input.peek().is(lexicon.assignment)) {
+    else if (input.current().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
       auto value = process_expression(context);
       return Expression_Owner(new Assignment(path, operator_type, value));
@@ -74,7 +74,7 @@ namespace imp_summoning {
 //  }
 
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
-    auto &token = input.next();
+    auto &token = input.current();
     if (token.is(lexicon.literal_int)) {
       int value = std::stoi(token.get_text());
       return Expression_Owner(new Literal_Int(value, input.get_source_point()));
@@ -113,18 +113,19 @@ namespace imp_summoning {
 
   Operator_Type Expression_Summoner::process_assignment_operator(Context &context) {
     Operator_Type result;
-    if (!lookup.get_assignment_operator(input.next().get_type(), result)) {
+    if (!lookup.get_assignment_operator(input.current().get_type(), result)) {
       throw runic::Syntax_Exception(input.current());
     }
+    input.next();
     return result;
   }
 
   Expression_Owner Expression_Summoner::process_child(Expression_Owner &expression, Context &context) {
 //    auto expression = Expression_Owner(new Member_Expression(member));
-    if (input.peek().is(lexicon.dot)) {
-      input.next();
+    if (input.current().is(lexicon.dot)) {
       auto name = input.next().get_text();
       auto child_expression = Expression_Owner(new Member_Expression(name, get_source_point()));
+      input.next();
       auto second = process_child(child_expression, context);
       return Expression_Owner(new Chain(expression, second));
 
@@ -154,11 +155,14 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::identify_root(Context &context) {
     if (input.current().get_text() == "this") {
+			input.next();
       return Expression_Owner(new Self(context.get_scope().get_dungeon()));
     }
     else {
 //      auto &member = find_member(input.current(), context);
-      return Expression_Owner(new Member_Expression(input.current().get_text(), get_source_point()));
+      auto result = Expression_Owner(new Member_Expression(input.current().get_text(), get_source_point()));
+			input.next();
+			return result;
     }
   }
 
@@ -171,7 +175,7 @@ namespace imp_summoning {
     auto source_point = input.get_source_point();
 
     std::vector<Expression_Owner> arguments;
-    while (!input.peek().is(lexicon.right_paren)) {
+    while (input.current().is_not(lexicon.right_paren)) {
       arguments.push_back(process_expression(context));
     }
 
@@ -184,13 +188,12 @@ namespace imp_summoning {
     if (profession->get_type() == underworld::Profession_Type::unknown)
       throw runic::Syntax_Exception(input.current());
 
-    input.next();
     auto instantiation = new underworld::Instantiation(profession, get_source_point());
     Expression_Owner result(instantiation);
-    while (!input.peek().is(lexicon.right_brace)) {
-      input.expect_next(lexicon.identifier);
-      auto key = input.current().get_text();
+    while (!input.current().is(lexicon.right_brace)) {
+      auto key = input.expect_next(lexicon.identifier).get_text();
       input.expect_next(lexicon.colon);
+      input.next();
       instantiation->add_expression(key, process_expression(context));
     }
 
@@ -199,7 +202,7 @@ namespace imp_summoning {
   }
 
   Expression_Owner Expression_Summoner::process_statement(Context &context) {
-    auto &token = input.next();
+    auto &token = input.current();
     if (token.is(lexicon.Var)) {
       return process_variable_declaration(context);
     }
@@ -207,7 +210,7 @@ namespace imp_summoning {
       return process_if(context);
     }
     else if (token.is(lexicon.Return)) {
-      auto &next = input.peek();
+      auto &next = input.next();
       if (next.follows_terminator() || next.is(lexicon.right_brace)) {
         return Expression_Owner(new Return());
       }
@@ -237,13 +240,15 @@ namespace imp_summoning {
     input.expect_next(lexicon.left_paren);
     auto result = process_expression(context);
     input.expect_next(lexicon.right_paren);
+    input.next();
     return result;
   }
 
   Expression_Owner Expression_Summoner::process_block_or_single_expression(Context &context) {
-    if (input.peek().is(lexicon.left_brace)) {
+    if (input.current().is(lexicon.left_brace)) {
       auto block = new Block(context.get_scope());
       Expression_Owner result(block);
+      input.next();
       process_block(*block, context);
       return result;
     }
@@ -255,12 +260,14 @@ namespace imp_summoning {
   void Expression_Summoner::process_block(underworld::Block &block, Context &context) {
     Child_Context new_context(context, block.get_scope());
 
-    if (!input.next().is(lexicon.left_brace))
-      throw runic::Expected_Whisper_Exception(input.current(), lexicon.left_brace);
+//    if (!input.next().is(lexicon.left_brace))
+//      throw runic::Expected_Whisper_Exception(input.current(), lexicon.left_brace);
 
-    while (input.until(lexicon.right_brace)) {
+    while (input.current().is_not(lexicon.right_brace)) {
       block.add_expression(process_statement(new_context));
     }
+
+    input.next();
   }
 
   Expression_Owner Expression_Summoner::process_if(Context &context) {
