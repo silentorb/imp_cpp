@@ -516,7 +516,7 @@ namespace imp_mirror {
 
       reflect_scope1(input_function_with_block->get_block().get_scope(), output_function->get_block().get_scope());
       output_function->set_is_static(input_function.is_static());
-      element_map.add(&input_function, &output_function);
+      element_map.add(&input_function, output_function);
     }
     else {
       auto output_function = new overworld::Virtual_Function(member.get_name(),
@@ -528,18 +528,18 @@ namespace imp_mirror {
   }
 
   void Mirror::reflect_function2(const underworld::Virtual_Function &input_function) {
-    auto &output_function = *element_map.find_or_null<overworld::Virtual_Function>(&input_function);
-    auto &profession = reflect_profession(input_function.get_profession(), *output_function.get_scope().get_parent());
     auto input_function_with_block = (dynamic_cast<const underworld::Function_With_Block *>(&input_function));
     if (input_function_with_block) {
-      auto output_function_with_block = (dynamic_cast<overworld::Function_With_Block *>(&output_function));
+      auto output_function_with_block = element_map.find_or_null<overworld::Function_With_Block>(&input_function);
+      auto &profession = reflect_profession(input_function.get_profession(),
+                                            *output_function_with_block->get_scope().get_parent());
       reflect_scope2(
         input_function_with_block->get_block().get_scope(),
         output_function_with_block->get_block().get_scope());
 
       for (auto &source_parameter : input_function.get_parameters()) {
         auto &minion = output_function_with_block->get_block().get_scope().get_minion(source_parameter->get_name());
-        output_function.add_parameter(cast<overworld::Parameter>(minion));
+        output_function_with_block->add_parameter(cast<overworld::Parameter>(minion));
       }
     }
   }
@@ -581,13 +581,6 @@ namespace imp_mirror {
   void Mirror::reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
 
     for (auto &input_member : input_scope.get_members()) {
-      if (input_member.second->get_type() == underworld::Member::Type::minion) {
-        auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
-        reflect_minion(input_variable, output_scope);
-      }
-    }
-
-    for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
         reflect_function1(*input_member.second, output_scope);
       }
@@ -600,19 +593,35 @@ namespace imp_mirror {
 
         if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
-          auto output_dungeon = std::unique_ptr<overworld::Dungeon>(
-            new overworld::Dungeon(input_dungeon.get_name(), output_scope, input_dungeon.get_source_point()));
+          overworld::Dungeon *output_dungeon;
+          auto existing_member = output_scope.get_member_or_null(input_dungeon.get_name());
+          if (existing_member) {
+            output_dungeon = dynamic_cast<overworld::Dungeon *>(existing_member);
+          }
+          else {
+            output_dungeon = new overworld::Dungeon(input_dungeon.get_name(), output_scope,
+                                                    input_dungeon.get_source_point());
+            auto output_dungeon_owner = std::unique_ptr<overworld::Dungeon>(output_dungeon);
 
-          auto &dungeon = *output_dungeon;
-          element_map.add(&input_dungeon, &dungeon);
-          output_scope.add_dungeon(std::move(output_dungeon));
-          reflect_scope1(input_dungeon, dungeon);
+            element_map.add(&input_dungeon, &output_dungeon);
+            output_scope.add_dungeon(std::move(output_dungeon_owner));
+          }
+
+          reflect_scope1(input_dungeon, *output_dungeon);
         }
       }
     }
   }
 
   void Mirror::reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope) {
+
+    for (auto &input_member : input_scope.get_members()) {
+      if (input_member.second->get_type() == underworld::Member::Type::minion) {
+        auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
+        reflect_minion(input_variable, output_scope);
+      }
+    }
+
     if (output_scope.get_scope_type() == overworld::Scope_Type::dungeon) {
       auto &input_dungeon = cast<underworld::Dungeon>(input_scope);
       auto &output_dungeon = cast<overworld::Dungeon>(output_scope);
