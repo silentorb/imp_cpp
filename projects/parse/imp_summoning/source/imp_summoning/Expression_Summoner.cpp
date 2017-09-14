@@ -48,7 +48,7 @@ namespace imp_summoning {
       }
     }
     else if (input.current().is(lexicon.left_brace)) {
-      return process_instantiation(context);
+      return process_instantiation(std::move(path), context);
     }
     else if (input.current().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
@@ -183,13 +183,15 @@ namespace imp_summoning {
     return Expression_Owner(new underworld::Invoke(expression, arguments, source_point));
   }
 
-  Expression_Owner Expression_Summoner::process_instantiation(Context &context) {
-    auto profession = process_profession(context);
-    if (profession->get_type() == underworld::Profession_Type::unknown)
-      throw runic::Syntax_Exception(input.current());
+  Expression_Owner
+  Expression_Summoner::process_instantiation(Expression_Owner profession_expression, Context &context) {
+//    auto profession = process_profession(context);
+//    if (profession->get_type() == underworld::Profession_Type::unknown)
+//      throw runic::Syntax_Exception(input.current());
 
-    auto instantiation = new underworld::Instantiation(profession, get_source_point());
+    auto instantiation = new underworld::Instantiation(std::move(profession_expression), get_source_point());
     Expression_Owner result(instantiation);
+    input.next();
     while (!input.current().is(lexicon.right_brace)) {
       auto key = input.expect_next(lexicon.identifier).get_text();
       input.expect_next(lexicon.colon);

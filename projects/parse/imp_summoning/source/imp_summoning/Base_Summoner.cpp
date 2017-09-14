@@ -14,7 +14,7 @@ namespace imp_summoning {
   }
 
   underworld::Profession_Owner Base_Summoner::process_profession_token(Context &context) {
-    auto name = input.current().get_text();
+    auto name = input.expect(lexicon.identifier).get_text();
     if (input.next().is(lexicon.dot)) {
       input.expect_next(lexicon.identifier);
       auto child = process_profession_token(context);

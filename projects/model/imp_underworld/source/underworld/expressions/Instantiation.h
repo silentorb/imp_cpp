@@ -6,12 +6,12 @@
 namespace underworld {
 
   class Instantiation : public Common_Expression {
-      Profession_Owner profession;
+      Expression_Owner profession;
       std::map<std::string, Expression_Owner> dictionary;
       const source_mapping::Source_Point source_point;
 
   public:
-      Instantiation(Profession_Owner &profession, const source_mapping::Source_Point &source_point) :
+      Instantiation(Expression_Owner profession, const source_mapping::Source_Point &source_point) :
         profession(std::move(profession)), source_point(source_point) {}
 
       virtual ~Instantiation() {}
@@ -28,7 +28,7 @@ namespace underworld {
         return dictionary;
       }
 
-      const Profession &get_profession() const {
+      const Expression &get_profession_expression() const {
         return *profession;
       }
 

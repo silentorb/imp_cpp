@@ -151,8 +151,8 @@ namespace imp_mirror {
   Mirror::get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments,
                                  overworld::Scope &scope) {
     if (expression.get_type() == overworld::Expression::Type::member) {
-      auto &member_expression = *dynamic_cast<const overworld::Member_Expression *>(&expression);
-      auto &member = member_expression.get_member();
+      auto member_expression = dynamic_cast<const overworld::Member_Expression *>(&expression);
+      auto &member = member_expression->get_member();
       if (member.get_member_type() == overworld::Member_Type::function) {
         return dynamic_cast<overworld::Virtual_Function *>(&member)->get_signature();
       }
@@ -233,10 +233,11 @@ namespace imp_mirror {
 
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
                                                             overworld::Scope &scope) {
-    auto &input_profession = instantiation.get_profession();
-    auto &output_profession = reflect_profession(input_profession, scope);
+    auto &input_profession_expression = instantiation.get_profession_expression();
+    auto &output_profession =reflect_expression(input_profession_expression, scope)->get_last().get_node()->get_profession();
+//      auto &output_profession = reflect_profession(input_profession, scope);
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
-      throw Code_Error("Could not instantiate type " + input_profession.get_name(), instantiation.get_source_point());
+      throw Code_Error("Could not instantiate type " + output_profession.get_name(), instantiation.get_source_point());
 
     auto &source_arguments = instantiation.get_dictionary();
     auto function = scope.get_function();
@@ -597,13 +598,16 @@ namespace imp_mirror {
           auto existing_member = output_scope.get_member_or_null(input_dungeon.get_name());
           if (existing_member) {
             output_dungeon = dynamic_cast<overworld::Dungeon *>(existing_member);
+            auto dungeon = element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
+            if (!dungeon)
+              element_map.add(&input_dungeon, output_dungeon);
           }
           else {
             output_dungeon = new overworld::Dungeon(input_dungeon.get_name(), output_scope,
                                                     input_dungeon.get_source_point());
             auto output_dungeon_owner = std::unique_ptr<overworld::Dungeon>(output_dungeon);
 
-            element_map.add(&input_dungeon, &output_dungeon);
+            element_map.add(&input_dungeon, output_dungeon);
             output_scope.add_dungeon(std::move(output_dungeon_owner));
           }
 
@@ -649,8 +653,12 @@ namespace imp_mirror {
 
         if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
-          auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
-          reflect_scope2(input_dungeon, dungeon);
+          auto dungeon = element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
+          if (!dungeon)
+            throw Code_Error("Could not find overworld dungeon " + input_profession->get_name(),
+                             input_dungeon.get_source_point());
+
+          reflect_scope2(input_dungeon, *dungeon);
         }
       }
     }
