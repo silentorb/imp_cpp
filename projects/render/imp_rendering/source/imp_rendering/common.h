@@ -9,9 +9,9 @@
 namespace imp_rendering {
 
   using Stroke = imp_artisan::building::Stroke_Owner;
-  const std::string render_function_parameters(const overworld::Virtual_Function &function);
-  const std::string render_function_return_signature(const overworld::Virtual_Function &function);
-  const std::string render_function_declaration(const overworld::Virtual_Function &function);
+  const std::string render_function_parameters(const overworld::Function &function);
+  const std::string render_function_return_signature(const overworld::Function &function);
+  const std::string render_function_declaration(const overworld::Function &function);
   const std::string render_profession(const overworld::Profession &profession);
   const std::string render_profession_owner(const overworld::Profession &profession);
   const std::string render_separator(const overworld::Profession &profession);
@@ -28,7 +28,7 @@ namespace imp_rendering {
 
   std::string sanitize_name(const std::string &name);
 
-  Stroke render_function_definition(const overworld::Virtual_Function &function);
+  Stroke render_function_definition(const overworld::Function &function);
   Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
                                        Stroke stroke);
   const std::string render_minion_with_signature(const overworld::Minion &minion);

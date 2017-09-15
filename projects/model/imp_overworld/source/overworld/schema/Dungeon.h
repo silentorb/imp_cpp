@@ -97,7 +97,7 @@ namespace overworld {
         return source_point;
       }
 
-      Virtual_Function &get_or_create_constructor();
+      Function &get_or_create_constructor();
 
       Member_Type get_member_type() const override {
         return Member_Type::dungeon;
@@ -164,7 +164,7 @@ namespace overworld {
         return &contracts;
       }
 
-      Virtual_Function &create_function(const std::string &name, Profession &profession,
+      Function &create_function(const std::string &name, Profession &profession,
                                 const source_mapping::Source_Point &source_point = source_mapping::Source_Point());
 
       Scope_Type get_scope_type() const override {

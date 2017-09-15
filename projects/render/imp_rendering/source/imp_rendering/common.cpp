@@ -101,7 +101,7 @@ namespace imp_rendering {
     return profession_string + separator + minion.get_name();
   }
 
-  const std::string render_function_parameters(const overworld::Virtual_Function &function) {
+  const std::string render_function_parameters(const overworld::Function &function) {
     return "(" +
            join(function.get_parameters(), Joiner<overworld::Parameter *>(
              [](const overworld::Minion *minion) {
@@ -109,7 +109,7 @@ namespace imp_rendering {
              }), ", ") + ")";
   }
 
-  const std::string render_function_return_signature(const overworld::Virtual_Function &function) {
+  const std::string render_function_return_signature(const overworld::Function &function) {
     string return_text = function.is_constructor()
                          ? ""
                          : render_profession(function.get_profession()) + " ";
@@ -117,7 +117,7 @@ namespace imp_rendering {
     return return_text;
   }
 
-  const std::string render_function_declaration(const overworld::Virtual_Function &function) {
+  const std::string render_function_declaration(const overworld::Function &function) {
     auto static_clause = function.is_static() ? "static " : "";
     return static_clause + render_function_return_signature(function)
            + sanitize_name(function.get_name())
@@ -425,7 +425,7 @@ namespace imp_rendering {
     }
   }
 
-  Stroke render_function_definition(const overworld::Virtual_Function &function) {
+  Stroke render_function_definition(const overworld::Function &function) {
     auto static_clause = function.is_inline() && function.is_static() ? "static " : "";
     auto function_signature = static_clause + render_function_return_signature(function)
                               + sanitize_name(function.get_name())

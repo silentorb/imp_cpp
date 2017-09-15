@@ -28,7 +28,7 @@ namespace overworld {
 
       auto temporary_member = dynamic_cast<Temporary_Minion *>(member.get());
       if (new_member.get_member_type() == Member_Type::function) {
-        auto &new_function = *dynamic_cast<Virtual_Function *>(&new_member);
+        auto &new_function = *dynamic_cast<Function *>(&new_member);
         auto &signature = temporary_member->get_or_create_signature();
         auto &parameters = signature.get_parameters();
         for (auto i = 0; i < parameters.size(); ++i) {

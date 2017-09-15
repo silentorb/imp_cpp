@@ -77,7 +77,7 @@ namespace solving {
       void resolve_with_template_dungeon(Connection &connection);
 
       overworld::Function_Variant &create_function_variant(overworld::Function_Variant_Array &variant_array,
-                                                           overworld::Virtual_Function &function,
+                                                           overworld::Function &function,
                                                            Node &starting_node, overworld::Profession &profession);
 
       void create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
@@ -85,7 +85,7 @@ namespace solving {
                                   Node &starting_node, overworld::Profession &profession);
 
       void migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
-                                                              overworld::Virtual_Function &function,
+                                                              overworld::Function &function,
                                                               overworld::Generic_Parameter &parameter);
 
   public:

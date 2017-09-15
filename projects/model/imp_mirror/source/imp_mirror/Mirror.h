@@ -110,6 +110,8 @@ namespace imp_mirror {
                                                    overworld::Scope &scope);
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
+      std::unique_ptr<overworld::Parameter> create_parameter(const underworld::Minion &input_minion,
+                                                       overworld::Scope &scope);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        overworld::Scope &scope);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);

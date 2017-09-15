@@ -14,7 +14,7 @@ namespace overworld {
 
         void explore_expression(const Expression &expression);
 //        void explore_profession(Profession &profession);
-        void explore_function(const Virtual_Function &function);
+        void explore_function(const Function &function);
         void explore_scope(const Scope &scope);
 
     public:

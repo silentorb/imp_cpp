@@ -41,12 +41,11 @@ namespace overworld {
       }
   };
 
-  class Virtual_Function
+  class Function
     : public virtual Member, public virtual Profession_Reference, public virtual Function_Interface {
   protected:
-      Function_Scope scope;
       Function_Signature signature;
-      Profession_Node<Virtual_Function> node;
+      Profession_Node<Function> node;
       const std::string name;
       bool _is_static = false;
       virtual bool returns_a_value() const;
@@ -55,20 +54,18 @@ namespace overworld {
       Generic_Parameter_Array generic_parameters;
 
   public:
-      Virtual_Function(const std::string &name, Profession &return_type, Scope &parent_scope,
-                       Dungeon_Interface &dungeon,
-                       const source_mapping::Source_Point &source_point) :
+      Function(const std::string &name, Profession &return_type, Scope &parent_scope,
+               Dungeon_Interface &dungeon,
+               const source_mapping::Source_Point &source_point) :
         name(name), signature(node, &return_type),
-        scope(parent_scope, *this),
         node(*this, return_type, &dungeon, this), source_point(source_point) {}
 
-      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
-                       const source_mapping::Source_Point &source_point) :
+      Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+               const source_mapping::Source_Point &source_point) :
         name(name), signature(node, nullptr),
-        scope(parent_scope, *this),
         node(*this, Profession_Library::get_void(), &dungeon, this), source_point(source_point) {}
 
-      ~Virtual_Function() {}
+      virtual ~Function() {}
 
       Member_Type get_member_type() const override {
         return Member_Type::function;
@@ -88,18 +85,15 @@ namespace overworld {
         return signature.get_parameters();
       }
 
-      void add_parameter(Parameter &parameter) {
+      void add_parameter_to_signature(Parameter &parameter) {
         signature.add_parameter(parameter);
       }
 
-      void add_parameter(std::unique_ptr<Parameter> parameter) {
-        signature.add_parameter(*parameter);
-        scope.add_minion(std::move(parameter));
-      }
+      virtual void add_parameter(std::unique_ptr<Parameter> parameter) = 0;
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
 
-      Profession_Node<Virtual_Function> &get_node() override {
+      Profession_Node<Function> &get_node() override {
         return node;
       }
 
@@ -117,14 +111,6 @@ namespace overworld {
 
       const source_mapping::Source_Point &get_source_point() const override {
         return source_point;
-      }
-
-      const Function_Scope &get_scope() const {
-        return scope;
-      }
-
-      Function_Scope &get_scope() {
-        return scope;
       }
 
       bool is_static() const {
@@ -178,24 +164,60 @@ namespace overworld {
         return generic_parameters;
       }
 
-      Virtual_Function &get_original() override {
+      virtual Scope &get_parent_scope() = 0;
+      virtual const Scope &get_parent_scope() const = 0;
+
+      Function &get_original() override {
         return *this;
       }
   };
 
-  using Function_Owner = std::unique_ptr<Virtual_Function>;
+  using Function_Owner = std::unique_ptr<Function>;
 
-  class Function_With_Block : public Virtual_Function {
+  class Virtual_Function : public Function {
+      std::vector<std::unique_ptr<Parameter>> parameters;
+      Scope &parent_scope;
+
+  public:
+      Virtual_Function(const std::string &name, Profession &return_type, Scope &parent_scope,
+                       Dungeon_Interface &dungeon, const source_mapping::Source_Point &source_point) :
+        Function(name, return_type, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
+
+      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+                       const source_mapping::Source_Point &source_point) :
+        Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
+
+      virtual ~Virtual_Function() {}
+
+      void add_parameter(std::unique_ptr<Parameter> parameter) override {
+        Function::add_parameter_to_signature(*parameter);
+        parameters.push_back(std::move(parameter));
+      }
+
+      Scope &get_parent_scope() override {
+        return parent_scope;
+      }
+
+      const Scope &get_parent_scope() const override {
+        return parent_scope;
+      }
+  };
+
+  class Function_With_Block : public Function {
+      Function_Scope scope;
       Block block;
+
+  protected:
+      bool returns_a_value() const override;
 
   public:
       Function_With_Block(const std::string &name, Profession &return_type, Scope &parent_scope,
                           Dungeon_Interface &dungeon, const source_mapping::Source_Point &source_point)
-        : Virtual_Function(name, return_type, parent_scope, dungeon, source_point), block(scope) {}
+        : Function(name, return_type, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
 
       Function_With_Block(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                           const source_mapping::Source_Point &source_point) :
-        Virtual_Function(name, parent_scope, dungeon, source_point), block(scope) {}
+        Function(name, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
 
       virtual ~Function_With_Block() {}
 
@@ -207,8 +229,27 @@ namespace overworld {
         return block;
       }
 
+      const Function_Scope &get_scope() const {
+        return scope;
+      }
+
+      Function_Scope &get_scope() {
+        return scope;
+      }
+
+      Scope &get_parent_scope() override {
+        return *scope.get_parent();
+      }
+
+      const Scope &get_parent_scope() const override {
+        return *scope.get_parent();
+      }
+
       bool is_inline() const override;
-  protected:
-      bool returns_a_value() const override;
+
+      void add_parameter(std::unique_ptr<Parameter> parameter) override {
+        signature.add_parameter(*parameter);
+        scope.add_minion(std::move(parameter));
+      }
   };
 }

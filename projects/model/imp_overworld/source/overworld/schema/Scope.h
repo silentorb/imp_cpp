@@ -10,7 +10,7 @@
 
 namespace overworld {
 
-  class Virtual_Function;
+  class Function;
 
   enum class Scope_Type {
       scope,
@@ -22,7 +22,7 @@ namespace overworld {
   class Scope {
   protected:
       Scope *parent;
-      std::vector<std::unique_ptr<Virtual_Function>> functions;
+      std::vector<std::unique_ptr<Function>> functions;
       std::vector<Variable_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
@@ -36,7 +36,7 @@ namespace overworld {
 
 //      Function &create_function(const underworld::Function &input, Profession &profession);
 //      Function &create_function(const underworld::Function &input);
-      void add_function(std::unique_ptr<Virtual_Function> function);
+      void add_function(std::unique_ptr<Function> function);
 //      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
 //      Minion &create_minion(const underworld::Minion &input);
 //      Minion &create_minion(const std::string &name, Profession &profession);
@@ -50,7 +50,7 @@ namespace overworld {
       Member *get_member_or_null(const std::string &name);
       virtual Member &get_member(const std::string &name);
 
-      const std::vector<std::unique_ptr<Virtual_Function>> &get_functions() const {
+      const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
       }
 
@@ -58,7 +58,7 @@ namespace overworld {
         return Scope_Type::scope;
       }
 
-      Virtual_Function *get_function(const std::string &function_name);
+      Function *get_function(const std::string &function_name);
 
       const std::vector<Variable_Owner> &get_minions() const {
         return minions;
@@ -79,7 +79,7 @@ namespace overworld {
         return parent;
       }
 
-      virtual Virtual_Function *get_function() {
+      virtual Function *get_function() {
         return nullptr;
       }
 
@@ -101,12 +101,12 @@ namespace overworld {
   };
 
   class Function_Scope : public Scope {
-      Virtual_Function *function = nullptr;
+      Function *function = nullptr;
 
   public:
-      Function_Scope(Scope &parent, Virtual_Function &function);
+      Function_Scope(Scope &parent, Function &function);
 
-      virtual Virtual_Function *get_function() override {
+      virtual Function *get_function() override {
         return function;
       }
   };

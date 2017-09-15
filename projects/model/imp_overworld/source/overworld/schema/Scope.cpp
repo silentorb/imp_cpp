@@ -17,7 +17,7 @@ namespace overworld {
 //    source(nullptr), parent(parent) {
 //  }
 
-  Function_Scope::Function_Scope(Scope &parent, Virtual_Function &function) :
+  Function_Scope::Function_Scope(Scope &parent, Function &function) :
     Scope(&parent), function(&function) {
 
   }
@@ -44,7 +44,7 @@ namespace overworld {
 //    return *function;
 //  }
 
-  void Scope::add_function(std::unique_ptr<Virtual_Function> function) {
+  void Scope::add_function(std::unique_ptr<Function> function) {
     add_member(function->get_name(), *function);
     functions.push_back(std::move(function));
   }
@@ -106,7 +106,7 @@ namespace overworld {
     return parent->get_dungeon();
   }
 
-  Virtual_Function *Scope::get_function(const std::string &function_name) {
+  Function *Scope::get_function(const std::string &function_name) {
     for (auto &function: functions) {
       if (function->get_name() == function_name)
         return function.get();
