@@ -47,8 +47,8 @@ namespace imp_mirror {
       }
 
       overworld::Dungeon &get_dungeon(overworld::Member &member) {
-        auto &dungeon = cast<const overworld::Dungeon>(member);
-        return *const_cast<overworld::Dungeon *> (&dungeon);
+        auto &member_dungeon = static_cast<overworld::Member_Dungeon &>(member);
+        return member_dungeon.get_dungeon();
       }
 
       overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
@@ -111,7 +111,7 @@ namespace imp_mirror {
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
       std::unique_ptr<overworld::Parameter> create_parameter(const underworld::Minion &input_minion,
-                                                       overworld::Scope &scope);
+                                                             overworld::Scope &scope);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        overworld::Scope &scope);
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
@@ -120,6 +120,7 @@ namespace imp_mirror {
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
+      void reflect_dungeon1(const underworld:: Dungeon & input_dungeon, overworld::Scope &output_scope);
       overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_invoke(const underworld::Invoke &function_call,
                                                  overworld::Scope &scope);
@@ -148,6 +149,6 @@ namespace imp_mirror {
         profession_library(profession_library), element_map(element_map), graph(graph),
         temporary_interface_manager(temporary_interface_manager) {}
 
-      void reflect_dungeon(const underworld::Dungeon &input, overworld::Dungeon &output);
+      void reflect_root(const underworld::Dungeon &input, overworld::Dungeon &output);
   };
 }

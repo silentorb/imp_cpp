@@ -248,4 +248,17 @@ namespace overworld {
         scope.add_minion(std::move(parameter));
       }
   };
+
+  class Member_Function : public Generic_Member_Reference<Function> {
+  public:
+      Member_Function(Function &value) : Generic_Member_Reference(value) {}
+
+      Member_Type get_member_type() const override {
+        return Member_Type::function;
+      }
+
+      Function & get_function(){
+        return value;
+      }
+  };
 }

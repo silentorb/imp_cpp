@@ -21,7 +21,7 @@ namespace overworld {
   protected:
       Scope *parent;
       std::vector<std::unique_ptr<Function>> functions;
-      std::vector<Variable_Owner> minions;
+      std::vector<Minion_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
       std::map<std::string, Member_Owner> members;
@@ -33,8 +33,8 @@ namespace overworld {
       virtual ~Scope();
 
       void add_function(std::unique_ptr<Function> function);
-      void add_minion(Minion *minion);
-      void add_minion(std::unique_ptr<Minion> minion);
+      Member & add_minion(Minion *minion);
+      Member & add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);
@@ -52,7 +52,7 @@ namespace overworld {
 
       Function *get_function(const std::string &function_name);
 
-      const std::vector<Variable_Owner> &get_minions() const {
+      const std::vector<Minion_Owner> &get_minions() const {
         return minions;
       }
 

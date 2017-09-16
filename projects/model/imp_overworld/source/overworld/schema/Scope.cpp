@@ -26,7 +26,23 @@ namespace overworld {
   }
 
   void Scope::add_member(const std::string &name, Member_Owner member) {
-    members[name] = std::move(member);
+    if (members.count(name)) {
+      auto &existing_member = members[name];
+      if (existing_member->get_member_type() == Member_Type::array) {
+        auto member_array = static_cast<Member_Reference_Array *>(existing_member.get());
+        member_array->add_member(std::move(member));
+      }
+      else {
+        auto member_array = new Member_Reference_Array();
+        auto member_array_owner = Member_Owner(member_array);
+        member_array->add_member(std::move(existing_member));
+        member_array->add_member(std::move(member));
+        members[name] = std::move(member_array_owner);
+      }
+    }
+    else {
+      members[name] = std::move(member);
+    }
   }
 
 //  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
@@ -41,20 +57,22 @@ namespace overworld {
 //  }
 
   void Scope::add_function(std::unique_ptr<Function> function) {
-    add_member(function->get_name(), *function);
+    add_member(function->get_name(), Member_Owner(new Member_Function(*function)));
     functions.push_back(std::move(function));
   }
 
-  void Scope::add_minion(Minion *minion) {
+  Member &Scope::add_minion(Minion *minion) {
     minions.push_back(unique_ptr<Minion>(minion));
-    add_member(minion->get_name(), *minion);
-//    members[minion->get_name()] = minion;
+    auto member = new Member_Minion(*minion);
+    add_member(minion->get_name(), Member_Owner(member));
+    return *member;
   }
 
-  void Scope::add_minion(std::unique_ptr<Minion> minion) {
-    add_member(minion->get_name(), *minion);
-//    members[minion->get_name()] = minion.get();
+  Member &Scope::add_minion(std::unique_ptr<Minion> minion) {
+    auto member = new Member_Minion(*minion);
+    add_member(minion->get_name(), Member_Owner(member));
     minions.push_back(std::move(minion));
+    return *member;
   }
 
 //  Minion &Scope::create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph) {
@@ -94,7 +112,7 @@ namespace overworld {
   }
 
   void Scope::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
-    add_member(dungeon->get_name(), *dungeon);
+    add_member(dungeon->get_name(), Member_Owner(new Member_Dungeon(*dungeon)));
     dungeons.push_back(std::move(dungeon));
   }
 
@@ -113,7 +131,7 @@ namespace overworld {
 
   Member *Scope::find_member(const std::string &name) {
     return members.count(name) != 0
-           ? members.at(name)[0]
+           ? members.at(name).get()
            : (parent
               ? parent->find_member(name)
               : nullptr);
@@ -121,13 +139,13 @@ namespace overworld {
 
   Member *Scope::get_member_or_null(const std::string &name) {
     return members.count(name) != 0
-           ? members.at(name)[0]
+           ? members.at(name).get()
            : nullptr;
   }
 
   Member &Scope::get_member(const std::string &name) {
     if (members.count(name) != 0)
-      return *members.at(name)[0];
+      return *members.at(name);
 
     throw std::runtime_error("Could not find member: " + name);
   }

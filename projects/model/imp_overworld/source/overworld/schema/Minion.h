@@ -64,6 +64,18 @@ namespace overworld {
       }
   };
 
-  using Variable_Owner = std::unique_ptr<Minion>;
+  using Minion_Owner = std::unique_ptr<Minion>;
 
+  class Member_Minion : public Generic_Member_Reference<Minion> {
+  public:
+      Member_Minion(Minion &value) : Generic_Member_Reference(value) {}
+
+      Member_Type get_member_type() const override {
+        return Member_Type::minion;
+      }
+
+      Minion & get_minion(){
+        return value;
+      }
+  };
 }

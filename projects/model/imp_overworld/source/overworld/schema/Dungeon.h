@@ -5,6 +5,7 @@
 #include "File.h"
 #include "Generic_Parameter.h"
 #include "Dungeon_Interface.h"
+#include "Member_Profession.h"
 #include <vector>
 
 namespace overworld {
@@ -169,16 +170,12 @@ namespace overworld {
       Minion &get_minion(const std::string &name) override;
       Member &get_member(const std::string &name) override;
 
-//      Generic_Parameter &add_generic_parameter() {
-//        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, this, nullptr);
-//        generic_parameters.push_back(&result);
-//        return result;
-//      }
-
       void add_generic_parameter(Generic_Parameter_Owner parameter) {
         generic_parameters.push_back(parameter.get());
-        parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
-        add_member(parameter->get_name(), Member_Owner(new Generic_Parameter_Member(*parameter)));
+        if (parameter->get_name() == "")
+          parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
+
+        add_member(parameter->get_name(), Member_Owner(new Member_Profession(*parameter)));
         owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
@@ -219,5 +216,18 @@ namespace overworld {
       }
   };
 
-  using Dungeon_Pointer = std::unique_ptr<Dungeon>;
+  using Dungeon_Owner = std::unique_ptr<Dungeon>;
+
+  class Member_Dungeon : public Generic_Member_Reference<Dungeon> {
+  public:
+      Member_Dungeon(Dungeon &value) : Generic_Member_Reference(value) {}
+
+      Member_Type get_member_type() const override {
+        return Member_Type::dungeon;
+      }
+
+      Dungeon & get_dungeon(){
+        return value;
+      }
+  };
 }

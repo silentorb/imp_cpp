@@ -29,7 +29,7 @@ namespace imp_wrapper {
 
   void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager) {
     imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
-    mirror.reflect_dungeon(underworld_root, overworld_root);
+    mirror.reflect_root(underworld_root, overworld_root);
   }
 
   void log_node(overworld::Node &node) {

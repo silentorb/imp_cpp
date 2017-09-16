@@ -88,14 +88,4 @@ namespace overworld {
 
   std::string get_generic_parameter_name(size_t index);
 
-  class Generic_Parameter_Member : public Generic_Member_Reference<Generic_Parameter> {
-  public:
-      explicit Generic_Parameter_Member(Generic_Parameter &parameter) :
-        Generic_Member_Reference(parameter) {}
-
-      Member_Type get_member_type() const override {
-        return Member_Type::generic_parameter;
-      }
-  };
-
 }

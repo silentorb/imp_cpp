@@ -22,7 +22,7 @@ namespace overworld {
 //    if (!function->is_constructor())
 //      graph.add_node(function->get_node());
 
-    add_member(name, *function);
+    add_member(name, Member_Owner(new Member_Function(*function)));
     return *function;
   }
 
@@ -75,7 +75,7 @@ namespace overworld {
 
   Member &Dungeon::get_member(const std::string &name) {
     if (members.count(name) != 0)
-      return *members.at(name)[0];
+      return *members.at(name);
 
     if (base_dungeon) {
       return base_dungeon->get_member(name);

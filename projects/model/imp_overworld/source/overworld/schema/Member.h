@@ -5,10 +5,11 @@
 namespace overworld {
 
   enum class Member_Type {
+      array,
       dungeon,
       function,
-      generic_parameter,
-      variable,
+      minion,
+      profession,
   };
 
   class Member {
@@ -21,8 +22,8 @@ namespace overworld {
       virtual ~Member() {}
   };
 
- template <typename T>
- class Generic_Member_Owner : public Member {
+  template<typename T>
+  class Generic_Member_Owner : public Member {
       std::unique_ptr<T> value;
 
   public:
@@ -38,12 +39,13 @@ namespace overworld {
       }
   };
 
-  template <typename T>
+  template<typename T>
   class Generic_Member_Reference : public Member {
-      T& value;
+  protected:
+      T &value;
 
   public:
-      explicit Generic_Member_Reference(T& value) :
+      explicit Generic_Member_Reference(T &value) :
         value(value) {}
 
       Node &get_node() override {
@@ -56,4 +58,34 @@ namespace overworld {
   };
 
   using Member_Owner = std::unique_ptr<Member>;
+
+  class Member_Reference_Array : public Member {
+      std::vector<Member_Owner> values;
+
+  public:
+      Member_Type get_member_type() const override {
+        return Member_Type::array;
+      }
+
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const std::string get_name() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      void add_member(Member_Owner member) {
+        values.push_back(std::move(member));
+      }
+
+      const std::vector<Member_Owner> &get_members() const {
+        return values;
+      }
+
+      std::vector<Member_Owner> &get_members() {
+        return values;
+      }
+  };
+
 }
