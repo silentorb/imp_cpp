@@ -7,8 +7,8 @@ namespace overworld {
   enum class Member_Type {
       dungeon,
       function,
+      generic_parameter,
       variable,
-      unresolved,
   };
 
   class Member {
@@ -21,5 +21,39 @@ namespace overworld {
       virtual ~Member() {}
   };
 
-  using Member_Pointer = std::unique_ptr<Member>;
+ template <typename T>
+ class Generic_Member_Owner : public Member {
+      std::unique_ptr<T> value;
+
+  public:
+      explicit Generic_Member_Owner(std::unique_ptr<T> parameter) :
+        value(std::move(parameter)) {}
+
+      Node &get_node() override {
+        return value->get_node();
+      }
+
+      const std::string get_name() const override {
+        return value->get_name();
+      }
+  };
+
+  template <typename T>
+  class Generic_Member_Reference : public Member {
+      T& value;
+
+  public:
+      explicit Generic_Member_Reference(T& value) :
+        value(value) {}
+
+      Node &get_node() override {
+        return value.get_node();
+      }
+
+      const std::string get_name() const override {
+        return value.get_name();
+      }
+  };
+
+  using Member_Owner = std::unique_ptr<Member>;
 }

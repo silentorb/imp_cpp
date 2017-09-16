@@ -42,7 +42,7 @@ namespace overworld {
   };
 
   class Function
-    : public virtual Member, public virtual Profession_Reference, public virtual Function_Interface {
+    : public virtual Profession_Reference, public virtual Function_Interface {
   protected:
       Function_Signature signature;
       Profession_Node<Function> node;
@@ -67,10 +67,6 @@ namespace overworld {
 
       virtual ~Function() {}
 
-      Member_Type get_member_type() const override {
-        return Member_Type::function;
-      }
-
       const std::string get_name() const override {
         return name;
       }
@@ -93,7 +89,7 @@ namespace overworld {
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
 
-      Profession_Node<Function> &get_node() override {
+      Profession_Node<Function> &get_node() {
         return node;
       }
 

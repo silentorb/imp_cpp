@@ -160,9 +160,6 @@ namespace imp_mirror {
         auto &dungeon = *dynamic_cast<overworld::Dungeon *>(&member);
         return dungeon.get_or_create_constructor().get_signature();
       }
-      else if (member.get_member_type() == overworld::Member_Type::unresolved) {
-
-      }
       else if (member.get_member_type() == overworld::Member_Type::variable) {
         auto &temporary_member = *dynamic_cast<overworld::Temporary_Minion *>(&member);
         auto &signature = temporary_member.get_or_create_signature();

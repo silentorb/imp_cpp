@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <overworld/imp_graph/Node.h>
+#include "Member.h"
 
 namespace overworld {
 
@@ -10,7 +11,7 @@ namespace overworld {
   class Generic_Parameter : public virtual Profession_Reference, public virtual Profession {
       source_mapping::Source_Point source_point;
       std::string name;
-      Profession_Node <Generic_Parameter> node;
+      Profession_Node<Generic_Parameter> node;
 
   public:
       Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function)
@@ -34,11 +35,11 @@ namespace overworld {
         name = value;
       }
 
-      Profession_Node <Generic_Parameter> &get_node() override {
+      Profession_Node<Generic_Parameter> &get_node() override {
         return node;
       }
 
-      const Profession_Node <Generic_Parameter> &get_node() const {
+      const Profession_Node<Generic_Parameter> &get_node() const {
         return node;
       }
 
@@ -81,40 +82,20 @@ namespace overworld {
   Generic_Parameter &add_generic_parameter_to_vector(std::vector<Generic_Parameter_Owner> &generic_parameters,
                                                      Dungeon_Interface *dungeon, Function_Interface *function);
 
-  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
+//  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
   std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
                                            size_t additional_space = 0);
 
-//  class Contained_Generic_Parameter : public Generic_Parameter {
-//
-//  public:
-//
-//
-//      virtual ~Contained_Generic_Parameter() {}
-//
-//
-//  };
+  std::string get_generic_parameter_name(size_t index);
 
-//  class Generic_Parameter_Reference : public Generic_Parameter {
-//      Generic_Parameter *target = nullptr;
-//
-//  public:
-//      Generic_Parameter_Reference(Generic_Parameter &target)
-//        : target(&target) {}
-//
-//      virtual ~Generic_Parameter_Reference() {}
-//
-//      const std::string get_name() const override {
-//        return target->get_name();
-//      }
-//
-//      Profession_Node <Generic_Parameter> &get_node() override {
-//        return target->get_node();
-//      }
-//
-//      const Profession_Node <Generic_Parameter> &get_node() const override {
-//        return target->get_node();
-//      }
-//  };
+  class Generic_Parameter_Member : public Generic_Member_Reference<Generic_Parameter> {
+  public:
+      explicit Generic_Parameter_Member(Generic_Parameter &parameter) :
+        Generic_Member_Reference(parameter) {}
+
+      Member_Type get_member_type() const override {
+        return Member_Type::generic_parameter;
+      }
+  };
 
 }

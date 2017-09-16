@@ -17,8 +17,6 @@ namespace overworld {
       dungeon
   };
 
-  using Member_Array  = std::vector<Member *>;
-
   class Scope {
   protected:
       Scope *parent;
@@ -26,25 +24,19 @@ namespace overworld {
       std::vector<Variable_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
-      std::map<std::string, Member_Array> members;
+      std::map<std::string, Member_Owner> members;
 
-      void add_member(const std::string &name, Member &member);
+      void add_member(const std::string &name, Member_Owner member);
 
   public:
-      Scope(Scope *parent);
+      explicit Scope(Scope *parent);
       virtual ~Scope();
 
-//      Function &create_function(const underworld::Function &input, Profession &profession);
-//      Function &create_function(const underworld::Function &input);
       void add_function(std::unique_ptr<Function> function);
-//      Minion &create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph);
-//      Minion &create_minion(const underworld::Minion &input);
-//      Minion &create_minion(const std::string &name, Profession &profession);
       void add_minion(Minion *minion);
       void add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
-//      void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);
       Member *find_member(const std::string &name);
       Member *get_member_or_null(const std::string &name);
@@ -106,18 +98,8 @@ namespace overworld {
   public:
       Function_Scope(Scope &parent, Function &function);
 
-      virtual Function *get_function() override {
+      Function *get_function() override {
         return function;
       }
   };
-
-//  enum class Scope_Parent_Type {
-//      block,
-//      dungeon,
-//  };
-//
-//  class Scope_Parent {
-//  public:
-//      virtual Scope_Parent_Type get_scope_parent_type() const = 0;
-//  };
 }

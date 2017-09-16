@@ -18,12 +18,12 @@ namespace overworld {
     return *parameter;
   }
 
-  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters) {
-    size_t i = 0;
-    for (auto &parameter: generic_parameters) {
-      parameter->set_name(get_generic_parameter_name(i++));
-    }
-  }
+//  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters) {
+//    size_t i = 0;
+//    for (auto &parameter: generic_parameters) {
+//      parameter->set_name(get_generic_parameter_name(i++));
+//    }
+//  }
 
   std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
                                            size_t additional_space) {

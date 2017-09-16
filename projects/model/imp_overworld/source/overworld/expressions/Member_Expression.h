@@ -7,12 +7,12 @@ namespace overworld {
 
   class Member_Expression : public Common_Expression {
       Member *member;
-      Member_Pointer owned_member; // Used to optionally own its member
+      Member_Owner owned_member; // Used to optionally own its member
 
   public:
       Member_Expression(Member &member) : member(&member) {}
 
-      Member_Expression(Member_Pointer &minion) :
+      Member_Expression(Member_Owner &minion) :
         owned_member(std::move(minion)) {
         member = owned_member.get();
       }

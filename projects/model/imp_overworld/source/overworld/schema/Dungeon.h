@@ -14,8 +14,7 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Dungeon_Interface, public virtual Profession_Reference,
-                  public virtual Member {
+  class Dungeon : public Scope, public virtual Dungeon_Interface, public virtual Profession_Reference {
       File *header_file = nullptr;
       Profession_Node<Dungeon> node;
       const std::string name;
@@ -99,10 +98,6 @@ namespace overworld {
 
       Function &get_or_create_constructor();
 
-      Member_Type get_member_type() const override {
-        return Member_Type::dungeon;
-      }
-
       bool is_external() const {
         return _is_external;
       }
@@ -174,16 +169,19 @@ namespace overworld {
       Minion &get_minion(const std::string &name) override;
       Member &get_member(const std::string &name) override;
 
-      Generic_Parameter &add_generic_parameter() {
-        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, this, nullptr);
-        generic_parameters.push_back(&result);
-        return result;
-      }
+//      Generic_Parameter &add_generic_parameter() {
+//        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, this, nullptr);
+//        generic_parameters.push_back(&result);
+//        return result;
+//      }
 
       void add_generic_parameter(Generic_Parameter_Owner parameter) {
         generic_parameters.push_back(parameter.get());
+        parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
+        add_member(parameter->get_name(), Member_Owner(new Generic_Parameter_Member(*parameter)));
         owned_generic_parameters.push_back(std::move(parameter));
-        rename_generic_parameters(owned_generic_parameters);
+//        rename_generic_parameters(owned_generic_parameters);
+
       }
 
       std::vector<Generic_Parameter *> &get_generic_parameters() {

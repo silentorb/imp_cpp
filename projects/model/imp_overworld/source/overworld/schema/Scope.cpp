@@ -25,12 +25,8 @@ namespace overworld {
   Scope::~Scope() {
   }
 
-  void Scope::add_member(const std::string &name, Member &member) {
-    if (members.count(name) == 0) {
-      members[name] = std::vector<Member *>();
-    }
-
-    members[name].push_back(&member);
+  void Scope::add_member(const std::string &name, Member_Owner member) {
+    members[name] = std::move(member);
   }
 
 //  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
