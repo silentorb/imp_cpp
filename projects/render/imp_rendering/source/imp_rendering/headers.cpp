@@ -86,7 +86,7 @@ namespace imp_rendering {
                           ? " = nullptr"
                           : "";
 
-        auto stroke = Stroke(render_minion_with_signature(*minion) + assignment + ';');
+        auto stroke = Stroke(render_minion_with_signature(*minion, *dungeon.get_scope()) + assignment + ';');
         private_block.add(stroke);
         //          auto &profession = reflect_profession(dungeon_minion.get_profession());
 //          auto &output_minion = output.create_minion(dungeon_minion, profession);

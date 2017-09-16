@@ -23,13 +23,13 @@ namespace imp_summoning {
     }
   }
 
-  Minion &Summoner::process_minion(const Identifier &identifier, Context &context) {
+  Minion &Summoner::process_minion(Identifier &identifier, Context &context) {
 //    auto source_point = input.get_source_point();
 //    auto profession = process_optional_profession(context);
     return context.get_scope().create_minion(identifier.name, identifier.source_point);
   }
 
-  void Summoner::process_root_identifier(const Identifier &identifier, Context &context) {
+  void Summoner::process_root_identifier(Identifier &identifier, Context &context) {
     if (input.if_is(lexicon.left_brace)) {
 //      if (input.next().follows_terminator())
 //        throw Syntax_Exception(input.current());
@@ -41,7 +41,7 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_dungeon_with_contracts(const Identifier &identifier,
+  void Summoner::process_dungeon_with_contracts(Identifier &identifier,
                                                 underworld::Profession_Owner first_contract,
                                                 Context &context) {
     std::vector<Profession_Owner> contracts;
@@ -56,7 +56,7 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_minion_or_dungeon(const Identifier &identifier, Context &context) {
+  void Summoner::process_minion_or_dungeon(Identifier &identifier, Context &context) {
     if (input.if_is(lexicon.colon)) {
 
       auto profession = process_profession(context);
@@ -100,13 +100,10 @@ namespace imp_summoning {
     return parameters;
   }
 
-  void Summoner::process_generic_member(const Identifier &identifier, Context &context, bool is_static) {
+  void Summoner::process_generic_member(Identifier &identifier, Context &context, bool is_static) {
     auto parameters = process_generic_parameters(context);
     if (input.current().is(lexicon.left_paren)) {
       auto &function = process_function(identifier.name, context);
-      if (is_static)
-        function.set_is_static(true);
-
       for (auto parameter : parameters) {
         function.add_generic_parameter(parameter);
       }
@@ -122,39 +119,44 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_member(const Identifier &identifier, Context &context, bool is_static) {
+  void Summoner::process_member(Identifier &identifier, Context &context, bool is_static) {
     if (input.current().is(lexicon.lesser_than)) {
       process_generic_member(identifier, context, is_static);
     }
     else if (input.current().is(lexicon.left_paren)) {
       auto &function = process_function(identifier.name, context);
-      if (is_static)
-        function.set_is_static(true);
     }
     else {
-      if (is_static) {
-        auto &minion = process_minion(identifier, context);
-        minion.set_is_static(true);
-      }
-      else {
-        process_minion_or_dungeon(identifier, context);
-      }
+//      if (is_static) {
+//        auto &minion = process_minion(identifier, context);
+//        minion.set_is_static(true);
+//      }
+//      else {
+      process_minion_or_dungeon(identifier, context);
+//      }
     }
   }
 
   void Summoner::process_dungeon_member(Context &context) {
-    if (input.current().is(lexicon.at_sign)) {
-      input.expect_next(lexicon.identifier);
+    Identifier identifier;
+    while (input.current().is(lexicon.at_sign)) {
+      auto name = input.expect_next(lexicon.identifier).get_text();
       input.next();
-      input.if_is(lexicon.colon);
+      if (input.if_is(lexicon.colon)) {
+
+      }
+      else {
+        identifier.enchantments.push_back(Enchantment_Owner(new Enchantment(name)));
+      }
     }
-    else if (input.current().is(lexicon.Static)) {
-      Identifier identifier = {input.next().get_text(), get_source_point()};
-      input.next();
-      process_member(identifier, context, true);
-    }
-    else if (input.current().is(lexicon.identifier)) {
-      Identifier identifier = {input.current().get_text(), get_source_point()};
+//    else if (input.current().is(lexicon.Static)) {
+//      Identifier identifier = {input.next().get_text(), get_source_point()};
+//      input.next();
+//      process_member(identifier, context, true);
+//    }
+    if (input.current().is(lexicon.identifier)) {
+      identifier.name = input.current().get_text();
+      identifier.source_point = get_source_point();
       process_root_identifier(identifier, context);
     }
     else {
@@ -196,8 +198,11 @@ namespace imp_summoning {
     }
   }
 
-  Dungeon &Summoner::process_dungeon(const Identifier &identifier, Context &context) {
+  Dungeon &Summoner::process_dungeon(Identifier &identifier, Context &context) {
     auto dungeon = new Dungeon(identifier.name, &context.get_scope(), identifier.source_point);
+    for (auto &enchantment : identifier.enchantments) {
+      dungeon->add_enchantment(std::move(enchantment));
+    }
     auto profession = std::unique_ptr<Profession>(dungeon);
     Child_Context new_context(context, *dungeon);
     context.get_scope().add_profession(std::move(profession), input.get_source_point());

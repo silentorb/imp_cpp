@@ -11,7 +11,8 @@ namespace overworld {
 
   class Dungeon_Interface : public virtual Profession {
   public:
-      virtual Dungeon & get_original() = 0;
+      virtual Dungeon &get_original() = 0;
+      virtual const Dungeon &get_original() const = 0;
       virtual Dungeon_Type get_dungeon_type() const = 0;
   };
 

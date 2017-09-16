@@ -34,9 +34,9 @@ namespace cpp_stl {
   void Standard_Library::initialize_overworld(overworld::Scope &parent,
                                               overworld::Profession_Library &profession_library,
                                               overworld::Graph &graph) {
-    overworld_dungeon = new overworld::Dungeon("stl", parent);
+    overworld_dungeon = new overworld::Cpp_Dungeon("stl", "std", parent);
     parent.add_dungeon(std::unique_ptr<overworld::Dungeon>(overworld_dungeon));
-    overworld_dungeon->set_is_external(true);
+    overworld_dungeon->add_enchantment(profession_library.get_enchantment_library().get_external());
 
     source_mapping::Source_Point source_point(standard_library_file, 0, 0);
 

@@ -4,6 +4,7 @@
 #include <underworld/expressions/Block.h>
 #include "Member.h"
 #include "Scope.h"
+#include "Enchantment.h"
 
 namespace underworld {
 
@@ -22,6 +23,7 @@ namespace underworld {
       Profession_Owner return_type;
       bool _is_static = false;
       std::vector<std::string> generic_parameters;
+      Enchantment_Array enchantments;
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
@@ -45,14 +47,6 @@ namespace underworld {
         return return_type.get();
       }
 
-      bool is_static() const {
-        return _is_static;
-      }
-
-      void set_is_static(bool value) {
-        _is_static = value;
-      }
-
       void add_generic_parameter(const std::string &value) {
         generic_parameters.push_back(value);
       }
@@ -65,6 +59,9 @@ namespace underworld {
         return false;
       }
 
+      const Enchantment_Array &get_enchantments() const {
+        return enchantments;
+      }
   };
 
   class Virtual_Function : public Function {

@@ -6,6 +6,7 @@
 #include "Generic_Parameter.h"
 #include "Dungeon_Interface.h"
 #include "Member_Profession.h"
+#include "Enchantment.h"
 #include <vector>
 
 namespace overworld {
@@ -20,12 +21,12 @@ namespace overworld {
       Profession_Node<Dungeon> node;
       const std::string name;
       const source_mapping::Source_Point source_point;
-      bool _is_external = false;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
       std::vector<Generic_Parameter_Owner> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
+      Enchantment_Container enchantments;
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
@@ -69,7 +70,7 @@ namespace overworld {
         return parent;
       }
 
-      const Scope *get_scope() const {
+      const Scope *get_scope() const override {
         return parent;
       }
 
@@ -99,13 +100,13 @@ namespace overworld {
 
       Function &get_or_create_constructor();
 
-      bool is_external() const {
-        return _is_external;
+      void add_enchantment(Enchantment &enchantment);
+
+      bool has_enchantment(const Enchantment &enchantment) const {
+        return enchantments.has_enchantment(enchantment);
       }
 
-      void set_is_external(bool value) {
-        _is_external = value;
-      }
+      bool is_external() const;
 
       Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
 
@@ -200,6 +201,10 @@ namespace overworld {
       Dungeon &get_original() override {
         return *this;
       }
+
+      const Dungeon &get_original() const override {
+        return *this;
+      }
   };
 
   class Cpp_Dungeon : public Dungeon {
@@ -226,7 +231,7 @@ namespace overworld {
         return Member_Type::dungeon;
       }
 
-      Dungeon & get_dungeon(){
+      Dungeon &get_dungeon() {
         return value;
       }
   };

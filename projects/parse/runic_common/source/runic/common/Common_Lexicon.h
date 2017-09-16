@@ -25,8 +25,6 @@ namespace runic {
       Whisper Int = "int";
       Whisper Float = "float";
       Whisper String = "string";
-
-      Whisper Static = "static";
   };
 
   struct Single_Symbols {

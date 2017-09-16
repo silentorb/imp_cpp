@@ -17,6 +17,10 @@ namespace overworld {
         return nullptr;
       }
 
+      const Scope *get_scope() const override {
+        return nullptr;
+      }
+
       File *get_file() const override {
         return nullptr;
       }
@@ -45,6 +49,10 @@ namespace overworld {
       }
 
       Scope *get_scope() override {
+        return nullptr;
+      }
+
+      const Scope *get_scope() const override {
         return nullptr;
       }
 
@@ -101,6 +109,10 @@ namespace overworld {
         return nullptr;
       }
 
+      const Scope *get_scope() const override {
+        return nullptr;
+      }
+
       File *get_file() const override {
         return file;
       }
@@ -135,6 +147,10 @@ namespace overworld {
       }
 
       Scope *get_scope() override {
+        return nullptr;
+      }
+
+      const Scope *get_scope() const override {
         return nullptr;
       }
 

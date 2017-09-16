@@ -13,10 +13,23 @@
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Instantiation.h>
 #include <overworld/schema/Temporary_Minion.h>
+#include <underworld/schema/Enchantment.h>
 #include "Mirror.h"
 #include "Code_Error.h"
 
 namespace imp_mirror {
+
+template <typename T> void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
+                            T &output_enchantments,
+                            overworld::Enchantment_Library &enchantment_library) {
+    for (auto &input_enchantment: input_enchantments) {
+      auto enchantment = enchantment_library.find_enchantment(input_enchantment->get_name());
+      if (!enchantment)
+        throw std::runtime_error("Could not find enchantment " + input_enchantment->get_name());
+
+      output_enchantments.add_enchantment(*enchantment);
+    }
+  }
 
   void Mirror::apply_node_assignment(overworld::Node &target, overworld::Node &value) {
     graph.connect(target, value);
@@ -270,7 +283,7 @@ namespace imp_mirror {
                                                       overworld::Scope &scope) {
     auto &member = previous_expression.get_member();
     if (member.get_member_type() == overworld::Member_Type::minion) {
-      auto & member_minion = static_cast<overworld::Member_Minion&>(member);
+      auto &member_minion = static_cast<overworld::Member_Minion &>(member);
       auto &minion = *dynamic_cast<overworld::Parameter *>(&member_minion.get_minion());
       auto &interface = minion.get_or_create_interface();
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
@@ -534,14 +547,18 @@ namespace imp_mirror {
 
       reflect_scope1(input_function_with_block->get_block().get_scope(),
                      output_function->get_block().get_scope());
-      output_function->set_is_static(input_function.is_static());
+//      if (input_function.is_static())
+//        output_function->add_enchantment(();
+      reflect_enchantments(input_function.get_enchantments(), *output_function,
+                           profession_library.get_enchantment_library());
+
       element_map.add(&input_function, output_function);
     }
     else {
       auto output_function = new overworld::Virtual_Function(member.get_name(),
                                                              scope, scope.get_dungeon(), member.get_source_point());
       scope.add_function(std::unique_ptr<overworld::Function>(output_function));
-      output_function->set_is_static(input_function.is_static());
+//      output_function->set_is_static(input_function.is_static());
       element_map.add(&input_function, output_function);
     }
 
@@ -638,6 +655,8 @@ namespace imp_mirror {
       auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr);
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }
+    reflect_enchantments(input_dungeon.get_enchantments(),*output_dungeon,
+                         profession_library.get_enchantment_library());
     reflect_scope1(input_dungeon, *output_dungeon);
   }
 

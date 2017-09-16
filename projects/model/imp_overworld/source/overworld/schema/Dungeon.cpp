@@ -40,24 +40,30 @@ namespace overworld {
     }
     return false;
   }
-//  Dungeon &Dungeon::create_dungeon(const std::string &name) {
-//    auto dungeon = new Dungeon(name, *this);
-//    auto pointer = unique_ptr<Dungeon>(dungeon);
-//    add_dungeon(std::move(pointer));
-//    members[name] = dungeon;
-//    if (_is_external)
-//      dungeon->set_is_external(true);
-//
-//    return *dungeon;
-//  }
+
+  bool Dungeon::is_external() const {
+    auto &external = Enchantment_Library::get_external();
+
+    if (has_enchantment(external))
+      return true;
+
+    if (parent && parent->get_scope_type() == Scope_Type::dungeon) {
+      return dynamic_cast<Dungeon *>(parent)->has_enchantment(external);
+    }
+
+    return false;
+  }
 
   Dungeon &Dungeon::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
-    if (_is_external)
-      dungeon->set_is_external(true);
-
     auto result = dungeon.get();
     Scope::add_dungeon(std::move(dungeon));
     return *result;
+  }
+
+  void Dungeon::add_enchantment(Enchantment &enchantment) {
+    enchantments.add_enchantment(enchantment);
+    if (&enchantment == &Enchantment_Library::get_value())
+      set_default_ownership(Ownership::value);
   }
 
   Minion &Dungeon::get_minion(const std::string &name) {

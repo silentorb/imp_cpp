@@ -3,6 +3,7 @@
 #include <memory>
 #include "Member.h"
 #include "overworld/schema/professions/Profession.h"
+#include "Enchantment.h"
 #include <underworld/schema/Minion.h>
 #include <overworld/imp_graph/Node.h>
 #include <overworld/schema/professions/Profession_Reference.h>
@@ -16,6 +17,7 @@ namespace overworld {
       Profession_Node<Minion> node;
       const std::string name;
       const source_mapping::Source_Point source_point;
+      Enchantment_Container enchantments;
 
   public:
       Minion(const std::string &name, Profession &profession, Dungeon_Interface *dungeon,
@@ -61,6 +63,14 @@ namespace overworld {
 
       Element_Type get_element_type() const override {
         return Element_Type::minion;
+      }
+
+      void add_enchantment(Enchantment &enchantment) {
+        enchantments.add_enchantment(enchantment);
+      }
+
+      bool has_enchantment(const Enchantment &enchantment) const {
+        return enchantments.has_enchantment(enchantment);
       }
   };
 

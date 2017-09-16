@@ -30,7 +30,7 @@ Game {
   world
 
 @public:
-  static new() {
+  @static new() {
     var game = Game {}
     game.world = World {}
     var hero = Hero {}

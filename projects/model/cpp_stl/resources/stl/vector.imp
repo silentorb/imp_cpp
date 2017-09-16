@@ -1,7 +1,7 @@
 
 @extern stl {
 
-  vector<T> {
+ @value vector<T> {
     push_back(item:T)
   }
 }

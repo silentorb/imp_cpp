@@ -3,7 +3,9 @@
 #include <unordered_map>
 #include <overworld/schema/Dungeon_Variant.h>
 #include <overworld/schema/Function_Variant.h>
+#include <overworld/schema/Enchantment.h>
 #include "professions.h"
+#include "Enchantment_Library.h"
 
 namespace overworld {
 
@@ -18,13 +20,13 @@ namespace overworld {
       std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
       Graph &graph;
+      Enchantment_Library enchantment_library;
 
   public:
       Profession_Library(Graph &graph);
 
       static Unknown &get_unknown();
       static Void &get_void();
-//      static Unknown &get_not_found();
 
       static Primitive &get_primitive(Primitive_Type type);
 
@@ -32,15 +34,9 @@ namespace overworld {
       Pointer &get_pointer(Profession &profession);
 
       void assign(Node &node, overworld::Profession &profession);
-//      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
-//                                                     Graph &graph);
 
       Function_Variant_Array &get_function_variant_array(Function_Interface &function);
       Dungeon_Variant_Array &get_dungeon_variant_array(Dungeon_Interface &dungeon);
-
-//      Function_Variant &get_or_create_function_variant(Function_Interface &function,
-//                                                       std::vector<Profession *> &professions,
-//                                                       Dungeon_Interface &dungeon, bool &is_new);
 
       static Function_Variant &create_function_variant(Function_Variant_Array &variant_array,
                                                        Function_Interface &function,
@@ -63,7 +59,12 @@ namespace overworld {
                                               Node &starting_node, overworld::Profession &profession);
       Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
 
-//      Function_Variant &create_function_variant(Function_Interface &function, std::vector<Profession *> &professions,
-//                                                      Dungeon &dungeon, Profession &new_profession);
+      Enchantment_Library &get_enchantment_library() {
+        return enchantment_library;
+      }
+
+      const Enchantment_Library &get_enchantment_library() const {
+        return enchantment_library;
+      }
   };
 }

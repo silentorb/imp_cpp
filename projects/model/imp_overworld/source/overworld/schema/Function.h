@@ -47,11 +47,11 @@ namespace overworld {
       Function_Signature signature;
       Profession_Node<Function> node;
       const std::string name;
-      bool _is_static = false;
       virtual bool returns_a_value() const;
       const source_mapping::Source_Point source_point;
       std::vector<Generic_Parameter_Owner> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
+      Enchantment_Container enchantments;
 
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope,
@@ -117,14 +117,6 @@ namespace overworld {
         return source_point;
       }
 
-      bool is_static() const {
-        return _is_static;
-      }
-
-      void set_is_static(bool value) {
-        _is_static = value;
-      }
-
       void finalize(overworld::Profession_Library &profession_library);
 
       Function_Signature &get_signature() {
@@ -173,6 +165,14 @@ namespace overworld {
 
       Function &get_original() override {
         return *this;
+      }
+
+      void add_enchantment(Enchantment &enchantment) {
+        enchantments.add_enchantment(enchantment);
+      }
+
+      bool has_enchantment(const Enchantment &enchantment) const {
+        return enchantments.has_enchantment(enchantment);
       }
   };
 

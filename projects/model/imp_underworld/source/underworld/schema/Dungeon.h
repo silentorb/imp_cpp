@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scope.h"
+#include "Enchantment.h"
 
 namespace underworld {
 
@@ -10,6 +11,7 @@ namespace underworld {
       bool _is_external = false;
       std::vector<Profession_Owner> contracts;
       std::vector<std::string> generic_parameters;
+      Enchantment_Array enchantments;
 
   protected:
       void throw_already_exists(const std::string &member_name) const override;
@@ -47,12 +49,20 @@ namespace underworld {
         return contracts;
       }
 
-      void add_generic_parameter(const std::string& value){
+      void add_generic_parameter(const std::string &value) {
         generic_parameters.push_back(value);
       }
 
       const std::vector<std::string> &get_generic_parameters() const {
         return generic_parameters;
+      }
+
+      void add_enchantment(Enchantment_Owner enchantment) {
+        enchantments.push_back(std::move((enchantment)));
+      }
+
+      const Enchantment_Array &get_enchantments() const {
+        return enchantments;
       }
   };
 

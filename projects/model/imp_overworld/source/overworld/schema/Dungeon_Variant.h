@@ -22,6 +22,10 @@ namespace overworld {
         return original.get_scope();
       }
 
+      const Scope *get_scope() const override {
+        return original.get_scope();
+      }
+
       File *get_file() const override {
         return original.get_file();
       }
@@ -46,7 +50,7 @@ namespace overworld {
         return original;
       }
 
-      const Dungeon &get_original() const {
+      const Dungeon &get_original() const override {
         return original;
       }
 
