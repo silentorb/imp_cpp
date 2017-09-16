@@ -17,29 +17,24 @@ namespace underworld {
       }
   };
 
-  class Virtual_Function : public Member {
+  class Function : public Member {
       const std::string name;
       Profession_Owner return_type;
       bool _is_static = false;
       std::vector<std::string> generic_parameters;
-      std::vector<std::unique_ptr<Parameter>> parameters;
 
   public:
-      Virtual_Function(const std::string &name, Profession_Owner return_type,
-                       const source_mapping::Source_Point &source,
-                       Scope &parent) :
+      Function(const std::string &name, Profession_Owner return_type,
+               const source_mapping::Source_Point &source,
+               Scope &parent) :
         name(name), return_type(std::move(return_type)), Member(source) {}
 
-      Virtual_Function(const std::string &name, const source_mapping::Source_Point &source,
-                       Scope &parent) :
+      Function(const std::string &name, const source_mapping::Source_Point &source,
+               Scope &parent) :
         name(name), Member(source) {}
 
       Type get_type() const override {
         return Type::function;
-      }
-
-      const std::vector<std::unique_ptr<Parameter>> &get_parameters() const {
-        return parameters;
       }
 
       const std::string get_name() const override {
@@ -70,17 +65,34 @@ namespace underworld {
         return false;
       }
 
+  };
+
+  class Virtual_Function : public Function {
+      std::vector<std::unique_ptr<Parameter>> parameters;
+
+  public:
+      Virtual_Function(const std::string &name, Profession_Owner return_type,
+                       const source_mapping::Source_Point &source, Scope &parent) :
+        Function(name, std::move(return_type), source, parent) {}
+
+      Virtual_Function(const std::string &name, const source_mapping::Source_Point &source, Scope &parent) :
+        Function(name, source, parent) {}
+
       virtual void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
         for (auto &parameter: new_parameters) {
           parameters.push_back(std::move(parameter));
         }
       }
 
+      const std::vector<std::unique_ptr<Parameter>> &get_parameters() const {
+        return parameters;
+      }
+
       virtual Parameter &add_parameter(const std::string &name, Profession_Owner profession,
                                        const source_mapping::Source_Point &source);
   };
 
-  class Function_With_Block : public Virtual_Function {
+  class Function_With_Block : public Function {
       Block block;
       std::vector<Parameter *> parameters;
 
@@ -88,17 +100,17 @@ namespace underworld {
       Function_With_Block(const std::string &name, Profession_Owner return_type,
                           const source_mapping::Source_Point &source,
                           Scope &parent) :
-        Virtual_Function(name, std::move(return_type), source, parent), block(parent) {}
+        Function(name, std::move(return_type), source, parent), block(parent) {}
 
       Function_With_Block(const std::string &name, const source_mapping::Source_Point &source,
                           Scope &parent) :
-        Virtual_Function(name, source, parent), block(parent) {}
+        Function(name, source, parent), block(parent) {}
 
       Block &get_block() {
         return block;
       }
 
-      void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) override {
+      void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
         for (auto &parameter: new_parameters) {
           parameters.push_back(parameter.get());
           block.get_scope().add_member(std::move(parameter));
@@ -106,7 +118,7 @@ namespace underworld {
       }
 
       Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                               const source_mapping::Source_Point &source) override;
+                               const source_mapping::Source_Point &source);
 
       const std::vector<Parameter *> &get_parameters() const {
         return parameters;
@@ -121,5 +133,5 @@ namespace underworld {
       }
   };
 
-  using Function_Owner = std::unique_ptr<Virtual_Function>;
+  using Function_Owner = std::unique_ptr<Function>;
 }

@@ -209,7 +209,7 @@ namespace imp_mirror {
     auto result = overworld::Expression_Owner(invoke);
 
     auto &parameters = overworld_function.get_parameters();
-    auto & invoke_arguments =invoke->get_arguments();
+    auto &invoke_arguments = invoke->get_arguments();
     if (parameters.size() != invoke_arguments.size())
       throw std::runtime_error("Parameter and argument lengths do not match.");
 
@@ -270,7 +270,8 @@ namespace imp_mirror {
                                                       overworld::Scope &scope) {
     auto &member = previous_expression.get_member();
     if (member.get_member_type() == overworld::Member_Type::minion) {
-      auto &minion = *dynamic_cast<overworld::Parameter *>(&member);
+      auto & member_minion = static_cast<overworld::Member_Minion&>(member);
+      auto &minion = *dynamic_cast<overworld::Parameter *>(&member_minion.get_minion());
       auto &interface = minion.get_or_create_interface();
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
@@ -523,7 +524,7 @@ namespace imp_mirror {
   }
 
   void Mirror::reflect_function1(const underworld::Member &member, overworld::Scope &scope) {
-    auto &input_function = *(dynamic_cast<const underworld::Virtual_Function *>(&member));
+    auto &input_function = *(dynamic_cast<const underworld::Function *>(&member));
     auto input_function_with_block = (dynamic_cast<const underworld::Function_With_Block *>(&member));
     if (input_function_with_block) {
       auto output_function = new overworld::Function_With_Block(member.get_name(),
@@ -546,7 +547,7 @@ namespace imp_mirror {
 
   }
 
-  void Mirror::reflect_function2(const underworld::Virtual_Function &input_function) {
+  void Mirror::reflect_function2(const underworld::Function &input_function) {
     auto input_function_with_block = dynamic_cast<const underworld::Function_With_Block *>(&input_function);
     if (input_function_with_block) {
       auto output_function_with_block = element_map.find_or_null<overworld::Function_With_Block>(&input_function);
@@ -556,21 +557,23 @@ namespace imp_mirror {
         input_function_with_block->get_block().get_scope(),
         output_function_with_block->get_block().get_scope());
 
-      for (auto &source_parameter : input_function.get_parameters()) {
+      auto &parameters = input_function_with_block->get_parameters();
+      for (auto &source_parameter : parameters) {
         auto &minion = output_function_with_block->get_block().get_scope().get_minion(source_parameter->get_name());
         output_function_with_block->add_parameter_to_signature(cast<overworld::Parameter>(minion));
       }
     }
     else {
-      for (auto &source_parameter : input_function.get_parameters()) {
+      auto virtual_input_function = dynamic_cast<const underworld::Virtual_Function *>(&input_function);
+      for (auto &source_parameter : virtual_input_function->get_parameters()) {
         auto output_function = element_map.find_or_null<overworld::Virtual_Function>(&input_function);
-        auto minion = create_parameter(*source_parameter, output_function->get_parent_scope());
+        auto minion = create_parameter(*source_parameter, output_function->get_parent_scope(), *output_function);
         output_function->add_parameter(std::move(minion));
       }
     }
   }
 
-  void Mirror::reflect_function3(const underworld::Virtual_Function &input_function) {
+  void Mirror::reflect_function3(const underworld::Function &input_function) {
     auto input_function_with_block = (dynamic_cast<const underworld::Function_With_Block *>(&input_function));
     if (input_function_with_block) {
       auto &output_function = *element_map.find_or_null<overworld::Function_With_Block>(&input_function);
@@ -580,18 +583,19 @@ namespace imp_mirror {
   }
 
   std::unique_ptr<overworld::Parameter> Mirror::create_parameter(const underworld::Minion &input_minion,
-                                                                 overworld::Scope &scope) {
+                                                                 overworld::Scope &scope,
+                                                                 overworld::Function_Interface &function) {
     auto profession = &reflect_profession(input_minion.get_profession(), scope);
     return std::unique_ptr<overworld::Parameter>(
       new overworld::Parameter(input_minion.get_name(), *profession,
-                               input_minion.get_source_point(), *scope.get_function())
+                               input_minion.get_source_point(), function)
     );
   }
 
   std::unique_ptr<overworld::Minion> Mirror::create_minion(const underworld::Minion &input_minion,
                                                            overworld::Scope &scope) {
     if (input_minion.is_parameter()) {
-      return create_parameter(input_minion, scope);
+      return create_parameter(input_minion, scope, *scope.get_function());
     }
 
     auto profession = &reflect_profession(input_minion.get_profession(), scope);
@@ -677,7 +681,7 @@ namespace imp_mirror {
     }
     for (auto &input_member : input_scope.get_members()) {
       if (input_member.second->get_type() == underworld::Member::Type::function) {
-        reflect_function2(cast<underworld::Virtual_Function>(*input_member.second));
+        reflect_function2(cast<underworld::Function>(*input_member.second));
       }
       else if (input_member.second->get_type() == underworld::Member::Type::minion) {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));

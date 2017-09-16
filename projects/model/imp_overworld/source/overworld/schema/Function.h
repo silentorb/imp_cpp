@@ -94,11 +94,19 @@ namespace overworld {
       }
 
       Profession &get_profession() override {
-        return *signature.get_return_type();
+        auto profession = signature.get_return_type();
+        if (!profession)
+          return Profession_Library::get_void();
+
+        return *profession;
       }
 
       const Profession &get_profession() const override {
-        return *signature.get_return_type();
+        auto profession = signature.get_return_type();
+        if (!profession)
+          return Profession_Library::get_void();
+
+        return *profession;
       }
 
       void set_profession(Profession &value) override {
@@ -257,7 +265,7 @@ namespace overworld {
         return Member_Type::function;
       }
 
-      Function & get_function(){
+      Function &get_function() {
         return value;
       }
   };

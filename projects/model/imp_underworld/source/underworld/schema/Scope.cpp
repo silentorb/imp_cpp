@@ -42,13 +42,13 @@ namespace underworld {
     return result;
   }
 
-  Virtual_Function *Scope::get_function(const std::string &name) const {
+  Function *Scope::get_function(const std::string &name) const {
     if (members.count(name) == 0)
       return nullptr;
 
     auto &member = members.at(name);
     if (member->get_type() == Member::Type::function)
-      return static_cast<Virtual_Function *>(member.get());
+      return static_cast<Function *>(member.get());
 
     return nullptr;
   }

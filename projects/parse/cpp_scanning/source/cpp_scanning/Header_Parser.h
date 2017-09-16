@@ -21,14 +21,14 @@ namespace cpp_scanning {
       void skip_to(const runic::Whisper &whisper);
       void skip_line();
       void skip_scope();
-      void process_function_parameters(underworld::Virtual_Function &function, Context &context);
+      void process_function_parameters(underworld::Function &function, Context &context);
       void process_variant_arguments(underworld::Dungeon_Variant &variant, Context &context);
       bool process_class_or_namespace_member(Context &context);
       underworld::Profession_Owner process_profession_token(Context &context);
       underworld::Profession_Owner process_profession_internal(Context &context);
       underworld::Profession_Owner process_profession(Context &context);
       void process_class_or_struct(Context &context, Access_Mode access_mode);
-      underworld::Virtual_Function & process_common_function_declaration(Context &context);
+      underworld::Function & process_common_function_declaration(Context &context);
       void process_constructor(Context &context);
       void process_destructor(Context &context);
       void process_function_or_variable(Context &context);

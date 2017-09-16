@@ -175,7 +175,7 @@ namespace imp_summoning {
     input.next();
   }
 
-  Virtual_Function &Summoner::process_function(const std::string &name, Context &context) {
+  Function &Summoner::process_function(const std::string &name, Context &context) {
     auto source_point = input.get_source_point();
     auto profession = process_optional_profession(context);
     std::vector<std::unique_ptr<Parameter>> parameters;

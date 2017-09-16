@@ -18,7 +18,7 @@ namespace imp_summoning {
 
       underworld::Dungeon &process_dungeon(const Identifier &identifier, Context &context);
       void process_dungeon_member(Context &context);
-      underworld::Virtual_Function &process_function(const std::string &name, Context &context);
+      underworld::Function &process_function(const std::string &name, Context &context);
       void process_function_parameters(Context &context, std::vector<std::unique_ptr<underworld::Parameter>> &func);
       void process_root(Context &context);
       void process_root_identifier(const Identifier &identifier, Context &context);

@@ -79,7 +79,7 @@ namespace cpp_scanning {
     input.next();
   }
 
-  void Header_Parser::process_function_parameters(underworld::Virtual_Function &function, Context &context) {
+  void Header_Parser::process_function_parameters(underworld::Function &function, Context &context) {
     input.expect(lexicon.left_paren);
     if (input.next().is(lexicon.right_paren))
       return;
@@ -101,7 +101,7 @@ namespace cpp_scanning {
     input.next();
   }
 
-  Virtual_Function & Header_Parser::process_common_function_declaration(Context &context) {
+  Function & Header_Parser::process_common_function_declaration(Context &context) {
     auto name = input.current().get_text();
     auto function = new Function_With_Block(name, input.get_source_point(), context.get_dungeon());
     context.get_dungeon().add_member(std::unique_ptr<Member>(function));

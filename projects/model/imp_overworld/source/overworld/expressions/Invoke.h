@@ -33,8 +33,8 @@ namespace overworld {
 
       Function_Signature &get_signature() const {
         auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
-        auto &member = member_expression.get_member();
-        return dynamic_cast<Function *>(&member)->get_signature();
+        auto &member = static_cast<Member_Function &>(member_expression.get_member());
+        return member.get_function().get_signature();
       }
 
       const std::vector<Expression_Owner> &get_arguments() const {

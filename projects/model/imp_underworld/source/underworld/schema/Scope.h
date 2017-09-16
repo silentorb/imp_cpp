@@ -10,7 +10,7 @@ namespace underworld {
 
   class Function_With_Block;
 
-  class Virtual_Function;
+  class Function;
 
   class Dungeon;
 
@@ -48,7 +48,7 @@ namespace underworld {
         return members;
       }
 
-      Virtual_Function *get_function(const std::string &name) const;
+      Function *get_function(const std::string &name) const;
       Profession_Member *get_profession(const std::string &name) const;
 
       Scope *get_parent() {

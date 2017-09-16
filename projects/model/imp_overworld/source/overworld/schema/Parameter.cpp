@@ -28,15 +28,20 @@ namespace overworld {
 
       auto temporary_member = dynamic_cast<Temporary_Minion *>(member.get());
       if (new_member.get_member_type() == Member_Type::function) {
-        auto &new_function = *dynamic_cast<Function *>(&new_member);
+        auto & member_function = static_cast<Member_Function &>(new_member);
+        auto &new_function = member_function.get_function();
         auto &signature = temporary_member->get_or_create_signature();
         auto &parameters = signature.get_parameters();
+        auto &new_parameters = new_function.get_parameters();
+        if (parameters.size() != new_parameters.size())
+          throw std::runtime_error("New and old parameter lengths does not match.");
+
         for (auto i = 0; i < parameters.size(); ++i) {
-          parameters[i]->get_node().replace_with(new_function.get_parameters()[i]->get_node());
+          parameters[i]->get_node().replace_with(new_parameters[i]->get_node());
         }
 
-        if(signature.get_return_type()){
-          throw std:: runtime_error("Not implemented.");
+        if (signature.get_return_type()) {
+          throw std::runtime_error("Not implemented.");
         }
       }
 
