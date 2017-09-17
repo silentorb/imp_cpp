@@ -25,6 +25,8 @@ namespace overworld {
         profession(&profession), node(*this, profession, dungeon, function), name(name),
         source_point(source_point) {}
 
+      Minion(const Minion&) = delete;
+
       virtual ~Minion() {
 
       }
@@ -65,8 +67,12 @@ namespace overworld {
         return Element_Type::minion;
       }
 
-      void add_enchantment(Enchantment &enchantment) {
-        enchantments.add_enchantment(enchantment);
+      Enchantment_Container &get_enchantments() {
+        return enchantments;
+      }
+
+      const Enchantment_Container &get_enchantments() const {
+        return enchantments;
       }
 
       bool has_enchantment(const Enchantment &enchantment) const {
@@ -84,7 +90,7 @@ namespace overworld {
         return Member_Type::minion;
       }
 
-      Minion & get_minion(){
+      Minion &get_minion() {
         return value;
       }
   };

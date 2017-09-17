@@ -167,8 +167,12 @@ namespace overworld {
         return *this;
       }
 
-      void add_enchantment(Enchantment &enchantment) {
-        enchantments.add_enchantment(enchantment);
+      Enchantment_Container &get_enchantments() {
+        return enchantments;
+      }
+
+      const Enchantment_Container &get_enchantments() const {
+        return enchantments;
       }
 
       bool has_enchantment(const Enchantment &enchantment) const {

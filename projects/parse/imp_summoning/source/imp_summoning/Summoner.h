@@ -31,6 +31,7 @@ namespace imp_summoning {
       void process_dungeon_with_contracts(Identifier &identifier, underworld::Profession_Owner first_contract,
                                           Context &context);
       underworld::Profession_Owner process_optional_profession(Context &context);
+      void process_enchantments(underworld::Enchantment_Array &enchantments, Context &context);
 //      underworld::Profession *find_profession(Context &context);
 //      underworld::Profession *find_profession();
 

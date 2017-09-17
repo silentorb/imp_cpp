@@ -38,6 +38,8 @@ namespace overworld {
       Dungeon(const std::string &name) :
         name(name), Scope(nullptr), node(*this, *this, this, nullptr) {}
 
+      Dungeon(const Dungeon &) = delete;
+
       virtual ~Dungeon() {}
 
       const std::string get_name() const {
@@ -100,7 +102,15 @@ namespace overworld {
 
       Function &get_or_create_constructor();
 
-      void add_enchantment(Enchantment &enchantment);
+//      void add_enchantment(Enchantment &enchantment);
+
+      Enchantment_Container &get_enchantments() {
+        return enchantments;
+      }
+
+      const Enchantment_Container &get_enchantments() const {
+        return enchantments;
+      }
 
       bool has_enchantment(const Enchantment &enchantment) const {
         return enchantments.has_enchantment(enchantment);

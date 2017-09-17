@@ -75,29 +75,30 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
     auto &token = input.current();
+    if (token.is(lexicon.identifier))
+      return process_identifier(context);
+
+    auto text = token.get_text();
+    auto source_point = input.get_source_point();
+
     if (token.is(lexicon.literal_int)) {
-      int value = std::stoi(token.get_text());
-      return Expression_Owner(new Literal_Int(value, input.get_source_point()));
+      int value = std::stoi(text);
+      input.next();
+      return Expression_Owner(new Literal_Int(value, source_point));
     }
     else if (token.is(lexicon.literal_string)) {
-      return Expression_Owner(new Literal_String(token.get_text(), input.get_source_point()));
+      input.next();
+      return Expression_Owner(new Literal_String(text, source_point));
     }
     else if (token.is(lexicon.True)) {
-      return Expression_Owner(new Literal_Bool(true, input.get_source_point()));
+      input.next();
+      return Expression_Owner(new Literal_Bool(true, source_point));
     }
     else if (token.is(lexicon.False)) {
-      return Expression_Owner(new Literal_Bool(false, input.get_source_point()));
+      input.next();
+      return Expression_Owner(new Literal_Bool(false, source_point));
     }
-    else if (token.is(lexicon.identifier)) {
-      return process_identifier(context);
-//      auto path = process_path(context);
-//      if (input.peek().is(lexicon.left_paren)) {
-//        return process_function_call(context);
-//      }
-//      else {
-//        return path;
-//      }
-    }
+
     else {
       throw runic::Syntax_Exception(token);
     }

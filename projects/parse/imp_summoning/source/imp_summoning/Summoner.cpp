@@ -137,8 +137,7 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_dungeon_member(Context &context) {
-    Identifier identifier;
+  void Summoner::process_enchantments(underworld::Enchantment_Array &enchantments, Context &context) {
     while (input.current().is(lexicon.at_sign)) {
       auto name = input.expect_next(lexicon.identifier).get_text();
       input.next();
@@ -146,14 +145,28 @@ namespace imp_summoning {
 
       }
       else {
-        identifier.enchantments.push_back(Enchantment_Owner(new Enchantment(name)));
+        auto enchantment = new Enchantment(name);
+        enchantments.push_back(Enchantment_Owner(enchantment));
+        if (input.if_is(lexicon.left_paren)) {
+          while (input.current().is_not(lexicon.right_paren)) {
+            enchantment->add_argument(expression_summoner.process_expression(context));
+            if (input.if_is(lexicon.comma))
+              input.next();
+            else
+              break;
+          }
+          input.expect(lexicon.right_paren);
+          input.next();
+        }
       }
     }
-//    else if (input.current().is(lexicon.Static)) {
-//      Identifier identifier = {input.next().get_text(), get_source_point()};
-//      input.next();
-//      process_member(identifier, context, true);
-//    }
+  }
+
+  void Summoner::process_dungeon_member(Context &context) {
+    Identifier identifier;
+
+    process_enchantments(identifier.enchantments, context);
+
     if (input.current().is(lexicon.identifier)) {
       identifier.name = input.current().get_text();
       identifier.source_point = get_source_point();

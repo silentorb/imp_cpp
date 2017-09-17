@@ -60,11 +60,11 @@ namespace overworld {
     return *result;
   }
 
-  void Dungeon::add_enchantment(Enchantment &enchantment) {
-    enchantments.add_enchantment(enchantment);
-    if (&enchantment == &Enchantment_Library::get_value())
-      set_default_ownership(Ownership::value);
-  }
+//  void Dungeon::add_enchantment(Enchantment &enchantment) {
+//    enchantments.add_enchantment(enchantment);
+//    if (&enchantment == &Enchantment_Library::get_value())
+//      set_default_ownership(Ownership::value);
+//  }
 
   Minion &Dungeon::get_minion(const std::string &name) {
     for (auto &variable: minions) {

@@ -19,8 +19,8 @@
 
 namespace imp_mirror {
 
-template <typename T> void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
-                            T &output_enchantments,
+  void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
+                            overworld::Enchantment_Container &output_enchantments,
                             overworld::Enchantment_Library &enchantment_library) {
     for (auto &input_enchantment: input_enchantments) {
       auto enchantment = enchantment_library.find_enchantment(input_enchantment->get_name());
@@ -269,7 +269,7 @@ template <typename T> void reflect_enchantments(const underworld::Enchantment_Ar
       if (!input_member)
         throw Code_Error("Unknown symbol " + name, instantiation.get_source_point());
 
-      auto minion = cast<overworld::Minion>(*input_member);
+      auto &minion = cast<overworld::Minion>(*input_member);
       auto value = reflect_expression(*pair.second, scope);
       graph.connect(minion.get_node(), *value->get_node());
       output_instantiation->add_expression(minion, std::move(value));
@@ -549,7 +549,7 @@ template <typename T> void reflect_enchantments(const underworld::Enchantment_Ar
                      output_function->get_block().get_scope());
 //      if (input_function.is_static())
 //        output_function->add_enchantment(();
-      reflect_enchantments(input_function.get_enchantments(), *output_function,
+      reflect_enchantments(input_function.get_enchantments(), output_function->get_enchantments(),
                            profession_library.get_enchantment_library());
 
       element_map.add(&input_function, output_function);
@@ -655,7 +655,7 @@ template <typename T> void reflect_enchantments(const underworld::Enchantment_Ar
       auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr);
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }
-    reflect_enchantments(input_dungeon.get_enchantments(),*output_dungeon,
+    reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(),
                          profession_library.get_enchantment_library());
     reflect_scope1(input_dungeon, *output_dungeon);
   }
