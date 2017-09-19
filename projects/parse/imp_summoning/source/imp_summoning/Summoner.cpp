@@ -103,7 +103,7 @@ namespace imp_summoning {
   void Summoner::process_generic_member(Identifier &identifier, Context &context, bool is_static) {
     auto parameters = process_generic_parameters(context);
     if (input.current().is(lexicon.left_paren)) {
-      auto &function = process_function(identifier.name, context);
+      auto &function = process_function(identifier, context);
       for (auto parameter : parameters) {
         function.add_generic_parameter(parameter);
       }
@@ -124,7 +124,7 @@ namespace imp_summoning {
       process_generic_member(identifier, context, is_static);
     }
     else if (input.current().is(lexicon.left_paren)) {
-      auto &function = process_function(identifier.name, context);
+      auto &function = process_function(identifier, context);
     }
     else {
 //      if (is_static) {
@@ -190,13 +190,13 @@ namespace imp_summoning {
     input.next();
   }
 
-  Function &Summoner::process_function(const std::string &name, Context &context) {
-    auto source_point = input.get_source_point();
+  Function &Summoner::process_function_internal(Identifier &identifier, Context &context) {
     auto profession = process_optional_profession(context);
     std::vector<std::unique_ptr<Parameter>> parameters;
     process_function_parameters(context, parameters);
     if (input.if_is(lexicon.left_brace)) {
-      auto function = new Function_With_Block(name, std::move(profession), source_point, context.get_scope());
+      auto function = new Function_With_Block(identifier.name, std::move(profession), identifier.source_point,
+                                              context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
 
@@ -204,11 +204,22 @@ namespace imp_summoning {
       return *function;
     }
     else {
-      auto function = new Virtual_Function(name, std::move(profession), source_point, context.get_scope());
+      auto function = new Virtual_Function(identifier.name, std::move(profession), identifier.source_point,
+                                           context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
       return *function;
     }
+  }
+
+  Function &Summoner::process_function(Identifier &identifier, Context &context) {
+    auto &function = process_function_internal(identifier, context);
+
+    for (auto &enchantment : identifier.enchantments) {
+      function.add_enchantment(std::move(enchantment));
+    }
+
+    return function;
   }
 
   Dungeon &Summoner::process_dungeon(Identifier &identifier, Context &context) {

@@ -1,7 +1,9 @@
 
-@extern("vector") stl {
+stl {
 
- @value vector<T> {
+  @value
+  @extern("vector")
+  vector<T> {
     push_back(item:T)
   }
 }

@@ -21,6 +21,7 @@ namespace imp_wrapper {
       imp_mirror::Element_Map element_map;
       cpp_stl::Standard_Library *standard_library;
       imp_summoning::Zookeeper zookeeper;
+
   public:
       Wrapper_Internal();
       virtual ~Wrapper_Internal();

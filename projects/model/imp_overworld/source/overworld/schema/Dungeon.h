@@ -7,6 +7,7 @@
 #include "Dungeon_Interface.h"
 #include "Member_Profession.h"
 #include "Enchantment.h"
+#include "Enchantment_Container.h"
 #include <vector>
 
 namespace overworld {
@@ -18,6 +19,7 @@ namespace overworld {
 
   class Dungeon : public Scope, public virtual Dungeon_Interface, public virtual Profession_Reference {
       File *header_file = nullptr;
+      std::unique_ptr<File> header_file_owner;
       Profession_Node<Dungeon> node;
       const std::string name;
       const source_mapping::Source_Point source_point;
@@ -58,6 +60,11 @@ namespace overworld {
 
       void set_file(File &value) {
         header_file = &value;
+      }
+
+      void set_file(std::unique_ptr<File> value) {
+        header_file = value.get();
+        header_file_owner = std::move(value);
       }
 
       File *get_file() const {

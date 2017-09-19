@@ -1,11 +1,13 @@
+#include <overworld/schema/Enchantment_With_Arguments.h>
 #include "Enchantment_Library.h"
+#include "professions.h"
+#include "Profession_Library.h"
 
 using namespace std;
 
 namespace overworld {
 
-  struct Static_Enchantments {
-      Simple_Enchantment external = string("extern");
+  struct Simple_Enchantments {
       Simple_Enchantment Static = string("static");
       Simple_Enchantment Public = string("public");
       Simple_Enchantment Private = string("private");
@@ -13,15 +15,35 @@ namespace overworld {
       Simple_Enchantment value = string("value");
   };
 
-  static Static_Enchantments static_enchantments;
+  struct Complex_Enchantments {
+      Enchantment_With_Parameters external;
+
+      Complex_Enchantments() :
+        external("extern", {
+          new Simple_Minion(
+            "header_file", Profession_Library::get_primitive(Primitive_Type::String)
+          )
+        }) {}
+  };
+
+  static Simple_Enchantments simple_enchanements;
+  static std::unique_ptr<Complex_Enchantments> complex_enchanements;
+
+  void Enchantment_Library::initialize() {
+    if (!complex_enchanements)
+      complex_enchanements = std::unique_ptr<Complex_Enchantments>(new Complex_Enchantments());
+  }
 
   Enchantment_Library::Enchantment_Library() {
-    auto count = sizeof(Static_Enchantments) / sizeof(Simple_Enchantment);
-    auto pointer = (Simple_Enchantment*) &static_enchantments;
+    initialize();
+    auto count = sizeof(Simple_Enchantments) / sizeof(Simple_Enchantment);
+    auto pointer = (Simple_Enchantment *) &simple_enchanements;
     for (int i = 0; i < count; ++i) {
-      auto enchantment = (pointer + i);
+      Simple_Enchantment *enchantment = (pointer + i);
       global_enchantments[enchantment->get_name()] = enchantment;
     }
+
+    global_enchantments["extern"] = &complex_enchanements->external;
   }
 
   Enchantment *Enchantment_Library::find_enchantment(const std::string &name) {
@@ -32,26 +54,26 @@ namespace overworld {
   }
 
   Simple_Enchantment &Enchantment_Library::get_external() {
-    return static_enchantments.external;
+    return complex_enchanements->external;
   }
 
   Simple_Enchantment &Enchantment_Library::get_static() {
-    return static_enchantments.Static;;
+    return simple_enchanements.Static;;
   }
 
   Simple_Enchantment &Enchantment_Library::get_public() {
-    return static_enchantments.Public;
+    return simple_enchanements.Public;
   }
 
   Simple_Enchantment &Enchantment_Library::get_private() {
-    return static_enchantments.Private;
+    return simple_enchanements.Private;
   }
 
   Simple_Enchantment &Enchantment_Library::get_protected() {
-    return static_enchantments.Protected;
+    return simple_enchanements.Protected;
   }
 
   Simple_Enchantment &Enchantment_Library::get_value() {
-    return static_enchantments.value;
+    return simple_enchanements.value;
   }
 }

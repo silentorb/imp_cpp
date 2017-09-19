@@ -52,7 +52,9 @@ namespace imp_mirror {
       }
 
       overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
-
+      void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
+                                overworld::Enchantment_Container &output_enchantments,
+                                overworld::Scope &scope);
       void apply_node_assignment(overworld::Node &target, overworld::Node &value);
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
@@ -69,7 +71,6 @@ namespace imp_mirror {
                                                                overworld::Scope &scope);
       overworld::Expression_Owner reflect_variable_declaration_with_assignment(
         const underworld::Minion_Declaration_And_Assignment &input_declaration, overworld::Scope &scope);
-
 
       overworld::Expression_Owner reflect_if(const underworld::If &input_if,
                                              overworld::Scope &scope);

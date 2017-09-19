@@ -14,20 +14,31 @@
 #include <overworld/expressions/Instantiation.h>
 #include <overworld/schema/Temporary_Minion.h>
 #include <underworld/schema/Enchantment.h>
+#include <overworld/schema/Enchantment_With_Arguments.h>
 #include "Mirror.h"
 #include "Code_Error.h"
 
 namespace imp_mirror {
 
-  void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
-                            overworld::Enchantment_Container &output_enchantments,
-                            overworld::Enchantment_Library &enchantment_library) {
+  void Mirror::reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
+                                    overworld::Enchantment_Container &output_enchantments,
+                                    overworld::Scope &scope) {
     for (auto &input_enchantment: input_enchantments) {
-      auto enchantment = enchantment_library.find_enchantment(input_enchantment->get_name());
+      auto enchantment = profession_library.get_enchantment_library().find_enchantment(input_enchantment->get_name());
       if (!enchantment)
         throw std::runtime_error("Could not find enchantment " + input_enchantment->get_name());
 
-      output_enchantments.add_enchantment(*enchantment);
+      if (input_enchantment->get_arguments().size() > 0) {
+        auto parent = dynamic_cast<overworld::Enchantment_With_Parameters *>(enchantment);
+        auto complex_enchantment = new overworld::Enchantment_With_Arguments(*parent);
+        output_enchantments.add_enchantment(overworld::Enchantment_Owner(complex_enchantment));
+        for (auto &argument : input_enchantment->get_arguments()) {
+          complex_enchantment->add_argument(reflect_expression(*argument, scope));
+        }
+      }
+      else {
+        output_enchantments.add_enchantment(*enchantment);
+      }
     }
   }
 
@@ -549,8 +560,7 @@ namespace imp_mirror {
                      output_function->get_block().get_scope());
 //      if (input_function.is_static())
 //        output_function->add_enchantment(();
-      reflect_enchantments(input_function.get_enchantments(), output_function->get_enchantments(),
-                           profession_library.get_enchantment_library());
+      reflect_enchantments(input_function.get_enchantments(), output_function->get_enchantments(), scope);
 
       element_map.add(&input_function, output_function);
     }
@@ -655,8 +665,24 @@ namespace imp_mirror {
       auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr);
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }
-    reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(),
-                         profession_library.get_enchantment_library());
+    reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(), output_scope);
+
+    auto &enchantment_library = profession_library.get_enchantment_library();
+    if (output_dungeon->has_enchantment(enchantment_library.get_value())) {
+      output_dungeon->set_default_ownership(overworld::Ownership::value);
+    }
+
+    auto external = output_dungeon->get_enchantments().get_enchantment(enchantment_library.get_external());
+
+    if (external) {
+      auto enchantment = dynamic_cast<overworld::Enchantment_With_Arguments *>(external);
+      if (enchantment) {
+        auto literal_string = dynamic_cast<overworld::Literal_String *>(enchantment->get_arguments()[0].get());
+        auto value = literal_string->get_value();
+        output_dungeon->set_file(std::unique_ptr<overworld::File>(new overworld::External_File(value)));
+      }
+    }
+
     reflect_scope1(input_dungeon, *output_dungeon);
   }
 

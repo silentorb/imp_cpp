@@ -10,7 +10,7 @@ namespace overworld {
 
   public:
       virtual const std::string get_name() const = 0;
-      virtual bool matches(const Enchantment &other) const = 0;
+      virtual const Enchantment *get_type() const = 0;
       virtual ~Enchantment() = default;
   };
 
@@ -26,8 +26,8 @@ namespace overworld {
         return name;
       }
 
-      bool matches(const Enchantment &other) const override {
-        return &other == this;
+      const Enchantment *get_type() const override {
+        return this;
       }
   };
 
@@ -40,8 +40,8 @@ namespace overworld {
 
       ~Enchantment_Reference() override = default;
 
-      bool matches(const Enchantment &other) const override {
-        return &other == this || parent.matches(other);
+      const Enchantment *get_type() const override {
+        return parent.get_type();
       }
 
       const std::string get_name() const override {
@@ -49,50 +49,6 @@ namespace overworld {
       }
   };
 
-  class Enchantment_With_Arguments : public Enchantment_Reference {
-      std::vector<Expression_Owner> arguments;
-
-  public:
-      explicit Enchantment_With_Arguments(Enchantment &parent) : Enchantment_Reference(parent) {}
-
-      ~Enchantment_With_Arguments() override = default;
-
-      void add_argument(Expression_Owner argument) {
-        arguments.push_back(std::move(argument));
-      }
-
-  };
-
   using Enchantment_Owner = std::unique_ptr<Enchantment>;
 
-  class Enchantment_Container {
-      std::vector<Enchantment_Owner> enchantments;
-
-  public:
-      Enchantment_Container() = default;
-
-      Enchantment_Container(const Enchantment_Container&) = delete;
-
-      void add_enchantment(Enchantment_Owner enchantment) {
-        if (!has_enchantment(*enchantment))
-          enchantments.push_back(std::move(enchantment));
-      }
-
-      void add_enchantment(Enchantment &enchantment) {
-        if (!has_enchantment(enchantment))
-          enchantments.push_back(Enchantment_Owner(new Enchantment_Reference(enchantment)));
-      }
-
-      Enchantment *get_enchantment(const Enchantment &enchantment) const {
-        for (auto &entry : enchantments) {
-          if (entry->matches(enchantment))
-            return entry.get();
-        }
-        return nullptr;
-      }
-
-      bool has_enchantment(const Enchantment &enchantment) const {
-        return get_enchantment(enchantment) != nullptr;
-      }
-  };
 }

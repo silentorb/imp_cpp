@@ -20,5 +20,7 @@ namespace overworld {
       static Simple_Enchantment &get_private();
       static Simple_Enchantment &get_protected();
       static Simple_Enchantment &get_value();
+
+      static void initialize();
   };
 }

@@ -8,5 +8,5 @@ class Game {
     std::unique_ptr<World> world;
 
 public:
-    std::unique_ptr<Game> _new();
+    static std::unique_ptr<Game> _new();
 };

@@ -62,6 +62,10 @@ namespace underworld {
       const Enchantment_Array &get_enchantments() const {
         return enchantments;
       }
+
+      void add_enchantment(Enchantment_Owner enchantment) {
+        enchantments.push_back(std::move(enchantment));
+      }
   };
 
   class Virtual_Function : public Function {
