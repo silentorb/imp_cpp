@@ -55,10 +55,16 @@ namespace imp_wrapper {
   void Wrapper_Internal::solve() {
     solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
+
+#if DEBUG_SOLVER > 2
     solver.log_nodes();
+#endif
+
     auto solved = solver.solve();
 
+#if DEBUG_SOLVER > 1
     solver.log_nodes();
+#endif
 
     if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();

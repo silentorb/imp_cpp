@@ -28,6 +28,10 @@ namespace overworld {
       bool is_resolved() const override {
         return false;
       }
+
+      std::string get_debug_string() const override {
+        return "GP " + Node::get_debug_string();
+      }
   };
 
   class Generic_Parameter : public virtual Profession_Reference, public virtual Profession {

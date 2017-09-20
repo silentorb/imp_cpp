@@ -50,7 +50,7 @@ namespace overworld {
         Node::changed = changed;
       }
 
-      std::string get_debug_string() const;
+      virtual std::string get_debug_string() const;
 
       Dungeon_Interface *get_dungeon() const {
         return dungeon;
@@ -83,7 +83,8 @@ namespace overworld {
 
       bool is_resolved() const override {
         auto &profession = element.get_profession();
-        return profession.get_base().get_type() != overworld::Profession_Type::unknown;
+        return profession.get_base().get_type() != overworld::Profession_Type::unknown
+               && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter;
       }
 
       void set_original_profession(Profession &value) {

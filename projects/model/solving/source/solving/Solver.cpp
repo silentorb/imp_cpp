@@ -3,7 +3,7 @@
 #include <overworld/schema/Function.h>
 #include <overworld/schema/professions/cloning.h>
 
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
 
 #include <iostream>
 
@@ -14,7 +14,7 @@ using namespace overworld;
 namespace solving {
 
   void log_node(overworld::Node &node) {
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
     std::cout << node.get_debug_string();
     std::cout << std::endl;
 #endif
@@ -72,21 +72,29 @@ namespace solving {
 
   void Solver::set_profession(Node &node, overworld::Profession &profession) {
     auto &base_profession = profession.get_base();
-#if DEBUG_SOLVER
+
+#if DEBUG_SOLVER > 0
     if (base_profession.get_type() == overworld::Profession_Type::unknown)
       throw std::runtime_error("Invalid type.");
 #endif
 
+    auto &original_profession = node.get_profession().get_base();
     profession_library.assign(node, profession);
-auto k = node.get_profession_reference().get_element_type();
+    auto k = node.get_profession_reference().get_element_type();
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
-        && base_profession.get_type() == Profession_Type::generic_parameter) {
-      auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
-      auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
-      if (dungeon && !dungeon->has_generic_parameter(generic_parameter)) {
-        auto &function = *dynamic_cast<Function *>(generic_parameter.get_node().get_function());
-        migrate_generic_parameter_from_function_to_dungeon(*dungeon, function, generic_parameter);
+        && original_profession.get_type() == Profession_Type::generic_parameter) {
+      auto generic_parameter = dynamic_cast<Generic_Parameter *>(&original_profession);
+      auto dungeon = dynamic_cast<Dungeon *>(generic_parameter->get_node().get_dungeon());
+      if (dungeon) {
+        auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
+        create_dungeon_variant(variant_array, dungeon->get_original(), node, base_profession);
       }
+      else {
+        auto function = dynamic_cast<Function *>(generic_parameter->get_node().get_function());
+        migrate_generic_parameter_from_function_to_dungeon(*dungeon, *function, *generic_parameter);
+//
+      }
+//      if (dungeon && !dungeon->has_generic_parameter(*generic_parameter)) {
     }
     set_changed(node);
   }
@@ -101,7 +109,7 @@ auto k = node.get_profession_reference().get_element_type();
   Progress Solver::inhale(Node &node) {
     for (auto other : node.get_neighbors()) {
       if (other->is_resolved()) {
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " < " << other->get_debug_string() << std::endl;
 #endif
         auto &profession = other->get_profession_reference().get_profession();
@@ -117,13 +125,18 @@ auto k = node.get_profession_reference().get_element_type();
     Progress progress = 0;
     for (auto other : node.get_neighbors()) {
       if (!other->is_resolved()) {
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
 #endif
         auto &profession = node.get_profession();
         set_profession(*other, profession);
         ++progress;
       }
+#if DEBUG_SOLVER >= 2
+      else {
+        std::cout << "  " << node.get_debug_string() << " !~> " << other->get_debug_string() << std::endl;
+      }
+#endif
     }
 
     return progress;
@@ -252,7 +265,7 @@ auto k = node.get_profession_reference().get_element_type();
 //      return true;
 //    }
 
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
     std::cout << "C " << first.get_debug_string() << " != " << second.get_debug_string() << std::endl;
 #endif
 
@@ -349,7 +362,7 @@ auto k = node.get_profession_reference().get_element_type();
         set_changed(*node);
     }
 
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
 //    std::cout << "\nChanged Nodes:" << std::endl;
 //
 //    for (auto node : *next_changed) {
@@ -390,7 +403,7 @@ auto k = node.get_profession_reference().get_element_type();
   }
 
   void Solver::log_nodes() {
-#if DEBUG_SOLVER
+#if DEBUG_SOLVER > 0
     std::cout << std::endl << "Logging nodes:" << std::endl;
 
     std::vector<overworld::Node *> nodes;

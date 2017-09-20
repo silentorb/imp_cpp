@@ -75,7 +75,6 @@ namespace imp_rendering {
     return result;
   }
 
-
   const std::string render_minion_with_signature(const overworld::Minion &minion, const overworld::Scope &scope) {
     auto signature = render_profession(minion.get_profession(), scope);
     auto last_character = signature[signature.size() - 1];
