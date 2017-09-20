@@ -66,6 +66,10 @@ namespace overworld {
       const std::string get_name() const override {
         return minion.get_name();
       }
+
+      Element_Type get_element_type() const override{
+        return Element_Type::minion;
+      }
   };
 
   class Minion : public Simple_Minion {
@@ -102,10 +106,6 @@ namespace overworld {
         return (Dungeon *) node.get_dungeon();
       }
 
-      virtual Element_Type get_element_type() const {
-        return Element_Type::minion;
-      }
-
       Enchantment_Container &get_enchantments() {
         return enchantments;
       }
@@ -117,6 +117,11 @@ namespace overworld {
       bool has_enchantment(const Enchantment &enchantment) const {
         return enchantments.has_enchantment(enchantment);
       }
+
+      virtual Element_Type get_element_type() const {
+        return Element_Type::minion;
+      }
+
   };
 
   using Minion_Owner = std::unique_ptr<Minion>;

@@ -78,7 +78,7 @@ namespace solving {
 #endif
 
     profession_library.assign(node, profession);
-
+auto k = node.get_profession_reference().get_element_type();
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
@@ -113,7 +113,7 @@ namespace solving {
     return 0;
   }
 
-  Progress Solver::ripple(Node &node) {
+  Progress Solver::exhale(Node &node) {
     Progress progress = 0;
     for (auto other : node.get_neighbors()) {
       if (!other->is_resolved()) {
@@ -136,7 +136,7 @@ namespace solving {
         continue;
 
       if (node->is_resolved())
-        progress += ripple(*node);
+        progress += exhale(*node);
       else
         progress += inhale(*node);
     }

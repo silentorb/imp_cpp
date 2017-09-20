@@ -53,7 +53,7 @@ namespace solving {
       void initialize();
       Progress process_changed();
       Progress process_conflicts();
-      Progress ripple(Node &node);
+      Progress exhale(Node &node);
 
       int update_unresolved();
       int update_changed();

@@ -55,7 +55,7 @@ namespace imp_wrapper {
   void Wrapper_Internal::solve() {
     solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
-//    solver.log_nodes();
+    solver.log_nodes();
     auto solved = solver.solve();
 
     solver.log_nodes();

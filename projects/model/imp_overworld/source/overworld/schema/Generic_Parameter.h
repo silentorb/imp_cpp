@@ -8,14 +8,36 @@ namespace overworld {
 
   class Function_Interface;
 
+  template <typename T>
+  class Generic_Parameter_Node : public Node {
+      T &element;
+
+  public:
+      Generic_Parameter_Node(T &parameter, Dungeon_Interface *dungeon,
+                             Function_Interface *function) :
+        Node(dungeon, function), element(parameter) {}
+
+      Profession_Reference &get_profession_reference() override {
+        return element;
+      }
+
+      const Profession_Reference &get_profession_reference() const override {
+        return element;
+      }
+
+      bool is_resolved() const override {
+        return false;
+      }
+  };
+
   class Generic_Parameter : public virtual Profession_Reference, public virtual Profession {
       source_mapping::Source_Point source_point;
       std::string name;
-      Profession_Node<Generic_Parameter> node;
+      Generic_Parameter_Node<Generic_Parameter> node;
 
   public:
       Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function)
-        : node(*this, *this, dungeon, function), name(name) {}
+        : node(*this, dungeon, function), name(name) {}
 
       virtual ~Generic_Parameter() {}
 
@@ -35,11 +57,11 @@ namespace overworld {
         name = value;
       }
 
-      Profession_Node<Generic_Parameter> &get_node() override {
+      Generic_Parameter_Node<Generic_Parameter> &get_node() override {
         return node;
       }
 
-      const Profession_Node<Generic_Parameter> &get_node() const {
+      const Generic_Parameter_Node<Generic_Parameter> &get_node() const {
         return node;
       }
 
