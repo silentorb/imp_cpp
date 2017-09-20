@@ -240,7 +240,7 @@ namespace imp_mirror {
     for (int i = 0; i < invoke_arguments.size(); ++i) {
       auto &first = parameters[i]->get_node();
       auto &second = *invoke_arguments[i]->get_node();
-
+auto k = first.get_profession_reference().get_element_type();
       if (first.get_profession_reference().get_element_type() == overworld::Element_Type::parameter
           && first.get_function() != second.get_function()
           && first.get_profession().get_type() == overworld::Profession_Type::generic_parameter) {

@@ -68,7 +68,7 @@ namespace overworld {
       }
 
       Element_Type get_element_type() const override{
-        return Element_Type::minion;
+        return minion.get_element_type();
       }
   };
 

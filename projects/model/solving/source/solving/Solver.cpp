@@ -80,22 +80,30 @@ namespace solving {
 
     auto &original_profession = node.get_profession().get_base();
     profession_library.assign(node, profession);
-    auto k = node.get_profession_reference().get_element_type();
     if (node.get_profession_reference().get_element_type() == Element_Type::minion
-        && original_profession.get_type() == Profession_Type::generic_parameter) {
-      auto generic_parameter = dynamic_cast<Generic_Parameter *>(&original_profession);
-      auto dungeon = dynamic_cast<Dungeon *>(generic_parameter->get_node().get_dungeon());
-      if (dungeon) {
-        auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
-        create_dungeon_variant(variant_array, dungeon->get_original(), node, base_profession);
+        && base_profession.get_type() == Profession_Type::generic_parameter) {
+      auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
+      auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
+      if (dungeon && !dungeon->has_generic_parameter(generic_parameter)) {
+        auto &function = *dynamic_cast<Virtual_Function *>(generic_parameter.get_node().get_function());
+        migrate_generic_parameter_from_function_to_dungeon(*dungeon, function, generic_parameter);
       }
-      else {
-        auto function = dynamic_cast<Function *>(generic_parameter->get_node().get_function());
-        migrate_generic_parameter_from_function_to_dungeon(*dungeon, *function, *generic_parameter);
-//
-      }
-//      if (dungeon && !dungeon->has_generic_parameter(*generic_parameter)) {
     }
+//    if (node.get_profession_reference().get_element_type() == Element_Type::minion
+//        && original_profession.get_type() == Profession_Type::generic_parameter) {
+//      auto generic_parameter = dynamic_cast<Generic_Parameter *>(&original_profession);
+//      auto dungeon = dynamic_cast<Dungeon *>(generic_parameter->get_node().get_dungeon());
+//      if (dungeon) {
+//        auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
+//        create_dungeon_variant(variant_array, dungeon->get_original(), node, base_profession);
+//      }
+//      else {
+//        auto function = dynamic_cast<Function *>(generic_parameter->get_node().get_function());
+//        migrate_generic_parameter_from_function_to_dungeon(*dungeon, *function, *generic_parameter);
+////
+//      }
+//      if (dungeon && !dungeon->has_generic_parameter(*generic_parameter)) {
+//    }
     set_changed(node);
   }
 
