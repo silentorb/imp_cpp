@@ -48,10 +48,6 @@ namespace overworld {
         return name;
       }
 
-      virtual const std::string get_cpp_name() const {
-        return name;
-      }
-
       bool is_class() const;
 
       void set_file(File *value) {
@@ -224,19 +220,19 @@ namespace overworld {
       }
   };
 
-  class Cpp_Dungeon : public Dungeon {
-      std::string cpp_name;
-
-  public:
-      Cpp_Dungeon(const std::string &name, const std::string &cpp_name, Scope &parent) :
-        Dungeon(name, parent), cpp_name(cpp_name) {}
-
-      virtual ~Cpp_Dungeon() {}
-
-      const std::string get_cpp_name() const override {
-        return cpp_name;
-      }
-  };
+//  class Cpp_Dungeon : public Dungeon {
+//      std::string cpp_name;
+//
+//  public:
+//      Cpp_Dungeon(const std::string &name, const std::string &cpp_name, Scope &parent) :
+//        Dungeon(name, parent), cpp_name(cpp_name) {}
+//
+//      virtual ~Cpp_Dungeon() {}
+//
+//      const std::string get_cpp_name() const override {
+//        return cpp_name;
+//      }
+//  };
 
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
 

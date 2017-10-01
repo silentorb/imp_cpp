@@ -1,0 +1,16 @@
+
+Ingredient {
+@public:
+  name: string
+}
+
+Goblikin {
+@public:
+  craft() {
+    var ingredients = stl.array
+    var tail = Ingredient()
+    tail.name = "rat's tail"
+    ingredients.push_back(tail)
+    // ingredients.map(i => stl.print(i.name))
+  }
+}

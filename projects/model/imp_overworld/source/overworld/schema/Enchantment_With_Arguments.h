@@ -21,6 +21,10 @@ namespace overworld {
       const std::vector<Simple_Minion_Owner> &get_parameters() const {
         return parameters;
       }
+
+      const std::string get_argument_string(int index) const override {
+        return "";
+      }
   };
 
   class Enchantment_With_Arguments : public Enchantment_Reference {
@@ -39,6 +43,8 @@ namespace overworld {
       const std::vector<Expression_Owner> &get_arguments() const {
         return arguments;
       }
+
+      const std::string get_argument_string(int index) const override;
   };
 
 }

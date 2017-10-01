@@ -12,16 +12,18 @@ namespace imp_rendering {
   const std::string render_function_parameters(const overworld::Function &function);
   const std::string render_function_return_signature(const overworld::Function &function);
   const std::string render_function_declaration(const overworld::Function &function);
-  const std::string render_profession(const overworld::Profession &profession, const overworld::Scope & scope);
-  const std::string render_profession_owner(const overworld::Profession &profession, const overworld::Scope & scope);
+  const std::string render_profession(const overworld::Profession &profession, const overworld::Scope &scope);
+  const std::string render_profession_owner(const overworld::Profession &profession, const overworld::Scope &scope);
   const std::string render_separator(const overworld::Profession &profession);
   const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
-                                const std:: string &  value);
+                                const std::string &value);
 //  const std::string render_profession_as_owner_reference(const overworld::Profession &profession);
 
+  const std::string get_cpp_name(const overworld::Dungeon &dungeon);
+
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
-                                    const overworld::Scope & scope);
-  const std::string render_expression(const overworld::Expression &input_expression, const overworld::Scope & scope);
+                                    const overworld::Scope &scope);
+  const std::string render_expression(const overworld::Expression &input_expression, const overworld::Scope &scope);
   void render_statements(Stroke &stroke, const overworld::Expressions &statements, const overworld::Scope &scope);
   Stroke render_block(const std::string &header, const overworld::Block &block);
   Stroke render_shrinking_block(const std::string &header, const overworld::Block_Expression &block);
@@ -32,8 +34,8 @@ namespace imp_rendering {
   Stroke render_function_definition(const overworld::Function &function);
   Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
                                        Stroke stroke);
-  const std::string render_minion_with_signature(const overworld::Minion &minion, const overworld::Scope & scope);
-  const std::string render_parameter(const overworld::Minion &minion, const overworld::Scope & scope);
+  const std::string render_minion_with_signature(const overworld::Minion &minion, const overworld::Scope &scope);
+  const std::string render_parameter(const overworld::Minion &minion, const overworld::Scope &scope);
   Stroke render_includes(const std::vector<overworld::File_Reference> &files);
 
   inline Stroke wrap(const std::string &text) {

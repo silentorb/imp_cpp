@@ -10,6 +10,7 @@
 #include <overworld/expressions/Invoke.h>
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Instantiation.h>
+#include <overworld/schema/Enchantment_With_Arguments.h>
 
 using namespace std;
 using namespace overworld;
@@ -335,8 +336,19 @@ namespace imp_rendering {
     }
   }
 
-  const std::string
-  render_primary_dungeon_token(const Dungeon_Interface &dungeon_interface, const overworld::Scope &scope) {
+  const std::string get_cpp_name(const overworld::Dungeon &dungeon) {
+    auto &external = Enchantment_Library::get_external();
+    auto enchantment = dungeon.get_enchantments().get_enchantment(external);
+    if (enchantment) {
+      auto name = enchantment->get_argument_string(0);
+      if (name != "")
+        return name;
+    }
+    return dungeon.get_name();
+  }
+
+  const std::string render_primary_dungeon_token(const Dungeon_Interface &dungeon_interface,
+                                                 const overworld::Scope &scope) {
     if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
       auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
       std::string parameter_string = join(variant.get_professions(), Joiner<Profession *>(
@@ -344,11 +356,11 @@ namespace imp_rendering {
           return render_profession(*profession, scope);
         }), ", ");
 
-      return variant.get_original().get_cpp_name() + "<" + parameter_string + ">";
+      return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
     }
     else {
       auto &dungeon = dynamic_cast<const Dungeon &>(dungeon_interface);
-      return dungeon.get_cpp_name();
+      return get_cpp_name(dungeon);
     }
   }
 

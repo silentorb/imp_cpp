@@ -240,7 +240,7 @@ namespace imp_mirror {
     for (int i = 0; i < invoke_arguments.size(); ++i) {
       auto &first = parameters[i]->get_node();
       auto &second = *invoke_arguments[i]->get_node();
-auto k = first.get_profession_reference().get_element_type();
+      auto k = first.get_profession_reference().get_element_type();
       if (first.get_profession_reference().get_element_type() == overworld::Element_Type::parameter
           && first.get_function() != second.get_function()
           && first.get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
@@ -675,10 +675,8 @@ auto k = first.get_profession_reference().get_element_type();
     auto external = output_dungeon->get_enchantments().get_enchantment(enchantment_library.get_external());
 
     if (external) {
-      auto enchantment = dynamic_cast<overworld::Enchantment_With_Arguments *>(external);
-      if (enchantment) {
-        auto literal_string = dynamic_cast<overworld::Literal_String *>(enchantment->get_arguments()[0].get());
-        auto value = literal_string->get_value();
+      auto value = external->get_argument_string(1);
+      if (value != "") {
         output_dungeon->set_file(std::unique_ptr<overworld::File>(new overworld::External_File(value)));
       }
     }

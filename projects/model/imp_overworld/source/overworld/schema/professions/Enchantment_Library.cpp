@@ -53,7 +53,7 @@ namespace overworld {
     return nullptr;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_external() {
+  Enchantment_With_Parameters &Enchantment_Library::get_external() {
     return complex_enchanements->external;
   }
 

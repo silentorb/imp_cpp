@@ -2,8 +2,8 @@
 stl {
 
   @value
-  @extern("vector")
-  vector<T> {
+  @extern("vector", "vector")
+  array<T> {
     push_back(item:T)
   }
 }

@@ -41,3 +41,10 @@ TEST(Main_Test, game) {
 //TEST(Main_Test, fail_generic_dungeon) {
 //  compile("fail_generic_dungeon");
 //}
+
+TEST(Main_Test, iteration) {
+  compile("iteration");
+  Comparison test("iteration");
+  test.compare("Goblikin.h");
+//  test.compare("Goblikin.cpp");
+}

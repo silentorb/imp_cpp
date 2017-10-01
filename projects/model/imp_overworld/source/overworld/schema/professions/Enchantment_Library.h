@@ -4,6 +4,7 @@
 #include "Profession.h"
 #include <memory>
 #include <unordered_map>
+#include <overworld/schema/Enchantment_With_Arguments.h>
 
 namespace overworld {
 
@@ -14,7 +15,7 @@ namespace overworld {
       Enchantment_Library();
 
       Enchantment *find_enchantment(const std::string &name);
-      static Simple_Enchantment &get_external();
+      static Enchantment_With_Parameters &get_external();
       static Simple_Enchantment &get_static();
       static Simple_Enchantment &get_public();
       static Simple_Enchantment &get_private();

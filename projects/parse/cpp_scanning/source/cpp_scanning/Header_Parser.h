@@ -2,6 +2,7 @@
 
 #include <runic/common/Stream.h>
 #include <runic_cpp/Cpp_Lexicon.h>
+#include <underworld/schema/Function.h>
 #include "Dungeon_Map.h"
 #include "Context.h"
 #include "Parser_Lookup.h"
@@ -21,7 +22,7 @@ namespace cpp_scanning {
       void skip_to(const runic::Whisper &whisper);
       void skip_line();
       void skip_scope();
-      void process_function_parameters(underworld::Function &function, Context &context);
+      void process_function_parameters(underworld::Virtual_Function &function, Context &context);
       void process_variant_arguments(underworld::Dungeon_Variant &variant, Context &context);
       bool process_class_or_namespace_member(Context &context);
       underworld::Profession_Owner process_profession_token(Context &context);

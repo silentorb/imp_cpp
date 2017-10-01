@@ -71,9 +71,9 @@ namespace imp_rendering {
     std::string render_dungeon_definition_header(const overworld::Dungeon &dungeon) {
       string ancestors = "";
       if (dungeon.get_base_dungeon()) {
-        ancestors = " : public " + dungeon.get_base_dungeon()->get_cpp_name();
+        ancestors = " : public " + get_cpp_name(*dungeon.get_base_dungeon());
       }
-      return "class " + dungeon.get_name() + ancestors;
+      return "class " + get_cpp_name(dungeon.get_name()) + ancestors;
     }
 
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {

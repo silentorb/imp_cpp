@@ -1,6 +1,6 @@
 
 World {
-  creatures: stl.vector
+  creatures: stl.array
 
 @public:
   add_creature(creature) {

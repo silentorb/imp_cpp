@@ -12,6 +12,7 @@ namespace overworld {
       virtual const std::string get_name() const = 0;
       virtual const Enchantment *get_type() const = 0;
       virtual ~Enchantment() = default;
+      virtual const std::string get_argument_string(int index) const = 0;
   };
 
   class Simple_Enchantment : public Enchantment {
@@ -28,6 +29,10 @@ namespace overworld {
 
       const Enchantment *get_type() const override {
         return this;
+      }
+
+      const std::string get_argument_string(int index) const override {
+        return "";
       }
   };
 
@@ -46,6 +51,10 @@ namespace overworld {
 
       const std::string get_name() const override {
         return parent.get_name();
+      }
+
+      const std::string get_argument_string(int index) const override {
+        return "";
       }
   };
 
