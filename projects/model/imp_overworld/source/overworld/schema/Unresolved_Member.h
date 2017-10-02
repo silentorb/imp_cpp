@@ -12,11 +12,11 @@
 //      Expression &first;
 //      Expression *second = nullptr;  // Needs to be assigned after construction
 //      const std::string member_name;
-//      const source_mapping::Source_Point source_point;
+//      const source_mapping::Source_Range source_point;
 //
 //  public:
 //      Unresolved_Member(Expression &first, const std::string &member_name,
-//                        const source_mapping::Source_Point &source_point) :
+//                        const source_mapping::Source_Range &source_point) :
 //        first(first), member_name(member_name), node(*this,), source_point(source_point) {}
 //
 //      virtual ~Unresolved_Member() {}
@@ -49,7 +49,7 @@
 //        throw std::runtime_error("Not yet implemented.");
 //      }
 //
-//      const source_mapping::Source_Point &get_source_point() override {
+//      const source_mapping::Source_Range &get_source_point() override {
 //        return source_point;
 //      }
 //  };

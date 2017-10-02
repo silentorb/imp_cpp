@@ -21,13 +21,15 @@ namespace source_mapping {
       }
   };
 
+  using Measurement = unsigned long;
+  
   class Source_Point {
       const Source_File *source_file;
-      unsigned long row;
-      unsigned long column;
+      Measurement row;
+      Measurement column;
 
   public:
-      Source_Point(const Source_File &source_file, unsigned long row, unsigned long column) :
+      Source_Point(const Source_File &source_file, Measurement row, Measurement column) :
         source_file(&source_file), column(column), row(row) {
         int k = 0;
       }
@@ -38,11 +40,11 @@ namespace source_mapping {
         return source_file;
       }
 
-      unsigned long get_column() const {
+      Measurement get_column() const {
         return column;
       }
 
-      unsigned long get_row() const {
+      Measurement get_row() const {
         return row;
       }
 
@@ -52,5 +54,28 @@ namespace source_mapping {
       }
   };
 
+  class Source_Range {
+      Source_Point start;
+      Source_Point end;
+
+  public:
+      Source_Range() {}
+
+      Source_Range(const Source_Point &start, const Source_Point &end) : start(start), end(end) {}
+      Source_Range(const Source_Point &start) : start(start), end(start) {}
+
+      const Source_Point &get_start() const {
+        return start;
+      }
+
+      const Source_Point &get_end() const {
+        return end;
+      }
+
+      const Source_File *get_source_file() const {
+        return start.get_source_file();
+      }
+
+  };
   using Source_File_Storage = std::vector<std::unique_ptr<source_mapping::Source_File>>;
 }

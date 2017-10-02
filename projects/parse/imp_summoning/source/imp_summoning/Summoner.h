@@ -10,7 +10,7 @@ namespace imp_summoning {
 
   struct Identifier {
       std::string name;
-      source_mapping::Source_Point source_point;
+      source_mapping::Source_Range source_point;
       underworld::Enchantment_Array enchantments;
   };
 

@@ -7,18 +7,20 @@
 
 namespace overworld {
 
-  class Instantiation : public Common_Expression, public virtual Profession_Reference {
+  class Instantiation : public Common_Expression {
       Profession *profession;
       std::map<Minion *, Expression_Owner> dictionary;
-      const source_mapping::Source_Point source_point;
-      Profession_Node <Instantiation> node;
+      Element_Reference_Node <Instantiation> node;
 
   public:
-      Instantiation(Profession &profession, const source_mapping::Source_Point &source_point, Dungeon_Interface *dungeon,
-                    Function_Interface *function) :
-        profession(&profession), source_point(source_point), node(*this, profession, dungeon, function) {}
+      Instantiation(Profession &profession, const source_mapping::Source_Range &source_point,
+                    Dungeon_Interface *dungeon, Function_Interface *function,
+                    const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),
+        profession(&profession),
+        node(element, dungeon, function) {}
 
-      virtual ~Instantiation() {}
+      virtual ~Instantiation() = default;
 
       Type get_type() const override {
         return Type::instantiation;
@@ -36,10 +38,6 @@ namespace overworld {
         return *profession;
       }
 
-      const source_mapping::Source_Point &get_source_point() const {
-        return source_point;
-      }
-
       Node *get_node() override {
         return &node;
       }
@@ -54,10 +52,6 @@ namespace overworld {
 
       const std::string get_name() const override {
         return "new " + profession->get_name();
-      }
-
-      Element_Type get_element_type() const override {
-        return Element_Type::instantiation;
       }
   };
 }

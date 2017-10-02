@@ -7,10 +7,10 @@
 namespace underworld {
 
   class Literal : public virtual Common_Expression {
-      source_mapping::Source_Point source_point;
+      source_mapping::Source_Range source_point;
 
   public:
-      Literal(const source_mapping::Source_Point &source_point) : source_point(source_point) {}
+      Literal(const source_mapping::Source_Range &source_point) : source_point(source_point) {}
 
       virtual ~Literal() {
 
@@ -23,7 +23,7 @@ namespace underworld {
       virtual Primitive_Type get_primitive_type() const = 0;
 
 
-      const source_mapping::Source_Point get_source_point() const override {
+      const source_mapping::Source_Range get_source_point() const override {
         return source_point;
       }
   };
@@ -33,7 +33,7 @@ namespace underworld {
       T value;
 
   public:
-      Literal_Implementation(T value, const source_mapping::Source_Point &source) :
+      Literal_Implementation(T value, const source_mapping::Source_Range &source) :
         value(value), Literal(source) {}
 
       virtual ~Literal_Implementation() {
@@ -47,7 +47,7 @@ namespace underworld {
 
   class Literal_Int : public Literal_Implementation<int> {
   public:
-      Literal_Int(int value, const source_mapping::Source_Point &source) :
+      Literal_Int(int value, const source_mapping::Source_Range &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
@@ -57,7 +57,7 @@ namespace underworld {
 
   class Literal_String : public Literal_Implementation<const std::string> {
   public:
-      Literal_String(const std::string &value, const source_mapping::Source_Point &source) :
+      Literal_String(const std::string &value, const source_mapping::Source_Range &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {
@@ -67,7 +67,7 @@ namespace underworld {
 
   class Literal_Bool : public Literal_Implementation<bool> {
   public:
-      Literal_Bool(const bool &value, const source_mapping::Source_Point &source) :
+      Literal_Bool(const bool &value, const source_mapping::Source_Range &source) :
         Literal_Implementation(value, source) {}
 
       Primitive_Type get_primitive_type() const override {

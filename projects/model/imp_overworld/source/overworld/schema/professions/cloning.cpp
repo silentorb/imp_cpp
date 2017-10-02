@@ -11,7 +11,7 @@ namespace overworld {
       }
 
       static Node_Copy *create_node(Node &other, Dungeon_Variant &variant) {
-        return new Node_Copy(other, other.get_profession(), &variant, nullptr);
+        return new Node_Copy(other, other.get_element().get_profession(), &variant, nullptr);
       }
   };
 
@@ -21,7 +21,7 @@ namespace overworld {
       }
 
       static Node_Copy *create_node(Node &other, Function_Variant &variant) {
-        return new Node_Copy(other, other.get_profession(), &variant.get_dungeon(), &variant);
+        return new Node_Copy(other, other.get_element().get_profession(), &variant.get_dungeon(), &variant);
       }
   };
 

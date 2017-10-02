@@ -22,7 +22,7 @@ namespace cpp_stl {
     auto complex_enchantment = new overworld::Enchantment_With_Arguments(external);
     dungeon.get_enchantments().add_enchantment(overworld::Enchantment_Owner(complex_enchantment));
     complex_enchantment->add_argument(
-      Expression_Owner(new Literal_String(name, nullptr, source_mapping::Source_Point(), nullptr)));
+      Expression_Owner(new Literal_String(name, nullptr, source_mapping::Source_Range(), nullptr)));
   }
 
   void Standard_Library::initialize_overworld(overworld::Scope &parent,
@@ -33,7 +33,7 @@ namespace cpp_stl {
     set_external_name(*overworld_dungeon, "std");
     overworld_dungeon->get_enchantments().add_enchantment(profession_library.get_enchantment_library().get_external());
 
-    source_mapping::Source_Point source_point(standard_library_file, 0, 0);
+//    source_mapping::Source_Range source_point(standard_library_file, 0, 0);
 
     unique_pointer = &overworld_dungeon->add_dungeon(std::unique_ptr<Dungeon>(
       new Dungeon("unique_ptr", *overworld_dungeon)

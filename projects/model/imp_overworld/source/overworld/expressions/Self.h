@@ -10,11 +10,10 @@ namespace overworld {
       Dungeon &dungeon;
 
   public:
-      Self(Dungeon &dungeon) : dungeon(dungeon) {}
+      Self(Dungeon &dungeon, const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),                                                                                 dungeon(dungeon) {}
 
-      virtual ~Self() {
-
-      }
+      ~Self() override = default;
 
       Type get_type() const override {
         return Type::self;

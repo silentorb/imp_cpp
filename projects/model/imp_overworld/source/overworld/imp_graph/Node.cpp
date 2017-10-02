@@ -4,9 +4,9 @@
 namespace overworld {
 
   std::string Node::get_debug_string() const {
-    auto &profession_reference = get_profession_reference();
+    auto &profession_reference = get_element();
     auto &profession = profession_reference.get_profession();
-    auto &source_point = profession_reference.get_source_point();
+    auto &source_point = profession_reference.get_source_point().get_start();
 
     std::string result = "";
     if (source_point.get_source_file())

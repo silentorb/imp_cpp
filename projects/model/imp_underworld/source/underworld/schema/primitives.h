@@ -18,10 +18,10 @@ namespace underworld {
 
   class Primitive : public Profession {
       Primitive_Type primitive_type;
-      const source_mapping::Source_Point source_point;
+      const source_mapping::Source_Range source_point;
 
   public:
-      Primitive(Primitive_Type primitive_type, const source_mapping::Source_Point &source_point) :
+      Primitive(Primitive_Type primitive_type, const source_mapping::Source_Range &source_point) :
         primitive_type(primitive_type), source_point(source_point) {}
 
       Profession_Type get_type() const override {
@@ -36,7 +36,7 @@ namespace underworld {
         return "primitive";
       }
 
-      const source_mapping::Source_Point get_source_point() const override {
+      const source_mapping::Source_Range get_source_point() const override {
         return source_point;
       }
   };
@@ -56,7 +56,7 @@ namespace underworld {
         return profession->get_name();
       }
 
-      const source_mapping::Source_Point get_source_point() const override {
+      const source_mapping::Source_Range get_source_point() const override {
         return profession->get_source_point();
       }
 

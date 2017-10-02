@@ -7,11 +7,11 @@
 namespace underworld {
 
   class Member {
-      source_mapping::Source_Point source_point;
+      source_mapping::Source_Range source_point;
       Enchantment_Array enchantments;
 
   public:
-      Member(const source_mapping::Source_Point &source_point) : source_point(source_point) {}
+      Member(const source_mapping::Source_Range &source_point) : source_point(source_point) {}
 
       virtual ~Member() {
 
@@ -27,7 +27,7 @@ namespace underworld {
       virtual const std::string get_name() const = 0;
       virtual const Profession * get_profession() const = 0;
 
-      const source_mapping::Source_Point &get_source_point() const {
+      const source_mapping::Source_Range &get_source_point() const {
         return source_point;
       }
 

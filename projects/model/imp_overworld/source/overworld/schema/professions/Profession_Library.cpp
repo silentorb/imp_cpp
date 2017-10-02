@@ -62,16 +62,16 @@ namespace overworld {
   }
 
   void Profession_Library::assign(Node &node, overworld::Profession &profession) {
-    auto &previous = node.get_profession();
+    auto &previous = node.get_element().get_profession();
     if (previous.get_type() == Profession_Type::reference) {
       auto &reference = *dynamic_cast<Reference *>(&previous);
       auto &new_profession = reference.is_pointer()
                              ? (Reference &) get_pointer(profession.get_base())
                              : get_reference(profession.get_base());
-      node.set_profession(new_profession);
+      node.get_element().set_profession(new_profession);
     }
     else {
-      node.set_profession(profession);
+      node.get_element().set_profession(profession);
     }
   }
 

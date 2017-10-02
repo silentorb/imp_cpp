@@ -11,7 +11,9 @@ namespace overworld {
       Operator_Type operator_type;
 
   public:
-      Operator(Operator_Type operator_type) : operator_type(operator_type) {}
+      Operator(Operator_Type operator_type, const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),
+        operator_type(operator_type) {}
 
       virtual ~Operator() {
 

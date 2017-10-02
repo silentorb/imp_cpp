@@ -7,7 +7,7 @@ namespace underworld {
 
   class Dungeon : public Scope, public virtual Profession {
       const std::string name;
-      const source_mapping::Source_Point source_point;
+      const source_mapping::Source_Range source_point;
       bool _is_external = false;
       std::vector<Profession_Owner> contracts;
       std::vector<std::string> generic_parameters;
@@ -20,7 +20,7 @@ namespace underworld {
       Dungeon(const std::string &name, Scope *parent) :
         name(name), Scope(parent) {}
 
-      Dungeon(const std::string &name, Scope *parent, const source_mapping::Source_Point &source_point) :
+      Dungeon(const std::string &name, Scope *parent, const source_mapping::Source_Range &source_point) :
         name(name), Scope(parent), source_point(source_point) {}
 
       virtual ~Dungeon();
@@ -37,7 +37,7 @@ namespace underworld {
         return *this;
       }
 
-      const source_mapping::Source_Point get_source_point() const override {
+      const source_mapping::Source_Range get_source_point() const override {
         return source_point;
       }
 

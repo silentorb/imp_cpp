@@ -9,7 +9,7 @@ namespace underworld {
 
   class Parameter : public Minion {
   public:
-      Parameter(const std::string &name, Profession_Owner profession, const source_mapping::Source_Point &source_point)
+      Parameter(const std::string &name, Profession_Owner profession, const source_mapping::Source_Range &source_point)
         : Minion(name, std::move(profession), source_point) {}
 
       bool is_parameter() const override {
@@ -25,11 +25,11 @@ namespace underworld {
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
-               const source_mapping::Source_Point &source,
+               const source_mapping::Source_Range &source,
                Scope &parent) :
         name(name), return_type(std::move(return_type)), Member(source) {}
 
-      Function(const std::string &name, const source_mapping::Source_Point &source,
+      Function(const std::string &name, const source_mapping::Source_Range &source,
                Scope &parent) :
         name(name), Member(source) {}
 
@@ -64,10 +64,10 @@ namespace underworld {
 
   public:
       Virtual_Function(const std::string &name, Profession_Owner return_type,
-                       const source_mapping::Source_Point &source, Scope &parent) :
+                       const source_mapping::Source_Range &source, Scope &parent) :
         Function(name, std::move(return_type), source, parent) {}
 
-      Virtual_Function(const std::string &name, const source_mapping::Source_Point &source, Scope &parent) :
+      Virtual_Function(const std::string &name, const source_mapping::Source_Range &source, Scope &parent) :
         Function(name, source, parent) {}
 
       virtual void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
@@ -81,7 +81,7 @@ namespace underworld {
       }
 
       virtual Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                                       const source_mapping::Source_Point &source);
+                                       const source_mapping::Source_Range &source);
   };
 
   class Function_With_Block : public Function {
@@ -90,11 +90,11 @@ namespace underworld {
 
   public:
       Function_With_Block(const std::string &name, Profession_Owner return_type,
-                          const source_mapping::Source_Point &source,
+                          const source_mapping::Source_Range &source,
                           Scope &parent) :
         Function(name, std::move(return_type), source, parent), block(parent) {}
 
-      Function_With_Block(const std::string &name, const source_mapping::Source_Point &source,
+      Function_With_Block(const std::string &name, const source_mapping::Source_Range &source,
                           Scope &parent) :
         Function(name, source, parent), block(parent) {}
 
@@ -110,7 +110,7 @@ namespace underworld {
       }
 
       Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                               const source_mapping::Source_Point &source);
+                               const source_mapping::Source_Range &source);
 
       const std::vector<Parameter *> &get_parameters() const {
         return parameters;

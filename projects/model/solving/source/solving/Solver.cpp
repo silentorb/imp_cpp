@@ -2,23 +2,11 @@
 #include <algorithm>
 #include <overworld/schema/Function.h>
 #include <overworld/schema/professions/cloning.h>
-
-#if DEBUG_SOLVER > 0
-
-#include <iostream>
-
-#endif
+#include <c++/iostream>
 
 using namespace overworld;
 
 namespace solving {
-
-  void log_node(overworld::Node &node) {
-#if DEBUG_SOLVER > 0
-    std::cout << node.get_debug_string();
-    std::cout << std::endl;
-#endif
-  }
 
   void Solver::add_node(Node &node) {
     if (!node.is_resolved())
@@ -387,46 +375,11 @@ namespace solving {
                       process_conflicts();
 
       if (progress == 0) {
-        if (has_unresolved_nodes() || conflict_manager.conflicts.size() > 0)
+        if (has_unresolved_nodes() || !conflict_manager.conflicts.empty())
           return false;
       }
     }
 
     return true;
-  }
-
-  unsigned int get_row(overworld::Node &node) {
-    return node.get_profession_reference().get_source_point().get_row();
-  }
-
-  void insert_node(std::vector<overworld::Node *> &nodes, overworld::Node *node) {
-    for (auto i = nodes.begin(); i != nodes.end(); i++) {
-      if (get_row(*node) < get_row(**i)) {
-        nodes.insert(i, node);
-        return;
-      }
-    }
-
-    nodes.push_back(node);
-  }
-
-  void Solver::log_nodes() {
-#if DEBUG_SOLVER > 0
-    std::cout << std::endl << "Logging nodes:" << std::endl;
-
-    std::vector<overworld::Node *> nodes;
-    for (auto first: graph.get_nodes()) {
-      insert_node(nodes, first);
-    }
-    for (auto &node : nodes) {
-      log_node(*node);
-      for (auto &other : node->get_neighbors()) {
-
-        std::cout << " * ";
-
-        log_node(*other);
-      }
-    }
-#endif
   }
 }

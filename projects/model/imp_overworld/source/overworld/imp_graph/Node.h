@@ -6,6 +6,7 @@
 #include "Connection.h"
 #include <overworld/schema/professions/Profession_Reference.h>
 #include <overworld/schema/Dungeon_Interface.h>
+#include <overworld/schema/Element.h>
 
 namespace overworld {
 
@@ -16,23 +17,16 @@ namespace overworld {
       bool changed = false;
       Dungeon_Interface *dungeon = nullptr;
       Function_Interface *function = nullptr;
+      Profession *original_profession;
 
   public:
-      Node(Dungeon_Interface *dungeon, Function_Interface *function) :
-        dungeon(dungeon), function(function) {}
+      Node(Profession &original_profession, Dungeon_Interface *dungeon, Function_Interface *function) :
+        original_profession(&original_profession), dungeon(dungeon), function(function) {}
 
       virtual ~Node() {}
 
-      virtual Profession_Reference &get_profession_reference() = 0;
-      virtual const Profession_Reference &get_profession_reference() const = 0;
-
-      virtual void set_profession(Profession &value) {
-        get_profession_reference().set_profession(value);
-      }
-
-      Profession &get_profession() {
-        return get_profession_reference().get_profession();
-      }
+      virtual Element &get_element() = 0;
+      virtual const Element &get_element() const = 0;
 
       virtual bool is_resolved() const {
         return resolved;
@@ -59,27 +53,24 @@ namespace overworld {
       Function_Interface *get_function() const {
         return function;
       }
-//      virtual const std::string get_name() const = 0;
+
+//      void set_original_profession(Profession &value) {
+//        original_profession = &value;
+//      }
+//
+//      Profession &get_original_profession() {
+//        return *original_profession;
+//      }
   };
 
-  template<typename T>
-  class Profession_Node : public Node {
+  class Element_Reference_Node : public Node {
   protected:
-      T &element;
-      Profession *original_profession;
+      Element &element;
 
   public:
-      Profession_Node(T &element, Profession &original_profession, Dungeon_Interface *dungeon,
-                      Function_Interface *function) :
-        Node(dungeon, function), element(element), original_profession(&original_profession) {}
-
-      Profession_Reference &get_profession_reference() override {
-        return element;
-      }
-
-      const Profession_Reference &get_profession_reference() const override {
-        return element;
-      }
+      Element_Reference_Node(Element &element, Dungeon_Interface *dungeon,
+                             Function_Interface *function) :
+        Node(element.get_profession(), dungeon, function), element(element) {}
 
       bool is_resolved() const override {
         auto &profession = element.get_profession();
@@ -87,60 +78,50 @@ namespace overworld {
                && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter;
       }
 
-      void set_original_profession(Profession &value) {
-        original_profession = &value;
+      Element &get_element() override {
+        return element;
       }
 
-      Profession &get_original_profession() {
-        return *original_profession;
+      const Element &get_element() const override {
+        return element;
       }
-//      const std::string get_name() const override {
-//        return element.get_name();
-//      }
+
   };
 
-  class Node_Copy : public Node, public virtual Profession_Reference {
+  class Element_Owner_Node : public Node {
+  protected:
+      Element_Owner element;
+
+  public:
+      Element_Owner_Node(Element_Owner element, Dungeon_Interface *dungeon,
+                         Function_Interface *function) :
+        Node(element->get_profession(), dungeon, function),
+        element(std::move((element))) {}
+
+  };
+
+  class Node_Copy : public Node {
       Node &original;
       Profession *profession;
 
   public:
       Node_Copy(Node &original, Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function) :
-        Node(dungeon, function), original(original), profession(&profession) {}
-
-      Profession_Reference &get_profession_reference() override {
-        return *this;
-      }
-
-      const Profession_Reference &get_profession_reference() const override {
-        return *this;
-      }
+        Node(profession, dungeon, function), original(original), profession(&profession) {}
 
       bool is_resolved() const override {
         return profession->get_base().get_type() != overworld::Profession_Type::unknown;
       }
 
-      Profession &get_profession() override {
-        return *profession;
-      }
-
-      const Profession &get_profession() const override {
-        return *profession;
-      }
-
-      void set_profession(Profession &value) override {
-        profession = &value;
-      }
-
-      const source_mapping::Source_Point &get_source_point() const override {
-        return original.get_profession_reference().get_source_point();
-      }
-
-      const std::string get_name() const override {
-        return original.get_profession_reference().get_name();
+      Element &get_element() override {
+        return original.get_element();
       }
 
       Node &get_original() const {
         return original;
+      }
+
+      const Element &get_element() const override {
+        return original.get_element();
       }
   };
 

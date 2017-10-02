@@ -11,12 +11,12 @@ namespace overworld {
         return *method;
     }
 
-    return create_function(get_name(), *this, source_mapping::Source_Point());
+    return create_function(get_name(), *this, source_mapping::Source_Range());
 //    throw std::runtime_error("Could not find constructor.");
   }
 
   Function &Dungeon::create_function(const std::string &name, Profession &profession,
-                                     const source_mapping::Source_Point &source_point) {
+                                     const source_mapping::Source_Range &source_point) {
     auto function = new Function_With_Block(name, profession, *this, *this, source_point);
     functions.push_back(unique_ptr<Function>(function));
 //    if (!function->is_constructor())
@@ -34,8 +34,8 @@ namespace overworld {
       return true;
 
     for (auto neighbor : node.get_neighbors()) {
-      auto &element = neighbor->get_profession_reference();
-      if (element.get_element_type() == Element_Type::instantiation)
+      auto &element = neighbor->get_element();
+      if (element.get_type() == Element_Type::instantiation)
         return true;
     }
     return false;

@@ -17,12 +17,11 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Dungeon_Interface, public virtual Profession_Reference {
+  class Dungeon : public Scope, public virtual Dungeon_Interface {
+      Common_Element element;
       File *header_file = nullptr;
       std::unique_ptr<File> header_file_owner;
-      Profession_Node<Dungeon> node;
-      const std::string name;
-      const source_mapping::Source_Point source_point;
+      Element_Reference_Node node;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
@@ -32,20 +31,23 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        name(name), Scope(&parent), node(*this, *this, this, nullptr) {}
+        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
+        Scope(&parent), node(element, this, nullptr) {}
 
-      Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Point source_point) :
-        name(name), Scope(&parent), node(*this, *this, this, nullptr), source_point(source_point) {}
+      Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
+        element(Element_Type::other, name, *this, source_point),
+        Scope(&parent), node(element, this, nullptr) {}
 
       Dungeon(const std::string &name) :
-        name(name), Scope(nullptr), node(*this, *this, this, nullptr) {}
+        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
+        Scope(nullptr), node(element, this, nullptr) {}
 
       Dungeon(const Dungeon &) = delete;
 
       virtual ~Dungeon() {}
 
       const std::string get_name() const {
-        return name;
+        return element.get_name();
       }
 
       bool is_class() const;
@@ -83,24 +85,8 @@ namespace overworld {
         return node;
       }
 
-      void set_profession(Profession &value) override {
-
-      }
-
-      Profession &get_profession() override {
-        return *this;
-      }
-
-      const Profession &get_profession() const override {
-        return *this;
-      }
-
       Dungeon &get_dungeon() override {
         return *this;
-      }
-
-      const source_mapping::Source_Point &get_source_point() const override {
-        return source_point;
       }
 
       Function &get_or_create_constructor();
@@ -175,7 +161,7 @@ namespace overworld {
       }
 
       Function &create_function(const std::string &name, Profession &profession,
-                                const source_mapping::Source_Point &source_point = source_mapping::Source_Point());
+                                const source_mapping::Source_Range &source_point = source_mapping::Source_Range());
 
       Scope_Type get_scope_type() const override {
         return Scope_Type::dungeon;
@@ -219,20 +205,6 @@ namespace overworld {
         return *this;
       }
   };
-
-//  class Cpp_Dungeon : public Dungeon {
-//      std::string cpp_name;
-//
-//  public:
-//      Cpp_Dungeon(const std::string &name, const std::string &cpp_name, Scope &parent) :
-//        Dungeon(name, parent), cpp_name(cpp_name) {}
-//
-//      virtual ~Cpp_Dungeon() {}
-//
-//      const std::string get_cpp_name() const override {
-//        return cpp_name;
-//      }
-//  };
 
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
 

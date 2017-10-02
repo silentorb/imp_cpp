@@ -13,6 +13,7 @@ namespace solving {
   using Connection = overworld::Connection;
 
   using Progress = unsigned int;
+  using Graph = graphing::Reference_Graph<Node, Connection>;
 
   struct Conflict {
       Connection *connection;
@@ -36,7 +37,7 @@ namespace solving {
   };
 
   class Solver {
-      graphing::Reference_Graph<Node, Connection> &graph;
+      Graph &graph;
       std::vector<Node *> unresolved;
       std::vector<Node *> changed_buffers[2];
       std::vector<Node *> *changed = &changed_buffers[0];
@@ -89,7 +90,7 @@ namespace solving {
                                                               overworld::Generic_Parameter &parameter);
 
   public:
-      Solver(graphing::Reference_Graph<Node, Connection> &graph, overworld::Profession_Library &profession_library) :
+      Solver(Graph &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library) {
         graph.set_on_add([this](Node &node) { on_add(node); });
         graph.set_on_remove([this](Node &node) { on_remove(node); });
@@ -106,8 +107,6 @@ namespace solving {
         update_unresolved();
         return unresolved;
       }
-
-      void log_nodes();
 
       const std::list<Conflict> &get_conflicts() const {
         return conflict_manager.conflicts;

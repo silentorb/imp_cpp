@@ -9,30 +9,34 @@ namespace overworld {
   class Literal : public Common_Expression {
 
   public:
+      Literal(const source_mapping::Source_Range &source_range) : Common_Expression(source_range) {}
+
       Type get_type() const override {
         return Type::literal;
       }
 
       virtual Primitive_Type get_primitive_type() const = 0;
 
-      Profession &get_profession() const {
+      Profession &get_profession() override {
+        return Profession_Library::get_primitive(get_primitive_type());
+      }
+
+      const Profession &get_profession() const override {
         return Profession_Library::get_primitive(get_primitive_type());
       }
   };
 
   template<typename T, typename Static_Functions>
-  class Literal_Implementation : public virtual Literal, public virtual Profession_Reference {
+  class Literal_Implementation : public Literal {
       T value;
-      Profession_Node <Literal_Implementation> node;
-//      const underworld::Literal &source;
-      const source_mapping::Source_Point source_point;
+      Element_Reference_Node node;
 
   public:
-      Literal_Implementation(T value, Dungeon_Interface *dungeon, const source_mapping::Source_Point &source_point,
-      Function_Interface*function) :
+      Literal_Implementation(T value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_range,
+                             Function_Interface *function) :
+        Literal(source_range),
         value(value),
-        node(*this, Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), dungeon, function),
-        source_point(source_point) {
+        node(element, dungeon, function) {
         node.set_resolved(true);
       }
 
@@ -40,9 +44,7 @@ namespace overworld {
         return Static_Functions::_get_primitive_type();
       }
 
-      virtual ~Literal_Implementation() {
-
-      }
+      ~Literal_Implementation() override {}
 
       const T &get_value() const {
         return value;
@@ -52,29 +54,16 @@ namespace overworld {
         return &node;
       }
 
-      Profession &get_profession() override {
-        return Literal::get_profession();
-      }
-
-      const Profession &get_profession() const override {
-        return Literal::get_profession();
-      }
-
       void set_profession(Profession &value) override {
         throw std::runtime_error("Not supported.");
       }
-
-      const source_mapping::Source_Point &get_source_point() const override {
-        return source_point;
-      }
-
   };
 
   class Literal_Int : public Literal_Implementation<int, Literal_Int> {
 
   public:
-      Literal_Int(int value, Dungeon_Interface *dungeon, const source_mapping::Source_Point &source_point,
-                  Function_Interface*function) :
+      Literal_Int(int value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_point,
+                  Function_Interface *function) :
         Literal_Implementation(value, dungeon, source_point, function) {}
 
       static Primitive_Type _get_primitive_type() {
@@ -89,7 +78,7 @@ namespace overworld {
   class Literal_String : public Literal_Implementation<const std::string, Literal_String> {
   public:
       Literal_String(const std::string &value, Dungeon_Interface *dungeon,
-                     const source_mapping::Source_Point &source_point,Function_Interface*function)
+                     const source_mapping::Source_Range &source_point, Function_Interface *function)
         :
         Literal_Implementation(value, dungeon, source_point, function) {}
 
@@ -104,8 +93,8 @@ namespace overworld {
 
   class Literal_Bool : public Literal_Implementation<bool, Literal_Bool> {
   public:
-      Literal_Bool(const bool &value, Dungeon_Interface *dungeon, const source_mapping::Source_Point &source_point,
-                   Function_Interface*function) :
+      Literal_Bool(const bool &value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_point,
+                   Function_Interface *function) :
         Literal_Implementation(value, dungeon, source_point, function) {}
 
       static Primitive_Type _get_primitive_type() {

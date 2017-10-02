@@ -14,18 +14,16 @@ namespace overworld {
 //      Function_Signature &signature;
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
-      const underworld::Invoke &source;
+//      const underworld::Invoke &source;
       std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
-             const underworld::Invoke &source)
-        : expression(std::move(expression)), arguments(std::move(arguments)),
-          source(source) {}
+             const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),
+        expression(std::move(expression)), arguments(std::move(arguments)) {}
 
-      virtual ~Invoke() {
-
-      }
+      ~Invoke() override = default;
 
       Type get_type() const override {
         return Type::invoke;

@@ -6,43 +6,41 @@ namespace overworld {
 
   class Profession_Library;
 
-  class Argument_Node : public Profession_Node<Argument_Node>, public Profession_Reference {
-      Profession *profession;
-      source_mapping::Source_Point source_point;
-      Minion &member_container;
+  class Argument_Element : public Common_Element {
+      Minion &member;
       Profession_Library &profession_library;
+      Node &node;
+
+  public:
+      Argument_Element(Minion &member, Profession_Library &profession_library, Node &node) :
+        Common_Element(Element_Type::other, member.get_element().get_name(), member.get_profession(),
+                       source_point),
+        member(member),
+        profession_library(profession_library),
+        node(node) {}
+
+      void set_profession(Profession &value) override;
+
+      Minion &get_member() const {
+        return member;
+      }
+  };
+
+  class Argument_Node : public Element_Reference_Node {
+      Argument_Element element;
 
   public:
       Argument_Node(Profession &original_profession, Minion &member_container,
                     Function_Interface *function, Profession_Library &profession_library,
-                    const source_mapping::Source_Point &source_point) :
-        Profession_Node(*this, original_profession, nullptr, function),
-        profession(&original_profession), member_container(member_container), profession_library(profession_library),
-        source_point(source_point) {}
-
-      Profession &get_profession() override {
-        return *profession;
-      }
-
-      const Profession &get_profession() const override {
-        return *profession;
-      }
-
-      void set_profession(Profession &value) override;
-
-      const source_mapping::Source_Point &get_source_point() const override {
-        return source_point;
-      }
-
-      const std::string get_name() const override {
-        return "argument_node";
-      }
+                    const source_mapping::Source_Range &source_point) :
+        Element_Reference_Node(member_container.get_element(), nullptr, function),
+        element(member_container, profession_library, *this) {}
 
       bool is_resolved() const override {
-        if (profession->get_type() == Profession_Type::generic_parameter)
+        if (element.get_member().get_profession().get_type() == Profession_Type::generic_parameter)
           return false;
 
-        return Profession_Node::is_resolved();
+        return Element_Reference_Node::is_resolved();
       }
   };
 

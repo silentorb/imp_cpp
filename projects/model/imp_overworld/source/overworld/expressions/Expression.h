@@ -38,13 +38,63 @@ namespace overworld {
         throw std::runtime_error("Not implemented.");
       }
 
-      virtual ~Expression() {}
+      virtual ~Expression() = default;
 
+      virtual const std::string get_name() const = 0;
       virtual bool is_statement() const = 0;
+
+      virtual Profession &get_profession() = 0;
+      virtual const Profession &get_profession() const = 0;
+
+      virtual void set_profession(Profession &value) {
+        throw std::runtime_error("Not supported.");
+      }
   };
 
-  class Common_Expression : public virtual Expression {
+  class Expression_Element : public Element {
+      Expression &expression;
+      source_mapping::Source_Range source_range;
+
   public:
+      Expression_Element(Expression &expression, const source_mapping::Source_Range &source_range) :
+        expression(expression), source_range(source_range) {}
+
+      Profession &get_profession() override {
+        return expression.get_profession();
+      }
+
+      const Profession &get_profession() const override {
+        return expression.get_profession();
+      }
+
+      void set_profession(Profession &value) override {
+        expression.set_profession(value);
+      }
+
+      const source_mapping::Source_Range &get_source_point() const override {
+        return source_range;
+      }
+
+      const std::string get_name() const override {
+        return expression.get_name();
+      }
+
+      Element_Type get_type() const override {
+        if (expression.get_type() == Expression::Type::instantiation)
+          return Element_Type::instantiation;
+
+        return Element_Type::other;
+      }
+  };
+
+  class Common_Expression : public Expression {
+  protected:
+      Expression_Element element;
+
+  public:
+      Common_Expression(const source_mapping::Source_Range &source_range) :
+        element(*this, source_range) {}
+
       Expression &get_last() override {
         return *this;
       }
@@ -54,7 +104,7 @@ namespace overworld {
       }
   };
 
-  class Statement : public virtual Expression {
+  class Statement : public Expression {
   public:
       Expression &get_last() override {
         throw std::runtime_error("Not supported");
@@ -64,20 +114,6 @@ namespace overworld {
         return true;
       }
   };
-
-//  class Node_Expression : public virtual Expression {
-//  protected:
-//      Node node;
-//
-//  public:
-//      virtual Node &get_node() override {
-//        return node;
-//      }
-//
-//      bool has_node() const override {
-//        return true;
-//      }
-//  };
 
   using Expression_Owner = std::unique_ptr<Expression>;
   using Expressions = std::vector<Expression_Owner>;

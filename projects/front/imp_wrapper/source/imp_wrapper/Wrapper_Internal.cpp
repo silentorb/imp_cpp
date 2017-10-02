@@ -5,6 +5,7 @@
 #include <imp_mirror/Mirror.h>
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Solver.h>
+#include <solving/Solving_Visualizer.h>
 
 namespace imp_wrapper {
 
@@ -32,40 +33,22 @@ namespace imp_wrapper {
     mirror.reflect_root(underworld_root, overworld_root);
   }
 
-  void log_node(overworld::Node &node) {
-    std::cout << node.get_debug_string();
-    std::cout << std::endl;
-  }
-
-  int get_row(overworld::Node &node) {
-    return node.get_profession_reference().get_source_point().get_row();
-  }
-
-  void insert_node(std::vector<overworld::Node *> &nodes, overworld::Node *node) {
-    for (auto i = nodes.begin(); i != nodes.end(); i++) {
-      if (get_row(*node) < get_row(**i)) {
-        nodes.insert(i, node);
-        return;
-      }
-    }
-
-    nodes.push_back(node);
-  }
-
   void Wrapper_Internal::solve() {
     solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
 
 #if DEBUG_SOLVER > 2
-    solver.log_nodes();
+    solving::log_nodes(graph);
 #endif
 
     auto solved = solver.solve();
 
 #if DEBUG_SOLVER > 1
-    solver.log_nodes();
+    solving::log_nodes(graph);
 #endif
 
+    auto node = solving::find_node(graph,  10, 9);
+    node->is_resolved();
     if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();
       if (unknowns.size() > 0) {

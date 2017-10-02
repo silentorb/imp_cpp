@@ -40,58 +40,40 @@ namespace overworld {
       }
   };
 
-  template<typename T>
-  class Generic_Profession_Reference : public virtual Profession_Reference {
-      T &minion;
+  class Minion;
 
-  public:
-      Generic_Profession_Reference(T &minion) : minion(minion) {}
+//  class Minion_Element : public Common_Element {
+//      Minion &minion;
+//
+//  public:
+//      Minion_Element(Minion &minion, Profession &profession, const source_mapping::Source_Range &source_point)
+//        : Common_Element(Element_Type::minion, minion.get_name(), profession, source_point),
+//          minion(minion) {}
+//
+//      const std::string get_name() const override;
+//
+//      Element_Type get_type() const override {
+//        return Element_Type::minion;
+//      }
+//  };
 
-      Profession &get_profession() override {
-        return minion.get_profession();
-      }
-
-      const Profession &get_profession() const override {
-        return minion.get_profession();
-      }
-
-      void set_profession(Profession &value) override {
-        minion.set_profession(value);
-      }
-
-      const source_mapping::Source_Point &get_source_point() const override {
-        return minion.get_source_point();
-      }
-
-      const std::string get_name() const override {
-        return minion.get_name();
-      }
-
-      Element_Type get_element_type() const override{
-        return minion.get_element_type();
-      }
-  };
-
-  class Minion : public Simple_Minion {
-      Generic_Profession_Reference<Minion> profession_reference;
-      Profession_Node<Generic_Profession_Reference<Minion>> node;
-      const source_mapping::Source_Point source_point;
+  class Minion {
+      Common_Element element;
+      Element_Reference_Node node;
       Enchantment_Container enchantments;
 
   public:
       Minion(const std::string &name, Profession &profession, Dungeon_Interface *dungeon,
-             const source_mapping::Source_Point &source_point, Function_Interface *function) :
-        Simple_Minion(name, profession),
-        profession_reference(*this),
-        node(profession_reference, profession, dungeon, function),
-        source_point(source_point) {}
+             const source_mapping::Source_Range &source_point, Function_Interface *function) :
+        element(Element_Type::minion, name, profession, source_point),
+        node(element, dungeon, function) {}
 
       Minion(const Minion &) = delete;
 
-      virtual ~Minion() {}
+      virtual ~Minion() = default;
 
-      virtual const source_mapping::Source_Point &get_source_point() const {
-        return source_point;
+      Common_Element &get_element() {
+        return element;
       }
 
       Node &get_node() {
@@ -122,6 +104,21 @@ namespace overworld {
         return Element_Type::minion;
       }
 
+      const Profession &get_profession() const {
+        return element.get_profession();
+      }
+
+      Profession &get_profession() {
+        return element.get_profession();
+      }
+
+      virtual void set_profession(Profession &value) {
+        element.set_profession(value);
+      }
+
+      const std::string get_name() const {
+        return element.get_name();
+      }
   };
 
   using Minion_Owner = std::unique_ptr<Minion>;

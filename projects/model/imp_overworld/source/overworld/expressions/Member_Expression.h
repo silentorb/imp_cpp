@@ -10,16 +10,17 @@ namespace overworld {
       Member_Owner owned_member; // Used to optionally own its member
 
   public:
-      Member_Expression(Member &member) : member(&member) {}
+      Member_Expression(Member &member, const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),
+        member(&member) {}
 
-      Member_Expression(Member_Owner &minion) :
+      Member_Expression(Member_Owner &minion, const source_mapping::Source_Range &source_range) :
+        Common_Expression(source_range),
         owned_member(std::move(minion)) {
         member = owned_member.get();
       }
 
-      virtual ~Member_Expression() {
-
-      }
+      virtual ~Member_Expression() = default;
 
       Type get_type() const override {
         return Type::member;

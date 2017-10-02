@@ -192,7 +192,7 @@ namespace imp_mirror {
           auto &argument = arguments[i];
           auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
           auto parameter = new overworld::Parameter("(temp)", argument_profession,
-                                                    source_mapping::Source_Point(), *scope.get_function());
+                                                    source_mapping::Source_Range(), *scope.get_function());
           temporary_member.add_parameter(parameter);
         }
         return signature;
