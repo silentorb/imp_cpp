@@ -639,6 +639,7 @@ namespace imp_mirror {
   void Mirror::reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope) {
     auto output_minion = create_minion(input_minion, output_scope);
     element_map.add(&input_minion, output_minion.get());
+    reflect_enchantments(input_minion.get_enchantments(), output_minion->get_enchantments(), output_scope);
     output_scope.add_minion(std::move(output_minion));
   }
 

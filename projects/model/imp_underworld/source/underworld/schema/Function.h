@@ -4,7 +4,6 @@
 #include <underworld/expressions/Block.h>
 #include "Member.h"
 #include "Scope.h"
-#include "Enchantment.h"
 
 namespace underworld {
 
@@ -23,7 +22,6 @@ namespace underworld {
       Profession_Owner return_type;
       bool _is_static = false;
       std::vector<std::string> generic_parameters;
-      Enchantment_Array enchantments;
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
@@ -59,13 +57,6 @@ namespace underworld {
         return false;
       }
 
-      const Enchantment_Array &get_enchantments() const {
-        return enchantments;
-      }
-
-      void add_enchantment(Enchantment_Owner enchantment) {
-        enchantments.push_back(std::move(enchantment));
-      }
   };
 
   class Virtual_Function : public Function {

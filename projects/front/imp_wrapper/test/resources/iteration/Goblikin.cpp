@@ -1,7 +1,7 @@
 #include <memory>
 #include "Ingredient.h"
-#include "Goblikin.h"
 #include <vector>
+#include "Goblikin.h"
 
 void Goblikin::craft() {
   std::vector<std::unique_ptr<Ingredient>> ingredients;

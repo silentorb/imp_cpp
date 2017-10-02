@@ -24,15 +24,13 @@ namespace imp_summoning {
   }
 
   Minion &Summoner::process_minion(Identifier &identifier, Context &context) {
-//    auto source_point = input.get_source_point();
-//    auto profession = process_optional_profession(context);
-    return context.get_scope().create_minion(identifier.name, identifier.source_point);
+    auto &minion = context.get_scope().create_minion(identifier.name, identifier.source_point);
+    process_member_enchantments(minion, identifier, context);
+    return minion;
   }
 
   void Summoner::process_root_identifier(Identifier &identifier, Context &context) {
     if (input.if_is(lexicon.left_brace)) {
-//      if (input.next().follows_terminator())
-//        throw Syntax_Exception(input.current());
       process_dungeon(identifier, context);
     }
     else {
@@ -141,23 +139,23 @@ namespace imp_summoning {
     while (input.current().is(lexicon.at_sign)) {
       auto name = input.expect_next(lexicon.identifier).get_text();
       input.next();
+      auto enchantment = Enchantment_Owner(new Enchantment(name));
+      if (input.if_is(lexicon.left_paren)) {
+        while (input.current().is_not(lexicon.right_paren)) {
+          enchantment->add_argument(expression_summoner.process_expression(context));
+          if (input.if_is(lexicon.comma))
+            input.next();
+          else
+            break;
+        }
+        input.expect(lexicon.right_paren);
+        input.next();
+      }
       if (input.if_is(lexicon.colon)) {
-
+        context.add_enchantment(enchantment);
       }
       else {
-        auto enchantment = new Enchantment(name);
-        enchantments.push_back(Enchantment_Owner(enchantment));
-        if (input.if_is(lexicon.left_paren)) {
-          while (input.current().is_not(lexicon.right_paren)) {
-            enchantment->add_argument(expression_summoner.process_expression(context));
-            if (input.if_is(lexicon.comma))
-              input.next();
-            else
-              break;
-          }
-          input.expect(lexicon.right_paren);
-          input.next();
-        }
+        enchantments.push_back(enchantment);
       }
     }
   }
@@ -212,21 +210,30 @@ namespace imp_summoning {
     }
   }
 
+  void Summoner::process_member_enchantments(underworld::Member &member, Identifier &identifier, Context &context) {
+    for (auto &enchantment : identifier.enchantments) {
+      member.add_enchantment(std::move(enchantment));
+    }
+    for (auto &enchantment : context.get_enchantments()) {
+      member.add_enchantment(enchantment);
+    }
+  }
+
   Function &Summoner::process_function(Identifier &identifier, Context &context) {
     auto &function = process_function_internal(identifier, context);
-
-    for (auto &enchantment : identifier.enchantments) {
-      function.add_enchantment(std::move(enchantment));
-    }
-
+    process_member_enchantments(function, identifier, context);
     return function;
   }
 
   Dungeon &Summoner::process_dungeon(Identifier &identifier, Context &context) {
     auto dungeon = new Dungeon(identifier.name, &context.get_scope(), identifier.source_point);
     for (auto &enchantment : identifier.enchantments) {
-      dungeon->add_enchantment(std::move(enchantment));
+      dungeon->add_enchantment(enchantment);
     }
+    for (auto &enchantment : context.get_enchantments()) {
+      dungeon->add_enchantment(enchantment);
+    }
+
     auto profession = std::unique_ptr<Profession>(dungeon);
     Child_Context new_context(context, *dungeon);
     context.get_scope().add_profession(std::move(profession), input.get_source_point());

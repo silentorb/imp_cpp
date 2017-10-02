@@ -1,4 +1,3 @@
-#include <string>
 #include <memory>
 #include "Ingredient.h"
 #include <vector>

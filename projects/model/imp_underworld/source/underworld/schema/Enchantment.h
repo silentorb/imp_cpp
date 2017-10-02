@@ -27,6 +27,6 @@ namespace underworld {
       }
   };
 
-  using Enchantment_Owner = std::unique_ptr<Enchantment>;
+  using Enchantment_Owner = std::shared_ptr<Enchantment>;
   using Enchantment_Array = std::vector<Enchantment_Owner>;
 }

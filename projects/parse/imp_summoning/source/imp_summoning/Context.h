@@ -8,6 +8,7 @@ namespace imp_summoning {
   class Context {
   protected:
       underworld::Scope &scope;
+      underworld::Enchantment_Array enchantments;
 
       Context(underworld::Scope &scope) :
         scope(scope) {}
@@ -28,6 +29,14 @@ namespace imp_summoning {
       }
 
       virtual underworld::Member *find_member(const std::string &name) const = 0;
+
+      void add_enchantment(underworld::Enchantment_Owner enchantment) {
+        enchantments.push_back(std::move(enchantment));
+      }
+
+      underworld::Enchantment_Array &get_enchantments() {
+        return enchantments;
+      }
   };
 
   class Root_Context : public Context {

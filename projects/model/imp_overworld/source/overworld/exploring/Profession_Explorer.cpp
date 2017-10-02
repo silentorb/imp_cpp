@@ -7,23 +7,18 @@ namespace overworld {
   namespace exploring {
 
     void Profession_Explorer::explore_expression(const Expression &expression) {
-      if(expression.is_statement())
+      if (expression.is_statement())
+        return;
+
+      if (expression.get_type() == Expression::Type::literal
+          || expression.get_type() == Expression::Type::member
+          || expression.get_type() == Expression::Type::chain)
         return;
 
       auto node = const_cast<Expression *>(&expression)->get_node();
       auto &profession = node->get_profession();
       if (profession.get_type() != Profession_Type::unknown && profession.get_type() != Profession_Type::Void)
         action(profession);
-//      switch (expression.get_type()) {
-//
-//        case Expression::Type::assignment: {
-//          auto &assignment = *dynamic_cast<const Assignment *>(&expression);
-//          explore_expression(*assignment.get_target());
-//          explore_expression(*assignment.get_value());
-//          break;
-//        }
-//
-//      }
     }
 
 //    void Profession_Explorer::explore_profession(const Profession &profession) {

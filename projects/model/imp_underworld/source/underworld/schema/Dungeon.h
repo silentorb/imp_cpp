@@ -57,8 +57,8 @@ namespace underworld {
         return generic_parameters;
       }
 
-      void add_enchantment(Enchantment_Owner enchantment) {
-        enchantments.push_back(std::move((enchantment)));
+      void add_enchantment(Enchantment_Owner &enchantment) {
+        enchantments.push_back(enchantment);
       }
 
       const Enchantment_Array &get_enchantments() const {

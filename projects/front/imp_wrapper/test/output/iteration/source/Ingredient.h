@@ -3,7 +3,8 @@
 #include <string>
 
 class Ingredient {
-    std::string name;
+
 
 public:
+    std::string name;
 };

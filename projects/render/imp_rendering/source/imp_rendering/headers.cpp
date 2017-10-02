@@ -99,11 +99,21 @@ namespace imp_rendering {
       Stroke public_block(new Whitespace_Block("public:"));
 
       for (auto &minion : dungeon.get_minions()) {
-        private_block << render_minion(*minion, dungeon);
+        if (minion->has_enchantment(Enchantment_Library::get_public())) {
+          public_block << render_minion(*minion, dungeon);
+        }
+        else {
+          private_block << render_minion(*minion, dungeon);
+        }
       }
 
       for (auto &function : dungeon.get_functions()) {
-        public_block << render_function_declaration_or_definition(*function);
+        if (function->has_enchantment(Enchantment_Library::get_public())) {
+          public_block << render_function_declaration_or_definition(*function);
+        }
+        else {
+          private_block << render_function_declaration_or_definition(*function);
+        }
       }
 
       block.add(private_block);

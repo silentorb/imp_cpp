@@ -4,7 +4,7 @@
 
 class Ingredient {
 
+
 public:
     std::string name;
-
 };

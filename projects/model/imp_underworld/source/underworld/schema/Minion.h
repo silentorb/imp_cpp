@@ -19,6 +19,10 @@ namespace underworld {
       Minion(const std::string &name, const source_mapping::Source_Point &source_point) :
         name(name), Member(source_point) {}
 
+      virtual ~Minion() {
+
+      }
+
       Type get_type() const override {
         return Type::minion;
       }
