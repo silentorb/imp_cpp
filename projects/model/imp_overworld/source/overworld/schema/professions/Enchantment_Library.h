@@ -16,6 +16,7 @@ namespace overworld {
 
       Enchantment *find_enchantment(const std::string &name);
       static Enchantment_With_Parameters &get_external();
+      static Enchantment_With_Parameters &get_external_name();
       static Simple_Enchantment &get_static();
       static Simple_Enchantment &get_public();
       static Simple_Enchantment &get_private();

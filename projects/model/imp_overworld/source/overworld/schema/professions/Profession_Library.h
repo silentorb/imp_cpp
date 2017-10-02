@@ -14,7 +14,6 @@ namespace overworld {
   using Function_Variant_Map = std::unordered_map<Function_Interface *, Function_Variant_Array>;
 
   class Profession_Library {
-      static Primitive primitives[Primitive_Type_Count];
       std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
       std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
       std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
@@ -27,6 +26,8 @@ namespace overworld {
 
       static Unknown &get_unknown();
       static Void &get_void();
+      static Primitive &get_string();
+      static External_File &get_string_file();
 
       static Primitive &get_primitive(Primitive_Type type);
 

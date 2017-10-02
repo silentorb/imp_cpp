@@ -1,0 +1,7 @@
+
+stl {
+
+  @external("iostream")
+  @external_name("cout")
+  print(value: string)
+}

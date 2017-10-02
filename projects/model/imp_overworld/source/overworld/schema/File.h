@@ -49,6 +49,9 @@ namespace overworld {
       }
 
       bool is_local() const {
+        if (file.is_external())
+          return false;
+
         return _is_local;
       }
 

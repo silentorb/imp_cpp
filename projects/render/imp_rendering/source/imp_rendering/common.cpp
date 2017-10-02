@@ -337,7 +337,7 @@ namespace imp_rendering {
   }
 
   const std::string get_cpp_name(const overworld::Dungeon &dungeon) {
-    auto &external = Enchantment_Library::get_external();
+    auto &external = Enchantment_Library::get_external_name();
     auto enchantment = dungeon.get_enchantments().get_enchantment(external);
     if (enchantment) {
       auto name = enchantment->get_argument_string(0);

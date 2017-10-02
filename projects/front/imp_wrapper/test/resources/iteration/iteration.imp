@@ -1,15 +1,15 @@
 
 Ingredient {
 @public:
-  name: string
+  name
 }
 
 Goblikin {
 @public:
   craft() {
-    var ingredients = stl.array
-    var tail = Ingredient()
-    tail.name = "rat's tail"
+    var ingredients = stl.Array {}
+    var tail = Ingredient {}
+    tail.name = "dragon's tail"
     ingredients.push_back(tail)
     // ingredients.map(i => stl.print(i.name))
   }

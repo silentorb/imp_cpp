@@ -29,10 +29,13 @@ namespace imp_rendering {
   using Reference_Strength_Map = std::map<const overworld::Profession *, Reference_Type>;
 
   bool needs_reference(const Profession &profession) {
-    if (profession.get_type() != Profession_Type::dungeon)
-      return false;
+    if (profession.get_type() == Profession_Type::dungeon)
+      return true;
 
-    return true;
+    if (&profession == &Profession_Library::get_string())
+      return true;
+    
+    return false;
   }
 
   class Include_Helper {

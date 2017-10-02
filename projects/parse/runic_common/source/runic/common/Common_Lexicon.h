@@ -20,11 +20,11 @@ namespace runic {
       Whisper True = "true";
       Whisper Var = "var";
 
-      Whisper Bool = "bool";
-      Whisper Double = "double";
-      Whisper Int = "int";
-      Whisper Float = "float";
-      Whisper String = "string";
+      Whisper Bool = "Bool";
+      Whisper Double = "Double";
+      Whisper Int = "Int";
+      Whisper Float = "Float";
+      Whisper String = "String";
   };
 
   struct Single_Symbols {

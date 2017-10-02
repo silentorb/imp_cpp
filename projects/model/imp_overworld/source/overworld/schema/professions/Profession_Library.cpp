@@ -4,12 +4,12 @@
 
 namespace overworld {
 
-  File string_header("", "string");
+  External_File string_header("string");
   static Unknown unknown;
   static Void _void;
 //  static Unknown not_found;
 
-  Primitive Profession_Library::primitives[] =
+  static Primitive primitives[] =
     {
       Primitive_Type::Bool,
       Primitive_Type::Double,
@@ -31,9 +31,13 @@ namespace overworld {
     return _void;
   }
 
-//  Unknown &Profession_Library::get_not_found() {
-//    return not_found;
-//  }
+  Primitive &Profession_Library::get_string() {
+    return primitives[static_cast<int>(Primitive_Type::String)];
+  }
+
+  External_File &Profession_Library::get_string_file() {
+    return string_header;
+  }
 
   Primitive &Profession_Library::get_primitive(Primitive_Type type) {
     return primitives[static_cast<int>(type)];

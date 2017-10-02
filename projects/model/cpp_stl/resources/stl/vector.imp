@@ -2,8 +2,9 @@
 stl {
 
   @value
-  @extern("vector", "vector")
-  array<T> {
+  @external("vector")
+  @external_name("vector")
+  Array<T> {
     push_back(item:T)
   }
 }

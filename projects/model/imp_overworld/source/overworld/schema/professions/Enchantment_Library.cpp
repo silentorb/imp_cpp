@@ -17,11 +17,17 @@ namespace overworld {
 
   struct Complex_Enchantments {
       Enchantment_With_Parameters external;
+      Enchantment_With_Parameters external_name;
 
       Complex_Enchantments() :
-        external("extern", {
+        external("external", {
           new Simple_Minion(
             "header_file", Profession_Library::get_primitive(Primitive_Type::String)
+          )
+        }),
+        external_name("external_name", {
+          new Simple_Minion(
+            "name", Profession_Library::get_primitive(Primitive_Type::String)
           )
         }) {}
   };
@@ -43,7 +49,8 @@ namespace overworld {
       global_enchantments[enchantment->get_name()] = enchantment;
     }
 
-    global_enchantments["extern"] = &complex_enchanements->external;
+    global_enchantments["external"] = &complex_enchanements->external;
+    global_enchantments["external_name"] = &complex_enchanements->external_name;
   }
 
   Enchantment *Enchantment_Library::find_enchantment(const std::string &name) {
@@ -55,6 +62,10 @@ namespace overworld {
 
   Enchantment_With_Parameters &Enchantment_Library::get_external() {
     return complex_enchanements->external;
+  }
+
+  Enchantment_With_Parameters &Enchantment_Library::get_external_name() {
+    return complex_enchanements->external_name;
   }
 
   Simple_Enchantment &Enchantment_Library::get_static() {

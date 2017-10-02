@@ -76,30 +76,34 @@ namespace imp_rendering {
       return "class " + get_cpp_name(dungeon.get_name()) + ancestors;
     }
 
+    Stroke render_function_declaration_or_definition(const Function &function) {
+      if (function.is_inline()) {
+        return render_function_definition(function);
+      }
+      else {
+        return render_function_declaration(function) + ";";
+      }
+    }
+
+    Stroke render_minion(const Minion &minion, const Dungeon &dungeon) {
+      auto assignment = minion.get_profession().get_type() == Profession_Type::reference
+                        ? " = nullptr"
+                        : "";
+
+      return Stroke(render_minion_with_signature(minion, *dungeon.get_scope()) + assignment + ';');
+    }
+
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {
       Stroke block(new Class_Block(render_dungeon_definition_header(dungeon)));
       Stroke private_block(new Simple_Block());
       Stroke public_block(new Whitespace_Block("public:"));
 
       for (auto &minion : dungeon.get_minions()) {
-        auto assignment = minion->get_profession().get_type() == Profession_Type::reference
-                          ? " = nullptr"
-                          : "";
-
-        auto stroke = Stroke(render_minion_with_signature(*minion, *dungeon.get_scope()) + assignment + ';');
-        private_block.add(stroke);
-        //          auto &profession = reflect_profession(dungeon_minion.get_profession());
-//          auto &output_minion = output.create_minion(dungeon_minion, profession);
-
+        private_block << render_minion(*minion, dungeon);
       }
 
       for (auto &function : dungeon.get_functions()) {
-        if (function->is_inline()) {
-          public_block << render_function_definition(*function);
-        }
-        else {
-          public_block << render_function_declaration(*function) + ";";
-        }
+        public_block << render_function_declaration_or_definition(*function);
       }
 
       block.add(private_block);

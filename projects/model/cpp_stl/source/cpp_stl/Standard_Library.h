@@ -9,15 +9,11 @@ namespace cpp_stl {
       overworld::Dungeon *overworld_dungeon = nullptr;
 
       source_mapping::Source_File standard_library_file;
-      overworld::External_File vector_file;
-      overworld::External_File string_file;
       overworld::External_File memory_file;
 
       overworld::Dungeon *vector_type = nullptr;
       overworld::Dungeon *unique_pointer = nullptr;
       overworld::Dungeon *string_type = nullptr;
-
-      void initialize_vector(overworld::Profession_Library &profession_library, overworld::Graph &graph);
 
   public:
       Standard_Library();

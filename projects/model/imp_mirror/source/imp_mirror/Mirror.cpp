@@ -675,7 +675,7 @@ namespace imp_mirror {
     auto external = output_dungeon->get_enchantments().get_enchantment(enchantment_library.get_external());
 
     if (external) {
-      auto value = external->get_argument_string(1);
+      auto value = external->get_argument_string(0);
       if (value != "") {
         output_dungeon->set_file(std::unique_ptr<overworld::File>(new overworld::External_File(value)));
       }
