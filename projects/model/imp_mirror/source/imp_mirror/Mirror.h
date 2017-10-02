@@ -31,17 +31,16 @@ namespace imp_mirror {
       overworld::Profession_Library &profession_library;
       Element_Map &element_map;
       overworld::Graph &graph;
-      Integrity integrity;
       Temporary_Interface_Manager &temporary_interface_manager;
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_profession_reference().get_profession();
+        auto &profession = expression.get_node()->get_element().get_profession();
         auto &dungeon = cast<const overworld::Dungeon>(profession);
         return const_cast<overworld::Dungeon *> (&dungeon);
       }
 
       overworld::Dungeon_Interface *get_dungeon_interface(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_profession_reference().get_profession();
+        auto &profession = expression.get_node()->get_element().get_profession();
         auto &dungeon = cast<const overworld::Dungeon_Interface>(profession);
         return const_cast<overworld::Dungeon_Interface *> (&dungeon);
       }

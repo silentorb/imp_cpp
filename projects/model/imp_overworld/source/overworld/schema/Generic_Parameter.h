@@ -91,7 +91,7 @@ namespace overworld {
         return *this;
       }
 
-      const Constant_Element &get_element() const {
+      Constant_Element &get_element() {
         return element;
       }
   };
@@ -103,7 +103,7 @@ namespace overworld {
                                                      Dungeon_Interface *dungeon, Function_Interface *function);
 
 //  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
-  std::vector<const Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
                                            size_t additional_space = 0);
 
   std::string get_generic_parameter_name(size_t index);

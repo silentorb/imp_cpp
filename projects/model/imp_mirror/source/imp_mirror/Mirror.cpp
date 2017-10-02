@@ -47,12 +47,12 @@ namespace imp_mirror {
 
     // Optimization to reduce the amount of graph solving later on
     // since so often variables types are defined by assigning them an instantiation.
-    auto &value_profession = value.get_profession_reference().get_profession();
-    if (target.get_profession_reference().get_profession().get_type()
+    auto &value_profession = value.get_element().get_profession();
+    if (target.get_element().get_profession().get_type()
         == overworld::Profession_Type::unknown
         && value_profession.get_type()
            != overworld::Profession_Type::unknown) {
-      target.set_profession(value_profession);
+      target.get_element().set_profession(value_profession);
       target.set_resolved(true);
     }
   }
@@ -108,7 +108,8 @@ namespace imp_mirror {
     if (!input_member)
       throw Code_Error("Unknown symbol " + name, input_member_expression.get_source_point());
 
-    return overworld::Expression_Owner(new overworld::Member_Expression(*input_member));
+    return overworld::Expression_Owner(new overworld::Member_Expression(*input_member,
+                                                                        input_member_expression.get_source_point()));
   }
 
   overworld::Operator_Type Mirror::reflect_operator(const underworld::Operator &input_operator) {
@@ -190,7 +191,7 @@ namespace imp_mirror {
         auto &signature = temporary_member.get_or_create_signature();
         for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
           auto &argument = arguments[i];
-          auto &argument_profession = argument->get_node()->get_profession_reference().get_profession();
+          auto &argument_profession = argument->get_node()->get_element().get_profession();
           auto parameter = new overworld::Parameter("(temp)", argument_profession,
                                                     source_mapping::Source_Range(), *scope.get_function());
           temporary_member.add_parameter(parameter);

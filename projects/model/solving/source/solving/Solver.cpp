@@ -38,7 +38,7 @@ namespace solving {
     if (!first.is_resolved() || !second.is_resolved())
       return false;
 
-    if (!assignment_is_compatible(first.get_profession(), second.get_profession())) {
+    if (!assignment_is_compatible(first.get_element().get_profession(), second.get_element().get_profession())) {
       return true;
     }
 
@@ -66,9 +66,9 @@ namespace solving {
       throw std::runtime_error("Invalid type.");
 #endif
 
-    auto &original_profession = node.get_profession().get_base();
+    auto &original_profession = node.get_element().get_profession().get_base();
     profession_library.assign(node, profession);
-    if (node.get_profession_reference().get_element_type() == Element_Type::minion
+    if (node.get_element().get_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
       auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
@@ -108,7 +108,7 @@ namespace solving {
 #if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " < " << other->get_debug_string() << std::endl;
 #endif
-        auto &profession = other->get_profession_reference().get_profession();
+        auto &profession = other->get_element().get_profession();
         set_profession(node, profession);
         return 1;
       }
@@ -124,7 +124,7 @@ namespace solving {
 #if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
 #endif
-        auto &profession = node.get_profession();
+        auto &profession = node.get_element().get_profession();
         set_profession(*other, profession);
         ++progress;
       }
@@ -228,9 +228,9 @@ namespace solving {
     if (variant_array.size() == 0) {
       auto &parameter = function.add_generic_parameter();
       set_profession(first, parameter);
-      create_function_variant(variant_array, function, first, first.get_profession().get_base());
+      create_function_variant(variant_array, function, first, first.get_element().get_profession().get_base());
     }
-    create_function_variant(variant_array, function, first, second.get_profession().get_base());
+    create_function_variant(variant_array, function, first, second.get_element().get_profession().get_base());
   }
 
   void Solver::resolve_with_template_dungeon(Connection &connection) {
@@ -239,20 +239,20 @@ namespace solving {
     auto dungeon = first.get_dungeon();
     if (dungeon) {
       auto &variant_array = profession_library.get_dungeon_variant_array(*dungeon);
-      create_dungeon_variant(variant_array, dungeon->get_original(), first, second.get_profession());
+      create_dungeon_variant(variant_array, dungeon->get_original(), first, second.get_element().get_profession());
     }
     else {
       auto &function = *first.get_function();
       auto &variant_array = profession_library.get_function_variant_array(function);
-      create_function_variant(variant_array, function.get_original(), first, second.get_profession().get_base());
+      create_function_variant(variant_array, function.get_original(), first, second.get_element().get_profession().get_base());
     }
   }
 
   bool Solver::resolve_conflict(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
-    auto &first_profession = first.get_profession();
-    auto &second_profession = second.get_profession();
+    auto &first_profession = first.get_element().get_profession();
+    auto &second_profession = second.get_element().get_profession();
 
 //    if (first.get_profession_reference().get_element_type() == Element_Type::parameter
 //        && first.get_function() != second.get_function()

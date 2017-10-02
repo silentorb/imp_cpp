@@ -46,7 +46,7 @@ namespace imp_rendering {
     if (expression.get_type() == Expression::Type::self)
       return Reference_Type::pointer;
 
-    return get_reference_type(const_cast<Expression &>(expression).get_node()->get_profession());
+    return get_reference_type(const_cast<Expression &>(expression).get_node()->get_element().get_profession());
   }
 
   template<typename A, typename B>
@@ -287,8 +287,8 @@ namespace imp_rendering {
     const overworld::Assignment &declaration, const overworld::Scope &scope) {
     return render_expression(*declaration.get_target(), scope) + ' '
            + render_operator(declaration.get_operator()) + ' '
-           + render_cast(declaration.get_target()->get_node()->get_profession(),
-                         declaration.get_value()->get_node()->get_profession(),
+           + render_cast(declaration.get_target()->get_node()->get_element().get_profession(),
+                         declaration.get_value()->get_node()->get_element().get_profession(),
                          render_expression(*declaration.get_value(), scope))
            + ";";
   }
@@ -339,7 +339,7 @@ namespace imp_rendering {
 
   std::string render_chain(const overworld::Chain &chain, const overworld::Scope &scope) {
     return render_expression(chain.get_first(), scope)
-           + render_separator(chain.get_first().get_node()->get_profession_reference().get_profession())
+           + render_separator(chain.get_first().get_node()->get_element().get_profession())
            + render_expression(chain.get_second(), scope);
   }
 

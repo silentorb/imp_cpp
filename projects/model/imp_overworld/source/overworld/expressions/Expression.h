@@ -113,6 +113,22 @@ namespace overworld {
       bool is_statement() const override {
         return true;
       }
+
+      Type get_type() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const std::string get_name() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      Profession &get_profession() override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const Profession &get_profession() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 
   using Expression_Owner = std::unique_ptr<Expression>;

@@ -10,6 +10,6 @@ namespace imp_mirror {
 
   public:
       Code_Error(const std::string &message, const source_mapping::Source_Range &point) :
-        runtime_error(message + ": " + point.to_string()), point(point) {}
+        runtime_error(message + ": " + point.get_start().to_string()), point(point) {}
   };
 }

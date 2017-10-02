@@ -31,16 +31,15 @@ namespace overworld {
 
   };
 
-  class Block_Expression : public virtual Expression, public Scope {
+  class Block_Expression : public Statement {
+      Scope scope;
       Block block;
 
   public:
       Block_Expression(Scope *parent) :
-        Scope(parent), block(*this) {}
+        scope(parent), block(scope) {}
 
-      virtual ~Block_Expression() {
-
-      }
+      ~Block_Expression() override = default;
 
       void add_expression(Expression_Owner &expression) {
         block.add_expression(expression);
@@ -58,7 +57,7 @@ namespace overworld {
         return block;
       }
 
-       Block &get_block()  {
+      Block &get_block() {
         return block;
       }
 
@@ -74,12 +73,9 @@ namespace overworld {
         throw std::runtime_error("Not supported");
       }
 
-      bool is_statement()const override {
+      bool is_statement() const override {
         return false;
       }
-//      Scope_Parent_Type get_scope_parent_type() const override {
-//        return Scope_Parent_Type::block;
-//      }
   };
 
 
