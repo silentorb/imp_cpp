@@ -25,7 +25,7 @@ namespace underworld {
         return name;
       }
 
-      const source_mapping::Source_Point &get_source_point() const {
+      const source_mapping::Source_Point get_source_point() const override {
         return point;
       }
   };

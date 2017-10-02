@@ -194,10 +194,85 @@ namespace imp_rendering {
       }), ",\n");;
   }
 
+  const std::string render_primary_dungeon_token(const Dungeon_Interface &dungeon_interface,
+                                                 const overworld::Scope &scope) {
+    if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
+      auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
+      std::string parameter_string = join(variant.get_professions(), Joiner<Profession *>(
+        [& scope](const Profession *profession) {
+          return render_profession(*profession, scope);
+        }), ", ");
+
+      return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
+    }
+    else {
+      auto &dungeon = dynamic_cast<const Dungeon &>(dungeon_interface);
+      return get_cpp_name(dungeon);
+    }
+  }
+
+  const std::string render_dungeon_interface(const Dungeon_Interface &dungeon_interface,
+                                             const overworld::Scope &scope) {
+    auto result = render_primary_dungeon_token(dungeon_interface, scope);
+    auto parent = dungeon_interface.get_original().get_scope();
+//    if (parent == &scope)
+//      return result;
+
+    while (parent && parent != &scope) {
+      auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
+      if (parent_dungeon->get_name() == "")
+        break;
+
+      result = render_dungeon_interface(*parent_dungeon, scope)
+               + "::" + result;
+
+      parent = parent->get_parent();
+    }
+
+    return result;
+  }
+
+  const std::string render_profession_internal(const overworld::Profession &profession, const Scope &scope) {
+    auto type = profession.get_type();
+
+    switch (type) {
+      case overworld::Profession_Type::primitive: {
+        auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
+        return primitive_names[(int) index];
+      }
+      case overworld::Profession_Type::dungeon:
+      case overworld::Profession_Type::variant: {
+        auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
+        return render_dungeon_interface(dungeon_interface, scope);
+      }
+
+      case overworld::Profession_Type::Void:
+        return "void";
+
+      case Profession_Type::reference: {
+        auto &reference = *dynamic_cast<const Reference *>(&profession);
+        return render_profession_internal(reference.get_profession(), scope) + " " + render_reference_symbol(reference);
+      }
+
+      case overworld::Profession_Type::generic_parameter:
+        return profession.get_name();
+
+      default:
+        return "!unknown!";
+    }
+//    throw std::runtime_error(" Not implemented.");
+  }
+
   const std::string render_instantiation(const overworld::Instantiation &instantiation, const overworld::Scope &scope) {
-    return render_profession_owner(instantiation.get_profession(), scope) +
-           "(new " + instantiation.get_profession().get_name()
-           + "(" + render_dictionary(instantiation.get_dictionary(), scope) + "))";
+    auto &profession = instantiation.get_profession();
+    auto core = render_profession_internal(profession, scope) + "("
+                + render_dictionary(instantiation.get_dictionary(), scope) + ")";
+
+    if (profession.get_ownership() == Ownership::value) {
+      return core;
+    }
+
+    return render_profession_owner(profession, scope) + "(new " + core + ")";
   }
 
   const std::string render_operator(overworld::Operator_Type value) {
@@ -345,75 +420,6 @@ namespace imp_rendering {
         return name;
     }
     return dungeon.get_name();
-  }
-
-  const std::string render_primary_dungeon_token(const Dungeon_Interface &dungeon_interface,
-                                                 const overworld::Scope &scope) {
-    if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
-      auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
-      std::string parameter_string = join(variant.get_professions(), Joiner<Profession *>(
-        [& scope](const Profession *profession) {
-          return render_profession(*profession, scope);
-        }), ", ");
-
-      return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
-    }
-    else {
-      auto &dungeon = dynamic_cast<const Dungeon &>(dungeon_interface);
-      return get_cpp_name(dungeon);
-    }
-  }
-
-  const std::string render_dungeon_interface(const Dungeon_Interface &dungeon_interface,
-                                             const overworld::Scope &scope) {
-    auto result = render_primary_dungeon_token(dungeon_interface, scope);
-    auto parent = dungeon_interface.get_original().get_scope();
-//    if (parent == &scope)
-//      return result;
-
-    while (parent && parent != &scope) {
-      auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
-      if (parent_dungeon->get_name() == "")
-        break;
-
-      result = render_dungeon_interface(*parent_dungeon, scope)
-               + "::" + result;
-
-      parent = parent->get_parent();
-    }
-
-    return result;
-  }
-
-  const std::string render_profession_internal(const overworld::Profession &profession, const Scope &scope) {
-    auto type = profession.get_type();
-
-    switch (type) {
-      case overworld::Profession_Type::primitive: {
-        auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
-        return primitive_names[(int) index];
-      }
-      case overworld::Profession_Type::dungeon:
-      case overworld::Profession_Type::variant: {
-        auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
-        return render_dungeon_interface(dungeon_interface, scope);
-      }
-
-      case overworld::Profession_Type::Void:
-        return "void";
-
-      case Profession_Type::reference: {
-        auto &reference = *dynamic_cast<const Reference *>(&profession);
-        return render_profession_internal(reference.get_profession(), scope) + " " + render_reference_symbol(reference);
-      }
-
-      case overworld::Profession_Type::generic_parameter:
-        return profession.get_name();
-
-      default:
-        return "!unknown!";
-    }
-//    throw std::runtime_error(" Not implemented.");
   }
 
   const std::string render_profession_owner(const overworld::Profession &profession, const Scope &scope) {

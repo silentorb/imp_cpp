@@ -14,9 +14,11 @@ namespace overworld {
 
   public:
       Argument_Node(Profession &original_profession, Minion &member_container,
-                    Function_Interface *function, Profession_Library &profession_library) :
+                    Function_Interface *function, Profession_Library &profession_library,
+                    const source_mapping::Source_Point &source_point) :
         Profession_Node(*this, original_profession, nullptr, function),
-        profession(&original_profession), member_container(member_container), profession_library(profession_library) {}
+        profession(&original_profession), member_container(member_container), profession_library(profession_library),
+        source_point(source_point) {}
 
       Profession &get_profession() override {
         return *profession;

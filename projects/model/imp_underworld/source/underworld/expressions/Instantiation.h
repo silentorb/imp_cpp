@@ -32,7 +32,7 @@ namespace underworld {
         return *profession;
       }
 
-      const source_mapping::Source_Point &get_source_point() const {
+      const source_mapping::Source_Point get_source_point() const override {
         return source_point;
       }
 

@@ -246,7 +246,8 @@ namespace imp_mirror {
           && first.get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke->get_expression());
         auto argument_node = new overworld::Argument_Node(first.get_profession(), member_container,
-                                                          scope.get_function(), profession_library);
+                                                          scope.get_function(), profession_library,
+                                                          function_call.get_arguments()[i]->get_source_point());
         invoke->add_argument_node(std::unique_ptr<overworld::Argument_Node>(argument_node));
         graph.connect(*argument_node, second);
       }

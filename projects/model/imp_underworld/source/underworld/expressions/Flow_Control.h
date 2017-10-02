@@ -43,6 +43,10 @@ namespace underworld {
       Type get_type() const override {
         return Type::If;
       }
+
+      const source_mapping::Source_Point get_source_point() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 
   class Else : public virtual Expression {
@@ -58,6 +62,10 @@ namespace underworld {
 
       Type get_type() const override {
         return Type::Else;
+      }
+
+      const source_mapping::Source_Point get_source_point() const override {
+        throw std::runtime_error("Not supported.");
       }
   };
 }

@@ -38,5 +38,8 @@ namespace underworld {
         return *expression;
       }
 
+      const source_mapping::Source_Point get_source_point() const override {
+        return source;
+      }
   };
 }

@@ -27,6 +27,10 @@ namespace underworld {
        Minion &get_minion()  {
         return* minion;
       }
+
+      const source_mapping::Source_Point get_source_point() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 
   class Minion_Declaration_And_Assignment : public virtual Minion_Declaration {
@@ -46,6 +50,10 @@ namespace underworld {
 
       const Expression &get_expression() const {
         return *expression;
+      }
+
+      const source_mapping::Source_Point get_source_point() const override {
+        throw std::runtime_error("Not supported.");
       }
   };
 }

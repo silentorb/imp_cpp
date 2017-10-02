@@ -40,5 +40,9 @@ namespace underworld {
       const Expression &get_second() const {
         return *second;
       }
+
+      const source_mapping::Source_Point get_source_point() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 }

@@ -23,7 +23,7 @@ namespace underworld {
       virtual Primitive_Type get_primitive_type() const = 0;
 
 
-      const source_mapping::Source_Point &get_source_point() const {
+      const source_mapping::Source_Point get_source_point() const override {
         return source_point;
       }
   };
