@@ -36,7 +36,7 @@ namespace overworld {
   class Profession {
   public:
 
-      virtual ~Profession() {}
+      virtual ~Profession() = default;
 
       virtual Profession_Type get_type() const = 0;
       virtual Scope *get_scope() = 0;

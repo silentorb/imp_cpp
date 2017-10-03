@@ -4,6 +4,7 @@
 #include <underworld/expressions/Block.h>
 #include "Member.h"
 #include "Scope.h"
+#include "Generic_Parameter.h"
 
 namespace underworld {
 
@@ -21,7 +22,7 @@ namespace underworld {
       const std::string name;
       Profession_Owner return_type;
       bool _is_static = false;
-      std::vector<std::string> generic_parameters;
+      std::vector<Generic_Parameter> generic_parameters;
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
@@ -45,11 +46,11 @@ namespace underworld {
         return return_type.get();
       }
 
-      void add_generic_parameter(const std::string &value) {
+      void add_generic_parameter(Generic_Parameter &value) {
         generic_parameters.push_back(value);
       }
 
-      const std::vector<std::string> &get_generic_parameters() const {
+      const std::vector<Generic_Parameter> &get_generic_parameters() const {
         return generic_parameters;
       }
 

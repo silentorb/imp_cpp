@@ -21,13 +21,14 @@ namespace overworld {
       Variant(const std::string &original_name, Generic_Parameter_Array &generic_parameters,
               const std::vector<Profession *> &professions) :
         generic_parameters(generic_parameters) {
-        name = format_name(original_name);
         if (generic_parameters.size() != professions.size())
           throw std::runtime_error("Generic parameter / profession count mismatch.");
 
         for (auto i = 0; i < generic_parameters.size(); ++i) {
           arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], *professions[i])));
         }
+
+        name = format_name(original_name);
       }
 
       const Generic_Parameter_Array &get_generic_parameters() const {

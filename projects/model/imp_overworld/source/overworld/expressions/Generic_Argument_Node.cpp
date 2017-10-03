@@ -1,9 +1,9 @@
 #include <overworld/schema/professions/Profession_Library.h>
-#include "Argument_Node.h"
+#include "Generic_Argument_Node.h"
 
 namespace overworld {
 
-  void Argument_Element::set_profession(Profession &value) {
+  void Generic_Argument_Element::set_profession(Profession &value, Profession_Setter &setter) {
     if (profession == &value)
       return;
 
@@ -13,6 +13,6 @@ namespace overworld {
     auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
     auto &container_profession = profession_library.create_dungeon_variant(
       variant_array, dungeon.get_original(), node, value);
-    member.set_profession(container_profession);
+    setter.set_profession(member.get_node(), container_profession);
   }
 }

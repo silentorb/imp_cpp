@@ -5,13 +5,13 @@ namespace overworld {
   const std::string Variant::format_name(const std::string &original_name) {
     auto name = original_name + "<";
     auto first = true;
-    for (auto &profession : generic_parameters) {
+    for (auto &argument : arguments) {
       if (first)
         first = false;
       else
         name += ", ";
 
-      name += profession->get_name();
+      name += argument->get_element().get_profession().get_name();
     }
     name += ">";
 

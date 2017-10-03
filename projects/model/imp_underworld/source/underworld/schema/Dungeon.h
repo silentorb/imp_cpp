@@ -2,6 +2,7 @@
 
 #include "Scope.h"
 #include "Enchantment.h"
+#include "Generic_Parameter.h"
 
 namespace underworld {
 
@@ -10,7 +11,7 @@ namespace underworld {
       const source_mapping::Source_Range source_point;
       bool _is_external = false;
       std::vector<Profession_Owner> contracts;
-      std::vector<std::string> generic_parameters;
+      std::vector<Generic_Parameter> generic_parameters;
       Enchantment_Array enchantments;
 
   protected:
@@ -49,11 +50,11 @@ namespace underworld {
         return contracts;
       }
 
-      void add_generic_parameter(const std::string &value) {
+      void add_generic_parameter(const Generic_Parameter &value) {
         generic_parameters.push_back(value);
       }
 
-      const std::vector<std::string> &get_generic_parameters() const {
+      const std::vector<Generic_Parameter> &get_generic_parameters() const {
         return generic_parameters;
       }
 

@@ -91,4 +91,22 @@ namespace overworld {
   }
 
 
+  const std::string Dungeon::format_debug_name() const {
+    if (generic_parameters.empty())
+      return element.get_name();
+
+    auto result = element.get_name() + "<";
+    auto first = true;
+    for (auto &parameter : generic_parameters) {
+      if (first)
+        first = false;
+      else
+        result += ", ";
+
+      result += parameter->get_element().get_profession().get_name();
+    }
+    result += ">";
+
+    return result;
+  }
 }

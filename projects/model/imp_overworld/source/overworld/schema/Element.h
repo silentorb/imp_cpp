@@ -13,14 +13,18 @@ namespace overworld {
       other
   };
 
-  class Element {
-//      Profession *profession;
-//      source_mapping::Source_Range source_point;
+  class Node;
 
+  class Profession_Setter {
+  public:
+      virtual void set_profession(Node &node, Profession &profession) = 0;
+  };
+
+  class Element {
   public:
       virtual Profession &get_profession() = 0;
       virtual const Profession &get_profession() const = 0;
-      virtual void set_profession(Profession &value) = 0;
+      virtual void set_profession(Profession &value, Profession_Setter &setter) = 0;
       virtual const source_mapping::Source_Range &get_source_point() const = 0;
       virtual const std::string get_name() const = 0;
       virtual Element_Type get_type() const = 0;
@@ -46,7 +50,7 @@ namespace overworld {
         return *profession;
       }
 
-      void set_profession(Profession &value) override {
+      void set_profession(Profession &value, Profession_Setter &setter) override {
         profession = &value;
       }
 

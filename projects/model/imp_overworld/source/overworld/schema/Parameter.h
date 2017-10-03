@@ -30,7 +30,7 @@ namespace overworld {
         temporary_interface = std::move(value);
       }
 
-      void set_profession(Profession &value) override;
+//      void set_profession(Profession &value, Profession_Setter &setter) override;
       Dungeon &get_or_create_interface();
 
       Element_Type get_element_type() const override {

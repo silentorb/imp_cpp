@@ -67,7 +67,7 @@ namespace overworld {
         return expression.get_profession();
       }
 
-      void set_profession(Profession &value) override {
+      void set_profession(Profession &value, Profession_Setter &setter) override {
         expression.set_profession(value);
       }
 

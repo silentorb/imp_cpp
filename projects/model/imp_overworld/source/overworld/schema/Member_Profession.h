@@ -2,7 +2,7 @@
 
 #include "Member.h"
 
-namespace  overworld {
+namespace overworld {
 
   class Member_Profession : public Generic_Member_Reference<Profession> {
   public:

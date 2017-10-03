@@ -41,5 +41,13 @@ namespace runic {
 //        std::cout << current().get_text() << " " << position.get_row() << ":"<< position.get_column() << std::endl;
         return source_mapping::Source_Point(source_file, position.get_row(), position.get_column());
       }
+
+      const source_mapping::Source_Range get_source_range() const {
+        auto &range = current().get_range();
+        return source_mapping::Source_Range(
+          {source_file, range.get_start().get_row(), range.get_start().get_column()},
+          {source_file, range.get_end().get_row(), range.get_end().get_column()}
+        );
+      }
   };
 }

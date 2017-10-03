@@ -67,7 +67,7 @@ namespace solving {
 #endif
 
     auto &original_profession = node.get_element().get_profession().get_base();
-    profession_library.assign(node, profession);
+    profession_library.assign(node, profession, setter);
     if (node.get_element().get_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
       auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);

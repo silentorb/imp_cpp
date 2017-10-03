@@ -56,12 +56,12 @@ namespace overworld {
     }
   }
 
-  void Parameter::set_profession(Profession &value) {
-    if (temporary_interface) {
-      replace_dungeon_node(*temporary_interface, *dynamic_cast<Dungeon *>( &value));
-      temporary_interface.reset();
-    }
-    Minion::set_profession(value);
-  }
+//  void Parameter::set_profession(Profession &value, Profession_Setter &setter) {
+//    if (temporary_interface) {
+//      replace_dungeon_node(*temporary_interface, *dynamic_cast<Dungeon *>( &value));
+//      temporary_interface.reset();
+//    }
+//    setter.set_profession(get_node(), value);
+//  }
 
 }

@@ -10,12 +10,13 @@ namespace solving {
   }
 
   bool source_point_is_before(const source_mapping::Source_Point &first, const source_mapping::Source_Point &second) {
-    if (first.get_row() < second.get_column()) {
-      if (first.get_row() == second.get_row()) {
-        return first.get_column() < second.get_column();
-      }
+    if (first.get_row() < second.get_row()) {
       return true;
     }
+    if (first.get_row() == second.get_row()) {
+      return first.get_column() < second.get_column();
+    }
+
     return false;
   }
 
@@ -44,6 +45,17 @@ namespace solving {
         return node;
     }
     return nullptr;
+  }
+
+  std::vector<Node *> find_nodes(Graph &graph, source_mapping::Measurement row, source_mapping::Measurement column) {
+    std::vector<Node *> result;
+    for (auto node: graph.get_nodes()) {
+      auto source_point = node->get_element().get_source_point().get_start();
+      if (source_point.get_row() == row && source_point.get_column() == column) {
+        result.push_back(node);
+      }
+    }
+    return result;
   }
 
   void log_nodes(graphing::Reference_Graph<Node, Connection> &graph) {

@@ -20,6 +20,15 @@
 
 namespace imp_mirror {
 
+  class Basic_Profession_Setter : public overworld::Profession_Setter {
+  public:
+      void set_profession(overworld::Node &node, overworld::Profession &profession) override {
+        node.get_element().set_profession(profession, *this);
+      }
+  };
+
+  static Basic_Profession_Setter profession_setter;
+
   void Mirror::reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
                                     overworld::Enchantment_Container &output_enchantments,
                                     overworld::Scope &scope) {
@@ -52,7 +61,7 @@ namespace imp_mirror {
         == overworld::Profession_Type::unknown
         && value_profession.get_type()
            != overworld::Profession_Type::unknown) {
-      target.get_element().set_profession(value_profession);
+      target.get_element().set_profession(value_profession, profession_setter);
       target.set_resolved(true);
     }
   }
@@ -242,14 +251,16 @@ namespace imp_mirror {
       auto &first = parameters[i]->get_node();
       auto &second = *invoke_arguments[i]->get_node();
       auto k = first.get_element().get_type();
-      if (first.get_element().get_type() == overworld::Element_Type::parameter
-          && first.get_function() != second.get_function()
-          && first.get_element().get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
+      if (//first.get_element().get_type() == overworld::Element_Type::parameter &&
+        first.get_function() != second.get_function()
+        && first.get_element().get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke->get_expression());
-        auto argument_node = new overworld::Argument_Node(first.get_element().get_profession(), member_container,
-                                                          scope.get_function(), profession_library,
-                                                          function_call.get_arguments()[i]->get_source_point());
-        invoke->add_argument_node(std::unique_ptr<overworld::Argument_Node>(argument_node));
+        auto &source_argument = *source_arguments[i];
+        auto argument_node = new overworld::Generic_Argument_Node(first.get_element().get_profession(),
+                                                                  member_container,
+                                                                  scope.get_function(), profession_library,
+                                                                  source_argument.get_source_point());
+        invoke->add_argument_node(std::unique_ptr<overworld::Generic_Argument_Node>(argument_node));
         graph.connect(*argument_node, second);
       }
       else {
@@ -668,7 +679,9 @@ namespace imp_mirror {
     }
 
     for (auto &generic_parameter: input_dungeon.get_generic_parameters()) {
-      auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr, input_dungeon.get_source_point());
+      auto output_generic_parameter = new overworld::Generic_Parameter(
+        generic_parameter.get_name(), output_dungeon, nullptr, generic_parameter.get_source_range()
+      );
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }
     reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(), output_scope);
@@ -736,7 +749,7 @@ namespace imp_mirror {
         auto &input_variable = *(dynamic_cast<const underworld::Minion *>(input_member.second.get()));
         auto &profession = reflect_profession(input_variable.get_profession(), output_scope);
         auto &output_minion = *element_map.find_or_null<overworld::Minion>(&input_variable);
-        profession_library.assign(output_minion.get_node(), profession);
+        profession_library.assign(output_minion.get_node(), profession, profession_setter);
       }
     }
 

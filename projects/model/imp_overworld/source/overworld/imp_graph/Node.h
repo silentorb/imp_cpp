@@ -72,11 +72,7 @@ namespace overworld {
                              Function_Interface *function) :
         Node(element.get_profession(), dungeon, function), element(element) {}
 
-      bool is_resolved() const override {
-        auto &profession = element.get_profession();
-        return profession.get_base().get_type() != overworld::Profession_Type::unknown
-               && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter;
-      }
+      bool is_resolved() const override;
 
       Element &get_element() override {
         return element;

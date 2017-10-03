@@ -27,7 +27,7 @@ namespace imp_summoning {
       void process_root_identifier(Identifier &identifier, Context &context);
       void process_member(Identifier &identifier, Context &context, bool is_static);
       void process_generic_member(Identifier &identifier, Context &context, bool is_static);
-      std::vector<std::string> process_generic_parameters(Context &context);
+      std::vector<underworld::Generic_Parameter> process_generic_parameters(Context &context);
       underworld::Minion &process_minion(Identifier &identifier, Context &context);
       void process_minion_or_dungeon(Identifier &identifier, Context &context);
       void process_dungeon_with_contracts(Identifier &identifier, underworld::Profession_Owner first_contract,

@@ -1,6 +1,6 @@
+#include <vector>
 #include <memory>
 #include "Ingredient.h"
-#include <vector>
 #include "Goblikin.h"
 
 void Goblikin::craft() {

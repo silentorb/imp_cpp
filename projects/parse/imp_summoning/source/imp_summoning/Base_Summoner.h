@@ -24,6 +24,10 @@ namespace imp_summoning {
         return input.get_source_point();
       }
 
+      source_mapping::Source_Range get_source_rrange() {
+        return input.get_source_range();
+      }
+
       template<typename T>
       inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,
                      const std::string &message) {

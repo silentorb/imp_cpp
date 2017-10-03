@@ -21,8 +21,7 @@ namespace imp_wrapper {
 //    overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library->get_overworld_dungeon()));
   }
 
-  Wrapper_Internal::~Wrapper_Internal() {
-  }
+  Wrapper_Internal::~Wrapper_Internal() = default;
 
   void Wrapper_Internal::load_file(const std::string &path) {
     zookeeper.load_file(path);
@@ -48,7 +47,11 @@ namespace imp_wrapper {
 #endif
 
     auto node = solving::find_node(graph,  10, 9);
-    node->is_resolved();
+    auto &profession = node->get_element().get_profession();
+    auto dungeon = dynamic_cast<overworld::Dungeon*>(&profession);
+    auto l = profession.get_debug_name();
+    auto temp = node->get_debug_string();
+    node->get_debug_string();
     if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();
       if (unknowns.size() > 0) {

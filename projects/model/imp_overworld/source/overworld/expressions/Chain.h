@@ -22,8 +22,8 @@ namespace overworld {
         return first_element.get_profession();
       }
 
-      void set_profession(Profession &value) override {
-        first_element.set_profession(value);
+      void set_profession(Profession &value, Profession_Setter &setter) override {
+        first_element.set_profession(value, setter);
       }
   };
 

@@ -29,6 +29,8 @@ namespace overworld {
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
 
+      const std::string format_debug_name() const;
+
   public:
       Dungeon(const std::string &name, Scope &parent) :
         element(Element_Type::other, name, *this, source_mapping::Source_Range()),
@@ -179,6 +181,10 @@ namespace overworld {
         owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
+      }
+
+      const std::string get_debug_name() const override {
+        return format_debug_name();
       }
 
       std::vector<Generic_Parameter *> &get_generic_parameters() {

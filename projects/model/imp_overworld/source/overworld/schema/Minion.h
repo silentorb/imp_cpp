@@ -112,9 +112,9 @@ namespace overworld {
         return element.get_profession();
       }
 
-      virtual void set_profession(Profession &value) {
-        element.set_profession(value);
-      }
+//      virtual void set_profession(Profession &value) {
+//        element.set_profession(value);
+//      }
 
       const std::string get_name() const {
         return element.get_name();

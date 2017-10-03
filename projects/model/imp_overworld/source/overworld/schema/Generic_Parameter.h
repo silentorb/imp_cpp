@@ -40,7 +40,7 @@ namespace overworld {
                                 const source_mapping::Source_Range &source_point) :
         Common_Element(type, name, profession, source_point) {}
 
-      void set_profession(Profession &value) override {
+      void set_profession(Profession &value, Profession_Setter &setter) override {
         throw std::runtime_error("Not supported.");
       }
 

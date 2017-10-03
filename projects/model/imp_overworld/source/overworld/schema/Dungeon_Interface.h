@@ -9,7 +9,7 @@ namespace overworld {
       variant
   };
 
-  class Dungeon_Interface : public virtual Profession {
+  class Dungeon_Interface : public Profession {
   public:
       virtual Dungeon &get_original() = 0;
       virtual const Dungeon &get_original() const = 0;

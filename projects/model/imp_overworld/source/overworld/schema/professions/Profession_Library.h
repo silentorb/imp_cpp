@@ -34,7 +34,7 @@ namespace overworld {
       Reference &get_reference(Profession &profession);
       Pointer &get_pointer(Profession &profession);
 
-      void assign(Node &node, overworld::Profession &profession);
+      void assign(Node &node, overworld::Profession &profession, Profession_Setter &setter);
 
       Function_Variant_Array &get_function_variant_array(Function_Interface &function);
       Dungeon_Variant_Array &get_dungeon_variant_array(Dungeon_Interface &dungeon);

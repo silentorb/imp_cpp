@@ -47,6 +47,18 @@ namespace solving {
       std::vector<overworld::Profession *> ancestors_buffer1;
       std::vector<overworld::Profession *> ancestors_buffer2;
 
+      class Solver_Profession_Setter : public overworld::Profession_Setter {
+          Solver &solver;
+      public:
+          explicit Solver_Profession_Setter(Solver &solver) : solver(solver) {}
+
+          void set_profession(Node &node, overworld::Profession &profession) override {
+            solver.set_profession(node, profession);
+          }
+      };
+
+      Solver_Profession_Setter setter;
+
 #ifdef DEBUG_SOLVER
       std::vector<Node *> resolved;
 #endif
@@ -91,7 +103,8 @@ namespace solving {
 
   public:
       Solver(Graph &graph, overworld::Profession_Library &profession_library) :
-        graph(graph), profession_library(profession_library) {
+        graph(graph), profession_library(profession_library),
+        setter(*this) {
         graph.set_on_add([this](Node &node) { on_add(node); });
         graph.set_on_remove([this](Node &node) { on_remove(node); });
         graph.set_on_connect([this](Connection &connection) { on_connect(connection); });

@@ -82,11 +82,11 @@ namespace imp_summoning {
     }
   }
 
-  std::vector<std::string> Summoner::process_generic_parameters(Context &context) {
-    std::vector<std::string> parameters;
+  std::vector<Generic_Parameter> Summoner::process_generic_parameters(Context &context) {
+    std::vector<Generic_Parameter> parameters;
     while (true) {
       auto text = input.expect_next(lexicon.identifier).get_text();
-      parameters.push_back(text);
+      parameters.push_back({text, input.get_source_range()});
 
       if (input.next().is_not(lexicon.comma))
         break;
@@ -112,7 +112,7 @@ namespace imp_summoning {
 
       auto &dungeon = process_dungeon(identifier, context);
       for (auto parameter : parameters) {
-        dungeon.add_generic_parameter(parameter);
+        dungeon.add_generic_parameter({parameter});
       }
     }
   }

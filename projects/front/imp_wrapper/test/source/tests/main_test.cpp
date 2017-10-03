@@ -46,6 +46,6 @@ TEST(Main_Test, iteration) {
   compile("iteration");
   Comparison test("iteration");
   test.compare("Goblikin.h");
-//  test.compare("Goblikin.cpp");
+  test.compare("Goblikin.cpp");
   test.compare("Ingredient.h");
 }

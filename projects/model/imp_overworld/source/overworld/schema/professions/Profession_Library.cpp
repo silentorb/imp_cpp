@@ -61,17 +61,17 @@ namespace overworld {
     return *pointer;
   }
 
-  void Profession_Library::assign(Node &node, overworld::Profession &profession) {
+  void Profession_Library::assign(Node &node, overworld::Profession &profession, Profession_Setter &setter) {
     auto &previous = node.get_element().get_profession();
     if (previous.get_type() == Profession_Type::reference) {
       auto &reference = *dynamic_cast<Reference *>(&previous);
       auto &new_profession = reference.is_pointer()
                              ? (Reference &) get_pointer(profession.get_base())
                              : get_reference(profession.get_base());
-      node.get_element().set_profession(new_profession);
+      node.get_element().set_profession(new_profession, setter);
     }
     else {
-      node.get_element().set_profession(profession);
+      node.get_element().set_profession(profession, setter);
     }
   }
 
