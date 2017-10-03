@@ -230,7 +230,7 @@ namespace imp_mirror {
     auto &overworld_function = get_function_signature(output_expression->get_last(), arguments, scope);
 
     auto invoke = new overworld::Invoke(output_expression, arguments,
-                                        function_call);
+                                        function_call.get_source_point());
     auto result = overworld::Expression_Owner(invoke);
 
     auto &parameters = overworld_function.get_parameters();
@@ -241,12 +241,12 @@ namespace imp_mirror {
     for (int i = 0; i < invoke_arguments.size(); ++i) {
       auto &first = parameters[i]->get_node();
       auto &second = *invoke_arguments[i]->get_node();
-      auto k = first.get_profession_reference().get_element_type();
-      if (first.get_profession_reference().get_element_type() == overworld::Element_Type::parameter
+      auto k = first.get_element().get_type();
+      if (first.get_element().get_type() == overworld::Element_Type::parameter
           && first.get_function() != second.get_function()
-          && first.get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
+          && first.get_element().get_profession().get_type() == overworld::Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke->get_expression());
-        auto argument_node = new overworld::Argument_Node(first.get_profession(), member_container,
+        auto argument_node = new overworld::Argument_Node(first.get_element().get_profession(), member_container,
                                                           scope.get_function(), profession_library,
                                                           function_call.get_arguments()[i]->get_source_point());
         invoke->add_argument_node(std::unique_ptr<overworld::Argument_Node>(argument_node));
@@ -264,15 +264,16 @@ namespace imp_mirror {
                                                             overworld::Scope &scope) {
     auto &input_profession_expression = instantiation.get_profession_expression();
     auto &output_profession = reflect_expression(input_profession_expression,
-                                                 scope)->get_last().get_node()->get_profession();
+                                                 scope)->get_last().get_node()->get_element().get_profession();
 //      auto &output_profession = reflect_profession(input_profession, scope);
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + output_profession.get_name(), instantiation.get_source_point());
 
     auto &source_arguments = instantiation.get_dictionary();
     auto function = scope.get_function();
-    auto output_instantiation = new overworld::Instantiation(output_profession, instantiation.get_source_point(),
-                                                             function ? nullptr : &scope.get_dungeon(), function);
+    auto output_instantiation = new overworld::Instantiation(output_profession,
+                                                             function ? nullptr : &scope.get_dungeon(), function,
+                                                             instantiation.get_source_point());
     overworld::Expression_Owner result(output_instantiation);
     graph.connect(*output_instantiation->get_node(), output_profession.get_node());
 
@@ -303,7 +304,7 @@ namespace imp_mirror {
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(), *scope.get_function());
       auto &member = interface.add_minion(new_member);
-      auto result = new overworld::Member_Expression(member);
+      auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
       new_member->add_expression(*result);
       return overworld::Expression_Owner(result);
     }
@@ -321,7 +322,7 @@ namespace imp_mirror {
                                                            overworld::Scope &scope) {
 
     auto &previous_expression = first.get_last();
-    auto &profession = previous_expression.get_node()->get_profession_reference().get_profession();
+    auto &profession = previous_expression.get_node()->get_element().get_profession();
     if (second.get_type() == underworld::Expression::Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon
@@ -331,7 +332,7 @@ namespace imp_mirror {
         if (!member)
           throw std::runtime_error("Could not find member.");
 
-        return overworld::Expression_Owner(new overworld::Member_Expression(*member));
+        return overworld::Expression_Owner(new overworld::Member_Expression(*member, second.get_source_point()));
       }
       else if (profession.get_type() == overworld::Profession_Type::unknown) {
         if (previous_expression.get_type() == overworld::Expression::Type::member) {
@@ -356,7 +357,7 @@ namespace imp_mirror {
     auto second = reflect_chain_member(*first, input_chain.get_second(), scope);
     auto chain = new overworld::Chain(first, second,
                                       scope.get_dungeon_if_not_function(),
-                                      scope.get_function());
+                                      scope.get_function(), input_chain.get_source_point());
     overworld::Expression_Owner result(chain);
 //    graph.connect(*first->get_node(), *second->get_node()).set_type(overworld::Connection_Type::member);
     return result;
@@ -376,11 +377,13 @@ namespace imp_mirror {
 
       case underworld::Expression::Type::Operator:
         return overworld::Expression_Owner(new overworld::Operator(
-          reflect_operator(*dynamic_cast<const underworld::Operator *>(&input_expression))
+          reflect_operator(*dynamic_cast<const underworld::Operator *>(&input_expression)),
+          input_expression.get_source_point()
         ));
 
       case underworld::Expression::Type::self:
-        return overworld::Expression_Owner(new overworld::Self(scope.get_dungeon()));
+        return overworld::Expression_Owner(new overworld::Self(scope.get_dungeon(),
+                                                               input_expression.get_source_point()));
 
       case underworld::Expression::Type::chain:
         return reflect_chain(*dynamic_cast<const underworld::Chain *>(&input_expression), scope);

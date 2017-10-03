@@ -26,5 +26,17 @@ namespace overworld {
       const Operator_Type get_operator_type() const {
         return operator_type;
       }
+
+      const std::string get_name() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      Profession &get_profession() override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const Profession &get_profession() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 }

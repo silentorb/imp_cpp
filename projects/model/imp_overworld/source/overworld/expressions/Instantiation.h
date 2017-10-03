@@ -13,8 +13,7 @@ namespace overworld {
       Element_Reference_Node node;
 
   public:
-      Instantiation(Profession &profession, const source_mapping::Source_Range &source_point,
-                    Dungeon_Interface *dungeon, Function_Interface *function,
+      Instantiation(Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function,
                     const source_mapping::Source_Range &source_range) :
         Common_Expression(source_range),
         profession(&profession),

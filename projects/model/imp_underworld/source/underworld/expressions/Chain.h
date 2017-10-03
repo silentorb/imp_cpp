@@ -42,7 +42,8 @@ namespace underworld {
       }
 
       const source_mapping::Source_Range get_source_point() const override {
-        throw std::runtime_error("Not supported.");
+        return source_mapping::Source_Range(first->get_source_point().get_start(),
+                                            second->get_source_point().get_end());
       }
   };
 }

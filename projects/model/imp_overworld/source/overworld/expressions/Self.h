@@ -22,5 +22,17 @@ namespace overworld {
       Node *get_node() override {
         return &dungeon.get_node();
       }
+
+      const std::string get_name() const override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      Profession &get_profession() override {
+        throw std::runtime_error("Not supported.");
+      }
+
+      const Profession &get_profession() const override {
+        throw std::runtime_error("Not supported.");
+      }
   };
 }

@@ -11,10 +11,8 @@
 namespace overworld {
 
   class Invoke : public Common_Expression {
-//      Function_Signature &signature;
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
-//      const underworld::Invoke &source;
       std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
@@ -49,6 +47,18 @@ namespace overworld {
 
       void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
         argument_nodes.push_back(std::move(argument_node));
+      }
+
+      const std::string get_name() const override {
+        return "`Invoke`";
+      }
+
+      Profession &get_profession() override {
+        return expression->get_profession();
+      }
+
+      const Profession &get_profession() const override {
+        return expression->get_profession();
       }
   };
 }

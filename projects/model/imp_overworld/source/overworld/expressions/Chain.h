@@ -69,5 +69,13 @@ namespace overworld {
       const std::string get_name() const override {
         return "chain";
       }
+
+      Profession &get_profession() override {
+        return second->get_profession();
+      }
+
+      const Profession &get_profession() const override {
+        return second->get_profession();
+      }
   };
 }

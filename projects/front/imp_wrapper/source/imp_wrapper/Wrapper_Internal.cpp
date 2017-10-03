@@ -53,9 +53,9 @@ namespace imp_wrapper {
       auto &unknowns = solver.get_unsolved_nodes();
       if (unknowns.size() > 0) {
         auto &unknown = *unknowns[0];
-        auto &element = unknown.get_profession_reference();
+        auto &element = unknown.get_element();
         throw std::runtime_error("Could not determine type of \"" + element.get_name() +
-                                 "\" at " + element.get_source_point().to_string() + ".");
+                                 "\" at " + element.get_source_point().get_start().to_string() + ".");
       }
 
       auto &conflicts = solver.get_conflicts();
