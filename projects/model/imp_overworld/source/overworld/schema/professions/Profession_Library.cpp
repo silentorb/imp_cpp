@@ -111,8 +111,8 @@ namespace overworld {
     }
 
     for (auto &variant : variant_array) {
-      for (auto &profession : variant->get_professions()) {
-        if (profession->get_type() == Profession_Type::unknown)
+      for (auto &argument : variant->get_arguments()) {
+        if (argument->get_element().get_profession().get_type() == Profession_Type::unknown)
           goto next;
       }
 

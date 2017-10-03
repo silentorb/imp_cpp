@@ -34,25 +34,39 @@ namespace overworld {
 
   };
 
-  class Generic_Parameter : public virtual Profession {
-      source_mapping::Source_Range source_point;
-      std::string name;
-      Constant_Element element;
-      Generic_Parameter_Node node;
-
+  class Generic_Parameter_Element : public Common_Element {
   public:
-      Generic_Parameter(const std::string name, Dungeon_Interface *dungeon, Function_Interface *function) :
-        element(Element_Type::other, name, *this, source_point),
-        node(element, dungeon, function), name(name) {}
+      Generic_Parameter_Element(Element_Type type, const std::string &name, Profession &profession,
+                                const source_mapping::Source_Range &source_point) :
+        Common_Element(type, name, profession, source_point) {}
 
-      ~Generic_Parameter() override = default;
-
-      const std::string get_name() const override {
-        return name;
+      void set_profession(Profession &value) override {
+        throw std::runtime_error("Not supported.");
       }
 
       void set_name(const std::string &value) {
         name = value;
+      }
+  };
+
+  class Generic_Parameter : public virtual Profession {
+      Generic_Parameter_Element element;
+      Generic_Parameter_Node node;
+
+  public:
+      Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function,
+                        const source_mapping::Source_Range &source_point) :
+        element(Element_Type::other, name, *this, source_point),
+        node(element, dungeon, function) {}
+
+      ~Generic_Parameter() override = default;
+
+      const std::string get_name() const override {
+        return element.get_name();
+      }
+
+      void set_name(const std::string &value) {
+        element.set_name(value);
       }
 
       Generic_Parameter_Node &get_node() override {
@@ -91,7 +105,7 @@ namespace overworld {
         return *this;
       }
 
-      Constant_Element &get_element() {
+      Generic_Parameter_Element &get_element() {
         return element;
       }
   };

@@ -14,7 +14,7 @@ namespace overworld {
       throw std::runtime_error("Too many generic parameters.");
 
     auto parameter_name = get_generic_parameter_name(generic_parameters.size());
-    auto parameter = new Generic_Parameter(parameter_name, dungeon, function);
+    auto parameter = new Generic_Parameter(parameter_name, dungeon, function,  source_mapping:: Source_Range());
     generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
     return *parameter;
   }

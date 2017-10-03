@@ -63,16 +63,5 @@ namespace overworld {
       }
   };
 
-  class Constant_Element : public Common_Element {
-  public:
-      Constant_Element(Element_Type type, const std::string &name, Profession &profession,
-                       const source_mapping::Source_Range &source_point) :
-        Common_Element(type, name, profession, source_point) {}
-
-      void set_profession(Profession &value) override {
-        throw std::runtime_error("Not supported.");
-      }
-  };
-
   using Element_Owner = std::unique_ptr<Element>;
 }

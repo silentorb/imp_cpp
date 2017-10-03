@@ -198,9 +198,9 @@ namespace imp_rendering {
                                                  const overworld::Scope &scope) {
     if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
       auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
-      std::string parameter_string = join(variant.get_professions(), Joiner<Profession *>(
-        [& scope](const Profession *profession) {
-          return render_profession(*profession, scope);
+      std::string parameter_string = join(variant.get_arguments(), Joiner<const Generic_Argument_Owner &>(
+        [& scope](const Generic_Argument_Owner &argument) {
+          return render_profession(argument->get_element().get_profession(), scope);
         }), ", ");
 
       return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";

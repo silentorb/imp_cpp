@@ -668,7 +668,7 @@ namespace imp_mirror {
     }
 
     for (auto &generic_parameter: input_dungeon.get_generic_parameters()) {
-      auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr);
+      auto output_generic_parameter = new overworld::Generic_Parameter(generic_parameter, output_dungeon, nullptr, input_dungeon.get_source_point());
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }
     reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(), output_scope);
