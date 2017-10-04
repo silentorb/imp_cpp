@@ -25,10 +25,11 @@ namespace imp_summoning {
     }
   }
 
-  underworld::Profession_Owner Base_Summoner::process_profession(Context &context) {
+  underworld::Profession_Owner Base_Summoner::process_profession_internal(Context &context) {
     if (input.current().is(lexicon.ampersand)) {
       input.next();
-      return Profession_Owner(new Reference(Profession_Owner(new Unknown(get_source_point()))));
+      auto child = process_profession(context);
+      return Profession_Owner(new Reference(std::move(child)));
     }
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown) {
@@ -37,6 +38,16 @@ namespace imp_summoning {
     }
 
     return process_profession_token(context);
+  }
+
+  underworld::Profession_Owner Base_Summoner::process_profession(Context &context) {
+    auto profession = process_profession_internal(context);
+    if (input.current().is(lexicon.single_arrow)) {
+      input.next();
+      auto child = process_profession(context);
+
+    }
+    return profession;
   }
 
 }

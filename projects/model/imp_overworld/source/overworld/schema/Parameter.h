@@ -38,15 +38,17 @@ namespace overworld {
       }
   };
 
-  class Owning_Parameter : public Parameter {
-  public:
-      Owning_Parameter(const std::string &name, Profession &profession,
-                       const source_mapping::Source_Range &source_point, Function_Interface &function) :
-        Parameter(name, profession, source_point, function) {}
+  using Parameter_Owner = std::unique_ptr<Parameter>;
 
-      bool transfers_ownership() const override {
-        return true;
-      }
-  };
+//  class Owning_Parameter : public Parameter {
+//  public:
+//      Owning_Parameter(const std::string &name, Profession &profession,
+//                       const source_mapping::Source_Range &source_point, Function_Interface &function) :
+//        Parameter(name, profession, source_point, function) {}
+//
+//      bool transfers_ownership() const override {
+//        return true;
+//      }
+//  };
 
 }

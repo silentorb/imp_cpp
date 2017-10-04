@@ -55,7 +55,8 @@ namespace runic {
 
   // The way the parser currently works, the first character of each of these whispers must exist in Single_Symbols
   struct Double_Symbols {
-      Whisper arrow = "=>";
+      Whisper double_arrow = "=>";
+      Whisper single_arrow = "=>";
 
       Whisper plus_equals = "+=";
       Whisper subtract_equals = "-=";

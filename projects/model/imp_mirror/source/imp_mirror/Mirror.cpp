@@ -203,7 +203,7 @@ namespace imp_mirror {
           auto &argument_profession = argument->get_node()->get_element().get_profession();
           auto parameter = new overworld::Parameter("(temp)", argument_profession,
                                                     source_mapping::Source_Range(), *scope.get_function());
-          temporary_member.add_parameter(parameter);
+          temporary_member.add_parameter(overworld::Parameter_Owner(parameter));
         }
         return signature;
       }
@@ -602,14 +602,16 @@ namespace imp_mirror {
 
       auto &parameters = input_function_with_block->get_parameters();
       for (auto &source_parameter : parameters) {
-        auto &minion = output_function_with_block->get_block().get_scope().get_minion(source_parameter->get_name());
-        output_function_with_block->add_parameter_to_signature(cast<overworld::Parameter>(minion));
+//        auto &minion = output_function_with_block->get_block().get_scope().get_minion(source_parameter->get_name());
+//        output_function_with_block->add_parameter(reflect_para);
+        auto minion = create_parameter(*source_parameter, output_function_with_block->get_parent_scope(), *output_function_with_block);
+        output_function_with_block->add_parameter(std::move(minion));
       }
     }
     else {
       auto virtual_input_function = dynamic_cast<const underworld::Virtual_Function *>(&input_function);
+      auto output_function = element_map.find_or_null<overworld::Virtual_Function>(&input_function);
       for (auto &source_parameter : virtual_input_function->get_parameters()) {
-        auto output_function = element_map.find_or_null<overworld::Virtual_Function>(&input_function);
         auto minion = create_parameter(*source_parameter, output_function->get_parent_scope(), *output_function);
         output_function->add_parameter(std::move(minion));
       }

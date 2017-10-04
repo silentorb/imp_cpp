@@ -10,7 +10,6 @@ namespace underworld {
   class Minion : public Member {
       const std::string name;
       Profession_Owner profession;
-      bool _is_static = false;
 
   public:
       Minion(const std::string &name, Profession_Owner profession, const source_mapping::Source_Range &source_point) :
@@ -33,14 +32,6 @@ namespace underworld {
 
       const Profession *get_profession() const override {
         return profession.get();
-      }
-
-      bool is_static() const {
-        return _is_static;
-      }
-
-      void set_is_static(bool value) {
-        _is_static = value;
       }
 
       virtual bool is_parameter() const {

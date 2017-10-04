@@ -9,7 +9,6 @@ namespace overworld {
   class Temporary_Minion : public Minion {
       std::vector<Member_Expression *> expressions;
       std::unique_ptr<Function_Signature> signature;
-      std::vector<std::unique_ptr<Parameter>> parameters;
 
   public:
       Temporary_Minion(const std::string &name, Profession &profession,
@@ -35,9 +34,8 @@ namespace overworld {
         return *signature;
       }
 
-      void add_parameter(Parameter *parameter) {
-        parameters.push_back(std::unique_ptr<Parameter>(parameter));
-        signature->add_parameter(*parameter);
+      void add_parameter(Parameter_Owner parameter) {
+        signature->add_parameter(std::move(parameter));
       }
   };
 }

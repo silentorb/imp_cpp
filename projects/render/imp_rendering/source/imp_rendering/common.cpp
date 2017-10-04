@@ -103,8 +103,8 @@ namespace imp_rendering {
 
   const std::string render_function_parameters(const overworld::Function &function) {
     return "(" +
-           join(function.get_parameters(), Joiner<overworld::Parameter *>(
-             [& function](const overworld::Minion *minion) {
+           join(function.get_parameters(), Joiner<const overworld::Parameter_Owner &>(
+             [& function](const overworld::Parameter_Owner &minion) {
                return render_parameter(*minion, function.get_parent_scope());
              }), ", ") + ")";
   }

@@ -17,6 +17,7 @@ namespace imp_summoning {
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
       underworld::Profession_Owner process_profession_token(Context &context);
+      underworld::Profession_Owner process_profession_internal(Context &context);
       underworld::Profession_Owner process_profession(Context &context);
       underworld::Profession_Owner parse_profession_path(std::vector<std::string> &path, Context &context);
 

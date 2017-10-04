@@ -175,7 +175,7 @@ namespace imp_summoning {
     }
   }
 
-  void Summoner::process_function_parameters(Context &context, vector<unique_ptr<Parameter>> &parameters) {
+  void Summoner::process_function_parameters(Context &context, vector<Parameter_Owner> &parameters) {
     input.if_is(lexicon.left_paren);
     while (input.current().is_not(lexicon.right_paren) && input.current().is_not(lexicon.end_of_file)) {
 //     throw Syntax_Exception(input.current());
@@ -183,14 +183,14 @@ namespace imp_summoning {
       auto source_point = input.get_source_point();
       input.next();
       auto profession = process_optional_profession(context);
-      parameters.push_back(std::unique_ptr<Parameter>(new Parameter(name, std::move(profession), source_point)));
+      parameters.push_back(Parameter_Owner(new Parameter(name, std::move(profession), source_point)));
     }
     input.next();
   }
 
   Function &Summoner::process_function_internal(Identifier &identifier, Context &context) {
     auto profession = process_optional_profession(context);
-    std::vector<std::unique_ptr<Parameter>> parameters;
+    std::vector<Parameter_Owner> parameters;
     process_function_parameters(context, parameters);
     if (input.if_is(lexicon.left_brace)) {
       auto function = new Function_With_Block(identifier.name, std::move(profession), identifier.source_point,

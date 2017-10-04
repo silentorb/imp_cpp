@@ -6,5 +6,6 @@ stl {
   @external_name("vector")
   Array<T> {
     push_back(item:T)
+    map(func:&T -> ?)
   }
 }

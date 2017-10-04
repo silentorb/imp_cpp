@@ -5,30 +5,20 @@
 #include "Member.h"
 #include "Scope.h"
 #include "Generic_Parameter.h"
+#include "Function_Signature.h"
 
 namespace underworld {
 
-  class Parameter : public Minion {
-  public:
-      Parameter(const std::string &name, Profession_Owner profession, const source_mapping::Source_Range &source_point)
-        : Minion(name, std::move(profession), source_point) {}
-
-      bool is_parameter() const override {
-        return true;
-      }
-  };
-
   class Function : public Member {
+      Function_Signature signature;
       const std::string name;
-      Profession_Owner return_type;
-      bool _is_static = false;
-      std::vector<Generic_Parameter> generic_parameters;
+           std::vector<Generic_Parameter> generic_parameters;
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
                const source_mapping::Source_Range &source,
                Scope &parent) :
-        name(name), return_type(std::move(return_type)), Member(source) {}
+        name(name), signature(std::move(return_type)), Member(source) {}
 
       Function(const std::string &name, const source_mapping::Source_Range &source,
                Scope &parent) :
@@ -43,7 +33,7 @@ namespace underworld {
       }
 
       const Profession *get_profession() const override {
-        return return_type.get();
+        return signature.get_return_type();
       }
 
       void add_generic_parameter(Generic_Parameter &value) {
@@ -58,10 +48,19 @@ namespace underworld {
         return false;
       }
 
+      virtual void add_parameters(std::vector<Parameter_Owner> &new_parameters) {
+        for (auto &parameter: new_parameters) {
+          signature.add_parameter(std::move(parameter));
+        }
+      }
+
+      const std::vector<std::unique_ptr<Parameter>> &get_parameters() const {
+        return signature.get_parameters();
+      }
+
   };
 
   class Virtual_Function : public Function {
-      std::vector<std::unique_ptr<Parameter>> parameters;
 
   public:
       Virtual_Function(const std::string &name, Profession_Owner return_type,
@@ -70,24 +69,10 @@ namespace underworld {
 
       Virtual_Function(const std::string &name, const source_mapping::Source_Range &source, Scope &parent) :
         Function(name, source, parent) {}
-
-      virtual void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
-        for (auto &parameter: new_parameters) {
-          parameters.push_back(std::move(parameter));
-        }
-      }
-
-      const std::vector<std::unique_ptr<Parameter>> &get_parameters() const {
-        return parameters;
-      }
-
-      virtual Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                                       const source_mapping::Source_Range &source);
   };
 
   class Function_With_Block : public Function {
       Block block;
-      std::vector<Parameter *> parameters;
 
   public:
       Function_With_Block(const std::string &name, Profession_Owner return_type,
@@ -101,20 +86,6 @@ namespace underworld {
 
       Block &get_block() {
         return block;
-      }
-
-      void add_parameters(std::vector<std::unique_ptr<Parameter>> &new_parameters) {
-        for (auto &parameter: new_parameters) {
-          parameters.push_back(parameter.get());
-          block.get_scope().add_member(std::move(parameter));
-        }
-      }
-
-      Parameter &add_parameter(const std::string &name, Profession_Owner profession,
-                               const source_mapping::Source_Range &source);
-
-      const std::vector<Parameter *> &get_parameters() const {
-        return parameters;
       }
 
       const Block &get_block() const {

@@ -10,7 +10,7 @@ World {
 }
 
 Creature {
-  world: &
+  world: &?
 
 @public:
   set_world(value:&) {

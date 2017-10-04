@@ -55,8 +55,6 @@ namespace overworld {
       const std::string get_name() const override {
         return value.get_name();
       }
-
-
   };
 
   using Member_Owner = std::unique_ptr<Member>;

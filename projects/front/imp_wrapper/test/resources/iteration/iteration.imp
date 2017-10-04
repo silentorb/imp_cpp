@@ -11,6 +11,6 @@ Goblikin {
     var tail = Ingredient {}
     tail.name = "dragon's tail"
     ingredients.push_back(tail)
-    // ingredients.map(i => stl.print(i.name))
+    ingredients.map(i => stl.print(i.name))
   }
 }

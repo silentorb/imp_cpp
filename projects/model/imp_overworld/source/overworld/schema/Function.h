@@ -5,41 +5,11 @@
 #include <overworld/schema/professions/Profession_Library.h>
 #include "Parameter.h"
 #include "Function_Interface.h"
+#include "Function_Signature.h"
 
 namespace overworld {
 
   class Profession_Library;
-
-  class Function_Signature {
-      std::vector<Parameter *> parameters;
-      Node &node;
-      Profession *return_type = nullptr;
-
-  public:
-
-      Function_Signature(Node &node, Profession *return_type = nullptr) :
-        node(node), return_type(return_type) {}
-
-      const std::vector<Parameter *> &get_parameters() const {
-        return parameters;
-      }
-
-      Profession *get_return_type() const {
-        return return_type;
-      }
-
-      void add_parameter(Parameter &parameter) {
-        parameters.push_back(&parameter);
-      }
-
-      void set_return_type(Profession &profession) {
-        return_type = &profession;;
-      }
-
-      Node &get_node() {
-        return node;
-      }
-  };
 
   class Function : public virtual Function_Interface {
   protected:
@@ -93,15 +63,17 @@ namespace overworld {
         return false;
       }
 
-      const std::vector<Parameter *> &get_parameters() const {
+      const std::vector<Parameter_Owner> &get_parameters() const {
         return signature.get_parameters();
       }
 
-      void add_parameter_to_signature(Parameter &parameter) {
-        signature.add_parameter(parameter);
+      void add_parameter_to_signature(Parameter_Owner parameter) {
+        signature.add_parameter(std::move(parameter));
       }
 
-      virtual void add_parameter(std::unique_ptr<Parameter> parameter) = 0;
+      virtual void add_parameter(Parameter_Owner parameter) {
+        signature.add_parameter(std::move(parameter));
+      }
 
 //      Minion &create_parameter(const std::string &name, Profession &profession);
 
@@ -113,7 +85,7 @@ namespace overworld {
         return _get_profession();
       }
 
-      const Profession &get_profession() const  {
+      const Profession &get_profession() const {
         return _get_profession();
       }
 
@@ -187,7 +159,6 @@ namespace overworld {
   using Function_Owner = std::unique_ptr<Function>;
 
   class Virtual_Function : public Function {
-      std::vector<std::unique_ptr<Parameter>> parameters;
       Scope &parent_scope;
 
   public:
@@ -200,11 +171,6 @@ namespace overworld {
         Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
 
       virtual ~Virtual_Function() {}
-
-      void add_parameter(std::unique_ptr<Parameter> parameter) override {
-        Function::add_parameter_to_signature(*parameter);
-        parameters.push_back(std::move(parameter));
-      }
 
       Scope &get_parent_scope() override {
         return parent_scope;
@@ -258,11 +224,6 @@ namespace overworld {
       }
 
       bool is_inline() const override;
-
-      void add_parameter(std::unique_ptr<Parameter> parameter) override {
-        signature.add_parameter(*parameter);
-        scope.add_minion(std::move(parameter));
-      }
   };
 
   class Member_Function : public Generic_Member_Reference<Function> {
