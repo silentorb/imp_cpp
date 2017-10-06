@@ -18,8 +18,8 @@ namespace overworld {
 
       }
 
-      Type get_type() const override {
-        return Type::assignment;
+      Expression_Type get_type() const override {
+        return Expression_Type::assignment;
       }
 
       const Expression_Owner &get_target() const {

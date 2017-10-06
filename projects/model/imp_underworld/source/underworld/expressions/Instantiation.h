@@ -16,8 +16,8 @@ namespace underworld {
 
       virtual ~Instantiation() {}
 
-      Type get_type() const override {
-        return Type::instantiation;
+      Expression_Type get_type() const override {
+        return Expression_Type::instantiation;
       }
 
       void add_expression(const std::string &key, Expression_Owner value) {

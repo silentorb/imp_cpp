@@ -14,12 +14,14 @@ namespace imp_rendering {
   const std::string render_function_declaration(const overworld::Function &function);
   const std::string render_profession(const overworld::Profession &profession, const overworld::Scope &scope);
   const std::string render_profession_owner(const overworld::Profession &profession, const overworld::Scope &scope);
-  const std::string render_separator(const overworld::Profession &profession);
+  const std::string render_separator(const overworld::Expression &expression);
   const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
                                 const std::string &value);
 //  const std::string render_profession_as_owner_reference(const overworld::Profession &profession);
 
   const std::string get_cpp_name(const overworld::Dungeon &dungeon);
+  const std::string get_cpp_name(const overworld::Minion &minion);
+  const std::string get_cpp_name(const overworld::Function &function);
 
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
                                     const overworld::Scope &scope);

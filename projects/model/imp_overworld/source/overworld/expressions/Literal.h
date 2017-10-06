@@ -11,8 +11,8 @@ namespace overworld {
   public:
       Literal(const source_mapping::Source_Range &source_range) : Common_Expression(source_range) {}
 
-      Type get_type() const override {
-        return Type::literal;
+      Expression_Type get_type() const override {
+        return Expression_Type::literal;
       }
 
       virtual Primitive_Type get_primitive_type() const = 0;
@@ -48,6 +48,10 @@ namespace overworld {
 
       const T &get_value() const {
         return value;
+      }
+
+      const Node *get_node() const override {
+        return &node;
       }
 
       Node *get_node() override {

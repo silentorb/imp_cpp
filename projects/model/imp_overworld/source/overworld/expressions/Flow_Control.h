@@ -32,12 +32,12 @@ namespace overworld {
       If(Expression_Owner condition, Expression_Owner expression) :
         Conditional_Expression(condition, expression) {}
 
-      Type get_type() const override {
-        return Type::If;
+      Expression_Type get_type() const override {
+        return Expression_Type::If;
       }
   };
 
-  class Else : public virtual Expression {
+  class Else : public Expression {
       Expression_Owner expression;
 
   public:
@@ -48,8 +48,8 @@ namespace overworld {
 
       }
 
-      Type get_type() const override {
-        return Type::Else;
+      Expression_Type get_type() const override {
+        return Expression_Type::Else;
       }
   };
 }

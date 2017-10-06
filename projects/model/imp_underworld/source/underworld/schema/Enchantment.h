@@ -8,14 +8,18 @@
 namespace underworld {
 
   class Enchantment {
-      std::string name;
+      Profession_Owner profession;
       std::vector<Expression_Owner> arguments;
 
   public:
-      Enchantment(const std::string &name) : name(name) {}
+      Enchantment(Profession_Owner profession) : profession(std::move(profession)) {}
 
-      const std::string &get_name() const {
-        return name;
+//      const std::string &get_name() const {
+//        return name;
+//      }
+
+      const Profession &get_profession() const {
+        return *profession;
       }
 
       void add_argument(Expression_Owner argument) {

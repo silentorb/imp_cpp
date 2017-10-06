@@ -30,7 +30,7 @@ namespace imp_summoning {
       }
 
       template<typename T>
-      inline T &cast(underworld::Expression &expression, underworld::Expression::Type type,
+      inline T &cast(underworld::Expression &expression, underworld::Expression_Type type,
                      const std::string &message) {
         if (expression.get_type() != type)
           throw runic::Invalid_Token_Exception(input.current(), message);

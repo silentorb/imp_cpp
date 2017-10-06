@@ -49,8 +49,8 @@ namespace overworld {
         return block.get_expressions();
       }
 
-      Type get_type() const override {
-        return Type::block;
+      Expression_Type get_type() const override {
+        return Expression_Type::block;
       }
 
       const Block &get_block() const {

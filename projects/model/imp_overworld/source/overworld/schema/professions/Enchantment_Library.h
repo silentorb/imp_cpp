@@ -1,6 +1,6 @@
 #pragma once
 
-#include <overworld/schema/Enchantment.h>
+#include <overworld/schema/Dungeon.h>
 #include "Profession.h"
 #include <memory>
 #include <unordered_map>
@@ -9,20 +9,19 @@
 namespace overworld {
 
   class Enchantment_Library {
-      std::unordered_map<std::string, Enchantment *> global_enchantments;
+      std::unordered_map<std::string, Dungeon *> global_enchantments;
 
   public:
       Enchantment_Library();
 
-      Enchantment *find_enchantment(const std::string &name);
-      static Enchantment_With_Parameters &get_external();
-      static Enchantment_With_Parameters &get_external_name();
-      static Simple_Enchantment &get_static();
-      static Simple_Enchantment &get_public();
-      static Simple_Enchantment &get_private();
-      static Simple_Enchantment &get_protected();
-      static Simple_Enchantment &get_value();
+      Dungeon *find_enchantment(const std::string &name);
+      static Dungeon &get_external();
+      static Dungeon &get_external_name();
+      static Dungeon &get_static();
+      static Dungeon &get_public();
+      static Dungeon &get_private();
+      static Dungeon &get_protected();
+      static Dungeon &get_value();
 
-      static void initialize();
   };
 }

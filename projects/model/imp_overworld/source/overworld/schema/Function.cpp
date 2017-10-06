@@ -31,7 +31,7 @@ namespace overworld {
     bool result = false;
 
     exploring::Expression_Explorer explorer([&result](const Expression &expression) {
-      if (expression.get_type() == Expression::Type::return_with_value)
+      if (expression.get_type() == Expression_Type::return_with_value)
         result = true;
     });
     explorer.explore_block(block);

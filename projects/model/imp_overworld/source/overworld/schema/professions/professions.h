@@ -7,7 +7,7 @@
 
 namespace overworld {
 
-  class Unknown : public virtual Profession {
+  class Unknown : public Profession {
   public:
       Profession_Type get_type() const override {
         return Profession_Type::unknown;
@@ -42,7 +42,7 @@ namespace overworld {
       }
   };
 
-  class Void : public virtual Profession {
+  class Void : public Profession {
   public:
       Profession_Type get_type() const override {
         return Profession_Type::Void;
@@ -87,7 +87,7 @@ namespace overworld {
 
   const int Primitive_Type_Count = 5;
 
-  class Primitive : public virtual Profession {
+  class Primitive : public Profession {
       Primitive_Type primitive_type;
       File *file = nullptr;
 
@@ -132,7 +132,7 @@ namespace overworld {
       }
   };
 
-  class Reference : public virtual Profession {
+  class Reference : public Profession {
   protected:
       Profession &profession;
 

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Expression.h"
 
 namespace overworld {
@@ -19,8 +20,16 @@ namespace overworld {
 
       }
 
-      Type get_type() const override {
-        return Type::Operator;
+      const Node *get_node() const override {
+        throw std::runtime_error("Not implemented.");
+      }
+
+      Node *get_node() override {
+        throw std::runtime_error("Not implemented.");
+      }
+
+      Expression_Type get_type() const override {
+        return Expression_Type::Operator;
       }
 
       const Operator_Type get_operator_type() const {

@@ -31,6 +31,12 @@ namespace imp_summoning {
       auto child = process_profession(context);
       return Profession_Owner(new Reference(std::move(child)));
     }
+
+    if (input.current().is(lexicon.question_mark)) {
+      input.next();
+      return Profession_Owner(new Unknown(get_source_point()));
+    }
+
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown) {
       input.next();

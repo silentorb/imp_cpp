@@ -33,7 +33,7 @@ namespace overworld {
       virtual ~Scope();
 
       void add_function(std::unique_ptr<Function> function);
-      Member & add_minion(Minion *minion);
+      Member & add_minion(Minion &minion);
       Member & add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);

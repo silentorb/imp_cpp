@@ -16,8 +16,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::variable_declaration;
+      Expression_Type get_type() const override {
+        return Expression_Type::variable_declaration;
       }
 
       const Minion &get_minion() const {
@@ -44,8 +44,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::variable_declaration_and_assignment;
+      Expression_Type get_type() const override {
+        return Expression_Type::variable_declaration_and_assignment;
       }
 
       const Expression &get_expression() const {

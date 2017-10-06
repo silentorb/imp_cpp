@@ -10,7 +10,7 @@ Goblikin {
     var ingredients = stl.Array {}
     var tail = Ingredient {}
     tail.name = "dragon's tail"
-    ingredients.push_back(tail)
+    ingredients.add(tail)
     ingredients.map(i => stl.print(i.name))
   }
 }

@@ -6,7 +6,7 @@
 
 namespace underworld {
 
-  class Literal : public virtual Common_Expression {
+  class Literal : public Common_Expression {
       source_mapping::Source_Range source_point;
 
   public:
@@ -16,8 +16,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::literal;
+      Expression_Type get_type() const override {
+        return Expression_Type::literal;
       }
 
       virtual Primitive_Type get_primitive_type() const = 0;

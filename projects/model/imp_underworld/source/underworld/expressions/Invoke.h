@@ -8,7 +8,7 @@
 
 namespace underworld {
 
-  class Invoke : public virtual Common_Expression {
+  class Invoke : public Common_Expression {
       Expression_Owner expression;
 //      Function &function;
       std::vector<Expression_Owner> arguments;
@@ -22,8 +22,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::invoke;
+      Expression_Type get_type() const override {
+        return Expression_Type::invoke;
       }
 
 //      Function &get_function() const {

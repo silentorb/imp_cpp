@@ -11,15 +11,19 @@ namespace overworld {
 
   public:
       Self(Dungeon &dungeon, const source_mapping::Source_Range &source_range) :
-        Common_Expression(source_range),                                                                                 dungeon(dungeon) {}
+        Common_Expression(source_range), dungeon(dungeon) {}
 
       ~Self() override = default;
 
-      Type get_type() const override {
-        return Type::self;
+      Expression_Type get_type() const override {
+        return Expression_Type::self;
       }
 
       Node *get_node() override {
+        return &dungeon.get_node();
+      }
+
+      const Node *get_node() const override {
         return &dungeon.get_node();
       }
 

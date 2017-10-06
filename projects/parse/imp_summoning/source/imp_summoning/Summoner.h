@@ -17,11 +17,12 @@ namespace imp_summoning {
   class Summoner : public Base_Summoner {
       Expression_Summoner expression_summoner;
 
+      void process_dungeon_body(underworld::Dungeon &dungeon, Context &context);
       underworld::Dungeon &process_dungeon(Identifier &identifier, Context &context);
       void process_dungeon_member(Context &context);
       underworld::Function &process_function_internal(Identifier &identifier, Context &context);
       underworld::Function &process_function(Identifier &identifier, Context &context);
-      void process_member_enchantments(underworld::Member &member,Identifier &identifier, Context &context);
+      void process_member_enchantments(underworld::Member &member, Identifier &identifier, Context &context);
       void process_function_parameters(Context &context, std::vector<underworld::Parameter_Owner> &func);
       void process_root(Context &context);
       void process_root_identifier(Identifier &identifier, Context &context);

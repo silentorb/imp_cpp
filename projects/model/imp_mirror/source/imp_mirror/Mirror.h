@@ -17,8 +17,8 @@
 #include <overworld/expressions/Invoke.h>
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Instantiation.h>
+#include <underworld/expressions/Lambda.h>
 #include "Element_Map.h"
-#include "Integrity.h"
 #include "Temporary_Interface_Manager.h"
 
 namespace overworld {
@@ -51,6 +51,9 @@ namespace imp_mirror {
       }
 
       overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
+
+      overworld::Dungeon *find_enchantment_dungeon(const underworld::Profession &input_profession,
+                                                   overworld::Scope &scope);
       void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
                                 overworld::Enchantment_Container &output_enchantments,
                                 overworld::Scope &scope);
@@ -58,6 +61,7 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
                                                      overworld::Scope &scope);
 
+      overworld::Expression_Owner reflect_lambda(const underworld::Lambda &input_lambda, overworld::Scope &scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal,
                                                   overworld::Dungeon &dungeon, overworld::Function_Interface *function);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
@@ -110,17 +114,24 @@ namespace imp_mirror {
                                                    overworld::Scope &scope);
 
       void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
-      std::unique_ptr<overworld::Parameter> create_parameter(const underworld::Minion &input_minion, overworld::Scope &scope,
-                                                                   overworld::Function_Interface &function);
+      std::unique_ptr<overworld::Parameter>
+      create_parameter(const underworld::Minion &input_minion, overworld::Scope &scope,
+                       overworld::Function_Interface &function);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        overworld::Scope &scope);
+
+      void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
+                                        overworld::Function_With_Block &output_function);
+      void reflect_function_with_block3(const underworld::Function_With_Block &input_function,
+                                        overworld::Function_With_Block &output_function);
+
       void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
       void reflect_function2(const underworld::Function &input_function);
       void reflect_function3(const underworld::Function &input_function);
       void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      void reflect_dungeon1(const underworld:: Dungeon & input_dungeon, overworld::Scope &output_scope);
+      void reflect_dungeon1(const underworld::Dungeon &input_dungeon, overworld::Scope &output_scope);
       overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_invoke(const underworld::Invoke &function_call,
                                                  overworld::Scope &scope);

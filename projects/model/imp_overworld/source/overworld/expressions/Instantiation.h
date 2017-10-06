@@ -21,8 +21,8 @@ namespace overworld {
 
       virtual ~Instantiation() = default;
 
-      Type get_type() const override {
-        return Type::instantiation;
+      Expression_Type get_type() const override {
+        return Expression_Type::instantiation;
       }
 
       void add_expression(Minion &minion, Expression_Owner value) {
@@ -38,6 +38,10 @@ namespace overworld {
       }
 
       Node *get_node() override {
+        return &node;
+      }
+
+      const Node *get_node() const override {
         return &node;
       }
 

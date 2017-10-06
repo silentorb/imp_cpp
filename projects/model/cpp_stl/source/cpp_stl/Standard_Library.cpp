@@ -13,13 +13,14 @@ namespace cpp_stl {
   }
 
   void Standard_Library::initialize_underworld(imp_summoning::Zookeeper &zookeeper) {
-    zookeeper.load_file("resources/stl/vector.imp");
-//    zookeeper.load_file("resources/stl/iostream.imp");
+    zookeeper.load_file("resources/stl/enchantments.imp");
+    zookeeper.load_file("resources/stl/Array.imp");
+    zookeeper.load_file("resources/stl/iostream.imp");
   }
 
   void set_external_name(Dungeon &dungeon, const std::string name) {
     auto &external = Enchantment_Library::get_external_name();
-    auto complex_enchantment = new overworld::Enchantment_With_Arguments(external);
+    auto complex_enchantment = new overworld::Enchantment(external);
     dungeon.get_enchantments().add_enchantment(overworld::Enchantment_Owner(complex_enchantment));
     complex_enchantment->add_argument(
       Expression_Owner(new Literal_String(name, nullptr, source_mapping::Source_Range(), nullptr)));
@@ -42,9 +43,11 @@ namespace cpp_stl {
     set_external_name(*unique_pointer, "std::unique_ptr");
 
     string_type = &overworld_dungeon->add_dungeon(std::unique_ptr<Dungeon>(
-      new Dungeon("string", *overworld_dungeon)
+      new Dungeon("String", *overworld_dungeon)
     ));
     string_type->set_file(Profession_Library::get_string_file());
     set_external_name(*string_type, "std::string");
+    string_type->get_enchantments().add_enchantment(Enchantment_Library::get_value());
+    string_type->set_default_ownership(overworld::Ownership::value);
   }
 }

@@ -6,37 +6,37 @@
 
 namespace overworld {
 
+  enum class Expression_Type {
+      assignment,
+      block,
+      chain,
+      Else,
+      If,
+      instantiation,
+      invoke,
+      lambda,
+      literal,
+      member,
+      Operator, // Infix
+      return_nothing,
+      return_with_value,
+      self,
+      variable_declaration,
+      variable_declaration_and_assignment
+  };
+
   class Expression {
   public:
 
-      enum class Type {
-          assignment,
-          block,
-          chain,
-          Else,
-          If,
-          instantiation,
-          invoke,
-          literal,
-          member,
-          Operator, // Infix
-          return_nothing,
-          return_with_value,
-          self,
-          variable_declaration,
-          variable_declaration_and_assignment
-      };
-
-      virtual Type get_type() const = 0;
+      virtual Expression_Type get_type() const = 0;
 
 //      virtual bool has_node() const {
 //        return false;
 //      }
       virtual Expression &get_last() = 0;
 
-      virtual Node *get_node() {
-        throw std::runtime_error("Not implemented.");
-      }
+      virtual const Node *get_node() const = 0;
+      virtual Node *get_node() = 0;
 
       virtual ~Expression() = default;
 
@@ -80,7 +80,7 @@ namespace overworld {
       }
 
       Element_Type get_type() const override {
-        if (expression.get_type() == Expression::Type::instantiation)
+        if (expression.get_type() == Expression_Type::instantiation)
           return Element_Type::instantiation;
 
         return Element_Type::other;
@@ -114,7 +114,15 @@ namespace overworld {
         return true;
       }
 
-      Type get_type() const override {
+      const Node *get_node() const override {
+        throw std::runtime_error("Not implemented.");
+      }
+
+      Node *get_node() override {
+        throw std::runtime_error("Not implemented.");
+      }
+
+      Expression_Type get_type() const override {
         throw std::runtime_error("Not supported.");
       }
 

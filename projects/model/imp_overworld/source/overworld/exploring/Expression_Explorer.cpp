@@ -12,20 +12,20 @@ namespace overworld {
 
       switch (expression.get_type()) {
 
-        case Expression::Type::assignment: {
+        case Expression_Type::assignment: {
           auto &assignment = *dynamic_cast<const Assignment *>(&expression);
           explore_expression(*assignment.get_target());
           explore_expression(*assignment.get_value());
           break;
         }
 
-        case Expression::Type::variable_declaration_and_assignment: {
+        case Expression_Type::variable_declaration_and_assignment: {
           auto &assignment = *dynamic_cast<const Minion_Declaration_And_Assignment *>(&expression);
           explore_expression(assignment.get_expression());
           break;
         }
 
-        case Expression::Type::invoke: {
+        case Expression_Type::invoke: {
           auto &invoke = dynamic_cast<const Invoke &>(expression);
           for (auto &argument:invoke.get_arguments()) {
             explore_expression(*argument);

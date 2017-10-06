@@ -18,8 +18,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::Operator;
+      Expression_Type get_type() const override {
+        return Expression_Type::Operator;
       }
 
       const Operator_Type get_operator_type() const {

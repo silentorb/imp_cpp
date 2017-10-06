@@ -29,7 +29,7 @@ namespace underworld {
 
   using Profession_Owner = std::unique_ptr<Profession>;
 
-  class Token_Profession : virtual public Profession {
+  class Token_Profession : public Profession {
       const std::string name;
       const source_mapping::Source_Range source_point;
 
@@ -50,7 +50,7 @@ namespace underworld {
       }
   };
 
-  class Unknown : virtual public Profession {
+  class Unknown : public Profession {
       const source_mapping::Source_Range source_point;
 
   public:

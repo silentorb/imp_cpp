@@ -45,26 +45,14 @@ namespace overworld {
     }
   }
 
-//  Function &Scope::create_function(const underworld::Function &input, Profession &profession) {
-//    return create_function(input.get_name(), profession, input.get_source_point());
-//  }
-
-//  Function &Scope::create_function(const underworld::Function &input) {
-//    auto function = new Function(input.get_name(), *this, get_dungeon(), input.get_source_point());
-//    functions.push_back(std::move((function));
-//    add_member(input.get_name(), *function);
-//    return *function;
-//  }
-
   void Scope::add_function(std::unique_ptr<Function> function) {
     add_member(function->get_name(), Member_Owner(new Member_Function(*function)));
     functions.push_back(std::move(function));
   }
 
-  Member &Scope::add_minion(Minion *minion) {
-    minions.push_back(unique_ptr<Minion>(minion));
-    auto member = new Member_Minion(*minion);
-    add_member(minion->get_name(), Member_Owner(member));
+  Member &Scope::add_minion(Minion &minion) {
+    auto member = new Member_Minion(minion);
+    add_member(minion.get_name(), Member_Owner(member));
     return *member;
   }
 
@@ -74,25 +62,6 @@ namespace overworld {
     minions.push_back(std::move(minion));
     return *member;
   }
-
-//  Minion &Scope::create_minion(const underworld::Minion &input, Profession &profession, overworld::Graph &graph) {
-//    auto minion = new Minion(input, profession);
-//    minions.push_back(unique_ptr<Minion>(minion));
-//    add_member(minion->get_name(), *minion);
-//    return *minion;
-//  }
-
-//  Minion &Scope::create_minion(const underworld::Minion &input) {
-//    auto minion = new Minion(input);
-//    add_minion(minion);
-//    return *minion;
-//  }
-
-//  Minion &Scope::create_minion(const std::string &name, Profession &profession) {
-//    auto minion = new Minion(name, profession);
-//    add_minion(minion);
-//    return *minion;
-//  }
 
   Minion &Scope::get_minion(const std::string &name) {
     for (auto &variable: minions) {

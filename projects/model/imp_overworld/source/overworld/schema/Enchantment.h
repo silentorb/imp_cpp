@@ -6,58 +6,78 @@
 
 namespace overworld {
 
+  class Dungeon;
+
   class Enchantment {
+      Dungeon &dungeon;
+      std::vector<Expression_Owner> arguments;
 
   public:
-      virtual const std::string get_name() const = 0;
-      virtual const Enchantment *get_type() const = 0;
-      virtual ~Enchantment() = default;
-      virtual const std::string get_argument_string(int index) const = 0;
-  };
+      Enchantment(Dungeon &dungeon) : dungeon(dungeon) {}
 
-  class Simple_Enchantment : public Enchantment {
-      std::string name;
+      const std::string get_name() const;
 
-  public:
-      Simple_Enchantment(const std::string &name) : name(name) {}
-
-      ~Simple_Enchantment() override = default;
-
-      const std::string get_name() const override {
-        return name;
+      const Dungeon &get_dungeon() const {
+        return dungeon;
       }
 
-      const Enchantment *get_type() const override {
-        return this;
+      const std::string get_argument_string(int index) const;
+
+      void add_argument(Expression_Owner argument) {
+        arguments.push_back(std::move(argument));
       }
 
-      const std::string get_argument_string(int index) const override {
-        return "";
-      }
-  };
-
-  class Enchantment_Reference : public Enchantment {
-  protected:
-      Enchantment &parent;
-
-  public:
-      explicit Enchantment_Reference(Enchantment &parent) : parent(parent) {}
-
-      ~Enchantment_Reference() override = default;
-
-      const Enchantment *get_type() const override {
-        return parent.get_type();
+      const std::vector<Expression_Owner> &get_arguments() const {
+        return arguments;
       }
 
-      const std::string get_name() const override {
-        return parent.get_name();
-      }
-
-      const std::string get_argument_string(int index) const override {
-        return "";
-      }
   };
 
   using Enchantment_Owner = std::unique_ptr<Enchantment>;
+
+//
+//  class Simple_Enchantment : public Enchantment {
+//      std::string name;
+//
+//  public:
+//      Simple_Enchantment(const std::string &name) : name(name) {}
+//
+//      ~Simple_Enchantment() override = default;
+//
+//      const std::string get_name() const override {
+//        return name;
+//      }
+//
+//      const Enchantment *get_type() const override {
+//        return this;
+//      }
+//
+//      const std::string get_argument_string(int index) const override {
+//        return "";
+//      }
+//  };
+//
+//  class Enchantment_Reference : public Enchantment {
+//  protected:
+//      Enchantment &parent;
+//
+//  public:
+//      explicit Enchantment_Reference(Enchantment &parent) : parent(parent) {}
+//
+//      ~Enchantment_Reference() override = default;
+//
+//      const Enchantment *get_type() const override {
+//        return parent.get_type();
+//      }
+//
+//      const std::string get_name() const override {
+//        return parent.get_name();
+//      }
+//
+//      const std::string get_argument_string(int index) const override {
+//        return "";
+//      }
+//  };
+
 
 }

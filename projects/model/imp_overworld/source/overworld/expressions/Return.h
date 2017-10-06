@@ -6,8 +6,8 @@ namespace overworld {
 
   class Return : public Statement{
   public:
-      Type get_type() const override {
-        return Type::return_nothing;
+      Expression_Type get_type() const override {
+        return Expression_Type::return_nothing;
       }
   };
 
@@ -22,8 +22,8 @@ namespace overworld {
 
       }
 
-      Type get_type() const override {
-        return Type::return_with_value;
+      Expression_Type get_type() const override {
+        return Expression_Type::return_with_value;
       }
 
       const Expression &get_value() const {

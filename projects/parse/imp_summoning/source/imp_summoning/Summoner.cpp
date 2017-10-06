@@ -137,9 +137,11 @@ namespace imp_summoning {
 
   void Summoner::process_enchantments(underworld::Enchantment_Array &enchantments, Context &context) {
     while (input.current().is(lexicon.at_sign)) {
-      auto name = input.expect_next(lexicon.identifier).get_text();
-      input.next();
-      auto enchantment = Enchantment_Owner(new Enchantment(name));
+      input.expect_next(lexicon.identifier);
+      auto profession = process_profession(context);
+//      auto name = input.expect_next(lexicon.identifier).get_text();
+//      input.next();
+      auto enchantment = Enchantment_Owner(new Enchantment(std::move(profession)));
       if (input.if_is(lexicon.left_paren)) {
         while (input.current().is_not(lexicon.right_paren)) {
           enchantment->add_argument(expression_summoner.process_expression(context));
@@ -171,7 +173,7 @@ namespace imp_summoning {
       process_root_identifier(identifier, context);
     }
     else {
-      throw runic::Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
     }
   }
 
@@ -225,24 +227,37 @@ namespace imp_summoning {
     return function;
   }
 
-  Dungeon &Summoner::process_dungeon(Identifier &identifier, Context &context) {
-    auto dungeon = new Dungeon(identifier.name, &context.get_scope(), identifier.source_point);
-    for (auto &enchantment : identifier.enchantments) {
-      dungeon->add_enchantment(enchantment);
-    }
-    for (auto &enchantment : context.get_enchantments()) {
-      dungeon->add_enchantment(enchantment);
-    }
-
-    auto profession = std::unique_ptr<Profession>(dungeon);
-    Child_Context new_context(context, *dungeon);
-    context.get_scope().add_profession(std::move(profession), input.get_source_point());
-    input.next();
+  void Summoner::process_dungeon_body(underworld::Dungeon &dungeon, Context &context) {
+    Child_Context new_context(context, dungeon);
     while (input.current().is_not(lexicon.right_brace)) {
       process_dungeon_member(new_context);
     }
     input.next();
-    return *dungeon;
+  }
+
+  Dungeon &Summoner::process_dungeon(Identifier &identifier, Context &context) {
+    input.next();
+    auto existing_member = context.get_scope().get_member(identifier.name);
+    if (existing_member) {
+      auto &profession = static_cast<Profession_Member *>(existing_member)->get_profession();
+      auto dungeon = dynamic_cast<Dungeon *>(&profession);
+      process_dungeon_body(*dungeon, context);
+      return *dungeon;
+    }
+    else {
+      auto dungeon = new Dungeon(identifier.name, &context.get_scope(), identifier.source_point);
+      for (auto &enchantment : identifier.enchantments) {
+        dungeon->add_enchantment(enchantment);
+      }
+      for (auto &enchantment : context.get_enchantments()) {
+        dungeon->add_enchantment(enchantment);
+      }
+
+      auto profession = std::unique_ptr<Profession>(dungeon);
+      context.get_scope().add_profession(std::move(profession), identifier.source_point);
+      process_dungeon_body(*dungeon, context);
+      return *dungeon;
+    }
   }
 
   void Summoner::process_root(Context &context) {

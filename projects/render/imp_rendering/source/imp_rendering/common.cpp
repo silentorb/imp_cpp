@@ -11,6 +11,7 @@
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Instantiation.h>
 #include <overworld/schema/Enchantment_With_Arguments.h>
+#include <overworld/expressions/Lambda.h>
 
 using namespace std;
 using namespace overworld;
@@ -43,7 +44,7 @@ namespace imp_rendering {
   }
 
   Reference_Type get_reference_type(const Expression &expression) {
-    if (expression.get_type() == Expression::Type::self)
+    if (expression.get_type() == Expression_Type::self)
       return Reference_Type::pointer;
 
     return get_reference_type(const_cast<Expression &>(expression).get_node()->get_element().get_profession());
@@ -144,8 +145,25 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_minion_expression(const overworld::Member_Expression &minion) {
-    return sanitize_name(minion.get_member().get_name());
+  const std::string render_member_expression(const overworld::Member_Expression &member_expression) {
+    auto &member = member_expression.get_member();
+    if (member.get_member_type() == Member_Type::function) {
+      auto function_member = static_cast< const Member_Function *>(&member);
+      auto &function = function_member->get_function();
+      return get_cpp_name(function);
+    }
+    else if (member.get_member_type() == Member_Type::minion) {
+      auto minion_member = static_cast< const Member_Minion *>(&member);
+      auto &minion = minion_member->get_minion();
+      return get_cpp_name(minion);
+    }
+    else if (member.get_member_type() == Member_Type::dungeon) {
+      auto dungeon_member = static_cast< const Member_Dungeon *>(&member);
+      auto &dungeon = dungeon_member->get_dungeon();
+      return get_cpp_name(dungeon);
+    }
+
+    throw std::runtime_error("Not supported.");
   }
 
   const std::string render_return_nothing(const overworld::Return &input_return) {
@@ -302,7 +320,7 @@ namespace imp_rendering {
   Stroke render_if(const overworld::If &input_if, const overworld::Scope &scope) {
     auto header = "if (" + render_expression(input_if.get_condition(), scope) + ")";
     auto &expression = input_if.get_expression();
-    if (expression.get_type() == overworld::Expression::Type::block) {
+    if (expression.get_type() == overworld::Expression_Type::block) {
       auto &block = *dynamic_cast<const overworld::Block_Expression *>(&expression);
       return render_block(header, block.get_block());
     }
@@ -313,7 +331,15 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_separator(const overworld::Profession &profession) {
+  const std::string render_separator(const Expression &expression) {
+    if (expression.get_type() == Expression_Type::member) {
+      auto member_expression = static_cast<const Member_Expression *>(&expression);
+      auto &member = member_expression->get_member();
+      if (member.get_member_type() == Member_Type::dungeon)
+        return "::";
+    }
+
+    auto &profession = expression.get_node()->get_element().get_profession();
     switch (profession.get_ownership()) {
       case Ownership::owner:
         return "->";
@@ -337,35 +363,45 @@ namespace imp_rendering {
     return value;
   }
 
+  std::string render_lambda(const overworld::Lambda &lambda, const overworld::Scope &scope) {
+    auto &function = lambda.get_function();
+    auto token = render_block("", function.get_block());
+    auto block = token.render("");
+    return "[&] " + render_function_parameters(function)
+           + block;
+  }
+
   std::string render_chain(const overworld::Chain &chain, const overworld::Scope &scope) {
     return render_expression(chain.get_first(), scope)
-           + render_separator(chain.get_first().get_node()->get_element().get_profession())
+           + render_separator(chain.get_first())
            + render_expression(chain.get_second(), scope);
   }
 
   const std::string render_expression(const overworld::Expression &input_expression, const overworld::Scope &scope) {
     switch (input_expression.get_type()) {
 
-      case overworld::Expression::Type::literal:
+      case overworld::Expression_Type::literal:
         return render_literal(*dynamic_cast<const overworld::Literal *>(&input_expression));
 
-      case overworld::Expression::Type::member:
-        return render_minion_expression(*dynamic_cast<const overworld::Member_Expression *>(&input_expression));
+      case overworld::Expression_Type::member:
+        return render_member_expression(*dynamic_cast<const overworld::Member_Expression *>(&input_expression));
 
-      case overworld::Expression::Type::invoke:
+      case overworld::Expression_Type::invoke:
         return render_function_call(
           *dynamic_cast<const overworld::Invoke *>(&input_expression), scope);
 
-      case overworld::Expression::Type::instantiation:
+      case overworld::Expression_Type::instantiation:
         return render_instantiation(
           *dynamic_cast<const overworld::Instantiation *>(&input_expression), scope);
 
-      case overworld::Expression::Type::self:
+      case overworld::Expression_Type::self:
         return "this";
 
-      case overworld::Expression::Type::chain:
+      case overworld::Expression_Type::chain:
         return render_chain(*dynamic_cast<const overworld::Chain *>(&input_expression), scope);
 
+      case overworld::Expression_Type::lambda:
+        return render_lambda(static_cast<const overworld::Lambda &>(input_expression), scope);
       default:
         throw std::runtime_error(" Not implemented.");
     }
@@ -374,28 +410,28 @@ namespace imp_rendering {
   Stroke render_statement(const overworld::Expression &input_expression, const overworld::Scope &scope) {
     switch (input_expression.get_type()) {
 
-      case overworld::Expression::Type::assignment:
+      case overworld::Expression_Type::assignment:
         return render_assignment(
           *dynamic_cast<const overworld::Assignment *>(&input_expression), scope);
 
-      case overworld::Expression::Type::block:
+      case overworld::Expression_Type::block:
         throw "Not Implemented.";
 //        return render_block(*dynamic_cast<const overworld::Block *>(&input_expression));
 
-      case overworld::Expression::Type::If:
+      case overworld::Expression_Type::If:
         return render_if(*dynamic_cast<const overworld::If *>(&input_expression), scope);
 
-      case overworld::Expression::Type::return_nothing:
+      case overworld::Expression_Type::return_nothing:
         return render_return_nothing(*dynamic_cast<const overworld::Return *>(&input_expression)) + ";";
 
-      case overworld::Expression::Type::return_with_value:
+      case overworld::Expression_Type::return_with_value:
         return render_return_with_value(*dynamic_cast<const overworld::Return_With_Value *>(&input_expression), scope);
 
-      case overworld::Expression::Type::variable_declaration:
+      case overworld::Expression_Type::variable_declaration:
         return render_variable_declaration(
           *dynamic_cast<const overworld::Minion_Declaration *>(&input_expression), scope);
 
-      case overworld::Expression::Type::variable_declaration_and_assignment:
+      case overworld::Expression_Type::variable_declaration_and_assignment:
         return render_variable_declaration_with_assignment(
           *dynamic_cast<const overworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
 
@@ -411,7 +447,8 @@ namespace imp_rendering {
     }
   }
 
-  const std::string get_cpp_name(const overworld::Dungeon &dungeon) {
+  template<typename T>
+  const std::string _get_cpp_name(const T &dungeon) {
     auto &external = Enchantment_Library::get_external_name();
     auto enchantment = dungeon.get_enchantments().get_enchantment(external);
     if (enchantment) {
@@ -419,7 +456,19 @@ namespace imp_rendering {
       if (name != "")
         return name;
     }
-    return dungeon.get_name();
+    return sanitize_name(dungeon.get_name());
+  }
+
+  const std::string get_cpp_name(const overworld::Dungeon &dungeon) {
+    return _get_cpp_name(dungeon);
+  }
+
+  const std::string get_cpp_name(const overworld::Minion &minion) {
+    return _get_cpp_name(minion);
+  }
+
+  const std::string get_cpp_name(const overworld::Function &function) {
+    return _get_cpp_name(function);
   }
 
   const std::string render_profession_owner(const overworld::Profession &profession, const Scope &scope) {

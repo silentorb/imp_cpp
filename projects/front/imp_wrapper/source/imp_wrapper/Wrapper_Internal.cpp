@@ -18,6 +18,8 @@ namespace imp_wrapper {
     standard_library = new cpp_stl::Standard_Library();
     standard_library->initialize_overworld(overworld_root, overworld_profession_library, graph);
     standard_library->initialize_underworld(zookeeper);
+    auto stl = underworld_root.get_member("stl")->get_profession();
+    int k = 0;
 //    overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library->get_overworld_dungeon()));
   }
 

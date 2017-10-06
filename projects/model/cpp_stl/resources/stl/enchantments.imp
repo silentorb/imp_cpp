@@ -1,0 +1,13 @@
+
+stl {
+  enchantments {
+
+    input_stream {}
+
+    functional {
+
+      map {}
+    }
+
+  }
+}

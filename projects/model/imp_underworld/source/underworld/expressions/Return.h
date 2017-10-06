@@ -6,8 +6,8 @@ namespace underworld {
 
   class Return : public virtual Statement {
   public:
-      Type get_type() const override {
-        return Type::return_nothing;
+      Expression_Type get_type() const override {
+        return Expression_Type::return_nothing;
       }
 
       const source_mapping::Source_Range get_source_point() const override {
@@ -27,8 +27,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::return_with_value;
+      Expression_Type get_type() const override {
+        return Expression_Type::return_with_value;
       }
 
       const Expression &get_value() const {

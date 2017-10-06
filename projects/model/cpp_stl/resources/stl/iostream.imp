@@ -3,5 +3,6 @@ stl {
 
   @external("iostream")
   @external_name("cout")
-  print(value: string)
+  @stl.enchantments.input_stream
+  print(value: String)
 }

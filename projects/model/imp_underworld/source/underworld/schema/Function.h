@@ -12,7 +12,7 @@ namespace underworld {
   class Function : public Member {
       Function_Signature signature;
       const std::string name;
-           std::vector<Generic_Parameter> generic_parameters;
+      std::vector<Generic_Parameter> generic_parameters;
 
   public:
       Function(const std::string &name, Profession_Owner return_type,
@@ -48,7 +48,11 @@ namespace underworld {
         return false;
       }
 
-      virtual void add_parameters(std::vector<Parameter_Owner> &new_parameters) {
+      void add_parameter(Parameter_Owner parameter) {
+        signature.add_parameter(std::move(parameter));
+      }
+
+      void add_parameters(std::vector<Parameter_Owner> &new_parameters) {
         for (auto &parameter: new_parameters) {
           signature.add_parameter(std::move(parameter));
         }
@@ -59,6 +63,8 @@ namespace underworld {
       }
 
   };
+
+  using Function_Owner = std::unique_ptr<Function>;
 
   class Virtual_Function : public Function {
 
@@ -96,6 +102,6 @@ namespace underworld {
         return true;
       }
   };
+  using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;
 
-  using Function_Owner = std::unique_ptr<Function>;
 }

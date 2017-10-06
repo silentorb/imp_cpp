@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Chain : public virtual Expression {
+  class Chain : public Expression {
       Expression_Owner first;
       Expression_Owner second;
 
@@ -17,8 +17,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::chain;
+      Expression_Type get_type() const override {
+        return Expression_Type::chain;
       }
 
       Expression &get_last() override {

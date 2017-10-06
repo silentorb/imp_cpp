@@ -23,8 +23,8 @@ namespace overworld {
 
       ~Invoke() override = default;
 
-      Type get_type() const override {
-        return Type::invoke;
+      Expression_Type get_type() const override {
+        return Expression_Type::invoke;
       }
 
       Function_Signature &get_signature() const {
@@ -38,6 +38,10 @@ namespace overworld {
       }
 
       Node *get_node() override {
+        return &get_signature().get_node();
+      }
+
+      const Node *get_node() const override {
         return &get_signature().get_node();
       }
 

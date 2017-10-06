@@ -11,7 +11,7 @@ namespace overworld {
 
   class Profession_Library;
 
-  class Function : public virtual Function_Interface {
+  class Function : public Function_Interface {
   protected:
       Function_Signature signature;
       Common_Element element;
@@ -67,10 +67,6 @@ namespace overworld {
         return signature.get_parameters();
       }
 
-      void add_parameter_to_signature(Parameter_Owner parameter) {
-        signature.add_parameter(std::move(parameter));
-      }
-
       virtual void add_parameter(Parameter_Owner parameter) {
         signature.add_parameter(std::move(parameter));
       }
@@ -99,7 +95,7 @@ namespace overworld {
         return signature;
       }
 
-      const Function_Signature &get_function_signature() const {
+      const Function_Signature &get_signature() const {
         return signature;
       }
 
@@ -151,7 +147,7 @@ namespace overworld {
         return enchantments;
       }
 
-      bool has_enchantment(const Enchantment &enchantment) const {
+      bool has_enchantment(const Dungeon &enchantment) const {
         return enchantments.has_enchantment(enchantment);
       }
   };
@@ -226,12 +222,18 @@ namespace overworld {
       bool is_inline() const override;
   };
 
+  using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;
+
   class Member_Function : public Generic_Member_Reference<Function> {
   public:
       Member_Function(Function &value) : Generic_Member_Reference(value) {}
 
       Member_Type get_member_type() const override {
         return Member_Type::function;
+      }
+
+      const Function &get_function() const {
+        return value;
       }
 
       Function &get_function() {

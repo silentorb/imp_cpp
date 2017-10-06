@@ -260,7 +260,7 @@ namespace cpp_scanning {
       // All good here.
     }
     else {
-      throw runic::Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
     }
   }
 
@@ -278,7 +278,7 @@ namespace cpp_scanning {
     if (process_class_or_namespace_member(context))
       return;
 
-    throw runic::Syntax_Exception(input.current());
+    throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
   }
 
   void Header_Parser::process_class_namespace(Context &context) {

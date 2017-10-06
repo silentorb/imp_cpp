@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Member_Expression : public virtual Common_Expression {
+  class Member_Expression : public Common_Expression {
       const std::string name;
       source_mapping::Source_Range point;
 
@@ -17,8 +17,8 @@ namespace underworld {
 
       }
 
-      virtual Type get_type() const override {
-        return Type::member;
+      virtual Expression_Type get_type() const override {
+        return Expression_Type::member;
       }
 
       const std::string get_name() const override {

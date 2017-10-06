@@ -20,14 +20,14 @@ namespace runic {
 
       const Token &expect_next(const Whisper &whisper) {
         if (!next().is(whisper))
-          throw Expected_Whisper_Exception(current(), whisper);
+          throw Expected_Whisper_Exception(current(), whisper, source_file.get_file_path());
 
         return current();
       }
 
       const Token &expect(const Whisper &whisper) {
         if (!current().is(whisper))
-          throw Expected_Whisper_Exception(current(), whisper);
+          throw Expected_Whisper_Exception(current(), whisper, source_file.get_file_path());
 
         return current();
       }

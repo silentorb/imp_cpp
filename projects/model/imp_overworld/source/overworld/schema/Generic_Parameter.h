@@ -49,7 +49,7 @@ namespace overworld {
       }
   };
 
-  class Generic_Parameter : public virtual Profession {
+  class Generic_Parameter : public Profession {
       Generic_Parameter_Element element;
       Generic_Parameter_Node node;
 

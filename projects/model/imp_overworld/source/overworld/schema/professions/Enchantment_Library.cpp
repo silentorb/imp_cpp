@@ -7,84 +7,93 @@ using namespace std;
 
 namespace overworld {
 
-  struct Simple_Enchantments {
-      Simple_Enchantment Static = string("static");
-      Simple_Enchantment Public = string("public");
-      Simple_Enchantment Private = string("private");
-      Simple_Enchantment Protected = string("protected");
-      Simple_Enchantment value = string("value");
+  struct Enchantments {
+      Dungeon Static;
+      Dungeon Public;
+      Dungeon Private;
+      Dungeon Protected;
+      Dungeon value;
+      Dungeon external;
+      Dungeon external_name;
+
+      Enchantments() :
+        Static("static"),
+        Public("public"),
+        Private("private"),
+        Protected("protected"),
+        value("value"),
+        external("external"),
+        external_name("external_name") {
+
+      }
   };
 
-  struct Complex_Enchantments {
-      Enchantment_With_Parameters external;
-      Enchantment_With_Parameters external_name;
-
-      Complex_Enchantments() :
-        external("external", {
-          new Simple_Minion(
-            "header_file", Profession_Library::get_primitive(Primitive_Type::String)
-          )
-        }),
-        external_name("external_name", {
-          new Simple_Minion(
-            "name", Profession_Library::get_primitive(Primitive_Type::String)
-          )
-        }) {}
-  };
-
-  static Simple_Enchantments simple_enchanements;
-  static std::unique_ptr<Complex_Enchantments> complex_enchanements;
-
-  void Enchantment_Library::initialize() {
-    if (!complex_enchanements)
-      complex_enchanements = std::unique_ptr<Complex_Enchantments>(new Complex_Enchantments());
-  }
+//  struct Complex_Enchantments {
+//      Dungeon external;
+//      Dungeon external_name;
+//
+//      Complex_Enchantments() :
+//        external("external", {
+//          new Simple_Minion(
+//            "header_file", Profession_Library::get_primitive(Primitive_Type::String)
+//          )
+//        }),
+//        external_name("external_name", {
+//          new Simple_Minion(
+//            "name", Profession_Library::get_primitive(Primitive_Type::String)
+//          )
+//        }) {}
+//  };
+//
+  static Enchantments simple_enchantments;
+//  static std::unique_ptr<Complex_Enchantments> complex_enchantements;
+//
+//  void Enchantment_Library::initialize() {
+//    if (!complex_enchantements)
+//      complex_enchantements = std::unique_ptr<Complex_Enchantments>(new Complex_Enchantments());
+//  }
 
   Enchantment_Library::Enchantment_Library() {
-    initialize();
-    auto count = sizeof(Simple_Enchantments) / sizeof(Simple_Enchantment);
-    auto pointer = (Simple_Enchantment *) &simple_enchanements;
+    auto count = sizeof(Enchantments) / sizeof(Dungeon);
+    auto pointer = (Dungeon *) &simple_enchantments;
     for (int i = 0; i < count; ++i) {
-      Simple_Enchantment *enchantment = (pointer + i);
+      Dungeon *enchantment = (pointer + i);
       global_enchantments[enchantment->get_name()] = enchantment;
     }
-
-    global_enchantments["external"] = &complex_enchanements->external;
-    global_enchantments["external_name"] = &complex_enchanements->external_name;
   }
 
-  Enchantment *Enchantment_Library::find_enchantment(const std::string &name) {
+  Dungeon *Enchantment_Library::find_enchantment(const std::string &name) {
     if (global_enchantments.count(name))
       return global_enchantments[name];
 
     return nullptr;
   }
 
-  Enchantment_With_Parameters &Enchantment_Library::get_external() {
-    return complex_enchanements->external;
+  Dungeon &Enchantment_Library::get_external() {
+    return simple_enchantments.external;
   }
 
-  Enchantment_With_Parameters &Enchantment_Library::get_external_name() {
-    return complex_enchanements->external_name;
+  Dungeon &Enchantment_Library::get_external_name() {
+    return simple_enchantments.external_name;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_static() {
-    return simple_enchanements.Static;;
+  Dungeon &Enchantment_Library::get_static() {
+    return simple_enchantments.Static;;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_public() {
-    return simple_enchanements.Public;
+  Dungeon &Enchantment_Library::get_public() {
+    return simple_enchantments.Public;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_private() {
-    return simple_enchanements.Private;
+  Dungeon &Enchantment_Library::get_private() {
+    return simple_enchantments.Private;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_protected() {
-    return simple_enchanements.Protected;
+  Dungeon &Enchantment_Library::get_protected() {
+    return simple_enchantments.Protected;
   }
 
-  Simple_Enchantment &Enchantment_Library::get_value() {
-    return simple_enchanements.value;
+  Dungeon &Enchantment_Library::get_value() {
+    return simple_enchantments.value;
   }
 }

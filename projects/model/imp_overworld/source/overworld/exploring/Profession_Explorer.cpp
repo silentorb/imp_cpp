@@ -10,9 +10,9 @@ namespace overworld {
       if (expression.is_statement())
         return;
 
-      if (expression.get_type() == Expression::Type::literal
-          || expression.get_type() == Expression::Type::member
-          || expression.get_type() == Expression::Type::chain)
+      if (expression.get_type() == Expression_Type::literal
+          || expression.get_type() == Expression_Type::member
+          || expression.get_type() == Expression_Type::chain)
         return;
 
       auto node = const_cast<Expression *>(&expression)->get_node();

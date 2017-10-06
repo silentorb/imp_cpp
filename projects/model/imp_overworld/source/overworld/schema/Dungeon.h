@@ -103,7 +103,7 @@ namespace overworld {
         return enchantments;
       }
 
-      bool has_enchantment(const Enchantment &enchantment) const {
+      bool has_enchantment(const Dungeon &enchantment) const {
         return enchantments.has_enchantment(enchantment);
       }
 
@@ -220,6 +220,10 @@ namespace overworld {
 
       Member_Type get_member_type() const override {
         return Member_Type::dungeon;
+      }
+
+      const Dungeon &get_dungeon() const {
+        return value;
       }
 
       Dungeon &get_dungeon() {

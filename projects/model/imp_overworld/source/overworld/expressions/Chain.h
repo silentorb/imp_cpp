@@ -8,6 +8,7 @@ namespace overworld {
 
   class Chain_Element : public Common_Element {
       Element &first_element;
+
   public:
       Chain_Element(Element &first_element, const std::string &name,
                     const source_mapping::Source_Range &source_point) :
@@ -42,15 +43,19 @@ namespace overworld {
 
       virtual ~Chain() = default;
 
-      Type get_type() const override {
-        return Type::chain;
+      Expression_Type get_type() const override {
+        return Expression_Type::chain;
       }
 
       Expression &get_last() override {
         return second->get_last();
       }
 
-      virtual Node *get_node() {
+      Node *get_node() override {
+        return second->get_node();
+      }
+
+      const Node *get_node() const override {
         return second->get_node();
       }
 

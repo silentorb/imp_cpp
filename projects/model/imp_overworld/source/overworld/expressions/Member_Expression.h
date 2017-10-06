@@ -22,8 +22,8 @@ namespace overworld {
 
       virtual ~Member_Expression() = default;
 
-      Type get_type() const override {
-        return Type::member;
+      Expression_Type get_type() const override {
+        return Expression_Type::member;
       }
 
       Member &get_member() const {
@@ -38,6 +38,10 @@ namespace overworld {
       }
 
       Node *get_node() override {
+        return &member->get_node();
+      }
+
+      const Node *get_node() const override {
         return &member->get_node();
       }
 

@@ -6,7 +6,7 @@
 
 namespace underworld {
 
-  class Block : public virtual Statement {
+  class Block : public Statement {
       Scope scope;
       std::vector<Expression_Owner> expressions;
 
@@ -29,8 +29,8 @@ namespace underworld {
         return scope;
       }
 
-      Type get_type() const override {
-        return Type::block;
+      Expression_Type get_type() const override {
+        return Expression_Type::block;
       }
 
       const std::vector<Expression_Owner> &get_expressions() const {

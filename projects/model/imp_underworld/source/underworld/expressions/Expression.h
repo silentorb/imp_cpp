@@ -5,30 +5,31 @@
 
 namespace underworld {
 
+  enum class Expression_Type {
+      assignment,
+      block,
+      chain,
+      Else,
+      instantiation,
+      invoke,
+      If,
+      lambda,
+      literal,
+      member,
+      method_call,
+      Operator, // Infix
+      return_nothing,
+      return_with_value,
+      self,
+//          unresolved_member,
+        variable_declaration,
+      variable_declaration_and_assignment
+  };
+
   class Expression {
   public:
 
-      enum class Type {
-          assignment,
-          block,
-          chain,
-          Else,
-          instantiation,
-          invoke,
-          If,
-          literal,
-          member,
-          method_call,
-          Operator, // Infix
-          return_nothing,
-          return_with_value,
-          self,
-//          unresolved_member,
-          variable_declaration,
-          variable_declaration_and_assignment
-      };
-
-      virtual Type get_type() const = 0;
+      virtual Expression_Type get_type() const = 0;
       virtual Expression &get_last() = 0;
       virtual const Expression &get_last() const = 0;
       virtual const std::string get_name() const = 0;
@@ -39,7 +40,7 @@ namespace underworld {
       }
   };
 
-  class Common_Expression : public virtual Expression {
+  class Common_Expression : public Expression {
 //      source_mapping::Source_Range source_range;
 
   public:
@@ -56,7 +57,7 @@ namespace underworld {
       }
   };
 
-  class Statement : public virtual Expression {
+  class Statement : public Expression {
 //      source_mapping::Source_Range source_range;
 
   public:

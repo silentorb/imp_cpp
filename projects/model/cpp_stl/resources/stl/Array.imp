@@ -5,7 +5,10 @@ stl {
   @external("vector")
   @external_name("vector")
   Array<T> {
-    push_back(item:T)
+    @external_name("push_back")
+    add(item:T)
+
+    @stl.enchantments.functional.map
     map(func:&T -> ?)
   }
 }

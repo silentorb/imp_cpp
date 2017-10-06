@@ -5,7 +5,7 @@
 
 namespace underworld {
 
-  class Conditional_Expression : public virtual Statement {
+  class Conditional_Expression : public Statement {
   protected:
       Expression_Owner condition;
       Expression_Owner expression;
@@ -40,8 +40,8 @@ namespace underworld {
       If(Expression_Owner &condition, Expression_Owner &expression) :
         Conditional_Expression(condition, expression) {}
 
-      Type get_type() const override {
-        return Type::If;
+      Expression_Type get_type() const override {
+        return Expression_Type::If;
       }
 
       const source_mapping::Source_Range get_source_point() const override {
@@ -49,7 +49,7 @@ namespace underworld {
       }
   };
 
-  class Else : public virtual Expression {
+  class Else : public Expression {
       Expression_Owner expression;
   public:
       virtual ~Else() {
@@ -60,8 +60,8 @@ namespace underworld {
       Else(Expression_Owner &expression) :
         expression(std::move(expression)) {}
 
-      Type get_type() const override {
-        return Type::Else;
+      Expression_Type get_type() const override {
+        return Expression_Type::Else;
       }
 
       const source_mapping::Source_Range get_source_point() const override {

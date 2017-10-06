@@ -8,6 +8,7 @@
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Self.h>
 #include <underworld/expressions/Instantiation.h>
+#include <underworld/expressions/Lambda.h>
 #include "Expression_Summoner.h"
 #include "runic/common/exceptions.h"
 
@@ -33,13 +34,30 @@ namespace imp_summoning {
     }
   }
 
+  Expression_Owner Expression_Summoner::process_lambda(Member_Expression &parameter_info, Context &context) {
+    auto function = new Function_With_Block("", nullptr, input.get_source_range(),
+                                            context.get_scope());
+
+    auto function_owner = Function_With_Block_Owner(function);
+    auto parameter = new Parameter(parameter_info.get_name(),
+                                   Profession_Owner(new Unknown(get_source_point())),
+                                   parameter_info.get_source_point());
+
+    function->add_parameter(Parameter_Owner(parameter));
+    input.next();
+    process_expression_block(function->get_block(), context);
+
+    auto lambda = new Lambda(std::move((function_owner)));
+    return Expression_Owner(lambda);
+  }
+
   Expression_Owner Expression_Summoner::process_identifier(Context &context) {
     auto path = process_path(context);
     if (input.current().is(lexicon.left_paren)) {
       input.next();
       auto &last = path->get_last();
-      if (last.get_type() == Expression::Type::member) {
-        auto &member_expression = cast<Member_Expression>(last, Expression::Type::member,
+      if (last.get_type() == Expression_Type::member) {
+        auto &member_expression = cast<Member_Expression>(last, Expression_Type::member,
                                                           last.get_name() + " is not a function");
         return process_function_call(path, context);
       }
@@ -75,8 +93,16 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
     auto &token = input.current();
-    if (token.is(lexicon.identifier))
-      return process_identifier(context);
+    if (token.is(lexicon.identifier)) {
+      auto result = process_identifier(context);
+      if (result->get_type() == Expression_Type::member && token.is(lexicon.double_arrow)) {
+        auto member = dynamic_cast<Member_Expression *>(result.get());
+        return process_lambda(*member, context);
+      }
+      else {
+        return result;
+      };
+    }
 
     auto text = token.get_text();
     auto source_point = input.get_source_point();
@@ -98,16 +124,15 @@ namespace imp_summoning {
       input.next();
       return Expression_Owner(new Literal_Bool(false, source_point));
     }
-
     else {
-      throw runic::Syntax_Exception(token);
+      throw runic::Syntax_Exception(token, input.get_source_file().get_file_path());
     }
   }
 
   Operator_Type Expression_Summoner::process_expression_operator(Context &context) {
     Operator_Type result;
     if (!lookup.get_expression_operator(input.next().get_type(), result)) {
-      throw runic::Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
     }
     return result;
   }
@@ -115,7 +140,7 @@ namespace imp_summoning {
   Operator_Type Expression_Summoner::process_assignment_operator(Context &context) {
     Operator_Type result;
     if (!lookup.get_assignment_operator(input.current().get_type(), result)) {
-      throw runic::Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
     }
     input.next();
     return result;
@@ -156,14 +181,14 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::identify_root(Context &context) {
     if (input.current().get_text() == "this") {
-			input.next();
+      input.next();
       return Expression_Owner(new Self(context.get_scope().get_dungeon()));
     }
     else {
 //      auto &member = find_member(input.current(), context);
       auto result = Expression_Owner(new Member_Expression(input.current().get_text(), get_source_point()));
-			input.next();
-			return result;
+      input.next();
+      return result;
     }
   }
 
@@ -235,7 +260,7 @@ namespace imp_summoning {
 //      }
     }
     else {
-      throw runic::Syntax_Exception(input.current());
+      throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());
     }
   }
 
@@ -258,6 +283,11 @@ namespace imp_summoning {
     else {
       return process_statement(context);
     }
+  }
+
+  void Expression_Summoner::process_expression_block(underworld::Block &block, Context &context) {
+    Child_Context new_context(context, block.get_scope());
+    block.add_expression(process_statement(new_context));
   }
 
   void Expression_Summoner::process_block(underworld::Block &block, Context &context) {

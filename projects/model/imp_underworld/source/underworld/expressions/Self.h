@@ -15,8 +15,8 @@ namespace underworld {
 
       }
 
-      Type get_type() const override {
-        return Type::self;
+      Expression_Type get_type() const override {
+        return Expression_Type::self;
       }
 
       const std::string get_name() const override {
