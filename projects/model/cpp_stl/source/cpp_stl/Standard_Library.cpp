@@ -8,8 +8,8 @@ using namespace overworld;
 namespace cpp_stl {
 
   Standard_Library::Standard_Library() :
+    overworld_dungeon("stl"),
     underworld_dungeon("stl", nullptr),
-    standard_library_file("[standard_library]"),
     memory_file("memory") {
   }
 
@@ -27,24 +27,21 @@ namespace cpp_stl {
       Expression_Owner(new Literal_String(name, nullptr, source_mapping::Source_Range(), nullptr)));
   }
 
-  void Standard_Library::initialize_overworld(overworld::Scope &parent,
-                                              overworld::Profession_Library &profession_library,
+  void Standard_Library::initialize_overworld(overworld::Profession_Library &profession_library,
                                               overworld::Graph &graph) {
-    overworld_dungeon = new overworld::Dungeon("stl", parent);
-    parent.add_dungeon(std::unique_ptr<overworld::Dungeon>(overworld_dungeon));
-    set_external_name(*overworld_dungeon, "std");
-    overworld_dungeon->get_enchantments().add_enchantment(profession_library.get_enchantment_library().get_external());
+    set_external_name(overworld_dungeon, "std");
+    overworld_dungeon.get_enchantments().add_enchantment(profession_library.get_enchantment_library().get_external());
 
 //    source_mapping::Source_Range source_point(standard_library_file, 0, 0);
 
-    unique_pointer = &overworld_dungeon->add_dungeon(std::unique_ptr<Dungeon>(
-      new Dungeon("unique_ptr", *overworld_dungeon)
+    unique_pointer = &overworld_dungeon.add_dungeon(std::unique_ptr<Dungeon>(
+      new Dungeon("unique_ptr", overworld_dungeon)
     ));
     unique_pointer->set_file(memory_file);
     set_external_name(*unique_pointer, "std::unique_ptr");
 
-    string_type = &overworld_dungeon->add_dungeon(std::unique_ptr<Dungeon>(
-      new Dungeon("String", *overworld_dungeon)
+    string_type = &overworld_dungeon.add_dungeon(std::unique_ptr<Dungeon>(
+      new Dungeon("String", overworld_dungeon)
     ));
     string_type->set_file(Profession_Library::get_string_file());
     set_external_name(*string_type, "std::string");

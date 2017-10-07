@@ -6,13 +6,11 @@
 namespace cpp_stl {
 
   class Standard_Library {
-      overworld::Dungeon *overworld_dungeon = nullptr;
+      overworld::Dungeon overworld_dungeon;
       underworld::Dungeon underworld_dungeon;
 
-      source_mapping::Source_File standard_library_file;
       overworld::External_File memory_file;
 
-      overworld::Dungeon *vector_type = nullptr;
       overworld::Dungeon *unique_pointer = nullptr;
       overworld::Dungeon *string_type = nullptr;
 
@@ -20,14 +18,10 @@ namespace cpp_stl {
       Standard_Library();
 
       void
-      initialize_overworld(overworld::Scope &parent, overworld::Profession_Library &profession_library,
+      initialize_overworld(overworld::Profession_Library &profession_library,
                            overworld::Graph &graph);
 
       void initialize_underworld(imp_summoning::Zookeeper &zookeeper);
-
-      const source_mapping::Source_File &get_source_file() const {
-        return standard_library_file;
-      }
 
       overworld::Dungeon &get_unique_pointer() const {
         return *unique_pointer;
@@ -37,15 +31,15 @@ namespace cpp_stl {
         return *string_type;
       }
 
-      overworld::Dungeon &get_vector() const {
-        return *vector_type;
-      }
-
-      overworld::Dungeon *get_overworld_dungeon() {
+      overworld::Dungeon &get_overworld_dungeon() {
         return overworld_dungeon;
       }
 
-      const overworld::Dungeon *get_overworld_dungeon() const {
+      underworld::Dungeon &get_underworld_dungeon() {
+        return underworld_dungeon;
+      }
+
+      const overworld::Dungeon &get_overworld_dungeon() const {
         return overworld_dungeon;
       }
   };

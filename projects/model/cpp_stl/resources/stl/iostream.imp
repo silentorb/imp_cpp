@@ -1,5 +1,5 @@
 
 @external("iostream")
 @external_name("cout")
-@stl.enchantments.input_stream
+@enchantments.input_stream
 print(value: String)

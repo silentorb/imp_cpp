@@ -14,7 +14,7 @@
 namespace imp_wrapper {
 
   class Wrapper_Internal {
-      underworld::Dungeon underworld_root;
+//      underworld::Dungeon underworld_root;
       overworld::Dungeon overworld_root;
       overworld::Graph graph;
       overworld::Profession_Library overworld_profession_library;
@@ -22,11 +22,14 @@ namespace imp_wrapper {
       cpp_stl::Standard_Library *standard_library;
       imp_summoning::Zookeeper zookeeper;
 
+      void initialize_standard_library();
+
+
   public:
       Wrapper_Internal();
       virtual ~Wrapper_Internal();
-      void load_file(const std::string &path, underworld::Dungeon underworld_root);
-      void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager);
+      void load_file(const std::string &path, underworld::Dungeon &underworld_root);
+      void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager, underworld::Dungeon &underworld_root);
       void solve();
       void render(const std::string &output_path);
   };

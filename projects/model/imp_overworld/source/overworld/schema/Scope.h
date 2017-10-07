@@ -4,7 +4,6 @@
 #include <map>
 #include "Minion.h"
 #include "overworld/schema/professions/Profession.h"
-#include "Symbol_Source.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
 #include <overworld/imp_graph/Graph.h>

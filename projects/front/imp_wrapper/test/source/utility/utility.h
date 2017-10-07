@@ -6,6 +6,7 @@
 #include <handleapi.h>
 #include <processthreadsapi.h>
 #include <imp_mirror/Temporary_Interface_Manager.h>
+#include <underworld/schema/Dungeon.h>
 
 using namespace std;
 
@@ -57,8 +58,9 @@ void compile(const std::string &input_name) {
   boost::filesystem::create_directory(full_output_path);
   imp_wrapper::Wrapper wrapper;
   imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-  wrapper.load_file(string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp");
-  wrapper.mirror(temporary_interface_manager);
+  underworld:: Dungeon underworld_root("", nullptr);
+  wrapper.load_file(string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp", underworld_root);
+  wrapper.mirror(temporary_interface_manager, underworld_root);
   wrapper.solve();
   wrapper.render(full_output_path);
   std::ofstream output_stream(output_folder + "/CMakeLists.txt", std::ios_base::binary | std::ios_base::out);

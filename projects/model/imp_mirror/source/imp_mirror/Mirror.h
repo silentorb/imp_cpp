@@ -161,6 +161,6 @@ namespace imp_mirror {
         profession_library(profession_library), element_map(element_map), graph(graph),
         temporary_interface_manager(temporary_interface_manager) {}
 
-      void reflect_root(const underworld::Dungeon &input, overworld::Dungeon &output);
+      void reflect_root(const underworld::Dungeon &input, Scope &scope);
   };
 }

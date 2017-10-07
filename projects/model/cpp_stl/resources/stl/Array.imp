@@ -6,6 +6,6 @@ Array<T> {
   @external_name("push_back")
   add(item:T)
 
-  @stl.enchantments.functional.map
+  @enchantments.functional.map
   map(func:&T -> ?)
 }

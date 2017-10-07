@@ -113,7 +113,7 @@ namespace imp_mirror {
     reflect_enchantments(input_function.get_enchantments(), output_function->get_enchantments(), scope);
 
     reflect_function_with_block2(input_function, *output_function, block_scope);
-    reflect_function_with_block3(input_function, *output_function, scope);
+    reflect_function_with_block3(input_function, *output_function, block_scope);
 
     auto lambda = new overworld::Lambda(std::move((output_function_owner)), scope.get_overworld_scope().get_function());
     return overworld::Expression_Owner(lambda);
@@ -535,9 +535,10 @@ namespace imp_mirror {
   overworld::Profession &Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
                                                            Scope &scope) {
     auto input_dungeon = dynamic_cast<const underworld::Dungeon_Reference_Profession *>(&profession);
-    auto member = scope.find_member(input_dungeon->get_name());
+    auto name = input_dungeon->get_name();
+    auto member = scope.find_member(name);
     if (!member)
-      throw Code_Error("Could not find " + input_dungeon->get_name(), input_dungeon->get_source_point());
+      throw Code_Error("Could not find " + name, input_dungeon->get_source_point());
 
     return reflect_profession_child(*member, input_dungeon->get_child(), scope);
   }
@@ -867,8 +868,7 @@ namespace imp_mirror {
     }
   }
 
-  void Mirror::reflect_root(const underworld::Dungeon &input, overworld::Dungeon &output) {
-    auto scope = Scope(output);
+  void Mirror::reflect_root(const underworld::Dungeon &input, Scope &scope) {
     reflect_scope1(input, scope);
     reflect_scope2(input, scope);
     reflect_scope3(input, scope);

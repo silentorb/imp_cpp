@@ -334,6 +334,7 @@ namespace imp_rendering {
   const std::string render_separator(const Expression &expression) {
     if (expression.get_type() == Expression_Type::member) {
       auto member_expression = static_cast<const Member_Expression *>(&expression);
+      auto member_expression2 = dynamic_cast<const Member_Expression *>(&expression);
       auto &member = member_expression->get_member();
       if (member.get_member_type() == Member_Type::dungeon)
         return "::";

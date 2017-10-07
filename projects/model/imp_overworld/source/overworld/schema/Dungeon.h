@@ -230,4 +230,5 @@ namespace overworld {
         return value;
       }
   };
+  using Member_Dungeon_Owner = std::unique_ptr<Member_Dungeon>;
 }

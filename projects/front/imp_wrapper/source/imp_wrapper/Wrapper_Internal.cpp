@@ -10,26 +10,33 @@
 namespace imp_wrapper {
 
   Wrapper_Internal::Wrapper_Internal() :
-    underworld_root("", nullptr),
+//    underworld_root("", nullptr),
     overworld_root(""),
     overworld_profession_library(graph) {
-
-    standard_library = new cpp_stl::Standard_Library();
-    standard_library->initialize_overworld(overworld_root, overworld_profession_library, graph);
-    standard_library->initialize_underworld(zookeeper);
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, );
-    mirror.reflect_root(underworld_root, overworld_root);
+    initialize_standard_library();
   }
 
   Wrapper_Internal::~Wrapper_Internal() = default;
 
-  void Wrapper_Internal::load_file(const std::string &path, underworld::Dungeon underworld_root) {
+  void Wrapper_Internal::initialize_standard_library() {
+    standard_library = new cpp_stl::Standard_Library();
+    standard_library->initialize_overworld(overworld_profession_library, graph);
+    standard_library->initialize_underworld(zookeeper);
+    imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
+    imp_mirror::Scope scope(standard_library->get_overworld_dungeon());
+    mirror.reflect_root(standard_library->get_underworld_dungeon(), scope);
+  }
+
+  void Wrapper_Internal::load_file(const std::string &path, underworld::Dungeon &underworld_root) {
     zookeeper.load_file(path, underworld_root);
   }
 
-  void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager) {
+  void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager, underworld::Dungeon &underworld_root) {
     imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
-    mirror.reflect_root(underworld_root, overworld_root);
+    imp_mirror::Scope scope(overworld_root);
+    scope.add_dungeon(standard_library->get_overworld_dungeon());
+    mirror.reflect_root(underworld_root, scope);
   }
 
   void Wrapper_Internal::solve() {
@@ -46,12 +53,12 @@ namespace imp_wrapper {
     solving::log_nodes(graph);
 #endif
 
-    auto node = solving::find_node(graph,  10, 9);
-    auto &profession = node->get_element().get_profession();
-    auto dungeon = dynamic_cast<overworld::Dungeon*>(&profession);
-    auto l = profession.get_debug_name();
-    auto temp = node->get_debug_string();
-    node->get_debug_string();
+//    auto node = solving::find_node(graph, 10, 9);
+//    auto &profession = node->get_element().get_profession();
+//    auto dungeon = dynamic_cast<overworld::Dungeon *>(&profession);
+//    auto l = profession.get_debug_name();
+//    auto temp = node->get_debug_string();
+//    node->get_debug_string();
     if (!solved) {
       auto &unknowns = solver.get_unsolved_nodes();
       if (unknowns.size() > 0) {
