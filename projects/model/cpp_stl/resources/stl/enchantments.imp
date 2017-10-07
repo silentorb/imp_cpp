@@ -1,13 +1,11 @@
 
-stl {
-  enchantments {
+enchantments {
 
-    input_stream {}
+  input_stream {}
 
-    functional {
+  functional {
 
-      map {}
-    }
-
+    map {}
   }
+
 }

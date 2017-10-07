@@ -18,6 +18,7 @@
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Instantiation.h>
 #include <underworld/expressions/Lambda.h>
+#include <Scope.h>
 #include "Element_Map.h"
 #include "Temporary_Interface_Manager.h"
 
@@ -53,93 +54,93 @@ namespace imp_mirror {
       overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
 
       overworld::Dungeon *find_enchantment_dungeon(const underworld::Profession &input_profession,
-                                                   overworld::Scope &scope);
+                                                   Scope &scope);
       void reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
                                 overworld::Enchantment_Container &output_enchantments,
-                                overworld::Scope &scope);
+                                Scope &scope);
       void apply_node_assignment(overworld::Node &target, overworld::Node &value);
       overworld::Expression_Owner reflect_assignment(const underworld::Assignment &input_assignment,
-                                                     overworld::Scope &scope);
+                                                     Scope &scope);
 
-      overworld::Expression_Owner reflect_lambda(const underworld::Lambda &input_lambda, overworld::Scope &scope);
+      overworld::Expression_Owner reflect_lambda(const underworld::Lambda &input_lambda, Scope &scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal,
                                                   overworld::Dungeon &dungeon, overworld::Function_Interface *function);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
-                                                 overworld::Scope &scope);
+                                                 Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);
       overworld::Expression_Owner reflect_return_with_value(const underworld::Return_With_Value &input_return,
-                                                            overworld::Scope &scope);
+                                                            Scope &scope);
       overworld::Expression_Owner reflect_variable_declaration(const underworld::Minion_Declaration &input_declaration,
-                                                               overworld::Scope &scope);
+                                                               Scope &scope);
       overworld::Expression_Owner reflect_variable_declaration_with_assignment(
-        const underworld::Minion_Declaration_And_Assignment &input_declaration, overworld::Scope &scope);
+        const underworld::Minion_Declaration_And_Assignment &input_declaration, Scope &scope);
 
       overworld::Expression_Owner reflect_if(const underworld::If &input_if,
-                                             overworld::Scope &scope);
+                                             Scope &scope);
       overworld::Expression_Owner reflect_block_expression(const underworld::Block &input_block,
-                                                           overworld::Scope &scope);
-      void reflect_block(const underworld::Block &input_block, overworld::Block &output_block);
+                                                           Scope &scope);
+      void reflect_block(const underworld::Block &input_block, overworld::Block &output_block, Scope &scope);
 
       overworld::Expression_Owner reflect_expression(const underworld::Expression &input_expression,
-                                                     overworld::Scope &scope);
+                                                     Scope &scope);
 
       overworld::Expression_Owner reflect_chain(const underworld::Chain &input_chain,
-                                                overworld::Scope &scope);
+                                                Scope &scope);
 
       overworld::Expression_Owner reflect_chain_member(overworld::Expression &first,
                                                        const underworld::Expression &second,
-                                                       overworld::Scope &scope);
+                                                       Scope &scope);
 
 //      overworld::Expression_Owner reflect_unresolved(overworld::Expression &previous,
 //                                                     const underworld::Unresolved_Member_Expression &member_expression,
-//                                                     overworld::Scope &scope);
+//                                                     Scope &scope);
 
       overworld::Expression_Owner reflect_statement_expression(const underworld::Expression &input_expression,
-                                                               overworld::Scope &scope);
+                                                               Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
-                                                    overworld::Scope &scope);
+                                                    Scope &scope);
       overworld::Profession &reflect_profession(const underworld::Profession *profession,
-                                                overworld::Scope &scope);
+                                                Scope &scope);
       overworld::Profession &reflect_profession(const underworld::Profession &profession,
-                                                overworld::Scope &scope);
+                                                Scope &scope);
 
       overworld::Profession &reflect_profession_child(overworld::Member &member,
-                                                      const underworld::Profession &profession);
+                                                      const underworld::Profession &profession, Scope &scope);
 
       overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
-                                                       overworld::Scope &scope);
+                                                       Scope &scope);
 
       overworld::Profession &reflect_dungeon_usage(const underworld::Token_Profession &profession,
-                                                   overworld::Scope &scope);
+                                                   Scope &scope);
 
-      void reflect_minion(const underworld::Minion &input_minion, overworld::Scope &output_scope);
+      void reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
       std::unique_ptr<overworld::Parameter>
-      create_parameter(const underworld::Minion &input_minion, overworld::Scope &scope,
+      create_parameter(const underworld::Minion &input_minion, Scope &scope,
                        overworld::Function_Interface &function);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
-                                                       overworld::Scope &scope);
+                                                       Scope &scope);
 
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
-                                        overworld::Function_With_Block &output_function);
+                                        overworld::Function_With_Block &output_function, Scope &scope);
       void reflect_function_with_block3(const underworld::Function_With_Block &input_function,
-                                        overworld::Function_With_Block &output_function);
+                                        overworld::Function_With_Block &output_function, Scope &scope);
 
-      void reflect_function1(const underworld::Member &member, overworld::Scope &scope);
-      void reflect_function2(const underworld::Function &input_function);
-      void reflect_function3(const underworld::Function &input_function);
-      void reflect_scope1(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      void reflect_scope2(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      void reflect_scope3(const underworld::Scope &input_scope, overworld::Scope &output_scope);
-      void reflect_dungeon1(const underworld::Dungeon &input_dungeon, overworld::Scope &output_scope);
+      void reflect_function1(const underworld::Member &member, Scope &scope);
+      void reflect_function2(const underworld::Function &input_function, Scope &scope);
+      void reflect_function3(const underworld::Function &input_function, Scope &scope);
+      void reflect_scope1(const underworld::Scope &input_scope, Scope &output_scope);
+      void reflect_scope2(const underworld::Scope &input_scope, Scope &output_scope);
+      void reflect_scope3(const underworld::Scope &input_scope, Scope &output_scope);
+      void reflect_dungeon1(const underworld::Dungeon &input_dungeon, Scope &output_scope);
       overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_invoke(const underworld::Invoke &function_call,
-                                                 overworld::Scope &scope);
+                                                 Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
-                                                        overworld::Scope &scope);
+                                                        Scope &scope);
       overworld::Function_Signature &
       get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments,
-                             overworld::Scope &scope);
+                             Scope &scope);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {

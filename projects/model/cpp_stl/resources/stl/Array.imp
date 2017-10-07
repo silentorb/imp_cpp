@@ -1,14 +1,11 @@
 
-stl {
+@value
+@external("vector")
+@external_name("vector")
+Array<T> {
+  @external_name("push_back")
+  add(item:T)
 
-  @value
-  @external("vector")
-  @external_name("vector")
-  Array<T> {
-    @external_name("push_back")
-    add(item:T)
-
-    @stl.enchantments.functional.map
-    map(func:&T -> ?)
-  }
+  @stl.enchantments.functional.map
+  map(func:&T -> ?)
 }

@@ -12,21 +12,19 @@ namespace imp_wrapper {
   Wrapper_Internal::Wrapper_Internal() :
     underworld_root("", nullptr),
     overworld_root(""),
-    overworld_profession_library(graph),
-    zookeeper(underworld_root) {
+    overworld_profession_library(graph) {
 
     standard_library = new cpp_stl::Standard_Library();
     standard_library->initialize_overworld(overworld_root, overworld_profession_library, graph);
     standard_library->initialize_underworld(zookeeper);
-    auto stl = underworld_root.get_member("stl")->get_profession();
-    int k = 0;
-//    overworld_root.add_dungeon(std::unique_ptr<overworld::Dungeon>(standard_library->get_overworld_dungeon()));
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, );
+    mirror.reflect_root(underworld_root, overworld_root);
   }
 
   Wrapper_Internal::~Wrapper_Internal() = default;
 
-  void Wrapper_Internal::load_file(const std::string &path) {
-    zookeeper.load_file(path);
+  void Wrapper_Internal::load_file(const std::string &path, underworld::Dungeon underworld_root) {
+    zookeeper.load_file(path, underworld_root);
   }
 
   void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager) {

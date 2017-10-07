@@ -8,14 +8,15 @@ using namespace overworld;
 namespace cpp_stl {
 
   Standard_Library::Standard_Library() :
+    underworld_dungeon("stl", nullptr),
     standard_library_file("[standard_library]"),
     memory_file("memory") {
   }
 
   void Standard_Library::initialize_underworld(imp_summoning::Zookeeper &zookeeper) {
-    zookeeper.load_file("resources/stl/enchantments.imp");
-    zookeeper.load_file("resources/stl/Array.imp");
-    zookeeper.load_file("resources/stl/iostream.imp");
+    zookeeper.load_file("resources/stl/enchantments.imp", underworld_dungeon);
+    zookeeper.load_file("resources/stl/Array.imp", underworld_dungeon);
+    zookeeper.load_file("resources/stl/iostream.imp", underworld_dungeon);
   }
 
   void set_external_name(Dungeon &dungeon, const std::string name) {

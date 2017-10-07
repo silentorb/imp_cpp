@@ -7,6 +7,7 @@ namespace cpp_stl {
 
   class Standard_Library {
       overworld::Dungeon *overworld_dungeon = nullptr;
+      underworld::Dungeon underworld_dungeon;
 
       source_mapping::Source_File standard_library_file;
       overworld::External_File memory_file;
