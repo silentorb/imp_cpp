@@ -201,21 +201,44 @@ namespace imp_rendering {
     return render_cast(parameter.get_profession(), argument, result);
   }
 
+  const std::string render_for_loop(const overworld::Invoke &function_call, const overworld::Scope &scope) {
+    auto &parameters = function_call.get_signature().get_parameters();
+    auto minions = parameters.begin();
+    auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
+    auto &member = member_expression->get_member();
+    auto &function = member.get_function();
+    auto container = render_expression(function_call.get_expression(), scope);
+    container = container.substr(0, container.size() - 4);
+    auto lambda = dynamic_cast<Lambda *>(function_call.get_arguments()[0].get());
+    return "for (auto &" + lambda->get_function().get_parameters()[0]->get_name() + " : " + container + ")"
+           + render_block("", lambda->get_function().get_block()).render("");
+
+//           join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
+//             [& minions, & scope](const overworld::Expression_Owner &expression) {
+//               return render_argument(*expression, **minions++, scope);
+//             }), ", ") + ")";
+  }
+
   const std::string render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
     auto minions = function_call.get_signature().get_parameters().begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
     auto &member = member_expression->get_member();
-    auto main_expression = render_expression(function_call.get_expression(), scope);
-    if (member.get_type() == Member_Type::function &&
-        member.get_function().get_enchantments().has_enchantment(*standard_enchantments->input_stream)) {
-      return main_expression + " << " +
-             join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-               [& minions, & scope](const overworld::Expression_Owner &expression) {
-                 return render_argument(*expression, **minions++, scope);
-               }), " << ");
+    if (member.get_type() == Member_Type::function) {
+      auto &function = member.get_function();
+      auto &enchantments = function.get_enchantments();
+      if (enchantments.has_enchantment(*standard_enchantments->input_stream)) {
+        return render_expression(function_call.get_expression(), scope) + " << " +
+               join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
+                 [& minions, & scope](const overworld::Expression_Owner &expression) {
+                   return render_argument(*expression, **minions++, scope);
+                 }), " << ");
+      }
+      else if (enchantments.has_enchantment(*standard_enchantments->functional.map)) {
+        return render_for_loop(function_call, scope);
+      }
     }
 
-    return main_expression + "(" +
+    return render_expression(function_call.get_expression(), scope) + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
              [& minions, & scope](const overworld::Expression_Owner &expression) {
                return render_argument(*expression, **minions++, scope);
