@@ -147,19 +147,16 @@ namespace imp_rendering {
 
   const std::string render_member_expression(const overworld::Member_Expression &member_expression) {
     auto &member = member_expression.get_member();
-    if (member.get_member_type() == Member_Type::function) {
-      auto function_member = static_cast< const Member_Function *>(&member);
-      auto &function = function_member->get_function();
+    if (member.get_type() == Member_Type::function) {
+      auto &function = member.get_function();
       return get_cpp_name(function);
     }
-    else if (member.get_member_type() == Member_Type::minion) {
-      auto minion_member = static_cast< const Member_Minion *>(&member);
-      auto &minion = minion_member->get_minion();
+    else if (member.get_type() == Member_Type::minion) {
+      auto &minion = member.get_minion();
       return get_cpp_name(minion);
     }
-    else if (member.get_member_type() == Member_Type::dungeon) {
-      auto dungeon_member = static_cast< const Member_Dungeon *>(&member);
-      auto &dungeon = dungeon_member->get_dungeon();
+    else if (member.get_type() == Member_Type::dungeon) {
+      auto &dungeon = member.get_dungeon();
       return get_cpp_name(dungeon);
     }
 
@@ -336,7 +333,7 @@ namespace imp_rendering {
       auto member_expression = static_cast<const Member_Expression *>(&expression);
       auto member_expression2 = dynamic_cast<const Member_Expression *>(&expression);
       auto &member = member_expression->get_member();
-      if (member.get_member_type() == Member_Type::dungeon)
+      if (member.get_type() == Member_Type::dungeon)
         return "::";
     }
 

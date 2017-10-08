@@ -61,6 +61,7 @@ namespace overworld {
       Common_Element element;
       Element_Reference_Node node;
       Enchantment_Container enchantments;
+      File *header_file = nullptr;
 
   public:
       Minion(const std::string &name, Profession &profession, Dungeon_Interface *dungeon,
@@ -112,6 +113,13 @@ namespace overworld {
         return element.get_profession();
       }
 
+      const File *get_file() const {
+        return header_file;
+      }
+
+      void set_file(File *value) {
+        header_file = value;
+      }
 //      virtual void set_profession(Profession &value) {
 //        element.set_profession(value);
 //      }
@@ -124,20 +132,20 @@ namespace overworld {
   using Minion_Owner = std::unique_ptr<Minion>;
   using Simple_Minion_Owner = std::unique_ptr<Simple_Minion>;
 
-  class Member_Minion : public Generic_Member_Reference<Minion> {
-  public:
-      Member_Minion(Minion &value) : Generic_Member_Reference(value) {}
-
-      Member_Type get_member_type() const override {
-        return Member_Type::minion;
-      }
-
-      const Minion &get_minion() const {
-        return value;
-      }
-
-      Minion &get_minion() {
-        return value;
-      }
-  };
+//  class Member_Minion : public Generic_Member_Reference<Minion> {
+//  public:
+//      Member_Minion(Minion &value) : Generic_Member_Reference(value) {}
+//
+//      Member_Type get_type() const override {
+//        return Member_Type::minion;
+//      }
+//
+//      const Minion &get_minion() const {
+//        return value;
+//      }
+//
+//      Minion &get_minion() {
+//        return value;
+//      }
+//  };
 }

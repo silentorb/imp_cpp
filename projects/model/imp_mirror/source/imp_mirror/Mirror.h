@@ -18,7 +18,7 @@
 #include <underworld/expressions/Chain.h>
 #include <underworld/expressions/Instantiation.h>
 #include <underworld/expressions/Lambda.h>
-#include <Scope.h>
+#include <imp_mirror/Scope.h>
 #include "Element_Map.h"
 #include "Temporary_Interface_Manager.h"
 
@@ -33,6 +33,7 @@ namespace imp_mirror {
       Element_Map &element_map;
       overworld::Graph &graph;
       Temporary_Interface_Manager &temporary_interface_manager;
+      overworld::File_Library &header_files;
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_node()->get_element().get_profession();
@@ -47,8 +48,7 @@ namespace imp_mirror {
       }
 
       overworld::Dungeon &get_dungeon(overworld::Member &member) {
-        auto &member_dungeon = static_cast<overworld::Member_Dungeon &>(member);
-        return member_dungeon.get_dungeon();
+        return member.get_dungeon();
       }
 
       overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
@@ -157,9 +157,9 @@ namespace imp_mirror {
 
   public:
       Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph,
-             Temporary_Interface_Manager &temporary_interface_manager) :
+             Temporary_Interface_Manager &temporary_interface_manager, overworld::File_Library &header_files) :
         profession_library(profession_library), element_map(element_map), graph(graph),
-        temporary_interface_manager(temporary_interface_manager) {}
+        temporary_interface_manager(temporary_interface_manager), header_files(header_files) {}
 
       void reflect_root(const underworld::Dungeon &input, Scope &scope);
   };

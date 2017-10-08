@@ -10,7 +10,7 @@ namespace cpp_stl {
   Standard_Library::Standard_Library() :
     overworld_dungeon("stl"),
     underworld_dungeon("stl", nullptr),
-    memory_file("memory") {
+    memory_file("memory", true) {
   }
 
   void Standard_Library::initialize_underworld(imp_summoning::Zookeeper &zookeeper) {

@@ -17,6 +17,9 @@ namespace overworld {
       dungeon
   };
 
+  using Members = std::vector<Member>;
+//  using Members_Owner = std::unique_ptr<Members>;
+
   class Scope {
   protected:
       Scope *parent;
@@ -24,19 +27,20 @@ namespace overworld {
       std::vector<Minion_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
-      std::map<std::string, Member_Owner> members;
-//      std::vector<Scope *> imported_scopes;
+      std::map<std::string, Member> members;
+      std::map<std::string, Members> overloaded_members;
 
-      void use_member_array(const std::string &name, Member_Owner member, Member_Owner &existing);
-      void add_member(const std::string &name, Member_Owner member);
+      void overload(const std::string &name, Member &member);
+      void add_overload(const std::string &name, Member &member);
+      void add_member(const std::string &name, Member member);
 
   public:
       explicit Scope(Scope *parent);
       virtual ~Scope();
 
       void add_function(std::unique_ptr<Function> function);
-      Member &add_minion(Minion &minion);
-      Member &add_minion(std::unique_ptr<Minion> minion);
+      Member add_minion(Minion &minion);
+      Member add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);

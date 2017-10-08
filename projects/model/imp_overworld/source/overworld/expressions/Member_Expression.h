@@ -6,19 +6,18 @@
 namespace overworld {
 
   class Member_Expression : public Common_Expression {
-      Member *member;
-      Member_Owner owned_member; // Used to optionally own its member
+      Member member;
 
   public:
-      Member_Expression(Member &member, const source_mapping::Source_Range &source_range) :
+      Member_Expression(Member member, const source_mapping::Source_Range &source_range) :
         Common_Expression(source_range),
-        member(&member) {}
+        member(member) {}
 
-      Member_Expression(Member_Owner &minion, const source_mapping::Source_Range &source_range) :
-        Common_Expression(source_range),
-        owned_member(std::move(minion)) {
-        member = owned_member.get();
-      }
+//      Member_Expression(Member &minion, const source_mapping::Source_Range &source_range) :
+//        Common_Expression(source_range),
+//        owned_member(std::move(minion)) {
+//        member = owned_member.get();
+//      }
 
       virtual ~Member_Expression() = default;
 
@@ -26,23 +25,24 @@ namespace overworld {
         return Expression_Type::member;
       }
 
-      Member &get_member() const {
-        return *this->member;
+      const Member &get_member() const {
+        return member;
+      }
+
+      Member &get_member() {
+        return member;
       }
 
       void set_member(Member &value) {
-        if (owned_member)
-          throw std::runtime_error("Member_Expression already has an owned member and cannot change to a reference.");
-
-        member = &value;
+        member = value;
       }
 
       Node *get_node() override {
-        return &member->get_node();
+        return &get_member_node(member);
       }
 
       const Node *get_node() const override {
-        return &member->get_node();
+        return &get_member_node(member);
       }
 
       const std::string get_name() const override {

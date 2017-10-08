@@ -27,7 +27,7 @@ namespace overworld {
       static Unknown &get_unknown();
       static Void &get_void();
       static Primitive &get_string();
-      static External_File &get_string_file();
+      static File &get_string_file();
 
       static Primitive &get_primitive(Primitive_Type type);
 

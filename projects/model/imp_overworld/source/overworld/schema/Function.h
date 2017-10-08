@@ -20,6 +20,7 @@ namespace overworld {
       std::vector<Generic_Parameter_Owner> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
+      File *header_file = nullptr;
 
       const Profession &_get_profession() const {
         auto profession = signature.get_return_type();
@@ -150,6 +151,14 @@ namespace overworld {
       bool has_enchantment(const Dungeon &enchantment) const {
         return enchantments.has_enchantment(enchantment);
       }
+
+      const File *get_file() const {
+        return header_file;
+      }
+
+      void set_file(File *value) {
+        header_file = value;
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;
@@ -224,20 +233,20 @@ namespace overworld {
 
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;
 
-  class Member_Function : public Generic_Member_Reference<Function> {
-  public:
-      Member_Function(Function &value) : Generic_Member_Reference(value) {}
-
-      Member_Type get_member_type() const override {
-        return Member_Type::function;
-      }
-
-      const Function &get_function() const {
-        return value;
-      }
-
-      Function &get_function() {
-        return value;
-      }
-  };
+//  class Member_Function : public Generic_Member_Reference<Function> {
+//  public:
+//      Member_Function(Function &value) : Generic_Member_Reference(value) {}
+//
+//      Member_Type get_type() const override {
+//        return Member_Type::function;
+//      }
+//
+//      const Function &get_function() const {
+//        return value;
+//      }
+//
+//      Function &get_function() {
+//        return value;
+//      }
+//  };
 }

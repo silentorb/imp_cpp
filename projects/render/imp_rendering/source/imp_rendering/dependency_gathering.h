@@ -7,11 +7,6 @@
 
 namespace imp_rendering {
 
-//  struct Profession_Reference {
-//    Reference_Type type;
-//      const overworld::Profession *profession;
-//  };
-
   class Include_Manager {
       const overworld::Dungeon &dungeon;
       std::vector<overworld::File_Reference> header_includes;

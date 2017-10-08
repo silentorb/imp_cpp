@@ -9,7 +9,7 @@ namespace cpp_stl {
       overworld::Dungeon overworld_dungeon;
       underworld::Dungeon underworld_dungeon;
 
-      overworld::External_File memory_file;
+      overworld::File memory_file;
 
       overworld::Dungeon *unique_pointer = nullptr;
       overworld::Dungeon *string_type = nullptr;

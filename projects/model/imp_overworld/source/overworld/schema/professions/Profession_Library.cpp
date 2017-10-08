@@ -4,7 +4,7 @@
 
 namespace overworld {
 
-  External_File string_header("string");
+  File string_header("string", true);
   static Unknown unknown;
   static Void _void;
 //  static Unknown not_found;
@@ -35,7 +35,7 @@ namespace overworld {
     return primitives[static_cast<int>(Primitive_Type::String)];
   }
 
-  External_File &Profession_Library::get_string_file() {
+  File &Profession_Library::get_string_file() {
     return string_header;
   }
 

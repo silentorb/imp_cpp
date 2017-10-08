@@ -23,7 +23,7 @@ namespace imp_wrapper {
     standard_library->initialize_overworld(overworld_profession_library, graph);
     standard_library->initialize_underworld(zookeeper);
     imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager, header_files);
     imp_mirror::Scope scope(standard_library->get_overworld_dungeon());
     mirror.reflect_root(standard_library->get_underworld_dungeon(), scope);
   }
@@ -33,7 +33,7 @@ namespace imp_wrapper {
   }
 
   void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager, underworld::Dungeon &underworld_root) {
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager);
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager, header_files);
     imp_mirror::Scope scope(overworld_root);
     scope.add_dungeon(standard_library->get_overworld_dungeon());
     mirror.reflect_root(underworld_root, scope);

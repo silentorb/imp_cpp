@@ -20,7 +20,7 @@ namespace overworld {
   class Dungeon : public Scope, public virtual Dungeon_Interface {
       Common_Element element;
       File *header_file = nullptr;
-      std::unique_ptr<File> header_file_owner;
+//      std::unique_ptr<File> header_file_owner;
       Element_Reference_Node node;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
@@ -62,10 +62,10 @@ namespace overworld {
         header_file = &value;
       }
 
-      void set_file(std::unique_ptr<File> value) {
-        header_file = value.get();
-        header_file_owner = std::move(value);
-      }
+//      void set_file(std::unique_ptr<File> value) {
+//        header_file = value.get();
+//        header_file_owner = std::move(value);
+//      }
 
       File *get_file() const {
         return header_file;
@@ -177,7 +177,7 @@ namespace overworld {
         if (parameter->get_name() == "")
           parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
 
-        add_member(parameter->get_name(), Member_Owner(new Member_Profession(*parameter)));
+        add_member(parameter->get_name(), Member(*static_cast<Profession *>(parameter.get()), true));
         owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
@@ -214,21 +214,21 @@ namespace overworld {
 
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
 
-  class Member_Dungeon : public Generic_Member_Reference<Dungeon> {
-  public:
-      Member_Dungeon(Dungeon &value) : Generic_Member_Reference(value) {}
-
-      Member_Type get_member_type() const override {
-        return Member_Type::dungeon;
-      }
-
-      const Dungeon &get_dungeon() const {
-        return value;
-      }
-
-      Dungeon &get_dungeon() {
-        return value;
-      }
-  };
-  using Member_Dungeon_Owner = std::unique_ptr<Member_Dungeon>;
+//  class Member_Dungeon : public Generic_Member_Reference<Dungeon> {
+//  public:
+//      Member_Dungeon(Dungeon &value) : Generic_Member_Reference(value) {}
+//
+//      Member_Type get_type() const override {
+//        return Member_Type::dungeon;
+//      }
+//
+//      const Dungeon &get_dungeon() const {
+//        return value;
+//      }
+//
+//      Dungeon &get_dungeon() {
+//        return value;
+//      }
+//  };
+//  using Member_Dungeon_Owner = std::unique_ptr<Member_Dungeon>;
 }

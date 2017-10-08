@@ -19,7 +19,8 @@ namespace imp_wrapper {
       ~Wrapper();
 
       void load_file(const std::string &path, underworld::Dungeon &underworld_root);
-      void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager, underworld::Dungeon &underworld_root);
+      void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager,
+                  underworld::Dungeon &underworld_root);
       void solve();
       void render(const std::string &output_path);
   };

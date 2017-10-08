@@ -24,12 +24,11 @@ namespace overworld {
       auto &old_member_node = member->get_node();
       auto &new_member = replacement.get_member(member->get_name());
 //      old_member_node.disconnect(old_dungeon_node);
-      old_member_node.replace_with(new_member.get_node());
+      old_member_node.replace_with(get_member_node(new_member));
 
       auto temporary_member = dynamic_cast<Temporary_Minion *>(member.get());
-      if (new_member.get_member_type() == Member_Type::function) {
-        auto & member_function = static_cast<Member_Function &>(new_member);
-        auto &new_function = member_function.get_function();
+      if (new_member.get_type() == Member_Type::function) {
+        auto &new_function = new_member.get_function();
         auto &signature = temporary_member->get_or_create_signature();
         auto &parameters = signature.get_parameters();
         auto &new_parameters = new_function.get_parameters();

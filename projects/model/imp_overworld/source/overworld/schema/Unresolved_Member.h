@@ -21,7 +21,7 @@
 //
 //      virtual ~Unresolved_Member() {}
 //
-//      Member_Type get_member_type() const override {
+//      Member_Type get_type() const override {
 //        return Member_Type::unresolved;
 //      }
 //

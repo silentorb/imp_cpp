@@ -1,19 +1,23 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 namespace overworld {
 
   class File {
-      const std::string folder;
-      const std::string filename;
+      std::string folder;
+      std::string filename;
+      bool _is_external = false;
 
   public:
+      File() {}
+
       File(const std::string &folder, const std::string &filename) :
         folder(folder), filename(filename) {}
 
-      File(const std::string &filename) :
-        folder(""), filename(filename) {}
+      File(const std::string &filename, bool is_external = false) :
+        folder(""), filename(filename), _is_external(is_external) {}
 
       const std::string get_folder() const {
         return folder;
@@ -23,28 +27,28 @@ namespace overworld {
         return filename;
       }
 
-      virtual bool is_external() const {
-        return false;
+      bool is_external() const {
+        return _is_external;
       }
   };
 
-  class External_File : public File {
-  public:
-      External_File(const std::string &filename) : File(filename) {}
-
-      bool is_external() const override {
-        return true;
-      }
-  };
+//  class External_File : public File {
+//  public:
+//      External_File(const std::string &filename) : File(filename) {}
+//
+//      bool is_external() const override {
+//        return true;
+//      }
+//  };
 
   class File_Reference {
-      File &file;
+      const File &file;
       bool _is_local;
 
   public:
-      File_Reference(File &file, bool is_local) : file(file), _is_local(is_local) {}
+      File_Reference(const File &file, bool is_local) : file(file), _is_local(is_local) {}
 
-      File &get_file() const {
+      const File &get_file() const {
         return file;
       }
 
@@ -63,4 +67,6 @@ namespace overworld {
         return file.get_filename();
       }
   };
+
+  using File_Library = std::unordered_map<std::string, File>;
 }

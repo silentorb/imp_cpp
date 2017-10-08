@@ -21,6 +21,22 @@
 
 namespace imp_mirror {
 
+  template<typename T>
+  void process_external(T &member, overworld::Enchantment_Library &enchantment_library,
+                        overworld::File_Library &header_files) {
+    auto external = member.get_enchantments().get_enchantment(enchantment_library.get_external());
+
+    if (external) {
+      auto value = external->get_argument_string(0);
+      if (value != "") {
+        auto &file = header_files.count(value)
+                     ? header_files[value]
+                     : header_files[value] = overworld::File(value, true);
+        member.set_file(&file);
+      }
+    }
+  }
+
   class Basic_Profession_Setter : public overworld::Profession_Setter {
   public:
       void set_profession(overworld::Node &node, overworld::Profession &profession) override {
@@ -226,18 +242,17 @@ namespace imp_mirror {
                                                                 std::vector<overworld::Expression_Owner> &arguments,
                                                                 Scope &scope) {
     if (expression.get_type() == overworld::Expression_Type::member) {
-      auto member_expression = dynamic_cast<const overworld::Member_Expression *>(&expression);
+      auto member_expression = dynamic_cast<overworld::Member_Expression *>(&expression);
       auto &member = member_expression->get_member();
-      if (member.get_member_type() == overworld::Member_Type::function) {
-        return static_cast<overworld::Member_Function *>(&member)->get_function().get_signature();
+      if (member.get_type() == overworld::Member_Type::function) {
+        return member.get_function().get_signature();
       }
-      else if (member.get_member_type() == overworld::Member_Type::dungeon) {
-        auto &dungeon = static_cast<overworld::Member_Dungeon *>(&member)->get_dungeon();
+      else if (member.get_type() == overworld::Member_Type::dungeon) {
+        auto &dungeon = member.get_dungeon();
         return dungeon.get_or_create_constructor().get_signature();
       }
-      else if (member.get_member_type() == overworld::Member_Type::minion) {
-        auto member_minion = static_cast<overworld::Member_Minion *>(&member);
-        auto &temporary_member = dynamic_cast<overworld::Temporary_Minion &>(member_minion->get_minion());
+      else if (member.get_type() == overworld::Member_Type::minion) {
+        auto &temporary_member = dynamic_cast<overworld::Temporary_Minion &>(member.get_minion());
         auto &signature = temporary_member.get_or_create_signature();
         for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
           auto &argument = arguments[i];
@@ -261,8 +276,7 @@ namespace imp_mirror {
   overworld::Minion &find_member_container(overworld::Expression &expression) {
     auto &chain = dynamic_cast<overworld::Chain &>(expression);
     auto &member_expression = dynamic_cast<overworld::Member_Expression &>( chain.get_first());
-    auto &member_minion = static_cast<overworld::Member_Minion &>(member_expression.get_member());
-    auto &minion = member_minion.get_minion();
+    auto &minion = member_expression.get_member().get_minion();
     return minion;
   }
 
@@ -339,7 +353,7 @@ namespace imp_mirror {
       if (!input_member)
         throw Code_Error("Unknown symbol " + name, instantiation.get_source_point());
 
-      auto &minion = cast<overworld::Minion>(*input_member);
+      auto &minion = input_member->get_minion();
       auto value = reflect_expression(*pair.second, scope);
       graph.connect(minion.get_node(), *value->get_node());
       output_instantiation->add_expression(minion, std::move(value));
@@ -352,20 +366,19 @@ namespace imp_mirror {
                                                       const underworld::Member_Expression &member_expression,
                                                       Scope &scope) {
     auto &member = previous_expression.get_member();
-    if (member.get_member_type() == overworld::Member_Type::minion) {
-      auto &member_minion = static_cast<overworld::Member_Minion &>(member);
-      auto &minion = *dynamic_cast<overworld::Parameter *>(&member_minion.get_minion());
+    if (member.get_type() == overworld::Member_Type::minion) {
+      auto &minion = *dynamic_cast<overworld::Parameter *>(&member.get_minion());
       auto &interface = minion.get_or_create_interface();
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
                                                         *scope.get_overworld_scope().get_function());
-      auto &member = interface.add_minion(overworld::Minion_Owner(new_member));
+      auto member = interface.add_minion(overworld::Minion_Owner(new_member));
       auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
       new_member->add_expression(*result);
       return overworld::Expression_Owner(result);
     }
-//          else if (member.get_member_type() == overworld::Member_Type::function) {
+//          else if (member.get_type() == overworld::Member_Type::function) {
 //            auto &minion = cast<overworld::Function>(member);
 //            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
 //            auto &function = interface.create_function(member_expression.get_name(), profession_library.get_unknown());
@@ -512,7 +525,7 @@ namespace imp_mirror {
 
   overworld::Profession &Mirror::reflect_profession_child(overworld::Member &member,
                                                           const underworld::Profession &profession, Scope &scope) {
-    if (member.get_member_type() == overworld::Member_Type::dungeon) {
+    if (member.get_type() == overworld::Member_Type::dungeon) {
       auto &dungeon = get_dungeon(member);
       auto child = dungeon.get_member_or_null(profession.get_name());
       if (!child)
@@ -563,14 +576,12 @@ namespace imp_mirror {
     if (!member)
       throw Code_Error("Could not find " + token.get_name(), token.get_source_point());
 
-    if (member->get_member_type() == overworld::Member_Type::dungeon) {
-      auto member_dungeon = static_cast<overworld::Member_Dungeon *>(member);
-      auto &dungeon = member_dungeon->get_dungeon();
+    if (member->get_type() == overworld::Member_Type::dungeon) {
+      auto &dungeon = member->get_dungeon();
       return get_possible_generic_dungeon(dungeon);
     }
-    else if (member->get_member_type() == overworld::Member_Type::profession) {
-      auto member_dungeon = static_cast<overworld::Member_Profession *>(member);
-      return member_dungeon->get_profession();
+    else if (member->get_type() == overworld::Member_Type::profession) {
+      return get_member_node(*member).get_element().get_profession();
     }
     else {
       throw new Code_Error(token.get_name() + " is not a dungeon.", token.get_source_point());
@@ -673,13 +684,18 @@ namespace imp_mirror {
       auto output_function_with_block = element_map.find_or_null<overworld::Function_With_Block>(&input_function);
       reflect_enchantments(input_function.get_enchantments(), output_function_with_block->get_enchantments(),
                            scope);
-      reflect_function_with_block2(*input_function_with_block, *output_function_with_block, scope);
+      auto &enchantment_library = profession_library.get_enchantment_library();
+      process_external(*output_function_with_block, enchantment_library, header_files);
+      Scope child_scope(output_function_with_block->get_scope(), scope);
+      reflect_function_with_block2(*input_function_with_block, *output_function_with_block, child_scope);
     }
     else {
       auto virtual_input_function = dynamic_cast<const underworld::Virtual_Function *>(&input_function);
       auto output_function = element_map.find_or_null<overworld::Virtual_Function>(&input_function);
       reflect_enchantments(input_function.get_enchantments(), output_function->get_enchantments(),
                            scope);
+      auto &enchantment_library = profession_library.get_enchantment_library();
+      process_external(*output_function, enchantment_library, header_files);
       for (auto &source_parameter : virtual_input_function->get_parameters()) {
         auto minion = create_parameter(*source_parameter, scope, *output_function);
         output_function->add_parameter(std::move(minion));
@@ -691,7 +707,8 @@ namespace imp_mirror {
     auto input_function_with_block = (dynamic_cast<const underworld::Function_With_Block *>(&input_function));
     if (input_function_with_block) {
       auto &output_function = *element_map.find_or_null<overworld::Function_With_Block>(&input_function);
-      reflect_function_with_block3(*input_function_with_block, output_function, scope);
+      Scope child_scope(output_function.get_scope(), scope);
+      reflect_function_with_block3(*input_function_with_block, output_function, child_scope);
     }
   }
 
@@ -728,6 +745,8 @@ namespace imp_mirror {
     auto output_minion = create_minion(input_minion, output_scope);
     element_map.add(&input_minion, output_minion.get());
     reflect_enchantments(input_minion.get_enchantments(), output_minion->get_enchantments(), output_scope);
+    auto &enchantment_library = profession_library.get_enchantment_library();
+    process_external(*output_minion, enchantment_library, header_files);
     output_scope.get_overworld_scope().add_minion(std::move(output_minion));
   }
 
@@ -735,8 +754,7 @@ namespace imp_mirror {
     overworld::Dungeon *output_dungeon;
     auto existing_member = output_scope.get_overworld_scope().get_member_or_null(input_dungeon.get_name());
     if (existing_member) {
-      auto member_dungeon = static_cast<overworld::Member_Dungeon *>(existing_member);
-      output_dungeon = &member_dungeon->get_dungeon();
+      output_dungeon = &existing_member->get_dungeon();
       auto dungeon = element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
       if (!dungeon)
         element_map.add(&input_dungeon, output_dungeon);
@@ -759,18 +777,12 @@ namespace imp_mirror {
     reflect_enchantments(input_dungeon.get_enchantments(), output_dungeon->get_enchantments(), output_scope);
 
     auto &enchantment_library = profession_library.get_enchantment_library();
+    process_external(*output_dungeon, enchantment_library, header_files);
+
     if (output_dungeon->has_enchantment(enchantment_library.get_value())) {
       output_dungeon->set_default_ownership(overworld::Ownership::value);
     }
 
-    auto external = output_dungeon->get_enchantments().get_enchantment(enchantment_library.get_external());
-
-    if (external) {
-      auto value = external->get_argument_string(0);
-      if (value != "") {
-        output_dungeon->set_file(std::unique_ptr<overworld::File>(new overworld::External_File(value)));
-      }
-    }
     Scope block_scope(*output_dungeon, output_scope);
 
     reflect_scope1(input_dungeon, block_scope);

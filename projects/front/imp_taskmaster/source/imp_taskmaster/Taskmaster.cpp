@@ -6,7 +6,7 @@
 #include <imp_rendering/sources.h>
 #include <overworld_exploring/dependencies.h>
 #include <boost/filesystem/operations.hpp>
-#include <imp_rendering/including.h>
+#include <imp_rendering/dependency_gathering.h>
 
 using namespace overworld;
 using namespace boost;

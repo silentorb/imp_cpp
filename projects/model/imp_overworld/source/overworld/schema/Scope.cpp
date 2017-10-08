@@ -22,12 +22,11 @@ namespace overworld {
   }
 
   bool can_be_overloaded(Member &member) {
-    if (member.get_member_type() == Member_Type::dungeon) {
-      auto dungeon_member = static_cast<Member_Dungeon *>(&member);
-      auto &dungeon = dungeon_member->get_dungeon();
+    if (member.get_type() == Member_Type::dungeon) {
+      auto &dungeon = member.get_dungeon();
       return !dungeon.get_generic_parameters().empty();
     }
-    else if (member.get_member_type() == Member_Type::function) {
+    else if (member.get_type() == Member_Type::function) {
       return true;
     }
     else {
@@ -35,52 +34,56 @@ namespace overworld {
     }
   }
 
-  void Scope::use_member_array(const std::string &name, Member_Owner member, Member_Owner &existing_member) {
-    if (!can_be_overloaded(*member))
+  void Scope::overload(const std::string &name, Member &member) {
+    auto &existing = members.at(name);
+    if (!can_be_overloaded(member) || member.get_type() != existing.get_type())
       throw std::runtime_error("Duplicated identifier: " + name + ".");
 
-    if (existing_member->get_member_type() == Member_Type::array) {
-      auto member_array = static_cast<Member_Reference_Array *>(existing_member.get());
-      member_array->add_member(std::move(member));
-    }
-    else {
-      if (!can_be_overloaded(*existing_member))
-        throw std::runtime_error("Duplicated identifier: " + name + ".");
-
-      auto member_array = new Member_Reference_Array();
-      auto member_array_owner = Member_Owner(member_array);
-      member_array->add_member(std::move(existing_member));
-      member_array->add_member(std::move(member));
-      members[name] = std::move(member_array_owner);
-    }
+    overloaded_members[name] = Members();
+    auto &array = overloaded_members[name];
+    array.push_back(existing);
+    array.push_back(member);
+    members.erase(name);
   }
 
-  void Scope::add_member(const std::string &name, Member_Owner member) {
+  void Scope::add_overload(const std::string &name, Member &member) {
+    auto &array = overloaded_members.at(name);
+    auto &first = array[0];
+
+    if (!can_be_overloaded(member) || member.get_type() != first.get_type())
+      throw std::runtime_error("Duplicated identifier: " + name + ".");
+
+    array.push_back(member);
+  }
+
+  void Scope::add_member(const std::string &name, Member member) {
     if (members.count(name)) {
-      auto &existing_member = members[name];
-      use_member_array(name, std::move(member), existing_member);
+      overload(name, member);
+    }
+    else if (overloaded_members.count(name)) {
+      add_overload(name, member);
     }
     else {
-      members[name] = std::move(member);
+      members[name] = member;
     }
   }
 
   void Scope::add_function(std::unique_ptr<Function> function) {
-    add_member(function->get_name(), Member_Owner(new Member_Function(*function)));
+    add_member(function->get_name(), Member(*function));
     functions.push_back(std::move(function));
   }
 
-  Member &Scope::add_minion(Minion &minion) {
-    auto member = new Member_Minion(minion);
-    add_member(minion.get_name(), Member_Owner(member));
-    return *member;
+  Member Scope::add_minion(Minion &minion) {
+    auto member = Member(minion);
+    add_member(minion.get_name(), Member(member));
+    return member;
   }
 
-  Member &Scope::add_minion(std::unique_ptr<Minion> minion) {
-    auto member = new Member_Minion(*minion);
-    add_member(minion->get_name(), Member_Owner(member));
+  Member Scope::add_minion(std::unique_ptr<Minion> minion) {
+    auto member = Member(*minion);
+    add_member(minion->get_name(), member);
     minions.push_back(std::move(minion));
-    return *member;
+    return member;
   }
 
   Minion &Scope::get_minion(const std::string &name) {
@@ -101,7 +104,7 @@ namespace overworld {
   }
 
   void Scope::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
-    add_member(dungeon->get_name(), Member_Owner(new Member_Dungeon(*dungeon)));
+    add_member(dungeon->get_name(), Member(*dungeon));
     dungeons.push_back(std::move(dungeon));
   }
 
@@ -136,13 +139,13 @@ namespace overworld {
 
   Member *Scope::get_member_or_null(const std::string &name) {
     return members.count(name) != 0
-           ? members.at(name).get()
+           ? &members.at(name)
            : nullptr;
   }
 
   Member &Scope::get_member(const std::string &name) {
     if (members.count(name) != 0)
-      return *members.at(name);
+      return members.at(name);
 
     throw std::runtime_error("Could not find member: " + name);
   }

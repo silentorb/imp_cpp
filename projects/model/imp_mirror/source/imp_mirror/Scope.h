@@ -7,7 +7,7 @@ namespace imp_mirror {
   class Scope {
       overworld::Scope &overworld_scope;
       std::vector<overworld::Scope *> imported_scopes;
-      std::unordered_map<std::string, overworld::Member_Dungeon_Owner> dungeons;
+      std::unordered_map<std::string, overworld::Member> dungeons;
       Scope *parent = nullptr;
 
   public:
@@ -33,7 +33,7 @@ namespace imp_mirror {
         }
 
         if (dungeons.count(name) > 0)
-          return dungeons[name].get();
+          return &dungeons.at(name);
 
         if (parent)
           return parent->find_member(name);
@@ -46,7 +46,7 @@ namespace imp_mirror {
       }
 
       void add_dungeon(overworld::Dungeon &dungeon) {
-        dungeons[dungeon.get_name()] = overworld::Member_Dungeon_Owner(new overworld::Member_Dungeon(dungeon));
+        dungeons[dungeon.get_name()] = overworld::Member(dungeon);
       }
 
       void import(overworld::Scope &scope) {
