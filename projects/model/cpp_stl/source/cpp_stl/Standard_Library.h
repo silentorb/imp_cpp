@@ -15,12 +15,25 @@ namespace cpp_stl {
       overworld::Dungeon *string_type = nullptr;
 
   public:
+
+      struct Enchantments {
+          overworld::Dungeon *input_stream;
+
+          struct {
+              overworld::Dungeon *map;
+
+          } functional;
+      };
+
+  private:
+
+      Enchantments enchantments;
+
+      void initialize_enchantments();
+
+  public:
       Standard_Library();
-
-      void
-      initialize_overworld(overworld::Profession_Library &profession_library,
-                           overworld::Graph &graph);
-
+      void initialize_overworld(overworld::Profession_Library &profession_library, overworld::Graph &graph);
       void initialize_underworld(imp_summoning::Zookeeper &zookeeper);
 
       overworld::Dungeon &get_unique_pointer() const {
@@ -41,6 +54,10 @@ namespace cpp_stl {
 
       const overworld::Dungeon &get_overworld_dungeon() const {
         return overworld_dungeon;
+      }
+
+      const Enchantments &get_enchantments() const {
+        return enchantments;
       }
   };
 }

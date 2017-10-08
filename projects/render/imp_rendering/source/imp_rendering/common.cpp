@@ -12,11 +12,20 @@
 #include <overworld/expressions/Instantiation.h>
 #include <overworld/schema/Enchantment_With_Arguments.h>
 #include <overworld/expressions/Lambda.h>
+#include <cpp_stl/Standard_Library.h>
 
 using namespace std;
 using namespace overworld;
 
 namespace imp_rendering {
+
+  static const cpp_stl::Standard_Library *standard_library;
+  static const cpp_stl::Standard_Library::Enchantments *standard_enchantments;
+
+  void set_standard_library(cpp_stl::Standard_Library &library) {
+    standard_library = &library;
+    standard_enchantments = &library.get_enchantments();
+  }
 
   static const std::string primitive_names[] = {
     "bool",
@@ -194,7 +203,19 @@ namespace imp_rendering {
 
   const std::string render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
     auto minions = function_call.get_signature().get_parameters().begin();
-    return render_expression(function_call.get_expression(), scope) + "(" +
+    auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
+    auto &member = member_expression->get_member();
+    auto main_expression = render_expression(function_call.get_expression(), scope);
+    if (member.get_type() == Member_Type::function &&
+        member.get_function().get_enchantments().has_enchantment(*standard_enchantments->input_stream)) {
+      return main_expression + " << " +
+             join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
+               [& minions, & scope](const overworld::Expression_Owner &expression) {
+                 return render_argument(*expression, **minions++, scope);
+               }), " << ");
+    }
+
+    return main_expression + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
              [& minions, & scope](const overworld::Expression_Owner &expression) {
                return render_argument(*expression, **minions++, scope);

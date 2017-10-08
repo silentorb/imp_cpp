@@ -10,6 +10,6 @@ void Goblikin::craft() {
   tail->name = "dragon's tail";
   ingredients.push_back(std::move(tail));
   ingredients.map([&] (!unknown! i) {
-  std::cout(i.name);
+  std::cout << i.name;
 });
 }

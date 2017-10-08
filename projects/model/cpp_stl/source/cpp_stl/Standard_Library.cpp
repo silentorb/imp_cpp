@@ -11,10 +11,24 @@ namespace cpp_stl {
     overworld_dungeon("stl"),
     underworld_dungeon("stl", nullptr),
     memory_file("memory", true) {
+    initialize_enchantments();
+  }
+
+  overworld::Dungeon &create_dungeon(const std::string &name, overworld::Dungeon &parent) {
+    auto new_dungeon = new overworld::Dungeon(name, parent);
+    parent.add_dungeon(overworld::Dungeon_Owner(new_dungeon));
+    return *new_dungeon;
+  }
+
+  void Standard_Library::initialize_enchantments() {
+    auto &enchantments_dungeon = create_dungeon("enchantments", overworld_dungeon);
+    auto &functional = create_dungeon("functional", enchantments_dungeon);
+    enchantments.input_stream = &create_dungeon("input_stream", enchantments_dungeon);
+    enchantments.functional.map = &create_dungeon("map", functional);
   }
 
   void Standard_Library::initialize_underworld(imp_summoning::Zookeeper &zookeeper) {
-    zookeeper.load_file("resources/stl/enchantments.imp", underworld_dungeon);
+//    zookeeper.load_file("resources/stl/enchantments.imp", underworld_dungeon);
     zookeeper.load_file("resources/stl/Array.imp", underworld_dungeon);
     zookeeper.load_file("resources/stl/iostream.imp", underworld_dungeon);
   }

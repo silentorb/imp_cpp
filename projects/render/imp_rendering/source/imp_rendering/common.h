@@ -6,7 +6,13 @@
 #include <functional>
 #include <overworld/schema/Function.h>
 
+namespace cpp_stl {
+  class Standard_Library;
+}
+
 namespace imp_rendering {
+
+  void set_standard_library(cpp_stl::Standard_Library &library);
 
   using Stroke = imp_artisan::building::Stroke_Owner;
   const std::string render_function_parameters(const overworld::Function &function);

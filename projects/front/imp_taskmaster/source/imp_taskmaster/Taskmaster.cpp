@@ -66,8 +66,7 @@ namespace imp_taskmaster {
 
   void Taskmaster::render_dungeon(const overworld::Dungeon &dungeon) {
     imp_rendering::Include_Manager include_manager(dungeon, header_file_map);
-//    std::vector<const overworld::Profession *> dependencies;
-//    overworld::exploring::gather_dungeon_dependencies(dependencies, dungeon);
+    imp_rendering::set_standard_library(standard_library);
     include_manager.gather_headers(standard_library);
 
     auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes(),
