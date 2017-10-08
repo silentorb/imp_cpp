@@ -5,10 +5,10 @@
 using namespace std;
 
 TEST(Main_Test, pizza) {
-//  compile("pizza");
-//
-//  compare(string(RESOURCE_PATH) + "pizza/Pizza.h", string(OUTPUT_PATH) + "Pizza.h");
-//  compare(string(RESOURCE_PATH) + "pizza/Pizza.cpp", string(OUTPUT_PATH) + "Pizza.cpp");
+  compile("pizza");
+  Comparison test("pizza");
+  test.compare("Pizza.cpp");
+  test.compare("Pizza.h");
 }
 //
 //TEST(Main_Test, game) {

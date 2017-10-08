@@ -201,7 +201,7 @@ namespace imp_rendering {
     return render_cast(parameter.get_profession(), argument, result);
   }
 
-  const std::string render_for_loop(const overworld::Invoke &function_call, const overworld::Scope &scope) {
+  Stroke render_for_loop(const overworld::Invoke &function_call, const overworld::Scope &scope) {
     auto &parameters = function_call.get_signature().get_parameters();
     auto minions = parameters.begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
@@ -210,16 +210,11 @@ namespace imp_rendering {
     auto container = render_expression(function_call.get_expression(), scope);
     container = container.substr(0, container.size() - 4);
     auto lambda = dynamic_cast<Lambda *>(function_call.get_arguments()[0].get());
-    return "for (auto &" + lambda->get_function().get_parameters()[0]->get_name() + " : " + container + ")"
-           + render_block("", lambda->get_function().get_block()).render("");
-
-//           join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-//             [& minions, & scope](const overworld::Expression_Owner &expression) {
-//               return render_argument(*expression, **minions++, scope);
-//             }), ", ") + ")";
+    auto header = "for (auto &" + lambda->get_function().get_parameters()[0]->get_name() + " : " + container + ")";
+    return render_block(header, lambda->get_function().get_block());
   }
 
-  const std::string render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
+  Stroke render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
     auto minions = function_call.get_signature().get_parameters().begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
     auto &member = member_expression->get_member();
@@ -233,9 +228,6 @@ namespace imp_rendering {
                    return render_argument(*expression, **minions++, scope);
                  }), " << ");
       }
-      else if (enchantments.has_enchantment(*standard_enchantments->functional.map)) {
-        return render_for_loop(function_call, scope);
-      }
     }
 
     return render_expression(function_call.get_expression(), scope) + "(" +
@@ -245,8 +237,8 @@ namespace imp_rendering {
              }), ", ") + ")";
   }
 
-  const std::string
-  render_dictionary(const std::map<Minion *, Expression_Owner> &dictionary, const overworld::Scope &scope) {
+  const std::string render_dictionary(const std::map<Minion *, Expression_Owner> &dictionary,
+                                      const overworld::Scope &scope) {
     return join(dictionary, Map_Joiner<Minion *, const overworld::Expression_Owner>(
       [& scope](Minion *minion, const overworld::Expression_Owner &expression) {
         return minion->get_name() + ": " + render_expression(*expression, scope);
@@ -430,7 +422,7 @@ namespace imp_rendering {
 
       case overworld::Expression_Type::invoke:
         return render_function_call(
-          *dynamic_cast<const overworld::Invoke *>(&input_expression), scope);
+          *dynamic_cast<const overworld::Invoke *>(&input_expression), scope).render("");
 
       case overworld::Expression_Type::instantiation:
         return render_instantiation(
@@ -477,9 +469,22 @@ namespace imp_rendering {
         return render_variable_declaration_with_assignment(
           *dynamic_cast<const overworld::Minion_Declaration_And_Assignment *>(&input_expression), scope);
 
+      case overworld::Expression_Type::invoke: {
+        auto &function_call = *dynamic_cast<const overworld::Invoke *>(&input_expression);
+        auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
+        auto &member = member_expression->get_member();
+        if (member.get_type() == Member_Type::function) {
+          auto &function = member.get_function();
+          auto &enchantments = function.get_enchantments();
+          if (enchantments.has_enchantment(*standard_enchantments->functional.map)) {
+            return render_for_loop(function_call, scope);
+          }
+        }
+      }
+
       default:
         return render_expression(input_expression, scope) + ";";
-        throw std::runtime_error(" Not implemented.");
+//        throw std::runtime_error(" Not implemented.");
     }
   }
 

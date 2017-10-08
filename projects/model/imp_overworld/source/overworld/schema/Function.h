@@ -25,7 +25,7 @@ namespace overworld {
       const Profession &_get_profession() const {
         auto profession = signature.get_return_type();
         if (!profession)
-          return Profession_Library::get_void();
+          return Profession_Library::get_unknown();
 
         return *profession;
       }
@@ -33,7 +33,7 @@ namespace overworld {
       Profession &_get_profession() {
         auto profession = signature.get_return_type();
         if (!profession)
-          return Profession_Library::get_void();
+          return Profession_Library::get_unknown();
 
         return *profession;
       }

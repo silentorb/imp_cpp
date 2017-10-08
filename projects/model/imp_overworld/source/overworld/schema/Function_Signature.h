@@ -27,7 +27,7 @@ namespace overworld {
       }
 
       void set_return_type(Profession &profession) {
-        return_type = &profession;;
+        return_type = &profession;
       }
 
       Node &get_node() {

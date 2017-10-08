@@ -9,7 +9,8 @@ void Goblikin::craft() {
   auto tail = std::unique_ptr<Ingredient>(new Ingredient());
   tail->name = "dragon's tail";
   ingredients.push_back(std::move(tail));
+
   for (auto &i : ingredients) {
-  std::cout << i.name;
-};
+    std::cout << i.name;
+  }
 }

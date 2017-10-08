@@ -266,8 +266,9 @@ namespace imp_summoning {
 
   Expression_Owner Expression_Summoner::process_condition(Context &context) {
     input.expect_next(lexicon.left_paren);
+    input.next();
     auto result = process_expression(context);
-    input.expect_next(lexicon.right_paren);
+    input.expect(lexicon.right_paren);
     input.next();
     return result;
   }
