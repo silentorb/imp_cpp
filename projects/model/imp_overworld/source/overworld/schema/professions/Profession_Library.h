@@ -20,6 +20,7 @@ namespace overworld {
       Function_Variant_Map function_variants;
       Graph &graph;
       Enchantment_Library enchantment_library;
+      std::vector<Profession_Owner> profession_store;
 
   public:
       Profession_Library(Graph &graph);
@@ -59,6 +60,8 @@ namespace overworld {
                                               overworld::Dungeon &dungeon,
                                               Node &starting_node, overworld::Profession &profession);
       Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
+
+      void store_profession(Profession_Owner profession);
 
       Enchantment_Library &get_enchantment_library() {
         return enchantment_library;

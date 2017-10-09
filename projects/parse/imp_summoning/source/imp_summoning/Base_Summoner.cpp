@@ -51,7 +51,7 @@ namespace imp_summoning {
     if (input.current().is(lexicon.single_arrow)) {
       input.next();
       auto child = process_profession(context);
-
+      return Profession_Owner(new Function_Profession(std::move(profession), std::move(child)));
     }
     return profession;
   }

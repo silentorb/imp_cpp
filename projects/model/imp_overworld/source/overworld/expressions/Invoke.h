@@ -33,6 +33,10 @@ namespace overworld {
         return member.get_function().get_signature();
       }
 
+      std::vector<Expression_Owner> &get_arguments() {
+        return arguments;
+      }
+
       const std::vector<Expression_Owner> &get_arguments() const {
         return arguments;
       }

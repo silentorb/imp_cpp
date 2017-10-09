@@ -4,6 +4,18 @@
 
 namespace overworld {
 
+  class Simple_Parameter {
+      Common_Element element;
+      Element_Reference_Node node;
+
+  public:
+      Simple_Parameter(Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function,
+                       const source_mapping::Source_Range &source_range) :
+        element(Element_Type::parameter, "", profession, source_range),
+        node(element, dungeon, function) {}
+  };
+  using Simple_Parameter_Owner = std::unique_ptr<Simple_Parameter>;
+
   class Parameter : public Minion {
       std::unique_ptr<Dungeon> temporary_interface;
 

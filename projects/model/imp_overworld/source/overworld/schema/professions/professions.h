@@ -3,6 +3,7 @@
 #include <memory>
 #include <source_mapping/Source_Point.h>
 #include <overworld/schema/Dungeon.h>
+#include <overworld/schema/Function_Signature.h>
 #include "Profession.h"
 
 namespace overworld {
@@ -199,9 +200,4 @@ namespace overworld {
         return true;
       }
   };
-
-//  bool profession_is_pointer(const Profession &profession) {
-//    return profession.get_type() == Profession_Type::reference
-//           && dynamic_cast<const Reference &>(profession).is_pointer();
-//  }
 }

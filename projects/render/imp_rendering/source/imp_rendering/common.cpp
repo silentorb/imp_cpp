@@ -10,9 +10,9 @@
 #include <overworld/expressions/Invoke.h>
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Instantiation.h>
-#include <overworld/schema/Enchantment_With_Arguments.h>
 #include <overworld/expressions/Lambda.h>
 #include <cpp_stl/Standard_Library.h>
+#include <overworld/expressions/Range.h>
 
 using namespace std;
 using namespace overworld;
@@ -409,6 +409,16 @@ namespace imp_rendering {
     return render_expression(chain.get_first(), scope)
            + render_separator(chain.get_first())
            + render_expression(chain.get_second(), scope);
+  }
+
+  const std::string render_range(const Range &range) {
+    if (range.get_start().get_type() == Range_Value_Type::absolute
+        && range.get_end().get_type() == Range_Value_Type::none) {
+      return "[" + std::to_string(range.get_start().get_value()) + "]";
+    }
+    else {
+      throw std::runtime_error("Not implemented.");
+    }
   }
 
   const std::string render_expression(const overworld::Expression &input_expression, const overworld::Scope &scope) {

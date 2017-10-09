@@ -18,6 +18,7 @@ namespace underworld {
       member,
       method_call,
       Operator, // Infix
+      range,
       return_nothing,
       return_with_value,
       self,

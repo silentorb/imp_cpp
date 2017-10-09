@@ -18,6 +18,7 @@ namespace overworld {
       literal,
       member,
       Operator, // Infix
+      range,
       return_nothing,
       return_with_value,
       self,

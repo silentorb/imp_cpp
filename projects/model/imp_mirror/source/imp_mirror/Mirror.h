@@ -19,8 +19,10 @@
 #include <underworld/expressions/Instantiation.h>
 #include <underworld/expressions/Lambda.h>
 #include <imp_mirror/Scope.h>
+#include <underworld/expressions/Range.h>
 #include "Element_Map.h"
 #include "Temporary_Interface_Manager.h"
+#include "Connector.h"
 
 namespace overworld {
   class Block_Expression;
@@ -34,6 +36,7 @@ namespace imp_mirror {
       overworld::Graph &graph;
       Temporary_Interface_Manager &temporary_interface_manager;
       overworld::File_Library &header_files;
+      Connector connector;
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_node()->get_element().get_profession();
@@ -121,6 +124,11 @@ namespace imp_mirror {
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        Scope &scope);
 
+      overworld::Expression_Owner reflect_range(const underworld::Range &input_range, Scope &scope);
+
+      overworld::Profession &reflect_function_signature(const underworld::Function_Profession &input_signature,
+                                                             Scope &scope);
+
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);
       void reflect_function_with_block3(const underworld::Function_With_Block &input_function,
@@ -138,9 +146,6 @@ namespace imp_mirror {
                                                  Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,
                                                         Scope &scope);
-      overworld::Function_Signature &
-      get_function_signature(overworld::Expression &expression, std::vector<overworld::Expression_Owner> &arguments,
-                             Scope &scope);
 
       template<typename Output, typename Input>
       inline const Output &cast(const Input &expression) {
@@ -159,7 +164,8 @@ namespace imp_mirror {
       Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph,
              Temporary_Interface_Manager &temporary_interface_manager, overworld::File_Library &header_files) :
         profession_library(profession_library), element_map(element_map), graph(graph),
-        temporary_interface_manager(temporary_interface_manager), header_files(header_files) {}
+        temporary_interface_manager(temporary_interface_manager), header_files(header_files),
+      connector(graph, profession_library) {}
 
       void reflect_root(const underworld::Dungeon &input, Scope &scope);
   };

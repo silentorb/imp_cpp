@@ -31,7 +31,13 @@ namespace imp_wrapper {
 }
 
 // TODO iterators
+// TODO refactor chains to be arrays
 // TODO while loops
 // TODO ranges
+// TODO numeric and string indexes
 // TODO enums
 // TODO casting
+// TODO instantatiation field initialization
+// TODO #import
+// TODO aliases
+// TODO implicit return

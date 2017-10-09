@@ -96,5 +96,42 @@ namespace underworld {
         return *child;
       }
   };
+
+  class Function_Profession : public Profession {
+      const source_mapping::Source_Range source_point;
+      std::vector<Profession_Owner> elements;
+
+  public:
+      explicit Function_Profession(const source_mapping::Source_Range &source_point) : source_point(source_point) {}
+
+      Function_Profession(Profession_Owner first, Profession_Owner second) :
+        source_point(source_mapping::Source_Range(
+          first->get_source_point().get_start(),
+          second->get_source_point().get_end())
+        ) {
+        elements.push_back(std::move(first));
+        elements.push_back(std::move(second));
+      }
+
+      Profession_Type get_type() const override {
+        return Profession_Type::function;
+      }
+
+      const std::string get_name() const override {
+        return "Function Signature";
+      }
+
+      const source_mapping::Source_Range get_source_point() const override {
+        return source_point;
+      }
+
+      void add_element(Profession_Owner element) {
+        elements.push_back(std::move(element));
+      }
+
+      const std::vector<Profession_Owner> &get_elements() const {
+        return elements;
+      }
+  };
 }
 

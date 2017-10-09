@@ -185,6 +185,9 @@ namespace overworld {
     return *variant;
   }
 
+  void Profession_Library::store_profession(Profession_Owner profession) {
+    profession_store.push_back(std::move(profession));
+  }
 //  Dungeon_Variant &Profession_Library::resolve_with_existing_template_function(Node &node, Profession &profession) {
 //    auto &function = node.get_function()->get_original();
 //    auto &dungeon = function.get_node().get_dungeon()->get_original();

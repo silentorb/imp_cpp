@@ -4,7 +4,6 @@
 #include "Profession.h"
 #include <memory>
 #include <unordered_map>
-#include <overworld/schema/Enchantment_With_Arguments.h>
 
 namespace overworld {
 

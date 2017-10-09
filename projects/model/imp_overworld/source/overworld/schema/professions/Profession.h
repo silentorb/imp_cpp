@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 namespace overworld {
 
@@ -64,6 +65,8 @@ namespace overworld {
         return nullptr;
       }
   };
+
+  using Profession_Owner = std::unique_ptr<Profession>;
 
   bool can_cast(Profession &target, Profession &source);
 }
