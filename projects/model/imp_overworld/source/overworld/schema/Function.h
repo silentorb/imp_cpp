@@ -23,32 +23,27 @@ namespace overworld {
       File *header_file = nullptr;
 
       const Profession &_get_profession() const {
-        auto profession = signature.get_return_type();
-        if (!profession)
-          return Profession_Library::get_unknown();
-
-        return *profession;
+        return signature;
+//        auto profession = signature.get_return_type();
+//        if (!profession)
+//          return Profession_Library::get_unknown();
+//
+//        return *profession;
       }
 
       Profession &_get_profession() {
-        auto profession = signature.get_return_type();
-        if (!profession)
-          return Profession_Library::get_unknown();
-
-        return *profession;
+        return signature;
       }
 
   public:
       Function(const std::string &name, Profession &return_type, Scope &parent_scope,
                Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
-        signature(node, &return_type),
         element(Element_Type::other, name, get_profession(), source_point),
         node(element, &dungeon, this) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
-        signature(node, nullptr),
         element(Element_Type::other, name, get_profession(), source_point),
         node(element, &dungeon, this) {}
 
@@ -64,16 +59,6 @@ namespace overworld {
         return false;
       }
 
-      const std::vector<Parameter_Owner> &get_parameters() const {
-        return signature.get_parameters();
-      }
-
-      virtual void add_parameter(Parameter_Owner parameter) {
-        signature.add_parameter(std::move(parameter));
-      }
-
-//      Minion &create_parameter(const std::string &name, Profession &profession);
-
       Element_Reference_Node &get_node() {
         return node;
       }
@@ -86,8 +71,8 @@ namespace overworld {
         return _get_profession();
       }
 
-      void set_profession(Profession &value) {
-        signature.set_return_type(value);
+      void set_profession(Profession &value, Profession_Setter &setter) {
+        signature.set_last_profession(value, setter);
       }
 
       void finalize(overworld::Profession_Library &profession_library);
@@ -186,9 +171,42 @@ namespace overworld {
       }
   };
 
+  class Parameter_Temporary_Interface {
+      Parameter &parameter;
+      std::unique_ptr<Dungeon> interface;
+
+  public:
+      Parameter_Temporary_Interface(Parameter &parameter, std::unique_ptr<Dungeon> interface) :
+        parameter(parameter), interface(std::move(interface)) {}
+
+      Parameter &get_parameter() const {
+        return parameter;
+      }
+
+      const std::unique_ptr<Dungeon> &get_interface() const {
+        return interface;
+      }
+  };
+
+  class Temporary_Interface_Manager {
+      std::vector<Parameter_Temporary_Interface> entries;
+
+  public:
+      std::vector<Parameter_Temporary_Interface> &get_entries() {
+        return entries;
+      }
+
+      void add(Parameter &parameter, Dungeon *interface) {
+        entries.push_back(Parameter_Temporary_Interface(
+          parameter, std::move(std::unique_ptr<Dungeon>(interface))
+        ));
+      }
+  };
+
   class Function_With_Block : public Function {
       Function_Scope scope;
       Block block;
+      std::unique_ptr<Temporary_Interface_Manager> temporary_interface_manager;
 
   protected:
       bool returns_a_value() const override;
@@ -229,6 +247,7 @@ namespace overworld {
       }
 
       bool is_inline() const override;
+      Dungeon &get_or_create_interface(Parameter &parameter);
   };
 
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;

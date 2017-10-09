@@ -19,15 +19,18 @@ namespace overworld {
   }
 
   bool Function::returns_a_value() const {
-    auto return_type = signature.get_return_type();
-    return return_type && return_type->get_type() != Profession_Type::unknown;
+    auto &return_type = signature.get_last().get_profession();
+    return return_type.get_type() != Profession_Type::unknown
+           && return_type.get_type() != Profession_Type::Void;
   }
 
   bool Function_With_Block::returns_a_value() const {
-    auto return_type = signature.get_return_type();
-    if (return_type && return_type->get_type() != Profession_Type::unknown)
-      return true;
-
+    if (signature.get_elements().size() > 0) {
+      auto &return_type = signature.get_last().get_profession();
+      if (return_type.get_type() != Profession_Type::unknown)
+        return true;
+    }
+    
     bool result = false;
 
     exploring::Expression_Explorer explorer([&result](const Expression &expression) {
@@ -40,12 +43,29 @@ namespace overworld {
 
   void Function::finalize(overworld::Profession_Library &profession_library) {
     if (!returns_a_value()) {
-      set_profession(profession_library.get_void());
-      node.set_resolved(true);
+      set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
+      node.set_status(Node_Status::resolved);
     }
     else {
-      set_profession(profession_library.get_unknown());
+      set_profession(profession_library.get_unknown(), Empty_Profession_Setter::get_instance());
     }
+  }
+
+
+  overworld::Dungeon &Function_With_Block::get_or_create_interface(Parameter &parameter) {
+    if (!temporary_interface_manager) {
+      temporary_interface_manager = std::make_unique<Temporary_Interface_Manager>();
+    }
+    else {
+      for (auto &entry : temporary_interface_manager->get_entries()) {
+        if (&entry.get_parameter() == &parameter)
+          return *entry.get_interface();
+      }
+    }
+
+    auto dungeon = new Dungeon("?" + parameter.get_name() + "?");
+    temporary_interface_manager->add(parameter, dungeon);
+    return *dungeon;
   }
 
 //  Minion &Function::create_parameter(const std::string &name, Profession &profession) {
@@ -53,6 +73,5 @@ namespace overworld {
 //    add_parameter(minion);
 //    return minion;
 //  }
-
 
 }

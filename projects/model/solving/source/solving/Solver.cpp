@@ -9,7 +9,7 @@ using namespace overworld;
 namespace solving {
 
   void Solver::add_node(Node &node) {
-    if (!node.is_resolved())
+    if (node.get_status() != Node_Status::resolved)
       unresolved.push_back(&node);
   }
 
@@ -35,7 +35,7 @@ namespace solving {
   bool Solver::is_conflict(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
-    if (!first.is_resolved() || !second.is_resolved())
+    if (first.get_status() != Node_Status::resolved || second.get_status() != Node_Status::resolved)
       return false;
 
     if (!assignment_is_compatible(first.get_element().get_profession(), second.get_element().get_profession())) {
@@ -104,7 +104,7 @@ namespace solving {
 
   Progress Solver::inhale(Node &node) {
     for (auto other : node.get_neighbors()) {
-      if (other->is_resolved()) {
+      if (other->get_status() != Node_Status::resolved) {
 #if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " < " << other->get_debug_string() << std::endl;
 #endif
@@ -120,7 +120,7 @@ namespace solving {
   Progress Solver::exhale(Node &node) {
     Progress progress = 0;
     for (auto other : node.get_neighbors()) {
-      if (!other->is_resolved()) {
+      if (other->get_status() != Node_Status::resolved) {
 #if DEBUG_SOLVER > 0
         std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
 #endif
@@ -144,7 +144,7 @@ namespace solving {
       if (!node)
         continue;
 
-      if (node->is_resolved())
+      if (node->get_status() == Node_Status::resolved)
         progress += exhale(*node);
       else
         progress += inhale(*node);
@@ -244,7 +244,8 @@ namespace solving {
     else {
       auto &function = *first.get_function();
       auto &variant_array = profession_library.get_function_variant_array(function);
-      create_function_variant(variant_array, function.get_original(), first, second.get_element().get_profession().get_base());
+      create_function_variant(variant_array, function.get_original(), first,
+                              second.get_element().get_profession().get_base());
     }
   }
 
@@ -304,7 +305,7 @@ namespace solving {
   int Solver::update_unresolved() {
     unresolved.clear();
     for (auto node : graph.get_nodes()) {
-      if (!node->is_resolved())
+      if (node->get_status() != Node_Status::resolved)
         unresolved.push_back(node);
     }
 
@@ -323,7 +324,7 @@ namespace solving {
 
   bool Solver::has_unresolved_nodes() {
     for (auto node : graph.get_nodes()) {
-      if (!node->is_resolved())
+      if (node->get_status() != Node_Status::resolved)
         return true;
     }
 
@@ -354,7 +355,7 @@ namespace solving {
 
   void Solver::initialize() {
     for (auto node : graph.get_nodes()) {
-      if (node->is_resolved())
+      if (node->get_status() == Node_Status::resolved)
         set_changed(*node);
     }
 

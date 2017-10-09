@@ -3,18 +3,9 @@
 
 namespace overworld {
 
-  Parameter::~Parameter() {
-
-  }
-
-  overworld::Dungeon &Parameter::get_or_create_interface() {
-    if (temporary_interface)
-      return *temporary_interface;
-
-    auto dungeon = new Dungeon("?" + get_name() + "?");
-    temporary_interface = std::unique_ptr<Dungeon>(dungeon);
-    return *dungeon;
-  }
+//  Parameter::~Parameter() {
+//
+//  }
 
   void replace_dungeon_node(Dungeon &old, Dungeon &replacement) {
     auto &old_dungeon_node = old.get_node();
@@ -30,18 +21,18 @@ namespace overworld {
       if (new_member.get_type() == Member_Type::function) {
         auto &new_function = new_member.get_function();
         auto &signature = temporary_member->get_or_create_signature();
-        auto &parameters = signature.get_parameters();
-        auto &new_parameters = new_function.get_parameters();
-        if (parameters.size() != new_parameters.size())
+        auto &elements = signature.get_elements();
+        auto &new_parameters = new_function.get_signature().get_elements();
+        if (elements.size() != new_parameters.size())
           throw std::runtime_error("New and old parameter lengths does not match.");
 
-        for (auto i = 0; i < parameters.size(); ++i) {
-          parameters[i]->get_node().replace_with(new_parameters[i]->get_node());
+        for (auto i = 0; i < elements.size() - 1; ++i) {
+          elements[i]->get_node().replace_with(new_parameters[i]->get_node());
         }
 
-        if (signature.get_return_type()) {
-          throw std::runtime_error("Not implemented.");
-        }
+//        if (signature.get_return_type()) {
+//          throw std::runtime_error("Not implemented.");
+//        }
       }
 
       temporary_member->replace_with(new_member);

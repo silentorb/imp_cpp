@@ -96,8 +96,8 @@ namespace imp_rendering {
     return signature + separator + minion.get_name();
   }
 
-  const std::string render_parameter(const overworld::Minion &minion, const overworld::Scope &scope) {
-    auto &profession = minion.get_profession();
+  const std::string render_parameter(const overworld::Parameter &parameter, const overworld::Scope &scope) {
+    auto &profession = parameter.get_profession();
     auto profession_string = render_profession(profession, scope);
     auto last_character = profession_string[profession_string.size() - 1];
     auto separator = last_character == '&' || last_character == '*'
@@ -108,13 +108,13 @@ namespace imp_rendering {
 //      ? " &"
 //      : " ";
 
-    return profession_string + separator + minion.get_name();
+    return profession_string + separator + parameter.get_name();
   }
 
   const std::string render_function_parameters(const overworld::Function &function) {
     return "(" +
-           join(function.get_parameters(), Joiner<const overworld::Parameter_Owner &>(
-             [& function](const overworld::Parameter_Owner &minion) {
+           join(function.get_signature().get_parameters(), Joiner<overworld::Parameter *>(
+             [& function](const overworld::Parameter *minion) {
                return render_parameter(*minion, function.get_parent_scope());
              }), ", ") + ")";
   }
@@ -195,7 +195,7 @@ namespace imp_rendering {
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
                                     const overworld::Scope &scope) {
     auto result = render_expression(argument, scope);
-    if (parameter.transfers_ownership())
+    if (parameter.get_profession().get_ownership() == Ownership::owner)
       return "std::move(" + result + ")";
 
     return render_cast(parameter.get_profession(), argument, result);
@@ -210,7 +210,7 @@ namespace imp_rendering {
     auto container = render_expression(function_call.get_expression(), scope);
     container = container.substr(0, container.size() - 4);
     auto lambda = dynamic_cast<Lambda *>(function_call.get_arguments()[0].get());
-    auto header = "for (auto &" + lambda->get_function().get_parameters()[0]->get_name() + " : " + container + ")";
+    auto header = "for (auto &" + lambda->get_function().get_signature().get_parameters()[0]->get_name() + " : " + container + ")";
     return render_block(header, lambda->get_function().get_block());
   }
 

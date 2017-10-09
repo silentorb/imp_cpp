@@ -117,7 +117,7 @@ namespace imp_mirror {
       overworld::Profession &reflect_dungeon_usage(const underworld::Token_Profession &profession,
                                                    Scope &scope);
 
-      void reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
+      overworld::Minion &reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
       std::unique_ptr<overworld::Parameter>
       create_parameter(const underworld::Minion &input_minion, Scope &scope,
                        overworld::Function_Interface &function);
@@ -127,10 +127,15 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_range(const underworld::Range &input_range, Scope &scope);
 
       overworld::Profession &reflect_function_signature(const underworld::Function_Profession &input_signature,
-                                                             Scope &scope);
+                                                        Scope &scope);
 
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);
+
+      void create_block_parameter(const underworld::Parameter &input_parameter,
+                                  overworld::Function_With_Block &output_function,
+                                  Scope &block_scope, Scope &scope);
+
       void reflect_function_with_block3(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);
 
@@ -165,7 +170,7 @@ namespace imp_mirror {
              Temporary_Interface_Manager &temporary_interface_manager, overworld::File_Library &header_files) :
         profession_library(profession_library), element_map(element_map), graph(graph),
         temporary_interface_manager(temporary_interface_manager), header_files(header_files),
-      connector(graph, profession_library) {}
+        connector(graph, profession_library) {}
 
       void reflect_root(const underworld::Dungeon &input, Scope &scope);
   };

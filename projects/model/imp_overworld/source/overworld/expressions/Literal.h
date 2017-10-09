@@ -37,7 +37,7 @@ namespace overworld {
         Literal(source_range),
         value(value),
         node(element, dungeon, function) {
-        node.set_resolved(true);
+        node.set_status(Node_Status:: resolved);
       }
 
       Primitive_Type get_primitive_type() const override {

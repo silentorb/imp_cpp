@@ -16,8 +16,8 @@ namespace overworld {
                              Function_Interface *function) :
         Node(element.get_profession(), dungeon, function), element(element) {}
 
-      bool is_resolved() const override {
-        return false;
+      Node_Status get_status() const override {
+        return Node_Status::unresolved;
       }
 
       std::string get_debug_string() const override {

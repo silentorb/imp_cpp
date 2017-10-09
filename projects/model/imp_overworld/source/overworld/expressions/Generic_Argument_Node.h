@@ -36,13 +36,15 @@ namespace overworld {
         Node(profession, nullptr, function),
         element(member_container, profession, profession_library, *this, source_point) {}
 
-      bool is_resolved() const override {
+      Node_Status get_status() const override {
         auto &profession = element.get_profession();
         if (profession.get_type() == Profession_Type::generic_parameter)
-          return false;
+          return Node_Status::unresolved;
 
         return profession.get_base().get_type() != overworld::Profession_Type::unknown
-               && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter;
+               && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter
+               ? Node_Status::resolved
+               : Node_Status::unresolved;
       }
 
       Element &get_element() override {

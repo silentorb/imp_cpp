@@ -1,53 +1,24 @@
 #pragma once
 
-#include "Parameter.h"
+#include <overworld/imp_graph/Node.h>
 #include "professions/Profession.h"
+#include "Element.h"
+#include "Parameter.h"
 
 namespace overworld {
 
-  class Function_Signature {
-      std::vector<Parameter_Owner> parameters;
-      Node &node;
-      Profession *return_type = nullptr;
+  class Function_Signature : public Profession {
+//      Common_Element element;
+//      Element_Reference_Node node;
+      std::vector<Parameter_Owner> elements;
 
   public:
-      Function_Signature(Node &node, Profession *return_type = nullptr) :
-        node(node), return_type(return_type) {}
+//      Function_Signature(Dungeon_Interface *dungeon, Function_Interface *function,
+//                         const source_mapping::Source_Range &source_range) :
+//        element(Element_Type::other, "Function Signature", *this, source_range),
+//        node(element, dungeon, function) {}
 
-      const std::vector<Parameter_Owner> &get_parameters() const {
-        return parameters;
-      }
-
-      Profession *get_return_type() const {
-        return return_type;
-      }
-
-      void add_parameter(Parameter_Owner parameter) {
-        parameters.push_back(std::move(parameter));
-      }
-
-      void set_return_type(Profession &profession) {
-        return_type = &profession;
-      }
-
-      Node &get_node() {
-        return node;
-      }
-  };
-
-
-  class Function_Profession : public Profession {
-      Common_Element element;
-      Element_Reference_Node node;
-      std::vector<Simple_Parameter_Owner> elements;
-
-  public:
-      Function_Profession(Dungeon_Interface *dungeon, Function_Interface *function,
-                          const source_mapping::Source_Range &source_range) :
-        element(Element_Type::other, "Function Signature", *this, source_range),
-        node(element, dungeon, function) {}
-
-      ~Function_Profession() override = default;
+      ~Function_Signature() override = default;
 
       Profession_Type get_type() const override {
         return Profession_Type::function;
@@ -85,13 +56,49 @@ namespace overworld {
         return *this;
       }
 
-      void add_element(Simple_Parameter_Owner element) {
+      void add_element(Parameter_Owner element) {
         elements.push_back(std::move(element));
       }
 
-      const std::vector<Simple_Parameter_Owner> &get_elements() const {
+      const std::vector<Parameter_Owner> &get_elements() const {
         return elements;
       }
-  };
 
+      const std::vector<Parameter *> get_parameters() const {
+        std::vector<Parameter *> result;
+        for (auto i = 0; i < elements.size() - 1; ++i) {
+          result.push_back(elements[i].get());
+        }
+        return result;
+      }
+
+      Parameter &get_last() {
+        if (elements.size() == 0)
+          throw std::runtime_error("Cannot get last profession from empty function signature.");
+
+        return *elements[elements.size() - 1];
+      }
+
+      const Parameter &get_last() const {
+        if (elements.size() == 0)
+          throw std::runtime_error("Cannot get last profession from empty function signature.");
+
+        return *elements[elements.size() - 1];
+      }
+
+      void set_last_profession(Profession &profession, Profession_Setter &setter) {
+        if (elements.size() == 0)
+          throw std::runtime_error("Cannot get last profession from empty function signature.");
+
+        elements[elements.size() - 1]->set_profession(profession, setter);
+      }
+
+      Parameter *get_element(const std::string &name) {
+        for (auto &element : elements) {
+          if (element->get_name() == name)
+            return element.get();
+        }
+        return nullptr;
+      }
+  };
 }

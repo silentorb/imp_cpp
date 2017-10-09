@@ -172,7 +172,7 @@ namespace imp_rendering {
       Helper &helper;
 
       void process_function_declaration(const Function &function) {
-        for (auto &parameter: function.get_parameters()) {
+        for (auto &parameter: function.get_signature().get_elements()) {
           auto &profession = parameter->get_profession();
           if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());

@@ -194,20 +194,23 @@ namespace imp_summoning {
     auto profession = process_optional_profession(context);
     std::vector<Parameter_Owner> parameters;
     process_function_parameters(context, parameters);
+    auto return_type_source_range = profession ? profession->get_source_point() : source_mapping::Source_Range();
+
     if (input.if_is(lexicon.left_brace)) {
-      auto function = new Function_With_Block(identifier.name, std::move(profession), identifier.source_point,
-                                              context.get_scope());
+      auto function = new Function_With_Block(identifier.name, identifier.source_point, context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
+      function->add_parameter(Parameter_Owner(new Parameter("", std::move(profession), return_type_source_range)));
 
       expression_summoner.process_block(function->get_block(), context);
       return *function;
     }
     else {
-      auto function = new Virtual_Function(identifier.name, std::move(profession), identifier.source_point,
-                                           context.get_scope());
+      auto function = new Virtual_Function(identifier.name, identifier.source_point, context.get_scope());
       context.get_scope().add_member(std::unique_ptr<Member>(function));
       function->add_parameters(parameters);
+      function->add_parameter(Parameter_Owner(new Parameter("", std::move(profession), return_type_source_range)));
+
       return *function;
     }
   }

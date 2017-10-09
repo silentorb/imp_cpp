@@ -35,7 +35,7 @@ namespace imp_summoning {
   }
 
   Expression_Owner Expression_Summoner::process_lambda(Member_Expression &parameter_info, Context &context) {
-    auto function = new Function_With_Block("", nullptr, input.get_source_range(),
+    auto function = new Function_With_Block("", input.get_source_range(),
                                             context.get_scope());
 
     auto function_owner = Function_With_Block_Owner(function);

@@ -68,4 +68,11 @@ namespace overworld {
   };
 
   using Element_Owner = std::unique_ptr<Element>;
+
+  class Empty_Profession_Setter : public overworld::Profession_Setter {
+  public:
+      static Empty_Profession_Setter &get_instance();
+      void set_profession(overworld::Node &node, overworld::Profession &profession) override;
+  };
+
 }

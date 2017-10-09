@@ -15,14 +15,14 @@ namespace underworld {
       std::vector<Generic_Parameter> generic_parameters;
 
   public:
-      Function(const std::string &name, Profession_Owner return_type,
+      Function(const std::string &name,
                const source_mapping::Source_Range &source,
                Scope &parent) :
-        name(name), signature(std::move(return_type)), Member(source) {}
-
-      Function(const std::string &name, const source_mapping::Source_Range &source,
-               Scope &parent) :
         name(name), Member(source) {}
+
+//      Function(const std::string &name, const source_mapping::Source_Range &source,
+//               Scope &parent) :
+//        name(name), Member(source) {}
 
       Type get_type() const override {
         return Type::function;
@@ -32,9 +32,9 @@ namespace underworld {
         return name;
       }
 
-      const Profession *get_profession() const override {
-        return signature.get_return_type();
-      }
+//      const Profession *get_profession() const override {
+//        return signature.get_return_type();
+//      }
 
       void add_generic_parameter(Generic_Parameter &value) {
         generic_parameters.push_back(value);
@@ -62,6 +62,9 @@ namespace underworld {
         return signature.get_parameters();
       }
 
+      const Profession *get_profession() const override {
+        return signature.get_last().get_profession();
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;
@@ -69,10 +72,6 @@ namespace underworld {
   class Virtual_Function : public Function {
 
   public:
-      Virtual_Function(const std::string &name, Profession_Owner return_type,
-                       const source_mapping::Source_Range &source, Scope &parent) :
-        Function(name, std::move(return_type), source, parent) {}
-
       Virtual_Function(const std::string &name, const source_mapping::Source_Range &source, Scope &parent) :
         Function(name, source, parent) {}
   };
@@ -81,11 +80,6 @@ namespace underworld {
       Block block;
 
   public:
-      Function_With_Block(const std::string &name, Profession_Owner return_type,
-                          const source_mapping::Source_Range &source,
-                          Scope &parent) :
-        Function(name, std::move(return_type), source, parent), block(parent) {}
-
       Function_With_Block(const std::string &name, const source_mapping::Source_Range &source,
                           Scope &parent) :
         Function(name, source, parent), block(parent) {}

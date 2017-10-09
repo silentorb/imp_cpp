@@ -28,14 +28,19 @@ namespace overworld {
       }
 
       Function_Signature &get_or_create_signature() {
-        if (!signature)
-          signature = std::unique_ptr<Function_Signature>(new Function_Signature(get_node()));
+        if (!signature) {
+          signature = std::unique_ptr<Function_Signature>(new Function_Signature());
+//          signature->add_element(Simple_Parameter_Owner(new Simple_Parameter(
+//            Profession_Library::get_unknown(),
+//            nullptr, nullptr, source_mapping::Source_Range()
+//          )));
+        }
 
         return *signature;
       }
 
       void add_parameter(Parameter_Owner parameter) {
-        signature->add_parameter(std::move(parameter));
+        signature->add_element(std::move(parameter));
       }
   };
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 enable_language(CXX) # SINCE Compiler/Platform variables do not normally exist before a project command in CMake.
-
+set(CMAKE_TOOLS_CPP_VERSION 14)
 set(imp_root ${CMAKE_SOURCE_DIR})
 get_filename_component(PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 get_filename_component(CPP_ROOT "../.." ABSOLUTE)

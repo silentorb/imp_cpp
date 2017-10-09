@@ -12,8 +12,14 @@ namespace overworld {
 
   class Function_Interface;
 
+  enum class Node_Status {
+      unresolved,
+      resolved,
+      partial,
+  };
+
   class Node : public graphing::Node<Node, Connection> {
-      bool resolved = false;
+      Node_Status status = Node_Status::unresolved;
       bool changed = false;
       Dungeon_Interface *dungeon = nullptr;
       Function_Interface *function = nullptr;
@@ -28,16 +34,16 @@ namespace overworld {
       virtual Element &get_element() = 0;
       virtual const Element &get_element() const = 0;
 
-      virtual bool is_resolved() const {
-        return resolved;
+      virtual Node_Status get_status() const {
+        return status;
+      }
+
+      void set_status(Node_Status value) {
+        status = value;
       }
 
       bool is_changed() const {
         return changed;
-      }
-
-      void set_resolved(bool resolved) {
-        Node::resolved = resolved;
       }
 
       void set_changed(bool changed) {
@@ -72,7 +78,7 @@ namespace overworld {
                              Function_Interface *function) :
         Node(element.get_profession(), dungeon, function), element(element) {}
 
-      bool is_resolved() const override;
+      Node_Status get_status() const override;
 
       Element &get_element() override {
         return element;
@@ -104,8 +110,10 @@ namespace overworld {
       Node_Copy(Node &original, Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function) :
         Node(profession, dungeon, function), original(original), profession(&profession) {}
 
-      bool is_resolved() const override {
-        return profession->get_base().get_type() != overworld::Profession_Type::unknown;
+      Node_Status get_status() const override {
+        return profession->get_base().get_type() != overworld::Profession_Type::unknown
+               ? Node_Status::resolved
+               : Node_Status::unresolved;
       }
 
       Element &get_element() override {

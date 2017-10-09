@@ -71,7 +71,9 @@ namespace overworld {
 
       Minion(const Minion &) = delete;
 
-      virtual ~Minion() = default;
+      virtual ~Minion() {
+        int k = 0;
+      }
 
       Common_Element &get_element() {
         return element;

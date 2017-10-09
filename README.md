@@ -12,7 +12,7 @@ Welcome to the Underworld!  Imp is an object-oriented programming language that 
 * Implicit
 * Imps
 
-"simple is simpler simpler, and imp is simpler simple"
+"simple is simplied simplied, and imp is simplied simple"
 
 Imp is a humble language, which means:
 

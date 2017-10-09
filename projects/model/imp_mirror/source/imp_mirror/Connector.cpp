@@ -21,17 +21,17 @@ namespace imp_mirror {
         return dungeon.get_or_create_constructor().get_signature();
       }
       else if (member.get_type() == overworld::Member_Type::minion) {
-        auto &temporary_member = dynamic_cast<overworld::Temporary_Minion &>(member.get_minion());
-        auto &signature = temporary_member.get_or_create_signature();
-        for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
-          auto &argument = arguments[i];
-          auto &argument_profession = argument->get_node()->get_element().get_profession();
-          auto parameter = new overworld::Parameter("(temp)", argument_profession,
-                                                    source_mapping::Source_Range(),
-                                                    *scope.get_overworld_scope().get_function());
-          temporary_member.add_parameter(overworld::Parameter_Owner(parameter));
-        }
-        return signature;
+//        auto &temporary_member = dynamic_cast<overworld::Temporary_Minion &>(member.get_minion());
+//        auto &signature = temporary_member.get_or_create_signature();
+//        for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
+//          auto &argument = arguments[i];
+//          auto &argument_profession = argument->get_node()->get_element().get_profession();
+//          auto parameter = new overworld::Parameter("(temp)", argument_profession,
+//                                                    source_mapping::Source_Range(),
+//                                                    *scope.get_overworld_scope().get_function());
+//          temporary_member.add_parameter(overworld::Parameter_Owner(parameter));
+//        }
+//        return signature;
       }
       else {
         throw std::runtime_error("Expression is not a function.");
@@ -54,9 +54,9 @@ namespace imp_mirror {
                                                    Scope &scope) {
     auto &overworld_function = get_function_signature(invoke.get_expression().get_last(),
                                                       invoke.get_arguments(), scope);
-    auto &parameters = overworld_function.get_parameters();
+    auto &parameters = overworld_function.get_elements();
     auto &invoke_arguments = invoke.get_arguments();
-    if (parameters.size() != invoke_arguments.size())
+    if (parameters.size() - 1 != invoke_arguments.size())
       throw std::runtime_error("Parameter and argument lengths do not match.");
 
     for (int i = 0; i < invoke_arguments.size(); ++i) {
@@ -79,17 +79,17 @@ namespace imp_mirror {
       }
       else {
         graph.connect(first, second);
-        if (argument.get_type() == Expression_Type::lambda) {
-          auto &lambda = static_cast<Lambda &>(argument);
-          auto &parameter_profession = parameter.get_profession().get_base();
-          if (parameter_profession.get_type() == Profession_Type::function) {
-
-//            graph.connect();
-          }
-          else {
-            throw std::runtime_error("Not supported.");
-          }
-        }
+//        if (argument.get_type() == Expression_Type::lambda) {
+//          auto &lambda = static_cast<Lambda &>(argument);
+//          auto &parameter_profession = parameter.get_profession().get_base();
+//          if (parameter_profession.get_type() == Profession_Type::function) {
+//
+////            graph.connect();
+//          }
+//          else {
+//            throw std::runtime_error("Not supported.");
+//          }
+//        }
       }
     }
   }
