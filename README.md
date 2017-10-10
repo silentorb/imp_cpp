@@ -21,5 +21,16 @@ Imp is a humble language, which means:
 
 ## Compiling
 
-## MSVC
+### Archmage
+Imp requires ArchMage, which requires Node.js
+
+From inside the imp directory run:
+
+`arch`
+
+### CMake
+
+
+
+### MSVC
 

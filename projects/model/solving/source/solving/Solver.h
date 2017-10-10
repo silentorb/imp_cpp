@@ -85,6 +85,7 @@ namespace solving {
       void on_connect(Connection &connection);
       Progress inhale(Node &node);
       void add_conflict(Connection &connection);
+      Progress try_push(Node &first, Node &second);
 
       void resolve_with_template_function(Connection &connection);
       void resolve_with_template_dungeon(Connection &connection);

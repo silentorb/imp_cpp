@@ -102,39 +102,41 @@ namespace solving {
     dungeon.add_generic_parameter(std::move(parameter_owner));
   }
 
+  Progress Solver::try_push(Node &first, Node &second) {
+    if (second.get_status() != Node_Status::resolved) {
+#if DEBUG_SOLVER > 0
+      std::cout << "# " << first.get_debug_string() << " > " << second.get_debug_string() << std::endl;
+#endif
+      auto &profession = first.get_element().get_profession();
+      set_profession(second, profession);
+      return 1;
+    }
+    else if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
+#if DEBUG_SOLVER > 0
+      std::cout << "# " << first.get_debug_string() << " :: " << second.get_debug_string() << std::endl;
+#endif
+    }
+#if DEBUG_SOLVER >= 2
+    else {
+      std::cout << "  " << first.get_debug_string() << " !~> " << second.get_debug_string() << std::endl;
+    }
+#endif
+    return 0;
+  }
+
   Progress Solver::inhale(Node &node) {
     for (auto other : node.get_neighbors()) {
-      if (other->get_status() != Node_Status::resolved) {
-#if DEBUG_SOLVER > 0
-        std::cout << "# " << node.get_debug_string() << " < " << other->get_debug_string() << std::endl;
-#endif
-        auto &profession = other->get_element().get_profession();
-        set_profession(node, profession);
+      if (try_push(node, *other))
         return 1;
-      }
     }
-
     return 0;
   }
 
   Progress Solver::exhale(Node &node) {
     Progress progress = 0;
     for (auto other : node.get_neighbors()) {
-      if (other->get_status() != Node_Status::resolved) {
-#if DEBUG_SOLVER > 0
-        std::cout << "# " << node.get_debug_string() << " > " << other->get_debug_string() << std::endl;
-#endif
-        auto &profession = node.get_element().get_profession();
-        set_profession(*other, profession);
-        ++progress;
-      }
-#if DEBUG_SOLVER >= 2
-      else {
-        std::cout << "  " << node.get_debug_string() << " !~> " << other->get_debug_string() << std::endl;
-      }
-#endif
+      progress += try_push(*other, node);
     }
-
     return progress;
   }
 
@@ -355,7 +357,7 @@ namespace solving {
 
   void Solver::initialize() {
     for (auto node : graph.get_nodes()) {
-      if (node->get_status() == Node_Status::resolved)
+      if (node->get_status() != Node_Status::unresolved)
         set_changed(*node);
     }
 
