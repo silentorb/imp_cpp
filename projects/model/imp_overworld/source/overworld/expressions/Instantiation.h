@@ -11,6 +11,7 @@ namespace overworld {
       Profession *profession;
       std::map<Minion *, Expression_Owner> dictionary;
       Element_Reference_Node node;
+      std::unique_ptr<Dungeon_Variant> dungeon_variant;
 
   public:
       Instantiation(Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function,
@@ -23,6 +24,14 @@ namespace overworld {
 
       Expression_Type get_type() const override {
         return Expression_Type::instantiation;
+      }
+
+      const Dungeon_Variant &get_dungeon_variant() const {
+        return *dungeon_variant;
+      }
+
+      void set_dungeon_variant(std::unique_ptr<Dungeon_Variant> value) {
+        dungeon_variant = std::move(value);
       }
 
       void add_expression(Minion &minion, Expression_Owner value) {

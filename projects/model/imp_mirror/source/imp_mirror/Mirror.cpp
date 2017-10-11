@@ -272,12 +272,37 @@ namespace imp_mirror {
     ));
   }
 
+  std::tuple<overworld::Profession &, std::unique_ptr<overworld::Dungeon_Variant>>
+  prepare_profession(overworld::Profession &initial_profession) {
+    if (initial_profession.get_type() == overworld::Profession_Type::dungeon) {
+      auto dungeon = dynamic_cast<overworld::Dungeon *>(&initial_profession);
+      for (auto &parameter: dungeon->get_generic_parameters()) {
+        if (parameter->get_type() == overworld::Profession_Type::generic_parameter) {
+          std::vector<overworld::Profession *> professions;
+          professions.push_back(&overworld::Profession_Library::get_unknown());
+          auto variant = new overworld::Dungeon_Variant(*dungeon, professions);
+          return std::tuple<overworld::Profession &, std::unique_ptr<overworld::Dungeon_Variant>>(
+            *variant,
+            std::unique_ptr<overworld::Dungeon_Variant>(variant)
+          );
+        }
+      }
+    }
+
+    return std::tuple<overworld::Profession &, std::unique_ptr<overworld::Dungeon_Variant>>(
+      initial_profession, nullptr);
+  }
+
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
                                                             Scope &scope) {
     auto &input_profession_expression = instantiation.get_profession_expression();
-    auto &output_profession = reflect_expression(input_profession_expression,
-                                                 scope)->get_last().get_node()->get_element().get_profession();
-//      auto &output_profession = reflect_profession(input_profession, scope);
+    auto profession_tuple = prepare_profession(
+      reflect_expression(input_profession_expression,
+                         scope)->get_last().get_node()->get_element().get_profession());
+
+    auto &output_profession = std::get<0>(profession_tuple);
+    auto &profession_owner = std::get<1>(profession_tuple);
+
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + output_profession.get_name(), instantiation.get_source_point());
 
@@ -289,7 +314,12 @@ namespace imp_mirror {
                                                              function,
                                                              instantiation.get_source_point());
     overworld::Expression_Owner result(output_instantiation);
-    graph.connect(*output_instantiation->get_node(), output_profession.get_node());
+    if (profession_owner) {
+      output_instantiation->set_dungeon_variant(std::move(profession_owner));
+    }
+    else {
+      graph.connect(*output_instantiation->get_node(), output_profession.get_node());
+    }
 
     for (auto &pair : source_arguments) {
       auto name = pair.first;

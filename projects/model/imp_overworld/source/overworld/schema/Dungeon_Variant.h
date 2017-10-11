@@ -30,6 +30,10 @@ namespace overworld {
         return original.get_file();
       }
 
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
+      }
+
       const std::string get_name() const override {
         return Variant::get_name();
       }

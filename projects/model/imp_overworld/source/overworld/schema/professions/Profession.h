@@ -49,9 +49,7 @@ namespace overworld {
         return get_name();
       };
 
-      virtual Node &get_node() {
-        throw std::runtime_error("Not implemented.");
-      }
+      virtual Node &get_node() = 0;
 
       virtual Ownership get_ownership() const = 0;
       virtual Profession &get_base()  = 0;

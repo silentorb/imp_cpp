@@ -26,6 +26,10 @@ namespace overworld {
         return nullptr;
       }
 
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
+      }
+
       const std::string get_name() const override {
         return "?";
       }
@@ -59,6 +63,10 @@ namespace overworld {
 
       File *get_file() const override {
         return nullptr;
+      }
+
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
       }
 
       const std::string get_name() const override {
@@ -114,6 +122,10 @@ namespace overworld {
         return nullptr;
       }
 
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
+      }
+
       File *get_file() const override {
         return file;
       }
@@ -149,6 +161,10 @@ namespace overworld {
 
       Scope *get_scope() override {
         return nullptr;
+      }
+
+      Node &get_node() override {
+        throw std::runtime_error("Not supported.");
       }
 
       const Scope *get_scope() const override {
