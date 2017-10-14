@@ -26,7 +26,9 @@ namespace overworld {
 
     std::string result = "";
     if (source_point.get_source_file())
-      result += std::to_string(source_point.get_row()) + ":" + std::to_string(source_point.get_column()) + " ";
+      result += //source_point.get_source_file()->get_short_file_path() + " " +
+                std::to_string(source_point.get_row()) + ":" +
+                std::to_string(source_point.get_column()) + " ";
 
     result += element.get_name() + render_node_status(get_status())
               + ":" + profession.get_debug_name();

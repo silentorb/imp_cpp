@@ -10,12 +10,14 @@ namespace solving {
   }
 
   bool source_point_is_before(const source_mapping::Source_Point &first, const source_mapping::Source_Point &second) {
-    if (first.get_row() < second.get_row()) {
+    if (first.get_source_file() < second.get_source_file())
       return true;
-    }
-    if (first.get_row() == second.get_row()) {
+
+    if (first.get_row() < second.get_row())
+      return true;
+
+    if (first.get_row() == second.get_row())
       return first.get_column() < second.get_column();
-    }
 
     return false;
   }

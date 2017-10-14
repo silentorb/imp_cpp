@@ -11,15 +11,15 @@ namespace overworld {
 
   public:
       Generic_Argument(Generic_Parameter &parameter, Profession &profession) :
-        element(Element_Type::other, profession.get_name(), profession, source_mapping::Source_Range()),
+        element(Element_Type::other, profession.get_name(), profession, parameter.get_element().get_source_point()),
         parameter(parameter),
         node(element, parameter.get_node().get_dungeon(), parameter.get_node().get_function()) {}
 
-      Common_Element & get_element(){
+      Common_Element &get_element() {
         return element;
       }
 
-      const Common_Element & get_element() const{
+      const Common_Element &get_element() const {
         return element;
       }
   };

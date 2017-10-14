@@ -39,7 +39,7 @@ namespace overworld {
         return arguments;
       }
 
-     const Generic_Argument_Array &get_arguments() const {
+      const Generic_Argument_Array &get_arguments() const {
         return arguments;
       }
 

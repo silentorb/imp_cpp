@@ -194,7 +194,9 @@ namespace imp_summoning {
     auto profession = process_optional_profession(context);
     std::vector<Parameter_Owner> parameters;
     process_function_parameters(context, parameters);
-    auto return_type_source_range = profession ? profession->get_source_point() : source_mapping::Source_Range();
+    auto return_type_source_range = profession
+                                    ? profession->get_source_point()
+                                    : source_mapping::Source_Range(input.get_source_point());
 
     if (input.if_is(lexicon.left_brace)) {
       auto function = new Function_With_Block(identifier.name, identifier.source_point, context.get_scope());
