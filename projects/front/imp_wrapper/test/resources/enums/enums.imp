@@ -1,0 +1,14 @@
+
+@enum Encounter {
+    treasure
+    monsters
+    beautiful_damsel
+}
+
+Dungeon {
+
+    explore() {
+        var encounter = Encounter.monsters
+        return encounter
+    }
+}

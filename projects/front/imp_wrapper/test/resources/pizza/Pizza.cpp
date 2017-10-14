@@ -8,5 +8,15 @@ std::string Pizza::add_topping(int value) {
     return y;
   }
 
+  auto i = 0;
+  while (i < 10) {
+    i += 1;
+  }
+
+  do {
+    i -= 2;
+  }
+  while (i > 0);
+
   return "";
 }
