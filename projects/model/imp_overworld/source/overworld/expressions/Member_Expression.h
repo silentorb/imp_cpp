@@ -49,11 +49,11 @@ namespace overworld {
         return "Member_Expression";
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         throw std::runtime_error("Not supported.");
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         throw std::runtime_error("Not supported.");
       }
   };

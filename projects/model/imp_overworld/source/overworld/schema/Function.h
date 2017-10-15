@@ -14,6 +14,7 @@ namespace overworld {
   class Function : public Function_Interface {
   protected:
       Function_Signature signature;
+      Profession_Reference signature_reference;
       Common_Element element;
       Element_Reference_Node node;
       virtual bool returns_a_value() const;
@@ -31,8 +32,8 @@ namespace overworld {
 //        return *profession;
       }
 
-      Profession &_get_profession() {
-        return signature;
+      Profession_Reference &_get_profession() {
+        return signature_reference;
       }
 
   public:
@@ -40,7 +41,8 @@ namespace overworld {
                Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
         element(Element_Type::other, name, get_profession(), source_point),
-        node(element, &dungeon, this) {}
+        node(element, &dungeon, this),
+        signature_reference(signature) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
@@ -63,7 +65,7 @@ namespace overworld {
         return node;
       }
 
-      Profession &get_profession() {
+      Profession_Reference &get_profession() {
         return _get_profession();
       }
 
@@ -71,7 +73,7 @@ namespace overworld {
         return _get_profession();
       }
 
-      void set_profession(Profession &value, Profession_Setter &setter) {
+      void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         signature.set_last_profession(value, setter);
       }
 

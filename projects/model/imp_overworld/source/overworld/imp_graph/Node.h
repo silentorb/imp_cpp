@@ -23,11 +23,11 @@ namespace overworld {
       bool changed = false;
       Dungeon_Interface *dungeon = nullptr;
       Function_Interface *function = nullptr;
-      Profession *original_profession;
+      Profession_Reference original_profession;
 
   public:
-      Node(Profession &original_profession, Dungeon_Interface *dungeon, Function_Interface *function) :
-        original_profession(&original_profession), dungeon(dungeon), function(function) {}
+      Node(Profession_Reference &original_profession, Dungeon_Interface *dungeon, Function_Interface *function) :
+        original_profession(original_profession), dungeon(dungeon), function(function) {}
 
       virtual ~Node() {}
 
@@ -104,11 +104,11 @@ namespace overworld {
 
   class Node_Copy : public Node {
       Node &original;
-      Profession *profession;
+      Profession_Reference profession;
 
   public:
-      Node_Copy(Node &original, Profession &profession, Dungeon_Interface *dungeon, Function_Interface *function) :
-        Node(profession, dungeon, function), original(original), profession(&profession) {}
+      Node_Copy(Node &original, Profession_Reference &profession, Dungeon_Interface *dungeon, Function_Interface *function) :
+        Node(profession, dungeon, function), original(original), profession(profession) {}
 
       Node_Status get_status() const override {
         return profession->get_base().get_type() != overworld::Profession_Type::unknown

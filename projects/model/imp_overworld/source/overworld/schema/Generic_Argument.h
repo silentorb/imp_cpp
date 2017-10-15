@@ -10,8 +10,8 @@ namespace overworld {
       Element_Reference_Node node;
 
   public:
-      Generic_Argument(Generic_Parameter &parameter, Profession &profession) :
-        element(Element_Type::other, profession.get_name(), profession, parameter.get_element().get_source_point()),
+      Generic_Argument(Generic_Parameter &parameter, Profession_Reference &profession) :
+        element(Element_Type::other, profession.get_name() + " (Generic Argument)", profession, parameter.get_element().get_source_point()),
         parameter(parameter),
         node(element, parameter.get_node().get_dungeon(), parameter.get_node().get_function()) {}
 

@@ -44,10 +44,10 @@ namespace overworld {
       virtual const std::string get_name() const = 0;
       virtual bool is_statement() const = 0;
 
-      virtual Profession &get_profession() = 0;
-      virtual const Profession &get_profession() const = 0;
+      virtual Profession_Reference &get_profession() = 0;
+      virtual const Profession_Reference &get_profession() const = 0;
 
-      virtual void set_profession(Profession &value) {
+      virtual void set_profession(Profession_Reference &value) {
         throw std::runtime_error("Not supported.");
       }
   };
@@ -60,15 +60,15 @@ namespace overworld {
       Expression_Element(Expression &expression, const source_mapping::Source_Range &source_range) :
         expression(expression), source_range(source_range) {}
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         return expression.get_profession();
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return expression.get_profession();
       }
 
-      void set_profession(Profession &value, Profession_Setter &setter) override {
+      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
         expression.set_profession(value);
       }
 
@@ -131,11 +131,11 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         throw std::runtime_error("Not supported.");
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         throw std::runtime_error("Not supported.");
       }
   };

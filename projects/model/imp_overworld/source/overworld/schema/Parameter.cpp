@@ -6,7 +6,7 @@ namespace overworld {
 //  Parameter::~Parameter() {
 //
 //  }
-
+/*
   void replace_dungeon_node(Dungeon &old, Dungeon &replacement) {
     auto &old_dungeon_node = old.get_node();
     auto &new_dungeon_node = replacement.get_node();
@@ -45,7 +45,7 @@ namespace overworld {
 //      old_member_node.replace_with(new_member.get_node());
     }
   }
-
+*/
 //  void Parameter::set_profession(Profession &value, Profession_Setter &setter) {
 //    if (temporary_interface) {
 //      replace_dungeon_node(*temporary_interface, *dynamic_cast<Dungeon *>( &value));

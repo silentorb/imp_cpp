@@ -14,8 +14,8 @@ namespace overworld {
   using Function_Variant_Map = std::unordered_map<Function_Interface *, Function_Variant_Array>;
 
   class Profession_Library {
-      std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
-      std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
+//      std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
+//      std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
       std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
       Graph &graph;
@@ -23,17 +23,17 @@ namespace overworld {
       std::vector<Profession_Owner> profession_store;
 
   public:
-      Profession_Library(Graph &graph);
+      explicit Profession_Library(Graph &graph);
 
-      static Unknown &get_unknown();
-      static Void &get_void();
+      static Profession_Reference &get_unknown();
+      static Profession_Reference &get_void();
       static Primitive &get_string();
       static File &get_string_file();
 
-      static Primitive &get_primitive(Primitive_Type type);
+      static Profession_Reference &get_primitive(Primitive_Type type);
 
-      Reference &get_reference(Profession &profession);
-      Pointer &get_pointer(Profession &profession);
+//      Profession_Reference &get_reference(Profession &profession);
+//      Pointer &get_pointer(Profession &profession);
 
       void assign(Node &node, overworld::Profession &profession, Profession_Setter &setter);
 
@@ -43,7 +43,7 @@ namespace overworld {
       static Function_Variant &create_function_variant(Function_Variant_Array &variant_array,
                                                        Function_Interface &function,
                                                        Dungeon_Interface &dungeon,
-                                                       std::vector<Profession *> &professions);
+                                                       std::vector<Profession_Reference> &professions);
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
                                                     std::vector<Profession *> &professions);
 
@@ -59,7 +59,7 @@ namespace overworld {
       Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                               overworld::Dungeon &dungeon,
                                               Node &starting_node, overworld::Profession &profession);
-      Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
+//      Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
 
       void store_profession(Profession_Owner profession);
 

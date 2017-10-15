@@ -18,7 +18,7 @@ namespace overworld {
       auto node = const_cast<Expression *>(&expression)->get_node();
       auto &profession = node->get_element().get_profession();
       if (profession.get_type() != Profession_Type::unknown && profession.get_type() != Profession_Type::Void)
-        action(profession);
+        action(*profession);
     }
 
 //    void Profession_Explorer::explore_profession(const Profession &profession) {

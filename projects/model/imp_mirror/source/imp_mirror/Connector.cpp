@@ -69,18 +69,20 @@ namespace imp_mirror {
           && first.get_element().get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
-        auto argument_node = new Generic_Argument_Node(first.get_element().get_profession(),
+        auto argument_node = new Argument_Node(first.get_element().get_profession(),
                                                        member_container,
                                                        scope.get_overworld_scope().get_function(),
                                                        profession_library,
                                                        source_argument.get_source_point());
-        invoke.add_argument_node(std::unique_ptr<Generic_Argument_Node>(argument_node));
-        graph.connect(*argument_node, second);
+        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
+        auto connection = new Connection(*argument_node, second, Connection_Type::compound_to_scalar);
+        graph.connect(*argument_node, second, std::unique_ptr<Connection>(connection));
       }
       else {
         graph.connect(first, second);
-//        if (argument.get_type() == Expression_Type::lambda) {
-//          auto &lambda = static_cast<Lambda &>(argument);
+        if (argument.get_type() == Expression_Type::lambda) {
+          auto &lambda = static_cast<Lambda &>(argument);
+          auto &member_container = find_member_container(invoke.get_expression());
 //          auto &parameter_profession = parameter.get_profession().get_base();
 //          if (parameter_profession.get_type() == Profession_Type::function) {
 //
@@ -89,7 +91,7 @@ namespace imp_mirror {
 //          else {
 //            throw std::runtime_error("Not supported.");
 //          }
-//        }
+        }
       }
     }
   }

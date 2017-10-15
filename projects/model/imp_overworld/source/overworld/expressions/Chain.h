@@ -15,15 +15,15 @@ namespace overworld {
         Common_Element(type, name, first_element.get_profession(), source_point),
         first_element(first_element) {}
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         return first_element.get_profession();
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return first_element.get_profession();
       }
 
-      void set_profession(Profession &value, Profession_Setter &setter) override {
+      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
         first_element.set_profession(value, setter);
       }
   };
@@ -75,11 +75,11 @@ namespace overworld {
         return "chain";
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         return second->get_profession();
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return second->get_profession();
       }
   };

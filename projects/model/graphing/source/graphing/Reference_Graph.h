@@ -14,10 +14,10 @@ namespace graphing {
       using Connection_Delegate = std::function<void(Connection &)>;
 
   private:
-      using Connection_Pointer = std::unique_ptr<Connection>;
+      using Connection_Owner = std::unique_ptr<Connection>;
 
       std::vector<Node *> nodes;
-      std::vector<Connection_Pointer> connections;
+      std::vector<Connection_Owner> connections;
       Node_Delegate on_add;
       Node_Delegate on_remove;
       Connection_Delegate on_connect;
@@ -79,7 +79,7 @@ namespace graphing {
         return nodes;
       }
 
-      const std::vector<Connection_Pointer> &get_connections() const {
+      const std::vector<Connection_Owner> &get_connections() const {
         return connections;
       }
 
@@ -103,6 +103,14 @@ namespace graphing {
           add_node(second);
 
         return _connect(first, second);
+      }
+
+      void connect(Node &first, Node &second, std::unique_ptr<Connection>(connection)) {
+        connections.push_back(std::move(connection));
+        first.add_connection(*connection);
+        second.add_connection(*connection);
+        if (on_connect)
+          on_connect(*connection);
       }
 
       Connection &connect_without_adding(Node &first, Node &second) {

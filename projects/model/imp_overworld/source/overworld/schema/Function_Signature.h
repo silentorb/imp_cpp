@@ -90,7 +90,7 @@ namespace overworld {
         return *elements[elements.size() - 1];
       }
 
-      void set_last_profession(Profession &profession, Profession_Setter &setter) {
+      void set_last_profession(Profession_Reference &profession, Profession_Setter &setter) {
         if (elements.size() == 0)
           throw std::runtime_error("Cannot get last profession from empty function signature.");
 

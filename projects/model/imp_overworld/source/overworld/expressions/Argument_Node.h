@@ -6,31 +6,31 @@ namespace overworld {
 
   class Profession_Library;
 
-  class Generic_Argument_Element : public Common_Element {
+  class Argument_Element : public Common_Element {
       Minion &member;
       Profession_Library &profession_library;
       Node &node;
 
   public:
-      Generic_Argument_Element(Minion &member, Profession &profession, Profession_Library &profession_library, Node &node,
+      Argument_Element(Minion &member, Profession_Reference &profession, Profession_Library &profession_library, Node &node,
                        const source_mapping::Source_Range &source_point) :
         Common_Element(Element_Type::other, member.get_element().get_name(), profession, source_point),
         member(member),
         profession_library(profession_library),
         node(node) {}
 
-      void set_profession(Profession &value, Profession_Setter &setter) override;
+//      void set_profession(Profession &value, Profession_Setter &setter) override;
 
       Minion &get_member() const {
         return member;
       }
   };
 
-  class Generic_Argument_Node : public Node {
-      Generic_Argument_Element element;
+  class Argument_Node : public Node {
+      Argument_Element element;
 
   public:
-      Generic_Argument_Node(Profession &profession, Minion &member_container,
+      Argument_Node(Profession_Reference &profession, Minion &member_container,
                     Function_Interface *function, Profession_Library &profession_library,
                     const source_mapping::Source_Range &source_point) :
         Node(profession, nullptr, function),
@@ -53,6 +53,10 @@ namespace overworld {
 
       const Element &get_element() const override {
         return element;
+      }
+
+      std::string get_debug_string() const override {
+        return Node::get_debug_string() + " (Argument)";
       }
 
   };

@@ -7,6 +7,9 @@ namespace overworld {
   File string_header("string", true);
   static Unknown unknown;
   static Void _void;
+  static Profession_Reference unknown_reference(unknown);
+  static Profession_Reference void_reference(_void);
+
 //  static Unknown not_found;
 
   static Primitive primitives[] =
@@ -19,16 +22,25 @@ namespace overworld {
 //      Primitive_Type::Void,
     };
 
+  static Profession_Reference primitive_references[] =
+    {
+      Profession_Reference(primitives[0]),
+      Profession_Reference(primitives[1]),
+      Profession_Reference(primitives[2]),
+      Profession_Reference(primitives[3]),
+      Profession_Reference(primitives[4]),
+    };
+
   Profession_Library::Profession_Library(Graph &graph) : graph(graph) {
 
   }
 
-  Unknown &Profession_Library::get_unknown() {
-    return unknown;
+  Profession_Reference &Profession_Library::get_unknown() {
+    return unknown_reference;
   }
 
-  Void &Profession_Library::get_void() {
-    return _void;
+  Profession_Reference &Profession_Library::get_void() {
+    return void_reference;
   }
 
   Primitive &Profession_Library::get_string() {
@@ -39,27 +51,27 @@ namespace overworld {
     return string_header;
   }
 
-  Primitive &Profession_Library::get_primitive(Primitive_Type type) {
-    return primitives[static_cast<int>(type)];
+  Profession_Reference &Profession_Library::get_primitive(Primitive_Type type) {
+    return primitive_references[static_cast<int>(type)];
   }
 
-  Reference &Profession_Library::get_reference(Profession &profession) {
-    if (references.count(&profession))
-      return *references[&profession];
+//  Profession_Reference &Profession_Library::get_reference(Profession &profession) {
+//    if (references.count(&profession))
+//      return *references[&profession];
+//
+//    auto reference = new Reference(profession);
+//    references[&profession] = std::unique_ptr<Reference>(reference);
+//    return *reference;
+//  }
 
-    auto reference = new Reference(profession);
-    references[&profession] = std::unique_ptr<Reference>(reference);
-    return *reference;
-  }
-
-  Pointer &Profession_Library::get_pointer(Profession &profession) {
-    if (pointers.count(&profession))
-      return *pointers[&profession];
-
-    auto pointer = new Pointer(profession);
-    pointers[&profession] = std::unique_ptr<Pointer>(pointer);
-    return *pointer;
-  }
+//  Pointer &Profession_Library::get_pointer(Profession &profession) {
+//    if (pointers.count(&profession))
+//      return *pointers[&profession];
+//
+//    auto pointer = new Pointer(profession);
+//    pointers[&profession] = std::unique_ptr<Pointer>(pointer);
+//    return *pointer;
+//  }
 
   void Profession_Library::assign(Node &node, overworld::Profession &profession, Profession_Setter &setter) {
     auto &previous = node.get_element().get_profession();
@@ -96,7 +108,7 @@ namespace overworld {
   Function_Variant &Profession_Library::create_function_variant(Function_Variant_Array &variant_array,
                                                                 Function_Interface &function,
                                                                 Dungeon_Interface &dungeon,
-                                                                std::vector<Profession *> &professions) {
+                                                                std::vector<Profession_Reference> &professions) {
 
     auto variant = new Function_Variant(function.get_original(), dungeon, professions);
     variant_array.push_back(Function_Variant_Owner(variant));

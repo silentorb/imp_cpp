@@ -26,12 +26,12 @@ namespace overworld {
 //    }
 //  }
 
-  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+  std::vector<Profession_Reference> to_professions(const Generic_Parameter_Array &generic_parameters,
                                            size_t additional_space) {
-    std::vector<Profession *> result;
+    std::vector<Profession_Reference> result;
     result.reserve(generic_parameters.size() + additional_space);
     for (auto &parameter: generic_parameters) {
-      result.push_back(&parameter->get_element().get_profession());
+      result.push_back(parameter->get_element().get_profession());
     }
 
     return result;

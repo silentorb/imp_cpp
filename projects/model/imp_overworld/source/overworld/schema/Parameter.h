@@ -9,20 +9,20 @@ namespace overworld {
       Element_Reference_Node node;
 
   public:
-      Parameter(const std::string name, Profession &profession, Dungeon_Interface *dungeon,
+      Parameter(const std::string name, Profession_Reference &profession, Dungeon_Interface *dungeon,
                 Function_Interface *function, const source_mapping::Source_Range &source_range) :
         element(Element_Type::parameter, name, profession, source_range),
         node(element, dungeon, function) {}
 
-      void set_profession(Profession &profession, Profession_Setter &setter) {
+      void set_profession(Profession_Reference &profession, Profession_Setter &setter) {
         element.set_profession(profession, setter);
       }
 
-      Profession &get_profession() {
+      Profession_Reference &get_profession() {
         return element.get_profession();
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
         return element.get_profession();
       }
 

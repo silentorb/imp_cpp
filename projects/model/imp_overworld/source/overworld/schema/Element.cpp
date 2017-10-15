@@ -9,7 +9,7 @@ namespace overworld {
     return setter;
   }
 
-  void Empty_Profession_Setter::set_profession(overworld::Node &node, overworld::Profession &profession) {
+  void Empty_Profession_Setter::set_profession(overworld::Node &node, overworld::Profession_Reference &profession) {
     node.get_element().set_profession(profession, *this);
   }
 }

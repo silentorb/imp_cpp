@@ -31,10 +31,10 @@ namespace overworld {
                 std::to_string(source_point.get_column()) + " ";
 
     result += element.get_name() + render_node_status(get_status())
-              + ":" + profession.get_debug_name();
+              + ":" + profession->get_debug_name();
 
-    if (profession.get_type() == Profession_Type::reference)
-      result += dynamic_cast<const Reference *>(&profession)->is_pointer() ? "*" : "&";
+    if (profession->get_type() == Profession_Type::reference)
+      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
 
     return result;
   }
@@ -54,7 +54,7 @@ namespace overworld {
       bool some_resolved = false;
       bool some_unknown = false;
       for (auto &parameter: signature->get_parameters()) {
-        if (get_status_using_profession(parameter->get_profession()) == Node_Status::resolved) {
+        if (get_status_using_profession(*parameter->get_profession()) == Node_Status::resolved) {
           if (some_unknown)
             return Node_Status::partial;
 
@@ -81,7 +81,7 @@ namespace overworld {
 
   Node_Status Element_Reference_Node::get_status() const {
     auto &profession = element.get_profession();
-    auto &base_profession = profession.get_base();
+    auto &base_profession = profession->get_base();
     return get_status_using_profession(base_profession);
   }
 }

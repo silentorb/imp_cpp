@@ -3,7 +3,7 @@
 #include <overworld/schema/Minion.h>
 #include "Expression.h"
 #include "Member_Expression.h"
-#include "Generic_Argument_Node.h"
+#include "Argument_Node.h"
 #include <vector>
 #include <overworld/schema/Function.h>
 #include <underworld/expressions/Invoke.h>
@@ -13,7 +13,7 @@ namespace overworld {
   class Invoke : public Common_Expression {
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
-      std::vector<std::unique_ptr<Generic_Argument_Node>> argument_nodes;
+      std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
@@ -53,7 +53,7 @@ namespace overworld {
         return *expression;
       }
 
-      void add_argument_node(std::unique_ptr<Generic_Argument_Node> argument_node) {
+      void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
         argument_nodes.push_back(std::move(argument_node));
       }
 
@@ -61,11 +61,11 @@ namespace overworld {
         return "`Invoke`";
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         return expression->get_profession();
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return expression->get_profession();
       }
   };

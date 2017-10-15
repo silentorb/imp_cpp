@@ -10,8 +10,9 @@ namespace overworld {
       if (method->get_name() == get_name())
         return *method;
     }
+    throw std::runtime_error("Not implemented.");
 
-    return create_function(get_name(), *this, source_mapping::Source_Range());
+//    return create_function(get_name(), *this, source_mapping::Source_Range());
 //    throw std::runtime_error("Could not find constructor.");
   }
 
@@ -33,11 +34,12 @@ namespace overworld {
     if (get_functions().size() > 0)
       return true;
 
-    for (auto neighbor : node.get_neighbors()) {
-      auto &element = neighbor->get_element();
-      if (element.get_type() == Element_Type::instantiation)
-        return true;
-    }
+    throw std::runtime_error("Not implemented.");
+//    for (auto neighbor : node.get_neighbors()) {
+//      auto &element = neighbor->get_element();
+//      if (element.get_type() == Element_Type::instantiation)
+//        return true;
+//    }
     return false;
   }
 
@@ -93,9 +95,9 @@ namespace overworld {
 
   const std::string Dungeon::format_debug_name() const {
     if (generic_parameters.empty())
-      return element.get_name();
+      return get_name();
 
-    auto result = element.get_name() + "<";
+    auto result = get_name() + "<";
     auto first = true;
     for (auto &parameter : generic_parameters) {
       if (first)

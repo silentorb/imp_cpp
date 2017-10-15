@@ -11,7 +11,7 @@ namespace overworld {
       Dungeon_Interface *dungeon = nullptr;
 
   public:
-      Function_Variant(Function &original, Dungeon_Interface &dungeon, const std::vector<Profession *> &professions);
+      Function_Variant(Function &original, Dungeon_Interface &dungeon, std::vector<Profession_Reference> &professions);
 
       const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
         return Variant::get_generic_parameters();

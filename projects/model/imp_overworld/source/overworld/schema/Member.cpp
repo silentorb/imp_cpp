@@ -9,8 +9,9 @@ namespace overworld {
       case Member_Type::function:
         return member.get_function().get_node();
 
-      case Member_Type::dungeon:
-        return member.get_dungeon().get_node();
+//      case Member_Type::dungeon:
+
+//        return member.get_dungeon().get_node();
 
       case Member_Type::minion:
         return member.get_minion().get_node();

@@ -11,7 +11,7 @@ namespace overworld {
       std::unique_ptr<Function_Signature> signature;
 
   public:
-      Temporary_Minion(const std::string &name, Profession &profession,
+      Temporary_Minion(const std::string &name, Profession_Reference &profession,
                        const source_mapping::Source_Range source_point, Function_Interface &function) :
         Minion(name, profession, nullptr, source_point, &function) {}
 

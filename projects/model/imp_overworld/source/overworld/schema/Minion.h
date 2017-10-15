@@ -64,7 +64,7 @@ namespace overworld {
       File *header_file = nullptr;
 
   public:
-      Minion(const std::string &name, Profession &profession, Dungeon_Interface *dungeon,
+      Minion(const std::string &name, Profession_Reference &profession, Dungeon_Interface *dungeon,
              const source_mapping::Source_Range &source_point, Function_Interface *function) :
         element(Element_Type::minion, name, profession, source_point),
         node(element, dungeon, function) {}
@@ -107,11 +107,11 @@ namespace overworld {
         return Element_Type::minion;
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
         return element.get_profession();
       }
 
-      Profession &get_profession() {
+      Profession_Reference &get_profession() {
         return element.get_profession();
       }
 

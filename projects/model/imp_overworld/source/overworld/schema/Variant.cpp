@@ -39,7 +39,7 @@ namespace overworld {
 
     auto other = first.begin();
     for (auto profession : second) {
-      if (&(*other)->get_element().get_profession() != profession)
+      if ((*other)->get_element().get_profession().get() != profession)
         return false;
 
       ++other;

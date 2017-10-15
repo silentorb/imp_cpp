@@ -102,13 +102,18 @@ namespace solving {
     dungeon.add_generic_parameter(std::move(parameter_owner));
   }
 
-  Progress Solver::try_push(Node &first, Node &second) {
+  Progress Solver::try_push(Node &first, Node &second, Connection &connection, Direction direction) {
     if (second.get_status() != Node_Status::resolved) {
 #if DEBUG_SOLVER > 0
       std::cout << "# " << first.get_debug_string() << " > " << second.get_debug_string() << std::endl;
 #endif
       auto &profession = first.get_element().get_profession();
-      set_profession(second, profession);
+      if (connection.get_type() == Connection_Type::direct) {
+        set_profession(second, profession);
+      }
+      else {
+        throw std::runtime_error("Not implemented.");
+      }
       return 1;
     }
     else if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
@@ -118,15 +123,24 @@ namespace solving {
     }
 #if DEBUG_SOLVER >= 2
     else {
-      std::cout << "  " << first.get_debug_string() << " !~> " << second.get_debug_string() << std::endl;
+      auto foo = first.get_debug_string();
+      if (foo[foo.size() - 1] == ')') {
+        first.get_status();
+        auto k2 = foo + "bob";
+        int k = 0;
+      }
+      if (direction == Direction::out)
+        std::cout << "  " << first.get_debug_string() << " !~> " << second.get_debug_string() << std::endl;
+      else
+        std::cout << "  " << second.get_debug_string() << " <~! " << first.get_debug_string() << std::endl;
     }
 #endif
     return 0;
   }
 
   Progress Solver::inhale(Node &node) {
-    for (auto other : node.get_neighbors()) {
-      if (try_push(node, *other))
+    for (auto connection : node.get_connections()) {
+      if (try_push(connection->get_other(node), node, *connection, Direction::in))
         return 1;
     }
     return 0;
@@ -134,8 +148,8 @@ namespace solving {
 
   Progress Solver::exhale(Node &node) {
     Progress progress = 0;
-    for (auto other : node.get_neighbors()) {
-      progress += try_push(*other, node);
+    for (auto connection : node.get_connections()) {
+      progress += try_push(node, connection->get_other(node), *connection, Direction::out);
     }
     return progress;
   }

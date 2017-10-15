@@ -17,11 +17,11 @@ namespace overworld {
 
       virtual Primitive_Type get_primitive_type() const = 0;
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         return Profession_Library::get_primitive(get_primitive_type());
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return Profession_Library::get_primitive(get_primitive_type());
       }
   };
@@ -58,7 +58,7 @@ namespace overworld {
         return &node;
       }
 
-      void set_profession(Profession &value) override {
+      void set_profession(Profession_Reference &value) override {
         throw std::runtime_error("Not supported.");
       }
   };

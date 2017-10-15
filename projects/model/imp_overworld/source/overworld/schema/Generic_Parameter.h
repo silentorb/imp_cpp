@@ -36,11 +36,11 @@ namespace overworld {
 
   class Generic_Parameter_Element : public Common_Element {
   public:
-      Generic_Parameter_Element(Element_Type type, const std::string &name, Profession &profession,
+      Generic_Parameter_Element(Element_Type type, const std::string &name, Profession_Reference profession,
                                 const source_mapping::Source_Range &source_point) :
         Common_Element(type, name, profession, source_point) {}
 
-      void set_profession(Profession &value, Profession_Setter &setter) override {
+      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
         throw std::runtime_error("Not supported.");
       }
 
@@ -56,8 +56,11 @@ namespace overworld {
   public:
       Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function,
                         const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, *this, source_point),
-        node(element, dungeon, function) {}
+//        element(Element_Type::other, name, *this, source_point),
+        element(Element_Type::other, name, Profession_Reference(), source_point),
+        node(element, dungeon, function) {
+        throw std::runtime_error("Not implemented");
+      }
 
       ~Generic_Parameter() override = default;
 
@@ -117,7 +120,7 @@ namespace overworld {
                                                      Dungeon_Interface *dungeon, Function_Interface *function);
 
 //  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
-  std::vector<Profession *> to_professions(const Generic_Parameter_Array &generic_parameters,
+  std::vector<Profession_Reference> to_professions(const Generic_Parameter_Array &generic_parameters,
                                            size_t additional_space = 0);
 
   std::string get_generic_parameter_name(size_t index);

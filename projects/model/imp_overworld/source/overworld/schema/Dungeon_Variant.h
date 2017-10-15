@@ -5,11 +5,11 @@
 
 namespace overworld {
 
-  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface {
+  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface, public virtual Profession {
       Dungeon &original;
 
   public:
-      Dungeon_Variant(Dungeon &original, std::vector<Profession *> &professions) :
+      Dungeon_Variant(Dungeon &original, std::vector<Profession_Reference> &professions) :
         Variant(original.get_name(), original.get_generic_parameters(), professions),
         original(original) {
       }

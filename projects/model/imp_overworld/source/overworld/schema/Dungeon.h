@@ -17,11 +17,13 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public virtual Dungeon_Interface {
-      Common_Element element;
+  class Dungeon : public Scope, public Dungeon_Interface {
+//      Common_Element element;
+      std::string name;
+
       File *header_file = nullptr;
 //      std::unique_ptr<File> header_file_owner;
-      Element_Reference_Node node;
+//      Element_Reference_Node node;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
@@ -33,23 +35,32 @@ namespace overworld {
 
   public:
       Dungeon(const std::string &name, Scope &parent) :
-        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
-        Scope(&parent), node(element, this, nullptr) {}
+//        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
+        Scope(&parent),
+        name(name)
+//        node(element, this, nullptr)
+      {}
 
       Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
-        element(Element_Type::other, name, *this, source_point),
-        Scope(&parent), node(element, this, nullptr) {}
+//        element(Element_Type::other, name, *this, source_point),
+        Scope(&parent),
+        name(name)
+//        node(element, this, nullptr)
+      {}
 
       Dungeon(const std::string &name) :
-        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
-        Scope(nullptr), node(element, this, nullptr) {}
+//        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
+        Scope(nullptr),
+        name(name)
+//        node(element, this, nullptr)
+      {}
 
       Dungeon(const Dungeon &) = delete;
 
       virtual ~Dungeon() {}
 
       const std::string get_name() const {
-        return element.get_name();
+        return name;
       }
 
       bool is_class() const;
@@ -62,6 +73,18 @@ namespace overworld {
         header_file = &value;
       }
 
+      Ownership get_ownership() const override {
+        return default_ownership;
+      }
+
+      Scope *get_scope() {
+        return parent;
+      }
+
+      const Scope *get_scope() const {
+        return parent;
+      }
+
 //      void set_file(std::unique_ptr<File> value) {
 //        header_file = value.get();
 //        header_file_owner = std::move(value);
@@ -69,22 +92,6 @@ namespace overworld {
 
       File *get_file() const {
         return header_file;
-      }
-
-      Profession_Type get_type() const override {
-        return Profession_Type::dungeon;
-      }
-
-      Scope *get_scope() override {
-        return parent;
-      }
-
-      const Scope *get_scope() const override {
-        return parent;
-      }
-
-      virtual Node &get_node() override {
-        return node;
       }
 
       Dungeon &get_dungeon() override {
@@ -119,18 +126,6 @@ namespace overworld {
         this->default_ownership = value;
       }
 
-      Ownership get_ownership() const override {
-        return default_ownership;
-      }
-
-      Profession &get_base() override {
-        return *this;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
-      }
-
       Dungeon *get_base_dungeon() {
         return base_dungeon;
       }
@@ -143,24 +138,24 @@ namespace overworld {
         return false;
       }
 
-      void add_contract(Dungeon &dungeon) {
-        if (!dungeon.is_interface()) {
-          if (base_dungeon)
-            throw std::runtime_error(get_name() + " already has a base dungeon.");
+//      void add_contract(Dungeon &dungeon) {
+//        if (!dungeon.is_interface()) {
+//          if (base_dungeon)
+//            throw std::runtime_error(get_name() + " already has a base dungeon.");
+//
+//          base_dungeon = &dungeon;
+//        }
+//
+//        contracts.push_back(&dungeon);
+//      }
 
-          base_dungeon = &dungeon;
-        }
-
-        contracts.push_back(&dungeon);
-      }
-
-      const std::vector<Profession *> *get_contracts() const override {
-        return &contracts;
-      }
-
-      std::vector<Profession *> *get_contracts() override {
-        return &contracts;
-      }
+//      const std::vector<Profession *> *get_contracts() const override {
+//        return &contracts;
+//      }
+//
+//      std::vector<Profession *> *get_contracts() override {
+//        return &contracts;
+//      }
 
       Function &create_function(const std::string &name, Profession &profession,
                                 const source_mapping::Source_Range &source_point = source_mapping::Source_Range());
@@ -183,9 +178,9 @@ namespace overworld {
 
       }
 
-      const std::string get_debug_name() const override {
-        return format_debug_name();
-      }
+//      const std::string get_debug_name() const override {
+//        return format_debug_name();
+//      }
 
       std::vector<Generic_Parameter *> &get_generic_parameters() {
         return generic_parameters;
