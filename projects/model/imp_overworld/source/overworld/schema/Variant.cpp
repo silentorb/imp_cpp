@@ -18,13 +18,13 @@ namespace overworld {
     return name;
   }
 
-  bool professions_match(const std::vector<Profession *> &first, const std::vector<Profession *> &second) {
+  bool professions_match(const std::vector<Profession_Reference> &first, const std::vector<Profession_Reference> &second) {
     if (first.size() != second.size())
       return false;
 
     auto other = first.begin();
     for (auto profession : second) {
-      if (*other != profession)
+      if ((*other).get() != profession.get())
         return false;
 
       ++other;
@@ -33,13 +33,13 @@ namespace overworld {
     return true;
   }
 
-  bool professions_match(const Generic_Parameter_Array &first, const std::vector<Profession *> &second) {
+  bool professions_match(const Generic_Parameter_Array &first, const std::vector<Profession_Reference> &second) {
     if (first.size() != second.size())
       return false;
 
     auto other = first.begin();
     for (auto profession : second) {
-      if ((*other)->get_element().get_profession().get() != profession)
+      if ((*other)->get_element().get_profession().get() != profession.get())
         return false;
 
       ++other;

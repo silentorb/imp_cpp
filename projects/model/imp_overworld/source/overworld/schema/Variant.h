@@ -54,6 +54,6 @@ namespace overworld {
       }
   };
 
-  bool professions_match(const std::vector<Profession *> &first, const std::vector<Profession *> &second);
-  bool professions_match(const Generic_Parameter_Array &first, const std::vector<Profession *> &second);
+  bool professions_match(const std::vector<Profession_Reference> &first, const std::vector<Profession_Reference> &second);
+  bool professions_match(const Generic_Parameter_Array &first, const std::vector<Profession_Reference> &second);
 }

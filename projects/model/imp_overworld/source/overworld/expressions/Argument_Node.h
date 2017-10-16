@@ -41,8 +41,9 @@ namespace overworld {
         if (profession.get_type() == Profession_Type::generic_parameter)
           return Node_Status::unresolved;
 
-        return profession.get_base().get_type() != overworld::Profession_Type::unknown
-               && profession.get_base().get_type() != overworld::Profession_Type::generic_parameter
+        auto type = profession.get_base().get_type();
+        return type != overworld::Profession_Type::unknown
+               && type != overworld::Profession_Type::generic_parameter
                ? Node_Status::resolved
                : Node_Status::unresolved;
       }

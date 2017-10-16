@@ -32,8 +32,10 @@ namespace overworld {
         type(Member_Type::dungeon), value(const_cast<Dungeon *>(&dungeon)) {}
 
       // Hack to differentiate from the Dungeon constructor.
-      Member(Profession &profession, bool) :
-        type(Member_Type::profession), value(&profession) {}
+      Member(Profession_Reference &profession, bool) :
+        type(Member_Type::profession), value(&profession) {
+        throw std::runtime_error("Not supported.");
+      }
 
       Member(const Profession &profession, bool) :
         type(Member_Type::profession), value(const_cast<Profession *>(&profession)) {}

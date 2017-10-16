@@ -100,8 +100,8 @@ namespace overworld {
         return Ownership::owner;
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {
@@ -116,12 +116,13 @@ namespace overworld {
   using Generic_Parameter_Owner = std::unique_ptr<Generic_Parameter>;
   using Generic_Parameter_Array = std::vector<Generic_Parameter *>;
 
-  Generic_Parameter &add_generic_parameter_to_vector(std::vector<Generic_Parameter_Owner> &generic_parameters,
-                                                     Dungeon_Interface *dungeon, Function_Interface *function);
+  Owned_Profession_Reference<Generic_Parameter> &add_generic_parameter_to_vector(
+    std::vector<Owned_Profession_Reference<Generic_Parameter>> &generic_parameters,
+    Dungeon_Interface *dungeon, Function_Interface *function);
 
 //  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
   std::vector<Profession_Reference> to_professions(const Generic_Parameter_Array &generic_parameters,
-                                           size_t additional_space = 0);
+                                                   size_t additional_space = 0);
 
   std::string get_generic_parameter_name(size_t index);
 

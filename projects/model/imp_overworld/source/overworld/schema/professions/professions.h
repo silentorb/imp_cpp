@@ -38,8 +38,8 @@ namespace overworld {
         return Ownership::value;
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {
@@ -77,8 +77,8 @@ namespace overworld {
         return Ownership::value;
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {
@@ -136,8 +136,8 @@ namespace overworld {
         return Ownership::value;
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {
@@ -147,10 +147,10 @@ namespace overworld {
 
   class Reference : public Profession {
   protected:
-      Profession &profession;
+      Profession_Reference profession;
 
   public:
-      Reference(Profession &profession) :
+      Reference(Profession_Reference &profession) :
         profession(profession) {}
 
       virtual ~Reference() {}
@@ -184,18 +184,18 @@ namespace overworld {
       }
 
       const std::string get_debug_name() const override {
-        return "&" + profession.get_debug_name();
+        return "&" + profession->get_debug_name();
       }
 
-      Profession &get_base() override {
-        return profession.get_base();
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return profession.get_base(profession);
       }
 
       const Profession &get_base() const override {
         return profession.get_base();
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
         return profession;
       }
 
@@ -206,10 +206,10 @@ namespace overworld {
 
   class Pointer : public Reference {
   public:
-      Pointer(Profession &profession) : Reference(profession) {}
+      Pointer(Profession_Reference &profession) : Reference(profession) {}
 
       const std::string get_debug_name() const override {
-        return "*" + profession.get_debug_name();
+        return "*" + profession->get_debug_name();
       }
 
       bool is_pointer() const override {

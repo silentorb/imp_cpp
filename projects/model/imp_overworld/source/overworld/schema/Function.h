@@ -18,7 +18,7 @@ namespace overworld {
       Common_Element element;
       Element_Reference_Node node;
       virtual bool returns_a_value() const;
-      std::vector<Generic_Parameter_Owner> owned_generic_parameters;
+      std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
@@ -87,10 +87,10 @@ namespace overworld {
         return signature;
       }
 
-      Generic_Parameter &add_generic_parameter() {
+      Profession_Reference &add_generic_parameter() {
         auto &result = add_generic_parameter_to_vector(owned_generic_parameters, node.get_dungeon(), this);
-        generic_parameters.push_back(&result);
-        return result;
+        generic_parameters.push_back(&result.get_owner());
+        return result.get_reference();
       }
 
       Generic_Parameter_Owner detach_generic_parameter(Generic_Parameter &parameter) {
@@ -102,10 +102,11 @@ namespace overworld {
         }
 
         for (auto i = owned_generic_parameters.begin(); i != owned_generic_parameters.end(); i++) {
-          if ((*i).get() == &parameter) {
-            auto result = std::move(*i);
-            owned_generic_parameters.erase(i);
-            return std::move(result);
+          if (&(*i).get_owner() == &parameter) {
+            throw std::runtime_error("No longer works like this...");
+//            auto result = std::move(*i);
+//            owned_generic_parameters.erase(i);
+//            return std::move(result);
           }
         }
 

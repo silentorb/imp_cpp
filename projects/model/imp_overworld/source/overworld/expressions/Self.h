@@ -20,22 +20,24 @@ namespace overworld {
       }
 
       Node *get_node() override {
-        return &dungeon.get_node();
+        throw std::runtime_error("Not implemented.");
+//        return &dungeon.get_node();
       }
 
       const Node *get_node() const override {
-        return &dungeon.get_node();
+        throw std::runtime_error("Not implemented.");
+//        return &dungeon.get_node();
       }
 
       const std::string get_name() const override {
         throw std::runtime_error("Not supported.");
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         throw std::runtime_error("Not supported.");
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         throw std::runtime_error("Not supported.");
       }
   };

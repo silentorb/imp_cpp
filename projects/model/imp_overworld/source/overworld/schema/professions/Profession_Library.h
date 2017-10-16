@@ -35,7 +35,7 @@ namespace overworld {
 //      Profession_Reference &get_reference(Profession &profession);
 //      Pointer &get_pointer(Profession &profession);
 
-      void assign(Node &node, overworld::Profession &profession, Profession_Setter &setter);
+      void assign(Node &node, overworld::Profession_Reference &profession, Profession_Setter &setter);
 
       Function_Variant_Array &get_function_variant_array(Function_Interface &function);
       Dungeon_Variant_Array &get_dungeon_variant_array(Dungeon_Interface &dungeon);
@@ -45,20 +45,20 @@ namespace overworld {
                                                        Dungeon_Interface &dungeon,
                                                        std::vector<Profession_Reference> &professions);
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
-                                                    std::vector<Profession *> &professions);
+                                                    std::vector<Profession_Reference> &professions);
 
       static Dungeon_Variant &create_dungeon_variant(Dungeon_Variant_Array &variant_array,
                                                      Dungeon_Interface &dungeon,
-                                                     std::vector<Profession *> &professions);
+                                                     std::vector<Profession_Reference> &professions);
 
       static Dungeon_Variant *get_dungeon_variant(Dungeon_Variant_Array &variant_array,
-                                                  std::vector<Profession *> &professions);
+                                                  std::vector<Profession_Reference> &professions);
 
-      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession *> &professions,
+      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession_Reference> &professions,
                                                      overworld::Graph &graph);
       Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                               overworld::Dungeon &dungeon,
-                                              Node &starting_node, overworld::Profession &profession);
+                                              Node &starting_node, overworld::Profession_Reference &profession);
 //      Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
 
       void store_profession(Profession_Owner profession);

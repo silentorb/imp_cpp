@@ -76,11 +76,11 @@ namespace overworld {
         return false;
       }
 
-      Profession &get_profession() override {
+      Profession_Reference &get_profession() override {
         throw std::runtime_error("Not implemented.");
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         throw std::runtime_error("Not implemented.");
       }
 

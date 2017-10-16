@@ -81,7 +81,7 @@ namespace overworld {
 
   Node_Status Element_Reference_Node::get_status() const {
     auto &profession = element.get_profession();
-    auto &base_profession = profession->get_base();
-    return get_status_using_profession(base_profession);
+    auto &base_profession = profession->get_base(profession);
+    return get_status_using_profession(*base_profession);
   }
 }

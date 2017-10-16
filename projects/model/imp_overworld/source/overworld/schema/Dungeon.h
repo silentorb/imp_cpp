@@ -27,7 +27,7 @@ namespace overworld {
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession *> contracts;
-      std::vector<Generic_Parameter_Owner> owned_generic_parameters;
+      std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
 

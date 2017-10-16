@@ -14,7 +14,8 @@ namespace overworld {
 
       explicit Optional_Shared_Pointer(T &pointer) : pointer(&pointer) {}
 
-      explicit Optional_Shared_Pointer(std::shared_ptr<T> &shared_pointer) : shared_pointer(shared_pointer) {}
+//      explicit Optional_Shared_Pointer(std::shared_ptr<T> &shared_pointer) : shared_pointer(shared_pointer) {}
+      explicit Optional_Shared_Pointer(std::shared_ptr<T> shared_pointer) : shared_pointer(shared_pointer) {}
 
       T &operator*() const {
         return pointer

@@ -49,15 +49,15 @@ namespace solving {
       std::vector<Node *> *next_changed = &changed_buffers[1];
       overworld::Profession_Library &profession_library;
       Conflict_Manager conflict_manager;
-      std::vector<overworld::Profession *> ancestors_buffer1;
-      std::vector<overworld::Profession *> ancestors_buffer2;
+      std::vector<overworld::Profession_Reference> ancestors_buffer1;
+      std::vector<overworld::Profession_Reference> ancestors_buffer2;
 
       class Solver_Profession_Setter : public overworld::Profession_Setter {
           Solver &solver;
       public:
           explicit Solver_Profession_Setter(Solver &solver) : solver(solver) {}
 
-          void set_profession(Node &node, overworld::Profession &profession) override {
+          void set_profession(Node &node, overworld::Profession_Reference &profession) override {
             solver.set_profession(node, profession);
           }
       };
@@ -79,7 +79,7 @@ namespace solving {
       bool has_unresolved_nodes();
 
       bool resolve_conflict(Connection &connection);
-      void set_profession(Node &node, overworld::Profession &profession);
+      void set_profession(Node &node, overworld::Profession_Reference &profession);
       void set_changed(Node &node);
 
       bool assignment_is_compatible(overworld::Profession &first, overworld::Profession &second);
@@ -97,11 +97,11 @@ namespace solving {
 
       overworld::Function_Variant &create_function_variant(overworld::Function_Variant_Array &variant_array,
                                                            overworld::Function &function,
-                                                           Node &starting_node, overworld::Profession &profession);
+                                                           Node &starting_node, overworld::Profession_Reference &profession);
 
       void create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                   overworld::Dungeon &dungeon,
-                                  Node &starting_node, overworld::Profession &profession);
+                                  Node &starting_node, overworld::Profession_Reference &profession);
 
       void migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
                                                               overworld::Function &function,

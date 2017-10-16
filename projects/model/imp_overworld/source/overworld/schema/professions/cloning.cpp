@@ -45,7 +45,8 @@ namespace overworld {
     }
   }
 
-  Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession &new_profession, Graph &graph) {
+  Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession_Reference &new_profession,
+                             Graph &graph) {
     auto &function = variant.get_original();
     auto node = new Node_Copy(starting_node, new_profession, starting_node.get_dungeon(), &variant);
     variant.add_node(Node_Owner(node));
@@ -56,11 +57,13 @@ namespace overworld {
 
   Node &clone_dungeon_graph(Dungeon_Variant &variant, Graph &graph) {
     auto &dungeon = variant.get_original();
-    auto node = new Node_Copy(dungeon.get_node(), variant, &variant, nullptr);
-    variant.add_node(Node_Owner(node));
-    std::set<Node *> nodes;
-    expand<Dungeon_Functions>(*node, variant, graph, nodes);
-    return *node;
+    throw std::runtime_error("Not implemented.");
+
+//    auto node = new Node_Copy(dungeon.get_node(), variant, &variant, nullptr);
+//    variant.add_node(Node_Owner(node));
+//    std::set<Node *> nodes;
+//    expand<Dungeon_Functions>(*node, variant, graph, nodes);
+//    return *node;
   }
 
 }

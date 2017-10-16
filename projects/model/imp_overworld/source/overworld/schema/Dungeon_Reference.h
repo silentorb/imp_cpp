@@ -7,7 +7,11 @@ namespace overworld {
 
   class Dungeon_Reference : public Profession {
       Dungeon &dungeon;
+
   public:
+      Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
+
+      Dungeon_Reference(const Dungeon &dungeon) : dungeon(const_cast<Dungeon &>(dungeon)) {}
 
       Profession_Type get_type() const override {
         return Profession_Type::dungeon;
@@ -30,13 +34,20 @@ namespace overworld {
         return dungeon.get_ownership();
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {
         return *this;
       }
 
+      Dungeon &get_dungeon() {
+        return dungeon;
+      }
+
+      const Dungeon &get_dungeon() const {
+        return dungeon;
+      }
   };
 }

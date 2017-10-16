@@ -42,8 +42,8 @@ namespace overworld {
         return original.get_ownership();
       }
 
-      Profession &get_base() override {
-        return *this;
+      Profession_Reference &get_base(Profession_Reference &self) override {
+        return self;
       }
 
       const Profession &get_base() const override {

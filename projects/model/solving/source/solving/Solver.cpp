@@ -38,7 +38,7 @@ namespace solving {
     if (first.get_status() != Node_Status::resolved || second.get_status() != Node_Status::resolved)
       return false;
 
-    if (!assignment_is_compatible(first.get_element().get_profession(), second.get_element().get_profession())) {
+    if (!assignment_is_compatible(*first.get_element().get_profession(), *second.get_element().get_profession())) {
       return true;
     }
 
@@ -58,8 +58,8 @@ namespace solving {
     check_node_conflicts(node);
   }
 
-  void Solver::set_profession(Node &node, overworld::Profession &profession) {
-    auto &base_profession = profession.get_base();
+  void Solver::set_profession(Node &node, overworld::Profession_Reference &profession) {
+    auto &base_profession = profession.get_base(profession);
 
 #if DEBUG_SOLVER > 0
     if (base_profession.get_type() == overworld::Profession_Type::unknown)
@@ -70,7 +70,7 @@ namespace solving {
     profession_library.assign(node, profession, setter);
     if (node.get_element().get_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
-      auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(&base_profession);
+      auto &generic_parameter = *dynamic_cast<Generic_Parameter *>(base_profession.get());
       auto dungeon = dynamic_cast<Dungeon *>(node.get_dungeon());
       if (dungeon && !dungeon->has_generic_parameter(generic_parameter)) {
         auto &function = *dynamic_cast<Virtual_Function *>(generic_parameter.get_node().get_function());
@@ -168,7 +168,7 @@ namespace solving {
     return progress;
   }
 
-  void get_ancestors_recursive(Profession &profession, std::vector<Profession *> &buffer) {
+  void get_ancestors_recursive(Profession &profession, std::vector<Profession_Reference> &buffer) {
     auto contracts_or_null = profession.get_contracts();
     if (!contracts_or_null)
       return;
@@ -184,33 +184,34 @@ namespace solving {
     }
   }
 
-  void get_ancestors(Profession &profession, std::vector<Profession *> &buffer) {
+  void get_ancestors(Profession &profession, std::vector<Profession_Reference> &buffer) {
     buffer.clear();
     get_ancestors_recursive(profession, buffer);
   }
 
-  bool buffer_has_item(std::vector<Profession *> &buffer, Profession *item) {
-    for (auto entry: buffer) {
-      if (entry == item)
+  bool buffer_has_item(std::vector<Profession_Reference> &buffer, Profession *item) {
+    for (auto &entry: buffer) {
+      if (entry.get() == item)
         return true;
     }
 
     return false;
   }
 
-  Profession *find_first_match(std::vector<Profession *> &first_buffer, std::vector<Profession *> &second_buffer) {
-    for (auto first_step : first_buffer) {
-      if (buffer_has_item(second_buffer, first_step))
-        return first_step;
+  Profession_Reference *find_first_match(std::vector<Profession_Reference> &first_buffer, std::vector<Profession_Reference> &second_buffer) {
+    for (auto &first_step : first_buffer) {
+      if (buffer_has_item(second_buffer, first_step.get()))
+        throw std::runtime_error("Not sure if this is working right.");
+//        return &first_step;
     }
 
     return nullptr;
   }
 
   Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
-                                                    Node &starting_node, Profession &profession) {
+                                                    Node &starting_node, Profession_Reference &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
-    professions.push_back(&profession);
+    professions.push_back(profession);
     auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
     if (!variant) {
       variant = &Profession_Library::create_function_variant(
@@ -223,9 +224,9 @@ namespace solving {
   }
 
   void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
-                                      Node &starting_node, overworld::Profession &profession) {
+                                      Node &starting_node, overworld::Profession_Reference &profession) {
     auto professions = to_professions(dungeon.get_generic_parameters(), 1);
-    professions.push_back(&profession);
+    professions.push_back(profession);
     auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
     if (!variant) {
       variant = &Profession_Library::create_dungeon_variant(
@@ -244,9 +245,11 @@ namespace solving {
     if (variant_array.size() == 0) {
       auto &parameter = function.add_generic_parameter();
       set_profession(first, parameter);
-      create_function_variant(variant_array, function, first, first.get_element().get_profession().get_base());
+      auto &first_profession = first.get_element().get_profession();
+      create_function_variant(variant_array, function, first, first_profession.get_base(first_profession));
     }
-    create_function_variant(variant_array, function, first, second.get_element().get_profession().get_base());
+    auto &second_profession = second.get_element().get_profession();
+    create_function_variant(variant_array, function, first, second_profession.get_base(second_profession));
   }
 
   void Solver::resolve_with_template_dungeon(Connection &connection) {
@@ -260,8 +263,9 @@ namespace solving {
     else {
       auto &function = *first.get_function();
       auto &variant_array = profession_library.get_function_variant_array(function);
+      auto &second_profession = second.get_element().get_profession();
       create_function_variant(variant_array, function.get_original(), first,
-                              second.get_element().get_profession().get_base());
+                              second_profession.get_base(second_profession));
     }
   }
 
@@ -282,8 +286,8 @@ namespace solving {
     std::cout << "C " << first.get_debug_string() << " != " << second.get_debug_string() << std::endl;
 #endif
 
-    get_ancestors(first_profession, ancestors_buffer1);
-    get_ancestors(second_profession, ancestors_buffer2);
+    get_ancestors(*first_profession, ancestors_buffer1);
+    get_ancestors(*second_profession, ancestors_buffer2);
 
     auto common_ancestor = find_first_match(ancestors_buffer1, ancestors_buffer2);
     if (common_ancestor) {

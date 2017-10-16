@@ -1,6 +1,7 @@
 #include <overworld/schema/Function.h>
 #include <overworld/exploring/Expression_Explorer.h>
 #include <overworld/expressions/Member_Expression.h>
+#include <overworld/schema/Dungeon_Reference.h>
 #include "dependency_gathering.h"
 
 using namespace overworld;
@@ -89,6 +90,19 @@ namespace imp_rendering {
     return false;
   }
 
+  bool is_needed(const Profession &profession, const Dungeon &dungeon) {
+    if (!needs_reference(profession))
+      return false;
+
+    if (profession.get_type() == Profession_Type::dungeon) {
+      auto dungeon_reference = dynamic_cast<const Dungeon_Reference *>(&profession);
+      if (&dungeon_reference->get_dungeon() == &dungeon)
+        return false;
+    }
+
+    return true;
+  }
+
   class Include_Helper {
       Usage_Map &references;
       const Dungeon &dungeon;
@@ -102,10 +116,11 @@ namespace imp_rendering {
           auto &profession = member.get_profession();
           if (profession.get_type() == Profession_Type::variant) {
             auto &variant = dynamic_cast<const Dungeon_Variant &>(profession).get_original();
-            add_full(Member(const_cast<Dungeon &>(variant), true));
+            add_full(Member(const_cast<Dungeon &>(variant)));
             return;
           }
-          if (&profession == &dungeon || !needs_reference(profession))
+
+          if (!is_needed(profession, dungeon))
             return;
 
           if (!references.count(&profession) || references[&profession].degree == Reference_Type::partial) {
@@ -117,7 +132,8 @@ namespace imp_rendering {
       void add_partial(const Member &member) {
         if (member.get_type() == Member_Type::profession) {
           auto &profession = member.get_profession();
-          if (&profession == &dungeon || !needs_reference(profession))
+
+          if (!is_needed(profession, dungeon))
             return;
 
           if (!references.count(&profession)) {
@@ -139,11 +155,20 @@ namespace imp_rendering {
         include_references(include_references), source_references(source_references), dungeon(dungeon) {}
 
       void add_full(const Member &member) {
-        if (member.get_type() == Member_Type::profession || member.get_type() == Member_Type::dungeon) {
-          auto &profession = member.get_type() == Member_Type::profession
-                             ? member.get_profession()
-                             : member.get_dungeon();
-          if (&profession == &dungeon)
+        if (member.get_type() == Member_Type::profession) {
+          auto &profession = member.get_profession();
+          if (include_references.count(&profession) &&
+              include_references.at(&profession).degree == Reference_Type::full)
+            return;
+
+          if (!source_references.count(&profession) ||
+              source_references[&profession].degree == Reference_Type::partial) {
+            source_references[&profession] = {member, Reference_Type::full};
+          }
+        }
+        else if (member.get_type() == Member_Type::dungeon) {
+          auto profession = Dungeon_Reference(member.get_dungeon());
+          if (profession.get() == &dungeon)
             return;
 
           if (include_references.count(&profession) &&

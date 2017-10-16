@@ -35,6 +35,8 @@ namespace overworld {
       Void,
   };
 
+  class Profession_Reference;
+
   class Profession {
   public:
 
@@ -53,14 +55,14 @@ namespace overworld {
       virtual Node &get_node() = 0;
 
       virtual Ownership get_ownership() const = 0;
-      virtual Profession &get_base()  = 0;
+      virtual Profession_Reference &get_base(Profession_Reference &self) = 0;
       virtual const Profession &get_base() const = 0;
 
-      virtual std::vector<Profession *> *get_contracts() {
+      virtual std::vector<Profession_Reference> *get_contracts() {
         return nullptr;
       }
 
-      virtual const std::vector<Profession *> *get_contracts() const {
+      virtual const std::vector<Profession_Reference> *get_contracts() const {
         return nullptr;
       }
   };
@@ -75,6 +77,9 @@ namespace overworld {
 
       explicit Profession_Reference(std::shared_ptr<Profession> &shared_pointer) : Optional_Shared_Pointer(
         shared_pointer) {}
+
+      explicit Profession_Reference(Profession *shared_pointer) :
+        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)) {}
 
       Profession_Type get_type() const {
         return get()->get_type();
@@ -104,12 +109,31 @@ namespace overworld {
         return get()->get_ownership();
       }
 
-      Profession &get_base() {
-        return get()->get_base();
+      Profession_Reference &get_base(Profession_Reference &self) {
+        return get()->get_base(self);
       }
 
       const Profession &get_base() const {
         return get()->get_base();
+      }
+  };
+
+  template<typename T>
+  class Owned_Profession_Reference {
+      std::unique_ptr<T> owner;
+      Profession_Reference reference;
+
+  public:
+      Owned_Profession_Reference(std::unique_ptr<T> owner) :
+        owner(std::move(owner)),
+        reference(*owner) {}
+
+      T &get_owner() {
+        return *owner;
+      }
+
+      Profession_Reference &get_reference() {
+        return reference;
       }
   };
 
