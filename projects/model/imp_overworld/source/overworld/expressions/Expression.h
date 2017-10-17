@@ -60,16 +60,12 @@ namespace overworld {
       Expression_Element(Expression &expression, const source_mapping::Source_Range &source_range) :
         expression(expression), source_range(source_range) {}
 
-      Profession_Reference &get_profession() override {
-        return expression.get_profession();
+      Dungeon_Interface *get_dungeon() const override {
+        return nullptr;
       }
 
-      const Profession_Reference &get_profession() const override {
-        return expression.get_profession();
-      }
-
-      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
-        expression.set_profession(value);
+      Function_Interface *get_function() const override {
+        return nullptr;
       }
 
       const source_mapping::Source_Range &get_source_point() const override {

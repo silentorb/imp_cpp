@@ -6,27 +6,27 @@ namespace overworld {
 
   class Parameter {
       Common_Element element;
-      Element_Reference_Node node;
+      Node node;
 
   public:
       Parameter(const std::string name, Profession_Reference &profession, Dungeon_Interface *dungeon,
                 Function_Interface *function, const source_mapping::Source_Range &source_range) :
-        element(Element_Type::parameter, name, profession, source_range),
-        node(element, dungeon, function) {}
+        element(Element_Type::parameter, name, dungeon, function, source_range),
+        node(profession, element) {}
 
       void set_profession(Profession_Reference &profession, Profession_Setter &setter) {
-        element.set_profession(profession, setter);
+        node.set_profession(profession, setter);
       }
 
       Profession_Reference &get_profession() {
-        return element.get_profession();
+        return node.get_profession();
       }
 
       const Profession_Reference &get_profession() const {
-        return element.get_profession();
+        return node.get_profession();
       }
 
-      Element_Reference_Node &get_node() {
+      Node &get_node() {
         return node;
       }
 

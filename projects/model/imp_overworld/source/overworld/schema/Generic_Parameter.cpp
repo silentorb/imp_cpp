@@ -32,7 +32,7 @@ namespace overworld {
     std::vector<Profession_Reference> result;
     result.reserve(generic_parameters.size() + additional_space);
     for (auto &parameter: generic_parameters) {
-      result.push_back(parameter->get_element().get_profession());
+      result.push_back(parameter->get_profession());
     }
 
     return result;

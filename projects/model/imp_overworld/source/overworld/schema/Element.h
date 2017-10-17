@@ -15,44 +15,32 @@ namespace overworld {
 
   class Node;
 
-  class Profession_Setter {
-  public:
-      virtual void set_profession(Node &node, Profession_Reference &profession) = 0;
-  };
+  class Dungeon_Interface;
+  class Function_Interface;
 
   class Element {
   public:
-      virtual Profession_Reference &get_profession() = 0;
-      virtual const Profession_Reference &get_profession() const = 0;
-      virtual void set_profession(Profession_Reference &value, Profession_Setter &setter) = 0;
       virtual const source_mapping::Source_Range &get_source_point() const = 0;
       virtual const std::string get_name() const = 0;
       virtual Element_Type get_type() const = 0;
+      virtual Dungeon_Interface *get_dungeon() const = 0;
+      virtual Function_Interface *get_function() const = 0;
   };
 
   class Common_Element : public Element {
   protected:
       Element_Type type;
       std::string name;
-      Profession_Reference profession;
       source_mapping::Source_Range source_point;
+      Dungeon_Interface *dungeon = nullptr;
+      Function_Interface *function = nullptr;
 
   public:
-      Common_Element(Element_Type type, const std::string name, Profession_Reference &profession,
+      Common_Element(Element_Type type, const std::string name,
+                     Dungeon_Interface *dungeon,
+                     Function_Interface *function,
                      const source_mapping::Source_Range &source_point) :
-        type(type), name(name), profession(profession), source_point(source_point) {}
-
-      Profession_Reference &get_profession() override {
-        return profession;
-      }
-
-      const Profession_Reference &get_profession() const override {
-        return profession;
-      }
-
-      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
-        profession = value;
-      }
+        type(type), name(name), source_point(source_point) {}
 
       const source_mapping::Source_Range &get_source_point() const override {
         return source_point;
@@ -65,14 +53,22 @@ namespace overworld {
       Element_Type get_type() const override {
         return type;
       }
+
+      Dungeon_Interface *get_dungeon() const override {
+        return dungeon;
+      }
+
+      Function_Interface *get_function() const override {
+        return function;
+      }
   };
 
   using Element_Owner = std::unique_ptr<Element>;
 
-  class Empty_Profession_Setter : public overworld::Profession_Setter {
-  public:
-      static Empty_Profession_Setter &get_instance();
-      void set_profession(overworld::Node &node, overworld::Profession_Reference &profession) override;
-  };
+//  class Empty_Profession_Setter : public overworld::Profession_Setter {
+//  public:
+//      static Empty_Profession_Setter &get_instance();
+//      void set_profession(overworld::Node &node, overworld::Profession_Reference &profession) override;
+//  };
 
 }

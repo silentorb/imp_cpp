@@ -74,7 +74,7 @@ namespace overworld {
 //  }
 
   void Profession_Library::assign(Node &node, overworld::Profession_Reference &profession, Profession_Setter &setter) {
-    auto &previous = node.get_element().get_profession();
+    auto &previous = node.get_profession();
     if (previous.get_type() == Profession_Type::reference) {
       auto reference = dynamic_cast<Reference *>(previous.get());
       auto new_profession = reference->is_pointer()
@@ -124,7 +124,7 @@ namespace overworld {
 
     for (auto &variant : variant_array) {
       for (auto &argument : variant->get_arguments()) {
-        if (argument->get_element().get_profession().get_type() == Profession_Type::unknown)
+        if (argument->get_profession().get_type() == Profession_Type::unknown)
           goto next;
       }
 

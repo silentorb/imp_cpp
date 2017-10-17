@@ -11,7 +11,7 @@ namespace overworld {
       }
 
       static Node_Copy *create_node(Node &other, Dungeon_Variant &variant) {
-        return new Node_Copy(other, other.get_element().get_profession(), &variant, nullptr);
+        return new Node_Copy(other, other.get_profession(), &variant, nullptr);
       }
   };
 
@@ -21,7 +21,7 @@ namespace overworld {
       }
 
       static Node_Copy *create_node(Node &other, Function_Variant &variant) {
-        return new Node_Copy(other, other.get_element().get_profession(), &variant.get_dungeon(), &variant);
+        return new Node_Copy(other, other.get_profession(), &variant.get_dungeon(), &variant);
       }
   };
 
@@ -47,12 +47,13 @@ namespace overworld {
 
   Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession_Reference &new_profession,
                              Graph &graph) {
-    auto &function = variant.get_original();
-    auto node = new Node_Copy(starting_node, new_profession, starting_node.get_dungeon(), &variant);
-    variant.add_node(Node_Owner(node));
-    std::set<Node *> nodes;
-    expand<Function_Functions>(*node, variant, graph, nodes);
-    return *node;
+    throw std::runtime_error("No longer handled this way.");
+//    auto &function = variant.get_original();
+//    auto node = new Node_Copy(starting_node, new_profession, starting_node.get_dungeon(), &variant);
+//    variant.add_node(Node_Owner(node));
+//    std::set<Node *> nodes;
+//    expand<Function_Functions>(*node, variant, graph, nodes);
+//    return *node;
   }
 
   Node &clone_dungeon_graph(Dungeon_Variant &variant, Graph &graph) {

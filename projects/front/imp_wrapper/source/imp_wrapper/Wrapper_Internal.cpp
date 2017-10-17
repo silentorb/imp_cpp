@@ -54,7 +54,7 @@ namespace imp_wrapper {
 #endif
 
 //    auto node = solving::find_node(graph, 10, 9);
-//    auto &profession = node->get_element().get_profession();
+//    auto &profession = node->get_profession();
 //    auto dungeon = dynamic_cast<overworld::Dungeon *>(&profession);
 //    auto l = profession.get_debug_name();
 //    auto temp = node->get_debug_string();

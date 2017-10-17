@@ -3,46 +3,48 @@
 #include <memory>
 #include <overworld/imp_graph/Node.h>
 #include "Member.h"
+#include "Element.h"
 
 namespace overworld {
 
   class Function_Interface;
 
-  class Generic_Parameter_Node : public Node {
-      Element &element;
-
-  public:
-      Generic_Parameter_Node(Element &element, Dungeon_Interface *dungeon,
-                             Function_Interface *function) :
-        Node(element.get_profession(), dungeon, function), element(element) {}
-
-      Node_Status get_status() const override {
-        return Node_Status::unresolved;
-      }
-
-      std::string get_debug_string() const override {
-        return "GP " + Node::get_debug_string();
-      }
-
-      Element &get_element() override {
-        return element;
-      }
-
-      const Element &get_element() const override {
-        return element;
-      }
-
-  };
+//  using Generic_Parameter_Node = Node;
+//  class Generic_Parameter_Node : public Node {
+//      Element &element;
+//
+//  public:
+//      Generic_Parameter_Node(Element &element, Dungeon_Interface *dungeon,
+//                             Function_Interface *function) :
+//        Node(element.get_profession(), dungeon, function), element(element) {}
+//
+//      Node_Status get_status() const override {
+//        return Node_Status::unresolved;
+//      }
+//
+//      std::string get_debug_string() const override {
+//        return "GP " + Node::get_debug_string();
+//      }
+//
+//      Element &get_element() override {
+//        return element;
+//      }
+//
+//      const Element &get_element() const override {
+//        return element;
+//      }
+//
+//  };
 
   class Generic_Parameter_Element : public Common_Element {
   public:
       Generic_Parameter_Element(Element_Type type, const std::string &name, Profession_Reference profession,
                                 const source_mapping::Source_Range &source_point) :
-        Common_Element(type, name, profession, source_point) {}
+        Common_Element(type, name, nullptr, nullptr, source_point) {}
 
-      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
-        throw std::runtime_error("Not supported.");
-      }
+//      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
+//        throw std::runtime_error("Not supported.");
+//      }
 
       void set_name(const std::string &value) {
         name = value;
@@ -51,14 +53,15 @@ namespace overworld {
 
   class Generic_Parameter : public Profession {
       Generic_Parameter_Element element;
-      Generic_Parameter_Node node;
+      Node node;
 
   public:
-      Generic_Parameter(const std::string &name, Dungeon_Interface *dungeon, Function_Interface *function,
+      Generic_Parameter(const std::string &name, Profession_Reference &profession, Dungeon_Interface *dungeon,
+                        Function_Interface *function,
                         const source_mapping::Source_Range &source_point) :
 //        element(Element_Type::other, name, *this, source_point),
-        element(Element_Type::other, name, Profession_Reference(), source_point),
-        node(element, dungeon, function) {
+        element(Element_Type::other, name, profession, source_point),
+        node(profession, element) {
         throw std::runtime_error("Not implemented");
       }
 
@@ -72,11 +75,11 @@ namespace overworld {
         element.set_name(value);
       }
 
-      Generic_Parameter_Node &get_node() override {
+      Node &get_node() override {
         return node;
       }
 
-      const Generic_Parameter_Node &get_node() const {
+      const Node &get_node() const {
         return node;
       }
 

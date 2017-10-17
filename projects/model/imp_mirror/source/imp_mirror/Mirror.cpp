@@ -90,8 +90,8 @@ namespace imp_mirror {
 
     // Optimization to reduce the amount of graph solving later on
     // since so often variables types are defined by assigning them an instantiation.
-    auto &value_profession = value.get_element().get_profession();
-    if (target.get_element().get_profession().get_type()
+    auto &value_profession = value.get_profession();
+    if (target.get_profession().get_type()
         == overworld::Profession_Type::unknown
         && value_profession.get_type()
            != overworld::Profession_Type::unknown) {
@@ -298,7 +298,7 @@ namespace imp_mirror {
     auto &input_profession_expression = instantiation.get_profession_expression();
     auto profession_tuple = prepare_profession(
       reflect_expression(input_profession_expression,
-                         scope)->get_last().get_node()->get_element().get_profession());
+                         scope)->get_last().get_node()->get_profession());
 
     auto &output_profession = std::get<0>(profession_tuple);
     auto &profession_owner = std::get<1>(profession_tuple);
@@ -368,7 +368,7 @@ namespace imp_mirror {
                                                            Scope &scope) {
 
     auto &previous_expression = first.get_last();
-    auto &profession = previous_expression.get_node()->get_element().get_profession();
+    auto &profession = previous_expression.get_node()->get_profession();
     if (second.get_type() == underworld::Expression_Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon
@@ -560,7 +560,7 @@ namespace imp_mirror {
       return get_possible_generic_dungeon(dungeon);
     }
     else if (member->get_type() == overworld::Member_Type::profession) {
-      return get_member_node(*member).get_element().get_profession();
+      return get_member_node(*member).get_profession();
     }
     else {
       throw new Code_Error(token.get_name() + " is not a dungeon.", token.get_source_point());
@@ -791,7 +791,8 @@ namespace imp_mirror {
 
     for (auto &generic_parameter: input_dungeon.get_generic_parameters()) {
       auto output_generic_parameter = new overworld::Generic_Parameter(
-        generic_parameter.get_name(), output_dungeon, nullptr, generic_parameter.get_source_range()
+        generic_parameter.get_name(), profession_library.get_unknown(),
+        output_dungeon, nullptr, generic_parameter.get_source_range()
       );
       output_dungeon->add_generic_parameter(std::unique_ptr<overworld::Generic_Parameter>(output_generic_parameter));
     }

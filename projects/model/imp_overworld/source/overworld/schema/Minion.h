@@ -59,15 +59,15 @@ namespace overworld {
 
   class Minion {
       Common_Element element;
-      Element_Reference_Node node;
+      Node node;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
 
   public:
       Minion(const std::string &name, Profession_Reference &profession, Dungeon_Interface *dungeon,
              const source_mapping::Source_Range &source_point, Function_Interface *function) :
-        element(Element_Type::minion, name, profession, source_point),
-        node(element, dungeon, function) {}
+        element(Element_Type::minion, name, nullptr, nullptr, source_point),
+        node(profession, element) {}
 
       Minion(const Minion &) = delete;
 
@@ -108,11 +108,11 @@ namespace overworld {
       }
 
       const Profession_Reference &get_profession() const {
-        return element.get_profession();
+        return node.get_profession();
       }
 
       Profession_Reference &get_profession() {
-        return element.get_profession();
+        return node.get_profession();
       }
 
       const File *get_file() const {

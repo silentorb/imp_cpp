@@ -105,7 +105,7 @@ namespace overworld {
       else
         result += ", ";
 
-      result += parameter->get_element().get_profession().get_name();
+      result += parameter->get_profession().get_name();
     }
     result += ">";
 

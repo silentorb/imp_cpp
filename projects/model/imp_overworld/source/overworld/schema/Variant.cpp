@@ -11,7 +11,7 @@ namespace overworld {
       else
         name += ", ";
 
-      name += argument->get_element().get_profession().get_name();
+      name += argument->get_profession().get_name();
     }
     name += ">";
 
@@ -39,7 +39,7 @@ namespace overworld {
 
     auto other = first.begin();
     for (auto profession : second) {
-      if ((*other)->get_element().get_profession().get() != profession.get())
+      if ((*other)->get_profession().get() != profession.get())
         return false;
 
       ++other;

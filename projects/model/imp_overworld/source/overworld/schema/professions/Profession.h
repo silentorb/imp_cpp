@@ -138,4 +138,5 @@ namespace overworld {
   };
 
   bool can_cast(Profession &target, Profession &source);
+
 }

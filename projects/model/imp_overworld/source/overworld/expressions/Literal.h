@@ -29,15 +29,15 @@ namespace overworld {
   template<typename T, typename Static_Functions>
   class Literal_Implementation : public Literal {
       T value;
-      Element_Reference_Node node;
+      Node node;
 
   public:
       Literal_Implementation(T value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_range,
                              Function_Interface *function) :
         Literal(source_range),
         value(value),
-        node(element, dungeon, function) {
-        node.set_status(Node_Status:: resolved);
+        node(*this, element) {
+        node.set_status(Node_Status::resolved);
       }
 
       Primitive_Type get_primitive_type() const override {

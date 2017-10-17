@@ -14,40 +14,38 @@ namespace overworld {
   class Function : public Function_Interface {
   protected:
       Function_Signature signature;
-      Profession_Reference signature_reference;
+//      Profession_Reference signature_reference;
       Common_Element element;
-      Element_Reference_Node node;
+//      Element_Reference_Node node;
       virtual bool returns_a_value() const;
       std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
 
-      const Profession &_get_profession() const {
-        return signature;
-//        auto profession = signature.get_return_type();
-//        if (!profession)
-//          return Profession_Library::get_unknown();
-//
-//        return *profession;
-      }
+//      const Profession &_get_profession() const {
+//        return signature;
+////        auto profession = signature.get_return_type();
+////        if (!profession)
+////          return Profession_Library::get_unknown();
+////
+////        return *profession;
+//      }
 
-      Profession_Reference &_get_profession() {
-        return signature_reference;
-      }
+//      Profession_Reference &_get_profession() {
+//        return signature_reference;
+//      }
 
   public:
-      Function(const std::string &name, Profession &return_type, Scope &parent_scope,
-               Dungeon_Interface &dungeon,
-               const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, get_profession(), source_point),
-        node(element, &dungeon, this),
-        signature_reference(signature) {}
+//      Function(const std::string &name, Profession &return_type, Scope &parent_scope,
+//               Dungeon_Interface &dungeon,
+//               const source_mapping::Source_Range &source_point) :
+//        element(Element_Type::other, name, &dungeon, nullptr, source_point),
+//        signature_reference(signature) {}
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, get_profession(), source_point),
-        node(element, &dungeon, this) {}
+        element(Element_Type::other, name, &dungeon, nullptr, source_point) {}
 
       virtual ~Function() {}
 
@@ -61,17 +59,17 @@ namespace overworld {
         return false;
       }
 
-      Element_Reference_Node &get_node() {
-        return node;
-      }
-
-      Profession_Reference &get_profession() {
-        return _get_profession();
-      }
-
-      const Profession &get_profession() const {
-        return _get_profession();
-      }
+//      Element_Reference_Node &get_node() {
+//        return node;
+//      }
+//
+//      Profession_Reference &get_profession() {
+//        return _get_profession();
+//      }
+//
+//      const Profession &get_profession() const {
+//        return _get_profession();
+//      }
 
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         signature.set_last_profession(value, setter);
@@ -88,9 +86,10 @@ namespace overworld {
       }
 
       Profession_Reference &add_generic_parameter() {
-        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, node.get_dungeon(), this);
-        generic_parameters.push_back(&result.get_owner());
-        return result.get_reference();
+        throw std::runtime_error("Doesn't work the same way anymore: node.get_dungeon()");
+//        auto &result = add_generic_parameter_to_vector(owned_generic_parameters, node.get_dungeon(), this);
+//        generic_parameters.push_back(&result.get_owner());
+//        return result.get_reference();
       }
 
       Generic_Parameter_Owner detach_generic_parameter(Generic_Parameter &parameter) {

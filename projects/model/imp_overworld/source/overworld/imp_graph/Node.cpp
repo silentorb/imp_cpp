@@ -21,7 +21,7 @@ namespace overworld {
 
   std::string Node::get_debug_string() const {
     auto &element = get_element();
-    auto &profession = element.get_profession();
+    auto &profession = get_profession();
     auto &source_point = element.get_source_point().get_start();
 
     std::string result = "";
@@ -79,9 +79,9 @@ namespace overworld {
     }
   }
 
-  Node_Status Element_Reference_Node::get_status() const {
-    auto &profession = element.get_profession();
-    auto &base_profession = profession->get_base(profession);
-    return get_status_using_profession(*base_profession);
-  }
+//  Node_Status Element_Reference_Node::get_status() const {
+//    auto &profession = element.get_profession();
+//    auto &base_profession = profession->get_base(profession);
+//    return get_status_using_profession(*base_profession);
+//  }
 }

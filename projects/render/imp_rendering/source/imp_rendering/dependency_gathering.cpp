@@ -31,7 +31,7 @@ namespace imp_rendering {
         }
 
         auto node = const_cast<Expression *>(&expression)->get_node();
-        auto &profession = node->get_element().get_profession();
+        auto &profession = node->get_profession();
         if (profession.get_type() != Profession_Type::unknown && profession.get_type() != Profession_Type::Void)
           member_action(Member(profession, true));
       }

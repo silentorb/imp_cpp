@@ -39,13 +39,13 @@ namespace imp_mirror {
       Connector connector;
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_element().get_profession();
+        auto &profession = expression.get_node()->get_profession();
         auto &dungeon = cast<const overworld::Dungeon>(profession);
         return const_cast<overworld::Dungeon *> (&dungeon);
       }
 
       overworld::Dungeon_Interface *get_dungeon_interface(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_element().get_profession();
+        auto &profession = expression.get_node()->get_profession();
         auto &dungeon = cast<const overworld::Dungeon_Interface>(profession);
         return const_cast<overworld::Dungeon_Interface *> (&dungeon);
       }

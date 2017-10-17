@@ -25,7 +25,7 @@ namespace imp_mirror {
 //        auto &signature = temporary_member.get_or_create_signature();
 //        for (auto i = signature.get_parameters().size(); i < arguments.size(); ++i) {
 //          auto &argument = arguments[i];
-//          auto &argument_profession = argument->get_node()->get_element().get_profession();
+//          auto &argument_profession = argument->get_node()->get_profession();
 //          auto parameter = new overworld::Parameter("(temp)", argument_profession,
 //                                                    source_mapping::Source_Range(),
 //                                                    *scope.get_overworld_scope().get_function());
@@ -66,10 +66,10 @@ namespace imp_mirror {
       auto &second = *argument.get_node();
       auto k = first.get_element().get_type();
       if (first.get_function() != second.get_function()
-          && first.get_element().get_profession().get_type() == Profession_Type::generic_parameter) {
+          && first.get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
-        auto argument_node = new Argument_Node(first.get_element().get_profession(),
+        auto argument_node = new Argument_Node(first.get_profession(),
                                                member_container,
                                                scope.get_overworld_scope().get_function(),
                                                profession_library,
