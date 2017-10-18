@@ -13,7 +13,8 @@ namespace overworld {
 
   class Function : public Function_Interface {
   protected:
-      Function_Signature signature;
+      Profession_Reference signature_reference;
+      Function_Signature &signature;
 //      Profession_Reference signature_reference;
       Common_Element element;
 //      Element_Reference_Node node;
@@ -45,7 +46,9 @@ namespace overworld {
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, &dungeon, nullptr, source_point) {}
+        element(Element_Type::other, name, &dungeon, nullptr, source_point),
+        signature_reference(new Function_Signature()),
+        signature(*static_cast<Function_Signature *>(signature_reference.get())) {}
 
       virtual ~Function() {}
 
@@ -70,6 +73,10 @@ namespace overworld {
 //      const Profession &get_profession() const {
 //        return _get_profession();
 //      }
+
+      Profession_Reference &get_profession_reference() {
+        return signature_reference;
+      }
 
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         signature.set_last_profession(value, setter);
@@ -146,6 +153,14 @@ namespace overworld {
       void set_file(File *value) {
         header_file = value;
       }
+
+      const Common_Element &get_element() const {
+        return element;
+      }
+
+      Common_Element &get_element() {
+        return element;
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;
@@ -154,9 +169,9 @@ namespace overworld {
       Scope &parent_scope;
 
   public:
-      Virtual_Function(const std::string &name, Profession &return_type, Scope &parent_scope,
-                       Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point) :
-        Function(name, return_type, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
+//      Virtual_Function(const std::string &name, Scope &parent_scope,
+//                       Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point) :
+//        Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
 
       Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                        const source_mapping::Source_Range &source_point) :
@@ -214,9 +229,9 @@ namespace overworld {
       bool returns_a_value() const override;
 
   public:
-      Function_With_Block(const std::string &name, Profession &return_type, Scope &parent_scope,
-                          Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point)
-        : Function(name, return_type, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
+//      Function_With_Block(const std::string &name, Scope &parent_scope,
+//                          Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point)
+//        : Function(name, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
 
       Function_With_Block(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                           const source_mapping::Source_Range &source_point) :

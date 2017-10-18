@@ -16,16 +16,16 @@ namespace overworld {
 //    throw std::runtime_error("Could not find constructor.");
   }
 
-  Function &Dungeon::create_function(const std::string &name, Profession &profession,
-                                     const source_mapping::Source_Range &source_point) {
-    auto function = new Function_With_Block(name, profession, *this, *this, source_point);
-    functions.push_back(unique_ptr<Function>(function));
-//    if (!function->is_constructor())
-//      graph.add_node(function->get_node());
-
-    add_member(name, Member(*function));
-    return *function;
-  }
+//  Function &Dungeon::create_function(const std::string &name, Profession &profession,
+//                                     const source_mapping::Source_Range &source_point) {
+//    auto function = new Function_With_Block(name, profession, *this, source_point);
+//    functions.push_back(unique_ptr<Function>(function));
+////    if (!function->is_constructor())
+////      graph.add_node(function->get_node());
+//
+//    add_member(name, Member(*function));
+//    return *function;
+//  }
 
   bool Dungeon::is_class() const {
     if (get_minions().size() > 0)
@@ -105,7 +105,8 @@ namespace overworld {
       else
         result += ", ";
 
-      result += parameter->get_profession().get_name();
+      throw std::runtime_error("Next line is not implemented.");
+//      result += parameter->get_profession().get_name();
     }
     result += ">";
 

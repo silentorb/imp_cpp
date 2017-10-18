@@ -79,6 +79,15 @@ namespace overworld {
     }
   }
 
+  static Empty_Profession_Setter setter;
+
+  Empty_Profession_Setter &Empty_Profession_Setter::get_instance() {
+    return setter;
+  }
+
+  void Empty_Profession_Setter::set_profession(overworld::Node &node, overworld::Profession_Reference &profession) {
+    node.set_profession(profession, *this);
+  }
 //  Node_Status Element_Reference_Node::get_status() const {
 //    auto &profession = element.get_profession();
 //    auto &base_profession = profession->get_base(profession);

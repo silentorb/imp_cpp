@@ -55,9 +55,14 @@ namespace overworld {
   class Expression_Element : public Element {
       Expression &expression;
       source_mapping::Source_Range source_range;
+      Dungeon_Interface *dungeon = nullptr;
+      Function_Interface *function = nullptr;
 
   public:
-      Expression_Element(Expression &expression, const source_mapping::Source_Range &source_range) :
+      Expression_Element(Expression &expression,
+                         Dungeon_Interface *dungeon,
+                         Function_Interface *function,
+                         const source_mapping::Source_Range &source_range) :
         expression(expression), source_range(source_range) {}
 
       Dungeon_Interface *get_dungeon() const override {
@@ -89,8 +94,9 @@ namespace overworld {
       Expression_Element element;
 
   public:
-      Common_Expression(const source_mapping::Source_Range &source_range) :
-        element(*this, source_range) {}
+      Common_Expression(Dungeon_Interface *dungeon,
+                        Function_Interface *function, const source_mapping::Source_Range &source_range) :
+        element(*this, dungeon, function, source_range) {}
 
       Expression &get_last() override {
         return *this;

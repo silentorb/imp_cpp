@@ -80,10 +80,10 @@ namespace overworld {
       auto new_profession = reference->is_pointer()
                             ? Profession_Reference(new Pointer(profession.get_base(profession)))
                             : Profession_Reference(new Reference(profession.get_base(profession)));
-      node.get_element().set_profession(new_profession, setter);
+      node.set_profession(new_profession, setter);
     }
     else {
-      node.get_element().set_profession(profession, setter);
+      node.set_profession(profession, setter);
     }
   }
 
@@ -124,7 +124,7 @@ namespace overworld {
 
     for (auto &variant : variant_array) {
       for (auto &argument : variant->get_arguments()) {
-        if (argument->get_profession().get_type() == Profession_Type::unknown)
+        if (argument->get_node().get_profession().get_type() == Profession_Type::unknown)
           goto next;
       }
 

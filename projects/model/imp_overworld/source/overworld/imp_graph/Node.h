@@ -93,6 +93,12 @@ namespace overworld {
 
   };
 
+  class Empty_Profession_Setter : public overworld::Profession_Setter {
+  public:
+      static Empty_Profession_Setter &get_instance();
+      void set_profession(overworld::Node &node, overworld::Profession_Reference &profession) override;
+  };
+
 //  class Element_Reference_Node : public Node {
 //  protected:
 //      Element &element;
@@ -126,33 +132,25 @@ namespace overworld {
 //
 //  };
 
-//  class Node_Copy : public Node {
-//      Node &original;
-//      Profession_Reference profession;
-//
-//  public:
-//      Node_Copy(Node &original, Profession_Reference &profession, Dungeon_Interface *dungeon,
-//                Function_Interface *function) :
-//        Node(profession, dungeon, function), original(original), profession(profession) {}
-//
-//      Node_Status get_status() const override {
-//        return profession->get_base().get_type() != overworld::Profession_Type::unknown
-//               ? Node_Status::resolved
-//               : Node_Status::unresolved;
-//      }
-//
-//      Element &get_element() override {
-//        return original.get_element();
-//      }
-//
-//      Node &get_original() const {
-//        return original;
-//      }
-//
-//      const Element &get_element() const override {
-//        return original.get_element();
-//      }
-//  };
+  class Node_Copy : public Node {
+      Node &original;
+      Profession_Reference profession;
+
+  public:
+      Node_Copy(Node &original, Profession_Reference &profession, Dungeon_Interface *dungeon,
+                Function_Interface *function) :
+        Node(profession, original.get_element()), original(original), profession(profession) {}
+
+      Node_Status get_status() const override {
+        return profession->get_base().get_type() != overworld::Profession_Type::unknown
+               ? Node_Status::resolved
+               : Node_Status::unresolved;
+      }
+
+      Node &get_original() const {
+        return original;
+      }
+  };
 
   using Node_Owner = std::unique_ptr<Node>;
 }

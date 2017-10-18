@@ -6,8 +6,8 @@ namespace overworld {
 
   Node &get_member_node(Member &member) {
     switch (member.get_type()) {
-      case Member_Type::function:
-        return member.get_function().get_node();
+//      case Member_Type::function:
+//        return member.get_function()..get_node();
 
 //      case Member_Type::dungeon:
 

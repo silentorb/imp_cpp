@@ -10,7 +10,7 @@ namespace overworld {
   class Instantiation : public Common_Expression {
       Profession_Reference profession;
       std::map<Minion *, Expression_Owner> dictionary;
-      Element_Reference_Node node;
+      Node node;
       std::unique_ptr<Dungeon_Variant> dungeon_variant;
 
   public:

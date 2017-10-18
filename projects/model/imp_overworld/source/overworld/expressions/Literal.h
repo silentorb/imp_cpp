@@ -36,7 +36,7 @@ namespace overworld {
                              Function_Interface *function) :
         Literal(source_range),
         value(value),
-        node(*this, element) {
+        node(Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), element) {
         node.set_status(Node_Status::resolved);
       }
 

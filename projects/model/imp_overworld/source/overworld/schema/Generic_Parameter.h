@@ -39,12 +39,10 @@ namespace overworld {
   class Generic_Parameter_Element : public Common_Element {
   public:
       Generic_Parameter_Element(Element_Type type, const std::string &name, Profession_Reference profession,
+                                Dungeon_Interface *dungeon,
+                                Function_Interface *function,
                                 const source_mapping::Source_Range &source_point) :
         Common_Element(type, name, nullptr, nullptr, source_point) {}
-
-//      void set_profession(Profession_Reference &value, Profession_Setter &setter) override {
-//        throw std::runtime_error("Not supported.");
-//      }
 
       void set_name(const std::string &value) {
         name = value;
@@ -56,11 +54,11 @@ namespace overworld {
       Node node;
 
   public:
-      Generic_Parameter(const std::string &name, Profession_Reference &profession, Dungeon_Interface *dungeon,
+      Generic_Parameter(const std::string &name, Profession_Reference &profession,
+                        Dungeon_Interface *dungeon,
                         Function_Interface *function,
                         const source_mapping::Source_Range &source_point) :
-//        element(Element_Type::other, name, *this, source_point),
-        element(Element_Type::other, name, profession, source_point),
+        element(Element_Type::other, name, profession, dungeon, function, source_point),
         node(profession, element) {
         throw std::runtime_error("Not implemented");
       }

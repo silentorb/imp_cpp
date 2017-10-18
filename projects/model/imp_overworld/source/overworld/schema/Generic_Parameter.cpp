@@ -15,7 +15,8 @@ namespace overworld {
       throw std::runtime_error("Too many generic parameters.");
 
     auto parameter_name = get_generic_parameter_name(generic_parameters.size());
-    auto parameter = new Generic_Parameter(parameter_name, dungeon, function, source_mapping::Source_Range());
+    auto parameter = new Generic_Parameter(parameter_name, Profession_Library::get_unknown(),
+                                           dungeon, function, source_mapping::Source_Range());
     generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
     return generic_parameters[generic_parameters.size() - 1];
   }
@@ -32,7 +33,7 @@ namespace overworld {
     std::vector<Profession_Reference> result;
     result.reserve(generic_parameters.size() + additional_space);
     for (auto &parameter: generic_parameters) {
-      result.push_back(parameter->get_profession());
+      result.push_back(parameter->get_node().get_profession());
     }
 
     return result;

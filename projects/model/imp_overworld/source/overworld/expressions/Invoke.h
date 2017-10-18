@@ -13,7 +13,7 @@ namespace overworld {
   class Invoke : public Common_Expression {
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
-      std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
+//      std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
@@ -53,9 +53,9 @@ namespace overworld {
         return *expression;
       }
 
-      void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
-        argument_nodes.push_back(std::move(argument_node));
-      }
+//      void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
+//        argument_nodes.push_back(std::move(argument_node));
+//      }
 
       const std::string get_name() const override {
         return "`Invoke`";

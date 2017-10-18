@@ -69,12 +69,12 @@ namespace imp_mirror {
           && first.get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
-        auto argument_node = new Argument_Node(first.get_profession(),
-                                               member_container,
-                                               scope.get_overworld_scope().get_function(),
-                                               profession_library,
-                                               source_argument.get_source_point());
-        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
+//        auto argument_node = new Argument_Node(first.get_profession(),
+//                                               member_container,
+//                                               scope.get_overworld_scope().get_function(),
+//                                               profession_library,
+//                                               source_argument.get_source_point());
+//        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
         throw std::runtime_error("Not implemented.");
 //        auto connection = new Component_To_Scalar(*argument_node, second);
 //        graph.connect(*argument_node, second, std::unique_ptr<Connection>(connection));
