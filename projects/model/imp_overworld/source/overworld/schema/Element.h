@@ -3,6 +3,7 @@
 #include <string>
 #include <overworld/schema/professions/Profession.h>
 #include <source_mapping/Source_Point.h>
+#include "Parent.h"
 
 namespace overworld {
 
@@ -15,16 +16,13 @@ namespace overworld {
 
   class Node;
 
-  class Dungeon_Interface;
-  class Function_Interface;
-
   class Element {
   public:
       virtual const source_mapping::Source_Range &get_source_point() const = 0;
       virtual const std::string get_name() const = 0;
       virtual Element_Type get_type() const = 0;
-      virtual Dungeon_Interface *get_dungeon() const = 0;
-      virtual Function_Interface *get_function() const = 0;
+      virtual Parent &get_parent() = 0;
+//      virtual const Parent &get_parent() const = 0;
   };
 
   class Common_Element : public Element {
@@ -32,15 +30,13 @@ namespace overworld {
       Element_Type type;
       std::string name;
       source_mapping::Source_Range source_point;
-      Dungeon_Interface *dungeon = nullptr;
-      Function_Interface *function = nullptr;
+      Parent parent;
 
   public:
       Common_Element(Element_Type type, const std::string name,
-                     Dungeon_Interface *dungeon,
-                     Function_Interface *function,
+                     Parent parent,
                      const source_mapping::Source_Range &source_point) :
-        type(type), name(name), source_point(source_point) {}
+        type(type), name(name), source_point(source_point), parent(parent) {}
 
       const source_mapping::Source_Range &get_source_point() const override {
         return source_point;
@@ -54,12 +50,8 @@ namespace overworld {
         return type;
       }
 
-      Dungeon_Interface *get_dungeon() const override {
-        return dungeon;
-      }
-
-      Function_Interface *get_function() const override {
-        return function;
+      Parent &get_parent() override {
+        return parent;
       }
   };
 

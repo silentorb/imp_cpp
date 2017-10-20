@@ -39,10 +39,9 @@ namespace overworld {
   class Generic_Parameter_Element : public Common_Element {
   public:
       Generic_Parameter_Element(Element_Type type, const std::string &name, Profession_Reference profession,
-                                Dungeon_Interface *dungeon,
-                                Function_Interface *function,
+                                Parent parent,
                                 const source_mapping::Source_Range &source_point) :
-        Common_Element(type, name, nullptr, nullptr, source_point) {}
+        Common_Element(type, name, parent, source_point) {}
 
       void set_name(const std::string &value) {
         name = value;
@@ -55,10 +54,9 @@ namespace overworld {
 
   public:
       Generic_Parameter(const std::string &name, Profession_Reference &profession,
-                        Dungeon_Interface *dungeon,
-                        Function_Interface *function,
+                        Parent parent,
                         const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, profession, dungeon, function, source_point),
+        element(Element_Type::other, name, profession, parent, source_point),
         node(profession, element) {
         throw std::runtime_error("Not implemented");
       }
@@ -119,7 +117,7 @@ namespace overworld {
 
   Owned_Profession_Reference<Generic_Parameter> &add_generic_parameter_to_vector(
     std::vector<Owned_Profession_Reference<Generic_Parameter>> &generic_parameters,
-    Dungeon_Interface *dungeon, Function_Interface *function);
+    Parent parent);
 
 //  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
   std::vector<Profession_Reference> to_professions(const Generic_Parameter_Array &generic_parameters,

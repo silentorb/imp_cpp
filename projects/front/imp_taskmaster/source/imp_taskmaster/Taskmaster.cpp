@@ -48,7 +48,7 @@ namespace imp_taskmaster {
     for (auto entry : dungeons) {
       auto &dungeon = *entry.second;
       auto file = new File("", dungeon.get_name() + ".h");
-      header_file_map.set(dungeon, std::unique_ptr<File>(file));
+      header_file_map.set(*dungeon.get_reference(), std::unique_ptr<File>(file));
       dungeon.set_file(file);
     }
   }

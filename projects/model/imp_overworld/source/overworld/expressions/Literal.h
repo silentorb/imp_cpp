@@ -6,10 +6,11 @@
 
 namespace overworld {
 
-  class Literal : public Common_Expression {
+  class Literal : public Common_Node_Expression {
 
   public:
-      Literal(const source_mapping::Source_Range &source_range) : Common_Expression(source_range) {}
+      Literal(Parent parent, const source_mapping::Source_Range &source_range) :
+        Common_Node_Expression(parent, source_range) {}
 
       Expression_Type get_type() const override {
         return Expression_Type::literal;
@@ -21,8 +22,8 @@ namespace overworld {
         return Profession_Library::get_primitive(get_primitive_type());
       }
 
-      const Profession_Reference &get_profession() const override {
-        return Profession_Library::get_primitive(get_primitive_type());
+      const Profession &get_profession() const override {
+        return *Profession_Library::get_primitive(get_primitive_type());
       }
   };
 
@@ -32,9 +33,8 @@ namespace overworld {
       Node node;
 
   public:
-      Literal_Implementation(T value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_range,
-                             Function_Interface *function) :
-        Literal(source_range),
+      Literal_Implementation(T value, Parent parent, const source_mapping::Source_Range &source_range) :
+        Literal(parent, source_range),
         value(value),
         node(Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), element) {
         node.set_status(Node_Status::resolved);
@@ -58,17 +58,16 @@ namespace overworld {
         return &node;
       }
 
-      void set_profession(Profession_Reference &value) override {
-        throw std::runtime_error("Not supported.");
-      }
+//      void set_profession(Profession_Reference &value) override {
+//        throw std::runtime_error("Not supported.");
+//      }
   };
 
   class Literal_Int : public Literal_Implementation<int, Literal_Int> {
 
   public:
-      Literal_Int(int value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_point,
-                  Function_Interface *function) :
-        Literal_Implementation(value, dungeon, source_point, function) {}
+      Literal_Int(int value, Parent parent, const source_mapping::Source_Range &source_point) :
+        Literal_Implementation(value, parent, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Int;
@@ -81,10 +80,8 @@ namespace overworld {
 
   class Literal_String : public Literal_Implementation<const std::string, Literal_String> {
   public:
-      Literal_String(const std::string &value, Dungeon_Interface *dungeon,
-                     const source_mapping::Source_Range &source_point, Function_Interface *function)
-        :
-        Literal_Implementation(value, dungeon, source_point, function) {}
+      Literal_String(const std::string &value, Parent parent, const source_mapping::Source_Range &source_point) :
+        Literal_Implementation(value, parent, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::String;
@@ -97,9 +94,8 @@ namespace overworld {
 
   class Literal_Bool : public Literal_Implementation<bool, Literal_Bool> {
   public:
-      Literal_Bool(const bool &value, Dungeon_Interface *dungeon, const source_mapping::Source_Range &source_point,
-                   Function_Interface *function) :
-        Literal_Implementation(value, dungeon, source_point, function) {}
+      Literal_Bool(const bool &value, Parent parent, const source_mapping::Source_Range &source_point) :
+        Literal_Implementation(value, parent, source_point) {}
 
       static Primitive_Type _get_primitive_type() {
         return Primitive_Type::Bool;

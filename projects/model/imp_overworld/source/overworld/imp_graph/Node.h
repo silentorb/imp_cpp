@@ -10,6 +10,7 @@
 namespace overworld {
 
   class Function_Interface;
+
   class Dungeon_Interface;
 
   enum class Node_Status {
@@ -42,12 +43,17 @@ namespace overworld {
 
 //      virtual ~Node() {}
 //
-       Element &get_element() {
+      Element &get_element() {
         return element;
       }
-       const Element &get_element() const {
-         return element;
-       }
+
+      const Element &get_element() const {
+        return element;
+      }
+
+      Parent &get_parent() {
+        return element.get_parent();
+      }
 
       virtual Node_Status get_status() const {
         return status;
@@ -67,24 +73,12 @@ namespace overworld {
 
       virtual std::string get_debug_string() const;
 
-      Dungeon_Interface *get_dungeon() const {
-        return element.get_dungeon();
-      }
-
-      Function_Interface *get_function() const {
-        return element.get_function();
-      }
-
-//      virtual Profession_Reference &get_profession() = 0;
-//      virtual const Profession_Reference &get_profession() const = 0;
-//      virtual void set_profession(Profession_Reference &value, Profession_Setter &setter) = 0;
-
       Profession_Reference &get_profession() {
         return profession;
       }
 
-      const Profession_Reference &get_profession() const {
-        return profession;
+      const Profession &get_profession() const {
+        return *profession;
       }
 
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {

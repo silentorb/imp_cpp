@@ -73,7 +73,7 @@ namespace imp_rendering {
       if (dungeon.get_base_dungeon()) {
         ancestors = " : public " + get_cpp_name(*dungeon.get_base_dungeon());
       }
-      return "class " + get_cpp_name(dungeon.get_name()) + ancestors;
+      return "class " + get_cpp_name(dungeon) + ancestors;
     }
 
     Stroke render_function_declaration_or_definition(const Function &function) {

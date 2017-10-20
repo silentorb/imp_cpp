@@ -1,9 +1,23 @@
 #include "Dungeon.h"
 #include "Function.h"
+#include "Dungeon_Reference.h"
 
 using namespace std;
 
 namespace overworld {
+
+  Dungeon::Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
+//        element(Element_Type::other, name, *this, source_point),
+    Scope(&parent),
+    name(name),
+    self(new Dungeon_Reference(*this))
+//        node(element, this, nullptr)
+  {}
+
+  Dungeon::Dungeon(const std::string &name) :
+    Scope(nullptr),
+    name(name),
+    self(new Dungeon_Reference(*this)) {}
 
   Function &Dungeon::get_or_create_constructor() {
     for (auto &method: functions) {
@@ -15,6 +29,10 @@ namespace overworld {
 //    return create_function(get_name(), *this, source_mapping::Source_Range());
 //    throw std::runtime_error("Could not find constructor.");
   }
+
+//  const Profession &Dungeon::get_profession() const {
+//    return static_cast<Dungeon_Reference &>(*self);
+//  }
 
 //  Function &Dungeon::create_function(const std::string &name, Profession &profession,
 //                                     const source_mapping::Source_Range &source_point) {

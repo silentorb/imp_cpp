@@ -65,7 +65,7 @@ namespace imp_mirror {
       auto &argument = *invoke_arguments[i];
       auto &second = *argument.get_node();
       auto k = first.get_element().get_type();
-      if (first.get_function() != second.get_function()
+      if (&first.get_parent().get_function() != &second.get_parent().get_function()
           && first.get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];

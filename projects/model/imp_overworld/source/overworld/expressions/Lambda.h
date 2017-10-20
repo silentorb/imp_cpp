@@ -5,14 +5,15 @@
 
 namespace overworld {
 
-  class Lambda : public Common_Expression {
+  class Lambda : public Common_Node_Expression {
       Function_With_Block_Owner function;
       Node node;
 
   public:
       explicit Lambda(Function_With_Block_Owner function,
                       Function_Interface *outer_function) :
-        Common_Expression(function->get_element().get_source_point()), function(std::move(function)),
+        Common_Node_Expression(Parent(*function), function->get_element().get_source_point()),
+        function(std::move(function)),
         node(this->function->get_profession_reference(), element) {}
 
       Expression_Type get_type() const override {
@@ -27,7 +28,7 @@ namespace overworld {
         return node.get_profession();
       }
 
-      const Profession_Reference &get_profession() const override {
+      const Profession &get_profession() const override {
         return node.get_profession();
       }
 

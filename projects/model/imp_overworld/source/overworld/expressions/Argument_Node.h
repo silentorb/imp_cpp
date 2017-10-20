@@ -6,26 +6,26 @@ namespace overworld {
 
   class Profession_Library;
 
-  class Argument_Element : public Common_Element {
-      Minion &member;
-      Profession_Library &profession_library;
-      Node &node;
-
-  public:
-      Argument_Element(Minion &member, Profession_Reference &profession, Profession_Library &profession_library,
-                       Node &node,
-                       const source_mapping::Source_Range &source_point) :
-        Common_Element(Element_Type::other, member.get_element().get_name(), nullptr, nullptr, source_point),
-        member(member),
-        profession_library(profession_library),
-        node(node) {}
-
-//      void set_profession(Profession &value, Profession_Setter &setter) override;
-
-      Minion &get_member() const {
-        return member;
-      }
-  };
+//  class Argument_Element : public Common_Element {
+//      Minion &member;
+//      Profession_Library &profession_library;
+//      Node &node;
+//
+//  public:
+//      Argument_Element(Minion &member, Profession_Reference &profession, Profession_Library &profession_library,
+//                       Node &node,
+//                       const source_mapping::Source_Range &source_point) :
+//        Common_Element(Element_Type::other, member.get_element().get_name(), nullptr, nullptr, source_point),
+//        member(member),
+//        profession_library(profession_library),
+//        node(node) {}
+//
+////      void set_profession(Profession &value, Profession_Setter &setter) override;
+//
+//      Minion &get_member() const {
+//        return member;
+//      }
+//  };
 
 //  class Argument_Node : public Node {
 //      Argument_Element element;

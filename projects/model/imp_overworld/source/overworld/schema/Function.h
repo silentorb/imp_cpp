@@ -46,7 +46,7 @@ namespace overworld {
 
       Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
                const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, &dungeon, nullptr, source_point),
+        element(Element_Type::other, name, Parent(dungeon), source_point),
         signature_reference(new Function_Signature()),
         signature(*static_cast<Function_Signature *>(signature_reference.get())) {}
 
@@ -256,11 +256,11 @@ namespace overworld {
       }
 
       Scope &get_parent_scope() override {
-        return *scope.get_parent();
+        return *scope.get_parent_scope();
       }
 
       const Scope &get_parent_scope() const override {
-        return *scope.get_parent();
+        return *scope.get_parent_scope();
       }
 
       bool is_inline() const override;

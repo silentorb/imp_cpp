@@ -7,7 +7,7 @@ namespace overworld {
 
   struct Dungeon_Functions {
       static Dungeon_Interface *get_context(Node &node) {
-        return node.get_dungeon();
+        return &node.get_element().get_parent().get_dungeon();
       }
 
       static Node_Copy *create_node(Node &other, Dungeon_Variant &variant) {
@@ -17,7 +17,7 @@ namespace overworld {
 
   struct Function_Functions {
       static Function_Interface *get_context(Node &node) {
-        return node.get_function();
+        return &node.get_element().get_parent().get_function();
       }
 
       static Node_Copy *create_node(Node &other, Function_Variant &variant) {

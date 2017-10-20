@@ -9,14 +9,13 @@ namespace overworld {
 
   Owned_Profession_Reference<Generic_Parameter> &add_generic_parameter_to_vector(
     std::vector<Owned_Profession_Reference<Generic_Parameter>> &generic_parameters,
-    Dungeon_Interface *dungeon,
-    Function_Interface *function) {
+    Parent parent) {
     if (generic_parameters.size() > 25)
       throw std::runtime_error("Too many generic parameters.");
 
     auto parameter_name = get_generic_parameter_name(generic_parameters.size());
     auto parameter = new Generic_Parameter(parameter_name, Profession_Library::get_unknown(),
-                                           dungeon, function, source_mapping::Source_Range());
+                                           parent, source_mapping::Source_Range());
     generic_parameters.push_back(std::unique_ptr<Generic_Parameter>(parameter));
     return generic_parameters[generic_parameters.size() - 1];
   }

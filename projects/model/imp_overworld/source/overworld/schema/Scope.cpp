@@ -112,6 +112,13 @@ namespace overworld {
     return parent->get_dungeon();
   }
 
+  Parent Scope::get_parent() {
+    auto function = get_function();
+    return function
+           ? Parent(*static_cast<Function_Interface *>(function))
+           : Parent(dynamic_cast<Dungeon_Interface &>(get_dungeon()));
+  }
+
   Function *Scope::get_function(const std::string &function_name) {
     for (auto &function: functions) {
       if (function->get_name() == function_name)

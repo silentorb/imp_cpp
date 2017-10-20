@@ -30,30 +30,18 @@ namespace overworld {
       std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
+      Profession_Reference self;
 
       const std::string format_debug_name() const;
 
   public:
+
+      Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point);
+
       Dungeon(const std::string &name, Scope &parent) :
-//        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
-        Scope(&parent),
-        name(name)
-//        node(element, this, nullptr)
-      {}
+        Dungeon(name, parent, source_mapping::Source_Range()) {}
 
-      Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
-//        element(Element_Type::other, name, *this, source_point),
-        Scope(&parent),
-        name(name)
-//        node(element, this, nullptr)
-      {}
-
-      Dungeon(const std::string &name) :
-//        element(Element_Type::other, name, *this, source_mapping::Source_Range()),
-        Scope(nullptr),
-        name(name)
-//        node(element, this, nullptr)
-      {}
+      explicit Dungeon(const std::string &name);
 
       Dungeon(const Dungeon &) = delete;
 
@@ -61,6 +49,10 @@ namespace overworld {
 
       const std::string get_name() const {
         return name;
+      }
+
+      Profession_Reference &get_reference() {
+        return self;
       }
 
       bool is_class() const;
@@ -80,6 +72,8 @@ namespace overworld {
       Scope *get_scope() {
         return parent;
       }
+
+//      const Profession &get_profession() const;
 
       const Scope *get_scope() const {
         return parent;

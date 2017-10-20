@@ -115,8 +115,8 @@ namespace overworld {
     return *variant;
   }
 
-  template<typename A>
-  A *find_variant(std::vector<std::unique_ptr<A>> &variant_array, std::vector<Profession_Reference> &professions) {
+  template<typename A, typename B>
+  A *find_variant(std::vector<B> &variant_array, std::vector<Profession_Reference> &professions) {
     for (auto &profession : professions) {
       if (profession->get_type() == Profession_Type::unknown)
         return nullptr;
@@ -129,7 +129,30 @@ namespace overworld {
       }
 
       if (professions_match(variant->get_generic_parameters(), professions))
-        return variant.get();
+        return &variant;
+
+      next:;
+    }
+
+    return nullptr;
+  }
+
+  Profession_Reference *find_variant(Dungeon_Variant_Array &variant_array,
+                                     std::vector<Profession_Reference> &professions) {
+    for (auto &profession : professions) {
+      if (profession->get_type() == Profession_Type::unknown)
+        return nullptr;
+    }
+
+    for (auto &variant : variant_array) {
+      auto dungeon_variant = dynamic_cast<Dungeon_Variant *>(variant.get());
+      for (auto &argument : dungeon_variant->get_arguments()) {
+        if (argument->get_node().get_profession().get_type() == Profession_Type::unknown)
+          goto next;
+      }
+
+      if (professions_match(dungeon_variant->get_generic_parameters(), professions))
+        return &variant;
 
       next:;
     }
@@ -140,7 +163,10 @@ namespace overworld {
   Function_Variant *Profession_Library::get_function_variant(Function_Variant_Array &variant_array,
                                                              Function_Interface &function,
                                                              std::vector<Profession_Reference> &professions) {
-    return find_variant(variant_array, professions);
+    auto result = find_variant<Function_Variant_Owner>(variant_array, professions);
+    return result
+           ? result->get()
+           : nullptr;
 //    for (auto &variant : variant_array) {
 //      if (professions_match(variant->get_generic_parameters(), professions))
 //        return variant.get();
@@ -149,16 +175,17 @@ namespace overworld {
 //    return nullptr;
   }
 
-  Dungeon_Variant &Profession_Library::create_dungeon_variant(Dungeon_Variant_Array &variant_array,
-                                                              Dungeon_Interface &dungeon,
-                                                              std::vector<Profession_Reference> &professions) {
+  Profession_Reference Profession_Library::create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                                  Dungeon_Interface &dungeon,
+                                                                  std::vector<Profession_Reference> &professions) {
     auto variant = new Dungeon_Variant(dungeon.get_original(), professions);
-    variant_array.push_back(Dungeon_Variant_Owner(variant));
-    return *variant;
+    auto reference = Profession_Reference(variant);
+    variant_array.push_back(reference);
+    return reference;
   }
 
-  Dungeon_Variant *Profession_Library::get_dungeon_variant(Dungeon_Variant_Array &variant_array,
-                                                           std::vector<Profession_Reference> &professions) {
+  Profession_Reference *Profession_Library::get_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                                std::vector<Profession_Reference> &professions) {
     return find_variant(variant_array, professions);
 //    for (auto &variant : variant_array) {
 //      if (professions_match(variant->get_generic_parameters(), professions))
@@ -168,38 +195,43 @@ namespace overworld {
 //    return nullptr;
   }
 
-  Dungeon_Variant &Profession_Library::get_or_create_dungeon_variant(Dungeon &dungeon,
-                                                                     std::vector<Profession_Reference> &professions,
-                                                                     overworld::Graph &graph) {
+  Profession_Reference Profession_Library::get_or_create_dungeon_variant(Dungeon &dungeon,
+                                                                         std::vector<Profession_Reference> &professions,
+                                                                         overworld::Graph &graph) {
     auto &variant_array = get_dungeon_variant_array(dungeon);
     auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
-    if (!variant) {
-      variant = &Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
-      clone_dungeon_graph(*variant, graph);
+    if (variant) {
+      return *variant;
     }
-    return *variant;
-  }
-
-  Dungeon_Variant &Profession_Library::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
-                                                              overworld::Dungeon &dungeon,
-                                                              Node &starting_node, overworld::Profession_Reference &profession) {
-//    auto professions = to_professions(dungeon.get_generic_parameters(), 1);
-    std::vector<Profession_Reference> professions;
-    professions.push_back(profession);
-    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
-    if (!variant) {
-      variant = &Profession_Library::create_dungeon_variant(
-        variant_array, dungeon, professions
-      );
-      clone_dungeon_graph(*variant, graph);
+    else {
+      auto result = Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
+      auto dungeon_variant = dynamic_cast<Dungeon_Variant *>(result.get());
+      clone_dungeon_graph(*dungeon_variant, graph);
+      return result;
     }
-
-    return *variant;
   }
 
-  void Profession_Library::store_profession(Profession_Owner profession) {
-    profession_store.push_back(std::move(profession));
-  }
+//  Dungeon_Variant &Profession_Library::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
+//                                                              overworld::Dungeon &dungeon,
+//                                                              Node &starting_node,
+//                                                              overworld::Profession_Reference &profession) {
+////    auto professions = to_professions(dungeon.get_generic_parameters(), 1);
+//    std::vector<Profession_Reference> professions;
+//    professions.push_back(profession);
+//    auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
+//    if (!variant) {
+//      variant = &Profession_Library::create_dungeon_variant(
+//        variant_array, dungeon, professions
+//      );
+//      clone_dungeon_graph(*variant, graph);
+//    }
+//
+//    return *variant;
+//  }
+
+//  void Profession_Library::store_profession(Profession_Owner profession) {
+//    profession_store.push_back(std::move(profession));
+//  }
 //  Dungeon_Variant &Profession_Library::resolve_with_existing_template_function(Node &node, Profession &profession) {
 //    auto &function = node.get_function()->get_original();
 //    auto &dungeon = function.get_node().get_dungeon()->get_original();

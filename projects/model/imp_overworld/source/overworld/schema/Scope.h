@@ -69,15 +69,17 @@ namespace overworld {
         return get_function() ? nullptr : &get_dungeon();
       }
 
-      Scope *get_parent() {
+      Scope *get_parent_scope() {
         return parent;
       }
+
+      Parent get_parent();
 
 //      void import_scope(Scope &scope) {
 //        imported_scopes.push_back(&scope);
 //      }
 
-      const Scope *get_parent() const {
+      const Scope *get_parent_scope() const {
         return parent;
       }
 

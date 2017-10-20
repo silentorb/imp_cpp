@@ -9,9 +9,9 @@ namespace overworld {
       Node node;
 
   public:
-      Parameter(const std::string name, Profession_Reference &profession, Dungeon_Interface *dungeon,
-                Function_Interface *function, const source_mapping::Source_Range &source_range) :
-        element(Element_Type::parameter, name, dungeon, function, source_range),
+      Parameter(const std::string name, Profession_Reference &profession, Parent parent,
+                const source_mapping::Source_Range &source_range) :
+        element(Element_Type::parameter, name, parent, source_range),
         node(profession, element) {}
 
       void set_profession(Profession_Reference &profession, Profession_Setter &setter) {
@@ -22,7 +22,7 @@ namespace overworld {
         return node.get_profession();
       }
 
-      const Profession_Reference &get_profession() const {
+      const Profession &get_profession() const {
         return node.get_profession();
       }
 

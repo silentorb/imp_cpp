@@ -9,7 +9,7 @@
 
 namespace overworld {
 
-  using Dungeon_Variant_Array = std::vector<Dungeon_Variant_Owner>;
+  using Dungeon_Variant_Array = std::vector<Profession_Reference>;
   using Function_Variant_Array = std::vector<Function_Variant_Owner>;
   using Function_Variant_Map = std::unordered_map<Function_Interface *, Function_Variant_Array>;
 
@@ -20,7 +20,7 @@ namespace overworld {
       Function_Variant_Map function_variants;
       Graph &graph;
       Enchantment_Library enchantment_library;
-      std::vector<Profession_Owner> profession_store;
+//      std::vector<Profession_Owner> profession_store;
 
   public:
       explicit Profession_Library(Graph &graph);
@@ -47,21 +47,21 @@ namespace overworld {
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
                                                     std::vector<Profession_Reference> &professions);
 
-      static Dungeon_Variant &create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+      static Profession_Reference create_dungeon_variant(Dungeon_Variant_Array &variant_array,
                                                      Dungeon_Interface &dungeon,
                                                      std::vector<Profession_Reference> &professions);
 
-      static Dungeon_Variant *get_dungeon_variant(Dungeon_Variant_Array &variant_array,
+      static Profession_Reference *get_dungeon_variant(Dungeon_Variant_Array &variant_array,
                                                   std::vector<Profession_Reference> &professions);
 
-      Dungeon_Variant &get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession_Reference> &professions,
+      Profession_Reference get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession_Reference> &professions,
                                                      overworld::Graph &graph);
       Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                               overworld::Dungeon &dungeon,
                                               Node &starting_node, overworld::Profession_Reference &profession);
 //      Dungeon_Variant &resolve_with_existing_template_function(Node &node, Profession &profession);
 
-      void store_profession(Profession_Owner profession);
+//      void store_profession(Profession_Owner profession);
 
       Enchantment_Library &get_enchantment_library() {
         return enchantment_library;

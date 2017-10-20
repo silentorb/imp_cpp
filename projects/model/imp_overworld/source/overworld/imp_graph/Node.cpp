@@ -31,10 +31,10 @@ namespace overworld {
                 std::to_string(source_point.get_column()) + " ";
 
     result += element.get_name() + render_node_status(get_status())
-              + ":" + profession->get_debug_name();
+              + ":" + profession.get_debug_name();
 
-    if (profession->get_type() == Profession_Type::reference)
-      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
+    if (profession.get_type() == Profession_Type::reference)
+      result += dynamic_cast<const Reference *>(&profession)->is_pointer() ? "*" : "&";
 
     return result;
   }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <overworld/schema/Dungeon.h>
+#include <overworld/schema/Dungeon_Reference.h>
 #include <underworld/schema/Dungeon.h>
 #include <overworld/schema/professions/Profession_Library.h>
 #include <overworld/expressions/Expression.h>
@@ -38,23 +39,35 @@ namespace imp_mirror {
       overworld::File_Library &header_files;
       Connector connector;
 
+      overworld::Dungeon_Interface *get_dungeon(overworld::Profession &profession) {
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(&profession);
+        return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon());
+      }
+
+      overworld::Dungeon_Interface *get_dungeon_interface(overworld::Profession &profession) {
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(&profession);
+        auto dungeon_interface = dynamic_cast<const overworld:: Dungeon_Interface*>(&dungeon_reference->get_dungeon());
+        return const_cast<overworld::Dungeon_Interface *> (dungeon_interface);
+      }
+
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_node()->get_profession();
-        auto &dungeon = cast<const overworld::Dungeon>(profession);
-        return const_cast<overworld::Dungeon *> (&dungeon);
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
+        return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon());
       }
 
       overworld::Dungeon_Interface *get_dungeon_interface(overworld::Expression &expression) {
         auto &profession = expression.get_node()->get_profession();
-        auto &dungeon = cast<const overworld::Dungeon_Interface>(profession);
-        return const_cast<overworld::Dungeon_Interface *> (&dungeon);
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
+        auto dungeon_interface = dynamic_cast<const overworld:: Dungeon_Interface*>(&dungeon_reference->get_dungeon());
+        return const_cast<overworld::Dungeon_Interface *> (dungeon_interface);
       }
 
       overworld::Dungeon &get_dungeon(overworld::Member &member) {
         return member.get_dungeon();
       }
 
-      overworld::Dungeon_Interface &get_possible_generic_dungeon(overworld::Dungeon &dungeon);
+      overworld::Profession_Reference get_possible_generic_dungeon(overworld::Dungeon &dungeon);
 
       overworld::Dungeon *find_enchantment_dungeon(const underworld::Profession &input_profession,
                                                    Scope &scope);
@@ -66,8 +79,7 @@ namespace imp_mirror {
                                                      Scope &scope);
 
       overworld::Expression_Owner reflect_lambda(const underworld::Lambda &input_lambda, Scope &scope);
-      overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal,
-                                                  overworld::Dungeon &dungeon, overworld::Function_Interface *function);
+      overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal, overworld::Parent parent);
       overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
                                                  Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
@@ -103,18 +115,18 @@ namespace imp_mirror {
                                                                Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
                                                     Scope &scope);
-      overworld::Profession &reflect_profession(const underworld::Profession *profession,
+      overworld::Profession_Reference reflect_profession(const underworld::Profession *profession,
                                                 Scope &scope);
-      overworld::Profession &reflect_profession(const underworld::Profession &profession,
+      overworld::Profession_Reference reflect_profession(const underworld::Profession &profession,
                                                 Scope &scope);
 
-      overworld::Profession &reflect_profession_child(overworld::Member &member,
+      overworld::Profession_Reference reflect_profession_child(overworld::Member &member,
                                                       const underworld::Profession &profession, Scope &scope);
 
-      overworld::Profession &reflect_dungeon_reference(const underworld::Profession &profession,
+      overworld::Profession_Reference reflect_dungeon_reference(const underworld::Profession &profession,
                                                        Scope &scope);
 
-      overworld::Profession &reflect_dungeon_usage(const underworld::Token_Profession &profession,
+      overworld::Profession_Reference reflect_dungeon_usage(const underworld::Token_Profession &profession,
                                                    Scope &scope);
 
       overworld::Minion &reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
@@ -126,7 +138,7 @@ namespace imp_mirror {
 
       overworld::Expression_Owner reflect_range(const underworld::Range &input_range, Scope &scope);
 
-      overworld::Profession &reflect_function_signature(const underworld::Function_Profession &input_signature,
+      overworld::Profession_Reference reflect_function_signature(const underworld::Function_Profession &input_signature,
                                                         Scope &scope);
 
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
@@ -146,7 +158,7 @@ namespace imp_mirror {
       void reflect_scope2(const underworld::Scope &input_scope, Scope &output_scope);
       void reflect_scope3(const underworld::Scope &input_scope, Scope &output_scope);
       void reflect_dungeon1(const underworld::Dungeon &input_dungeon, Scope &output_scope);
-      overworld::Profession &reflect_primitive(const underworld::Primitive &primitive);
+      overworld::Profession_Reference reflect_primitive(const underworld::Primitive &primitive);
       overworld::Expression_Owner reflect_invoke(const underworld::Invoke &function_call,
                                                  Scope &scope);
       overworld::Expression_Owner reflect_instantiation(const underworld::Instantiation &instantiation,

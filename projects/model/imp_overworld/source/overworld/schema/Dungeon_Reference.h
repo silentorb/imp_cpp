@@ -9,9 +9,9 @@ namespace overworld {
       Dungeon &dungeon;
 
   public:
-      Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
+      explicit Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
 
-      Dungeon_Reference(const Dungeon &dungeon) : dungeon(const_cast<Dungeon &>(dungeon)) {}
+      explicit Dungeon_Reference(const Dungeon &dungeon) : dungeon(const_cast<Dungeon &>(dungeon)) {}
 
       Profession_Type get_type() const override {
         return Profession_Type::dungeon;
@@ -48,6 +48,14 @@ namespace overworld {
 
       const Dungeon &get_dungeon() const {
         return dungeon;
+      }
+
+      File *get_file() const override {
+        return dungeon.get_file();
+      }
+
+      const std::string get_name() const override {
+        return dungeon.get_name();
       }
   };
 }

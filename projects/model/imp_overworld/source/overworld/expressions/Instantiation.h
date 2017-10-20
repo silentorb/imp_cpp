@@ -7,18 +7,15 @@
 
 namespace overworld {
 
-  class Instantiation : public Common_Expression {
-      Profession_Reference profession;
+  class Instantiation : public Common_Node_Expression {
       std::map<Minion *, Expression_Owner> dictionary;
       Node node;
-      std::unique_ptr<Dungeon_Variant> dungeon_variant;
 
   public:
-      Instantiation(Profession_Reference &profession, Dungeon_Interface *dungeon, Function_Interface *function,
+      Instantiation(Profession_Reference &profession, Parent parent,
                     const source_mapping::Source_Range &source_range) :
-        Common_Expression(source_range),
-        profession(profession),
-        node(element, dungeon, function) {}
+        Common_Node_Expression(parent, source_range),
+        node(profession, element) {}
 
       virtual ~Instantiation() = default;
 
@@ -26,13 +23,13 @@ namespace overworld {
         return Expression_Type::instantiation;
       }
 
-      const Dungeon_Variant &get_dungeon_variant() const {
-        return *dungeon_variant;
-      }
-
-      void set_dungeon_variant(std::unique_ptr<Dungeon_Variant> value) {
-        dungeon_variant = std::move(value);
-      }
+//      const Dungeon_Variant &get_dungeon_variant() const {
+//        return *dungeon_variant;
+//      }
+//
+//      void set_dungeon_variant(std::unique_ptr<Dungeon_Variant> value) {
+//        dungeon_variant = std::move(value);
+//      }
 
       void add_expression(Minion &minion, Expression_Owner value) {
         dictionary.insert(std::make_pair(&minion, std::move(value)));
@@ -43,7 +40,7 @@ namespace overworld {
       }
 
       Profession_Reference &get_profession() override {
-        return profession;
+        return node.get_profession();
       }
 
       Node *get_node() override {
@@ -54,16 +51,16 @@ namespace overworld {
         return &node;
       }
 
-      const Profession_Reference &get_profession() const override {
-        return profession;
+      const Profession &get_profession() const override {
+        return node.get_profession();
       }
 
-      void set_profession(Profession_Reference &value) override {
-        profession = value;
-      }
+//      void set_profession(Profession_Reference &value) override {
+//        node.set_profession(value);
+//      }
 
       const std::string get_name() const override {
-        return "new " + profession->get_name();
+        return "new " + get_profession().get_name();
       }
   };
 }

@@ -56,7 +56,8 @@ namespace imp_rendering {
     if (expression.get_type() == Expression_Type::self)
       return Reference_Type::pointer;
 
-    return get_reference_type(const_cast<Expression &>(expression).get_node()->get_profession());
+    auto &profession = const_cast<Expression &>(expression).get_node()->get_profession();
+    return get_reference_type(*profession);
   }
 
   template<typename A, typename B>
@@ -122,7 +123,8 @@ namespace imp_rendering {
   const std::string render_function_return_signature(const overworld::Function &function) {
     string return_text = function.is_constructor()
                          ? ""
-                         : render_profession(function.get_profession(), function.get_parent_scope()) + " ";
+                         : render_profession(function.get_signature().get_last().get_profession(),
+                                             function.get_parent_scope()) + " ";
 
     return return_text;
   }
@@ -210,7 +212,8 @@ namespace imp_rendering {
     auto container = render_expression(function_call.get_expression(), scope);
     container = container.substr(0, container.size() - 4);
     auto lambda = dynamic_cast<Lambda *>(function_call.get_arguments()[0].get());
-    auto header = "for (auto &" + lambda->get_function().get_signature().get_parameters()[0]->get_name() + " : " + container + ")";
+    auto header =
+      "for (auto &" + lambda->get_function().get_signature().get_parameters()[0]->get_name() + " : " + container + ")";
     return render_block(header, lambda->get_function().get_block());
   }
 
@@ -251,7 +254,7 @@ namespace imp_rendering {
       auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
       std::string parameter_string = join(variant.get_arguments(), Joiner<const Generic_Argument_Owner &>(
         [& scope](const Generic_Argument_Owner &argument) {
-          return render_profession(argument->get_profession(), scope);
+          return render_profession(*argument->get_node().get_profession(), scope);
         }), ", ");
 
       return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
@@ -271,13 +274,13 @@ namespace imp_rendering {
 
     while (parent && parent != &scope) {
       auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
-      if (parent_dungeon->get_name() == "")
+      if (parent_dungeon->get_original().get_name() == "")
         break;
 
       result = render_dungeon_interface(*parent_dungeon, scope)
                + "::" + result;
 
-      parent = parent->get_parent();
+      parent = parent->get_parent_scope();
     }
 
     return result;
@@ -334,13 +337,15 @@ namespace imp_rendering {
     return operator_strings[(int) value];
   }
 
-  const std::string render_assignment(
-    const overworld::Assignment &declaration, const overworld::Scope &scope) {
-    return render_expression(*declaration.get_target(), scope) + ' '
+  const std::string render_assignment(const overworld::Assignment &declaration, const overworld::Scope &scope) {
+    auto &target = declaration.get_target();
+    auto &value = declaration.get_value();
+
+    return render_expression(*target, scope) + ' '
            + render_operator(declaration.get_operator()) + ' '
-           + render_cast(declaration.get_target()->get_node()->get_profession(),
-                         declaration.get_value()->get_node()->get_profession(),
-                         render_expression(*declaration.get_value(), scope))
+           + render_cast(*target->get_node()->get_profession(),
+                         *value->get_node()->get_profession(),
+                         render_expression(*value, scope))
            + ";";
   }
 

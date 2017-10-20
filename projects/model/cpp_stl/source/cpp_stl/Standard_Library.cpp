@@ -37,7 +37,7 @@ namespace cpp_stl {
     auto complex_enchantment = new overworld::Enchantment(external);
     dungeon.get_enchantments().add_enchantment(overworld::Enchantment_Owner(complex_enchantment));
     complex_enchantment->add_argument(
-      Expression_Owner(new Literal_String(name, nullptr, source_mapping::Source_Range(), nullptr)));
+      Expression_Owner(new Literal_String(name, Parent(), source_mapping::Source_Range())));
   }
 
   void Standard_Library::initialize_overworld(overworld::Profession_Library &profession_library,

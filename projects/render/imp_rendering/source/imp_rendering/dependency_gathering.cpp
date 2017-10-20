@@ -167,8 +167,8 @@ namespace imp_rendering {
           }
         }
         else if (member.get_type() == Member_Type::dungeon) {
-          auto profession = Dungeon_Reference(member.get_dungeon());
-          if (profession.get() == &dungeon)
+          auto &profession = member.get_dungeon();
+          if (&profession == &dungeon)
             return;
 
           if (include_references.count(&profession) &&
