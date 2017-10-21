@@ -7,13 +7,12 @@ namespace overworld {
 
   class Dungeon_Reference : public Profession {
       Dungeon &dungeon;
-      Dungeon_Interface_Owner dungeon_owner;
 
   public:
       explicit Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
 
       explicit Dungeon_Reference(Dungeon_Interface_Owner dungeon) :
-        dungeon(dungeon->get_original()), dungeon_owner(std::move(dungeon_owner)) {}
+        dungeon(dungeon->get_original()) {}
 
       explicit Dungeon_Reference(const Dungeon &dungeon) : dungeon(const_cast<Dungeon &>(dungeon)) {}
 
@@ -21,13 +20,13 @@ namespace overworld {
         return Profession_Type::dungeon;
       }
 
-      Scope *get_scope() override {
-        return dungeon.get_scope();
-      }
-
-      const Scope *get_scope() const override {
-        return dungeon.get_scope();
-      }
+//      Scope *get_scope() override {
+//        return dungeon.get_scope();
+//      }
+//
+//      const Scope *get_scope() const override {
+//        return dungeon.get_scope();
+//      }
 
       virtual Node &get_node() override {
 //        return node;

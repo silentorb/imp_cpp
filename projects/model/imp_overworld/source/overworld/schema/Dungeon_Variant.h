@@ -14,6 +14,10 @@ namespace overworld {
         original(original) {
       }
 
+      virtual ~Dungeon_Variant() {
+int k = 0;
+      }
+
       Profession_Type get_type() const  {
         return Profession_Type::variant;
       }

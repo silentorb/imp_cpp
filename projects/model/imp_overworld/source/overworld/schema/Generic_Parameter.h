@@ -89,13 +89,13 @@ namespace overworld {
         return Profession_Type::generic_parameter;
       }
 
-      Scope *get_scope() override {
-        return nullptr;
-      }
-
-      const Scope *get_scope() const override {
-        return nullptr;
-      }
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
+//
+//      const Scope *get_scope() const override {
+//        return nullptr;
+//      }
 
       File *get_file() const override {
         return nullptr;

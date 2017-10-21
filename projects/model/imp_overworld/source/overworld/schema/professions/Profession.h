@@ -43,8 +43,6 @@ namespace overworld {
       virtual ~Profession() = default;
 
       virtual Profession_Type get_type() const = 0;
-      virtual Scope *get_scope() = 0;
-      virtual const Scope *get_scope() const = 0;
       virtual File *get_file() const = 0;
       virtual const std::string get_name() const = 0;
 
@@ -85,13 +83,13 @@ namespace overworld {
         return get()->get_type();
       }
 
-      Scope *get_scope() {
-        return get()->get_scope();
-      }
-
-      const Scope *get_scope() const {
-        return get()->get_scope();
-      }
+//      Scope *get_scope() {
+//        return get()->get_scope();
+//      }
+//
+//      const Scope *get_scope() const {
+//        return get()->get_scope();
+//      }
 
       File *get_file() const {
         return get()->get_file();

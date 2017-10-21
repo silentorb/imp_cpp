@@ -31,6 +31,8 @@ namespace overworld {
         name = format_name(original_name);
       }
 
+      virtual ~Variant() {}
+
       const Generic_Parameter_Array &get_generic_parameters() const {
         return generic_parameters;
       }

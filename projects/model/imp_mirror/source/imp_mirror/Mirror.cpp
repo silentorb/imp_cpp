@@ -846,8 +846,8 @@ namespace imp_mirror {
       for (auto &contract:input_dungeon.get_contracts()) {
         auto profession = reflect_profession(*contract, *output_scope.get_parent());
         auto dungeon = get_dungeon(*profession);
-        throw std::runtime_error("Not implemented.");
-//        output_dungeon.add_contract(dungeon);
+//        throw std::runtime_error("Not implemented.");
+        output_dungeon.add_contract(dungeon->get_original(), profession);
       }
     }
 

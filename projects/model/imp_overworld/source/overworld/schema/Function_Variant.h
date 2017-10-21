@@ -13,6 +13,8 @@ namespace overworld {
   public:
       Function_Variant(Function &original, Dungeon_Interface &dungeon, std::vector<Profession_Reference> &professions);
 
+      ~Function_Variant() = default;
+
       const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
         return Variant::get_generic_parameters();
       }

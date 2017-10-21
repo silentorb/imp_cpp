@@ -12,6 +12,7 @@ namespace overworld {
   using Dungeon_Variant_Array = std::vector<Profession_Reference>;
   using Function_Variant_Array = std::vector<Function_Variant_Owner>;
   using Function_Variant_Map = std::unordered_map<Function_Interface *, Function_Variant_Array>;
+  using Dungeon_Variant_Tuple = std::tuple<Profession_Reference, Dungeon_Variant &>;
 
   class Profession_Library {
 //      std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
@@ -47,7 +48,7 @@ namespace overworld {
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
                                                     std::vector<Profession_Reference> &professions);
 
-      static Profession_Reference create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+      static Dungeon_Variant_Tuple create_dungeon_variant(Dungeon_Variant_Array &variant_array,
                                                      Dungeon_Interface &dungeon,
                                                      std::vector<Profession_Reference> &professions);
 
@@ -56,6 +57,7 @@ namespace overworld {
 
       Profession_Reference get_or_create_dungeon_variant(Dungeon &dungeon, std::vector<Profession_Reference> &professions,
                                                      overworld::Graph &graph);
+
       Dungeon_Variant &create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                               overworld::Dungeon &dungeon,
                                               Node &starting_node, overworld::Profession_Reference &profession);

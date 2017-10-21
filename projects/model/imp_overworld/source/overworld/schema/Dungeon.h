@@ -26,7 +26,7 @@ namespace overworld {
 //      Element_Reference_Node node;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
-      std::vector<Profession *> contracts;
+      std::vector<Profession_Reference> contracts;
       std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
@@ -136,24 +136,24 @@ namespace overworld {
         return false;
       }
 
-//      void add_contract(Dungeon &dungeon) {
-//        if (!dungeon.is_interface()) {
-//          if (base_dungeon)
-//            throw std::runtime_error(get_name() + " already has a base dungeon.");
-//
-//          base_dungeon = &dungeon;
-//        }
-//
-//        contracts.push_back(&dungeon);
-//      }
+      void add_contract(Dungeon &dungeon, Profession_Reference &profession) {
+        if (!dungeon.is_interface()) {
+          if (base_dungeon)
+            throw std::runtime_error(get_name() + " already has a base dungeon.");
 
-//      const std::vector<Profession *> *get_contracts() const override {
-//        return &contracts;
-//      }
-//
-//      std::vector<Profession *> *get_contracts() override {
-//        return &contracts;
-//      }
+          base_dungeon = &dungeon;
+        }
+
+        contracts.push_back(profession);
+      }
+
+      const std::vector<Profession_Reference> *get_contracts() const {
+        return &contracts;
+      }
+
+      std::vector<Profession_Reference> *get_contracts() {
+        return &contracts;
+      }
 
       Function &create_function(const std::string &name, Profession &profession,
                                 const source_mapping::Source_Range &source_point = source_mapping::Source_Range());

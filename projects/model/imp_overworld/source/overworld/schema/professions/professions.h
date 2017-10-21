@@ -14,13 +14,13 @@ namespace overworld {
         return Profession_Type::unknown;
       }
 
-      Scope *get_scope() override {
-        return nullptr;
-      }
-
-      const Scope *get_scope() const override {
-        return nullptr;
-      }
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
+//
+//      const Scope *get_scope() const override {
+//        return nullptr;
+//      }
 
       File *get_file() const override {
         return nullptr;
@@ -53,13 +53,13 @@ namespace overworld {
         return Profession_Type::Void;
       }
 
-      Scope *get_scope() override {
-        return nullptr;
-      }
-
-      const Scope *get_scope() const override {
-        return nullptr;
-      }
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
+//
+//      const Scope *get_scope() const override {
+//        return nullptr;
+//      }
 
       File *get_file() const override {
         return nullptr;
@@ -114,13 +114,13 @@ namespace overworld {
         return primitive_type;
       }
 
-      Scope *get_scope() override {
-        return nullptr;
-      }
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
 
-      const Scope *get_scope() const override {
-        return nullptr;
-      }
+//      const Scope *get_scope() const override {
+//        return nullptr;
+//      }
 
       Node &get_node() override {
         throw std::runtime_error("Not supported.");
@@ -159,17 +159,17 @@ namespace overworld {
         return Profession_Type::reference;
       }
 
-      Scope *get_scope() override {
-        return nullptr;
-      }
+//      Scope *get_scope() override {
+//        return nullptr;
+//      }
 
       Node &get_node() override {
         throw std::runtime_error("Not supported.");
       }
 
-      const Scope *get_scope() const override {
-        return nullptr;
-      }
+//      const Scope *get_scope() const override {
+//        return nullptr;
+//      }
 
       File *get_file() const override {
         return nullptr;

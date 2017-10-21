@@ -176,13 +176,15 @@ namespace overworld {
 //    return nullptr;
   }
 
-  Profession_Reference Profession_Library::create_dungeon_variant(Dungeon_Variant_Array &variant_array,
-                                                                  Dungeon_Interface &dungeon,
-                                                                  std::vector<Profession_Reference> &professions) {
-    auto variant = new Dungeon_Variant(dungeon.get_original(), professions);
-    auto reference = Profession_Reference(new Dungeon_Reference(Dungeon_Interface_Owner(variant)));
-    variant_array.push_back(reference);
-    return reference;
+  Dungeon_Variant_Tuple Profession_Library::create_dungeon_variant(Dungeon_Variant_Array &variant_array,
+                                                                   Dungeon_Interface &dungeon,
+                                                                   std::vector<Profession_Reference> &professions) {
+    throw std::runtime_error("Outdated.");
+//    auto variant = new Dungeon_Variant(dungeon.get_original(), professions);
+//    auto dungeon_reference = new Dungeon_Reference(std::move(Dungeon_Interface_Owner(variant)));
+//    auto reference = Profession_Reference(dungeon_reference);
+//    variant_array.push_back(reference);
+//    return Dungeon_Variant_Tuple{reference, *variant};
   }
 
   Profession_Reference *Profession_Library::get_dungeon_variant(Dungeon_Variant_Array &variant_array,
@@ -206,9 +208,8 @@ namespace overworld {
     }
     else {
       auto result = Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
-      auto dungeon_variant = dynamic_cast<Dungeon_Variant *>(result.get());
-      clone_dungeon_graph(*dungeon_variant, graph);
-      return result;
+      clone_dungeon_graph(std::get<1>(result), graph);
+      return std::get<0>(result);
     }
   }
 

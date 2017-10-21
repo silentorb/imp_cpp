@@ -230,9 +230,8 @@ namespace solving {
     professions.push_back(profession);
     auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
     if (!variant) {
-      auto new_variant = Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
-      auto dungeon_variant = dynamic_cast<Dungeon_Variant *>(new_variant.get());
-      clone_dungeon_graph(*dungeon_variant, graph);
+      auto variant_tuple = Profession_Library::create_dungeon_variant(variant_array, dungeon, professions);
+      clone_dungeon_graph(std::get<1>(variant_tuple), graph);
     }
   }
 
