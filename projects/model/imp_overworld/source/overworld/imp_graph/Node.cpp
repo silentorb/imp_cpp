@@ -2,6 +2,7 @@
 #include <overworld/schema/professions/professions.h>
 #include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Function_Signature.h>
+#include <overworld/schema/Dungeon_Reference.h>
 
 namespace overworld {
 
@@ -39,10 +40,10 @@ namespace overworld {
     return result;
   }
 
-  Node_Status get_status_using_profession(Profession &base_profession) {
+  Node_Status get_status_using_profession(const Profession &base_profession) {
     if (base_profession.get_type() == Profession_Type::dungeon) {
-      auto dungeon_interface = dynamic_cast<Dungeon_Interface *>(&base_profession);
-      auto &dungeon = dungeon_interface->get_original();
+      auto dungeon_reference = static_cast<const Dungeon_Reference*>(& base_profession);
+      auto &dungeon = dungeon_reference->get_dungeon();
       if (!dungeon.get_generic_parameters().empty())
         return Node_Status::unresolved;
       else
@@ -50,7 +51,7 @@ namespace overworld {
     }
 
     else if (base_profession.get_type() == Profession_Type::function) {
-      auto signature = static_cast<Function_Signature *>(&base_profession);
+      auto signature = static_cast<const Function_Signature *>(&base_profession);
       bool some_resolved = false;
       bool some_unknown = false;
       for (auto &parameter: signature->get_parameters()) {

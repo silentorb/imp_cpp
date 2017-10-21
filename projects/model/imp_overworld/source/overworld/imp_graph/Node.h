@@ -21,6 +21,8 @@ namespace overworld {
 
   class Node;
 
+  Node_Status get_status_using_profession(const Profession &base_profession);
+
   class Profession_Setter {
   public:
       virtual void set_profession(Node &node, Profession_Reference &profession) = 0;
@@ -29,8 +31,6 @@ namespace overworld {
   class Node : public graphing::Node<Node, Connection> {
       Node_Status status = Node_Status::unresolved;
       bool changed = false;
-//      Dungeon_Interface *dungeon = nullptr;
-//      Function_Interface *function = nullptr;
       Profession_Reference original_profession;
       Profession_Reference profession;
       Element &element;
@@ -41,8 +41,8 @@ namespace overworld {
         original_profession(original_profession),
         profession(original_profession) {}
 
-//      virtual ~Node() {}
-//
+      virtual ~Node() {}
+
       Element &get_element() {
         return element;
       }
@@ -56,7 +56,8 @@ namespace overworld {
       }
 
       virtual Node_Status get_status() const {
-        return status;
+        auto &base_profession = profession->get_base();
+        return get_status_using_profession(base_profession);
       }
 
       void set_status(Node_Status value) {
