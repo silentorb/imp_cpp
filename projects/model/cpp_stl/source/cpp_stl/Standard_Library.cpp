@@ -14,7 +14,7 @@ namespace cpp_stl {
   }
 
   overworld::Dungeon &create_dungeon(const std::string &name, overworld::Dungeon &parent) {
-    auto new_dungeon = new overworld::Dungeon(name, parent);
+    auto new_dungeon = new overworld::Dungeon(name, parent.get_scope());
     parent.add_dungeon(overworld::Dungeon_Owner(new_dungeon));
     return *new_dungeon;
   }
@@ -48,13 +48,13 @@ namespace cpp_stl {
 //    source_mapping::Source_Range source_point(standard_library_file, 0, 0);
 
     unique_pointer = &overworld_dungeon.add_dungeon(std::unique_ptr<Dungeon>(
-      new Dungeon("unique_ptr", overworld_dungeon)
+      new Dungeon("unique_ptr", overworld_dungeon.get_scope())
     ));
     unique_pointer->set_file(memory_file);
     set_external_name(*unique_pointer, "std::unique_ptr");
 
     string_type = &overworld_dungeon.add_dungeon(std::unique_ptr<Dungeon>(
-      new Dungeon("String", overworld_dungeon)
+      new Dungeon("String", overworld_dungeon.get_scope())
     ));
     string_type->set_file(Profession_Library::get_string_file());
     set_external_name(*string_type, "std::string");

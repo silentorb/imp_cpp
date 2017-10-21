@@ -8,19 +8,19 @@ namespace overworld {
 
   Dungeon::Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
 //        element(Element_Type::other, name, *this, source_point),
-    Scope(&parent),
+    scope(&parent),
     name(name),
     self(new Dungeon_Reference(*this))
 //        node(element, this, nullptr)
   {}
 
   Dungeon::Dungeon(const std::string &name) :
-    Scope(nullptr),
+    scope(nullptr),
     name(name),
     self(new Dungeon_Reference(*this)) {}
 
   Function &Dungeon::get_or_create_constructor() {
-    for (auto &method: functions) {
+    for (auto &method: scope.get_functions()) {
       if (method->get_name() == get_name())
         return *method;
     }
@@ -46,10 +46,10 @@ namespace overworld {
 //  }
 
   bool Dungeon::is_class() const {
-    if (get_minions().size() > 0)
+    if (scope.get_minions().size() > 0)
       return true;
 
-    if (get_functions().size() > 0)
+    if (scope.get_functions().size() > 0)
       return true;
 
     throw std::runtime_error("Not implemented.");
@@ -67,8 +67,10 @@ namespace overworld {
     if (has_enchantment(external))
       return true;
 
+    auto parent = scope.get_parent_scope();
     if (parent && parent->get_scope_type() == Scope_Type::dungeon) {
-      return dynamic_cast<Dungeon *>(parent)->has_enchantment(external);
+      throw std::runtime_error("Not implemented.");
+//      return dynamic_cast<Dungeon *>(parent)->has_enchantment(external);
     }
 
     return false;
@@ -76,7 +78,7 @@ namespace overworld {
 
   Dungeon &Dungeon::add_dungeon(std::unique_ptr<Dungeon> dungeon) {
     auto result = dungeon.get();
-    Scope::add_dungeon(std::move(dungeon));
+    scope.add_dungeon(std::move(dungeon));
     return *result;
   }
 
@@ -87,7 +89,7 @@ namespace overworld {
 //  }
 
   Minion &Dungeon::get_minion(const std::string &name) {
-    for (auto &variable: minions) {
+    for (auto &variable: scope.get_minions()) {
       if (variable->get_name() == name)
         return *variable;
     }
@@ -100,8 +102,8 @@ namespace overworld {
   }
 
   Member &Dungeon::get_member(const std::string &name) {
-    if (members.count(name) != 0)
-      return members.at(name);
+    if (scope.get_members().count(name) != 0)
+      return scope.get_members().at(name);
 
     if (base_dungeon) {
       return base_dungeon->get_member(name);

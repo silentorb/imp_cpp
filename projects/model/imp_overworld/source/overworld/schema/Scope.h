@@ -18,7 +18,6 @@ namespace overworld {
   };
 
   using Members = std::vector<Member>;
-//  using Members_Owner = std::unique_ptr<Members>;
 
   class Scope {
   protected:
@@ -32,24 +31,28 @@ namespace overworld {
 
       void overload(const std::string &name, Member &member);
       void add_overload(const std::string &name, Member &member);
-      void add_member(const std::string &name, Member member);
 
   public:
       explicit Scope(Scope *parent);
       virtual ~Scope();
+      Scope(const Scope &) = delete;
 
+      void add_member(const std::string &name, Member member);
       void add_function(std::unique_ptr<Function> function);
-      Member add_minion(Minion &minion);
+//      Member add_minion(Minion &minion);
       Member add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);
-//      Member *find_member(const std::string &name);
       Member *get_member_or_null(const std::string &name);
       virtual Member &get_member(const std::string &name);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
+      }
+
+      std::map<std::string, Member> &get_members() {
+        return members;
       }
 
       virtual Scope_Type get_scope_type() const {
@@ -74,10 +77,6 @@ namespace overworld {
       }
 
       Parent get_parent();
-
-//      void import_scope(Scope &scope) {
-//        imported_scopes.push_back(&scope);
-//      }
 
       const Scope *get_parent_scope() const {
         return parent;

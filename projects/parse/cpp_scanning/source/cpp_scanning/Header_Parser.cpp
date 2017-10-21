@@ -89,7 +89,8 @@ namespace cpp_scanning {
       auto profession = process_profession(context);
       auto parameter_name = input.current().get_text();
       input.next();
-      function.add_parameter(parameter_name, std::move(profession), source_point);
+      throw std::runtime_error("Needs updating.");
+//      function.add_parameter(parameter_name, std::move(profession), source_point);
 
       if (input.current().is_not(lexicon.comma))
         break;

@@ -31,7 +31,7 @@ namespace imp_taskmaster {
   }
 
   void Taskmaster::gather_dungeons(const overworld::Dungeon &parent) {
-    for (auto &entry : parent.get_dungeons()) {
+    for (auto &entry : parent.get_scope().get_dungeons()) {
       auto &dungeon = *entry;
 
       if (dungeon.is_external())

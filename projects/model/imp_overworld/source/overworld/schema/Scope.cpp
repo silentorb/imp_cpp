@@ -73,11 +73,11 @@ namespace overworld {
     functions.push_back(std::move(function));
   }
 
-  Member Scope::add_minion(Minion &minion) {
-    auto member = Member(minion);
-    add_member(minion.get_name(), Member(member));
-    return member;
-  }
+//  Member Scope::add_minion(Minion &minion) {
+//    auto member = Member(minion);
+//    add_member(minion.get_name(), Member(member));
+//    return member;
+//  }
 
   Member Scope::add_minion(std::unique_ptr<Minion> minion) {
     auto member = Member(*minion);

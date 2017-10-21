@@ -350,7 +350,7 @@ namespace imp_mirror {
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
                                                         *scope.get_overworld_scope().get_function());
-      auto member = interface.add_minion(overworld::Minion_Owner(new_member));
+      auto member = interface.get_scope().add_minion(overworld::Minion_Owner(new_member));
       auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
       new_member->add_expression(*result);
       return overworld::Expression_Owner(result);
@@ -375,7 +375,7 @@ namespace imp_mirror {
       if (profession.get_type() == overworld::Profession_Type::dungeon
           || profession.get_type() == overworld::Profession_Type::variant) {
         auto &dungeon = get_dungeon_interface(first.get_last())->get_original();
-        auto member = dungeon.get_member_or_null(member_expression.get_name());
+        auto member = dungeon.get_scope().get_member_or_null(member_expression.get_name());
         if (!member) {
           throw Code_Error("Could not find member `" + member_expression.get_name() + "`.",
                            member_expression.get_source_point());
@@ -508,12 +508,12 @@ namespace imp_mirror {
                                                                    Scope &scope) {
     if (member.get_type() == overworld::Member_Type::dungeon) {
       auto &dungeon = get_dungeon(member);
-      auto child = dungeon.get_member_or_null(profession.get_name());
+      auto child = dungeon.get_scope().get_member_or_null(profession.get_name());
       if (!child)
         throw Code_Error("Could not find " + profession.get_name(), profession.get_source_point());
 
       if (profession.get_type() == underworld::Profession_Type::dungeon_reference) {
-        Scope dungeon_scope(dungeon, scope);
+        Scope dungeon_scope(dungeon.get_scope(), scope);
         return reflect_dungeon_reference(profession, dungeon_scope);
       }
       else if (profession.get_type() == underworld::Profession_Type::token) {
@@ -805,7 +805,7 @@ namespace imp_mirror {
       output_dungeon->set_default_ownership(overworld::Ownership::value);
     }
 
-    Scope block_scope(*output_dungeon, output_scope);
+    Scope block_scope(output_dungeon->get_scope(), output_scope);
 
     reflect_scope1(input_dungeon, block_scope);
   }
@@ -876,7 +876,7 @@ namespace imp_mirror {
             throw Code_Error("Could not find overworld dungeon " + input_profession->get_name(),
                              input_dungeon.get_source_point());
 
-          auto child_scope = Scope(*dungeon, output_scope);
+          auto child_scope = Scope(dungeon->get_scope(), output_scope);
           reflect_scope2(input_dungeon, child_scope);
         }
       }
@@ -898,7 +898,7 @@ namespace imp_mirror {
         if (input_profession->get_type() == underworld::Profession_Type::dungeon) {
           auto &input_dungeon = cast<underworld::Dungeon>(*input_profession);
           auto &dungeon = *element_map.find_or_null<overworld::Dungeon>(&input_dungeon);
-          auto child_scope = Scope(dungeon, output_scope);
+          auto child_scope = Scope(dungeon.get_scope(), output_scope);
           reflect_scope3(input_dungeon, child_scope);
         }
       }

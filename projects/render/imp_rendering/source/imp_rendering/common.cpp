@@ -268,20 +268,21 @@ namespace imp_rendering {
   const std::string render_dungeon_interface(const Dungeon_Interface &dungeon_interface,
                                              const overworld::Scope &scope) {
     auto result = render_primary_dungeon_token(dungeon_interface, scope);
-    auto parent = dungeon_interface.get_original().get_scope();
+    auto &parent = dungeon_interface.get_original().get_scope();
 //    if (parent == &scope)
 //      return result;
 
-    while (parent && parent != &scope) {
-      auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
-      if (parent_dungeon->get_original().get_name() == "")
-        break;
-
-      result = render_dungeon_interface(*parent_dungeon, scope)
-               + "::" + result;
-
-      parent = parent->get_parent_scope();
-    }
+    throw std::runtime_error("Needs updating.");
+//    while (parent && parent != &scope) {
+//      auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
+//      if (parent_dungeon->get_original().get_name() == "")
+//        break;
+//
+//      result = render_dungeon_interface(*parent_dungeon, scope)
+//               + "::" + result;
+//
+//      parent = parent->get_parent_scope();
+//    }
 
     return result;
   }

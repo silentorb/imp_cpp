@@ -90,7 +90,7 @@ namespace imp_rendering {
                         ? " = nullptr"
                         : "";
 
-      return Stroke(render_minion_with_signature(minion, *dungeon.get_scope()) + assignment + ';');
+      return Stroke(render_minion_with_signature(minion, dungeon.get_scope()) + assignment + ';');
     }
 
     Stroke render_dungeon_body(const overworld::Dungeon &dungeon) {

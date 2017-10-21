@@ -17,9 +17,10 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Scope, public Dungeon_Interface {
+  class Dungeon : public Dungeon_Interface {
 //      Common_Element element;
       std::string name;
+      Scope scope;
 
       File *header_file = nullptr;
 //      std::unique_ptr<File> header_file_owner;
@@ -73,14 +74,20 @@ namespace overworld {
         return default_ownership;
       }
 
-      Scope *get_scope() {
-        return parent;
+      Scope &get_scope() {
+        return scope;
       }
 
-//      const Profession &get_profession() const;
+      const std::vector<Minion_Owner> &get_minions() const {
+        return scope.get_minions();
+      }
 
-      const Scope *get_scope() const {
-        return parent;
+      const std::vector<std::unique_ptr<Function>> &get_functions() const {
+        return scope.get_functions();
+      }
+
+      const Scope &get_scope() const {
+        return scope;
       }
 
 //      void set_file(std::unique_ptr<File> value) {
@@ -92,9 +99,9 @@ namespace overworld {
         return header_file;
       }
 
-      Dungeon &get_dungeon() override {
-        return *this;
-      }
+//      Dungeon &get_dungeon() override {
+//        return *this;
+//      }
 
       Function &get_or_create_constructor();
 
@@ -158,19 +165,19 @@ namespace overworld {
       Function &create_function(const std::string &name, Profession &profession,
                                 const source_mapping::Source_Range &source_point = source_mapping::Source_Range());
 
-      Scope_Type get_scope_type() const override {
-        return Scope_Type::dungeon;
-      }
+//      Scope_Type get_scope_type() const override {
+//        return Scope_Type::dungeon;
+//      }
 
-      Minion &get_minion(const std::string &name) override;
-      Member &get_member(const std::string &name) override;
+      Minion &get_minion(const std::string &name);
+      Member &get_member(const std::string &name);
 
       void add_generic_parameter(Generic_Parameter_Owner parameter) {
         generic_parameters.push_back(parameter.get());
         if (parameter->get_name() == "")
           parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
 
-        add_member(parameter->get_name(), Member(parameter->get_reference()));
+        scope.add_member(parameter->get_name(), Member(parameter->get_reference()));
         owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
