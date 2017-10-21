@@ -75,7 +75,7 @@ namespace imp_mirror {
 //                                               profession_library,
 //                                               source_argument.get_source_point());
 //        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
-        throw std::runtime_error("Not implemented.");
+//        throw std::runtime_error("Not implemented.");
 //        auto connection = new Component_To_Scalar(*argument_node, second);
 //        graph.connect(*argument_node, second, std::unique_ptr<Connection>(connection));
       }

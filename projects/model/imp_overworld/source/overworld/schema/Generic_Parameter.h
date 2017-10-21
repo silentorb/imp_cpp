@@ -51,20 +51,26 @@ namespace overworld {
   class Generic_Parameter : public Profession {
       Generic_Parameter_Element element;
       Node node;
+      Profession_Reference self;
 
   public:
       Generic_Parameter(const std::string &name, Profession_Reference &profession,
                         Parent parent,
                         const source_mapping::Source_Range &source_point) :
         element(Element_Type::other, name, profession, parent, source_point),
-        node(profession, element) {
-        throw std::runtime_error("Not implemented");
+        node(profession, element),
+        self(*this) {
+//        throw std::runtime_error("Not implemented");
       }
 
       ~Generic_Parameter() override = default;
 
       const std::string get_name() const override {
         return element.get_name();
+      }
+
+      Profession_Reference &get_reference() {
+        return self;
       }
 
       void set_name(const std::string &value) {

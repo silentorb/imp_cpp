@@ -5,7 +5,7 @@
 
 namespace overworld {
 
-  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface, public virtual Profession {
+  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface {
       Dungeon &original;
 
   public:
@@ -14,27 +14,27 @@ namespace overworld {
         original(original) {
       }
 
-      Profession_Type get_type() const override {
+      Profession_Type get_type() const  {
         return Profession_Type::variant;
       }
 
-      Scope *get_scope() override {
+      Scope *get_scope()  {
         return original.get_scope();
       }
 
-      const Scope *get_scope() const override {
+      const Scope *get_scope() const  {
         return original.get_scope();
       }
 
-      File *get_file() const override {
+      File *get_file() const  {
         return original.get_file();
       }
 
-      Node &get_node() override {
+      Node &get_node()  {
         throw std::runtime_error("Not supported.");
       }
 
-      const std::string get_name() const override {
+      const std::string get_name() const  {
         return Variant::get_name();
       }
 
@@ -42,12 +42,8 @@ namespace overworld {
         return original.get_ownership();
       }
 
-      Profession_Reference &get_base(Profession_Reference &self) override {
+      Profession_Reference &get_base(Profession_Reference &self)  {
         return self;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
       }
 
       Dungeon &get_original() override {

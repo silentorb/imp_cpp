@@ -283,8 +283,9 @@ namespace imp_mirror {
           std::vector<overworld::Profession_Reference> professions;
           professions.push_back(overworld::Profession_Library::get_unknown());
           auto variant = new overworld::Dungeon_Variant(dungeon, professions);
+          auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Interface_Owner(variant));
           return Prepared_Profession_Tuple(
-            overworld::Profession_Reference(variant),
+            overworld::Profession_Reference(dungeon_reference2),
             variant
           );
         }
@@ -300,7 +301,7 @@ namespace imp_mirror {
     auto &input_profession_expression = instantiation.get_profession_expression();
     auto prof = reflect_expression(input_profession_expression,
                                    scope);
-    auto profession_tuple = prepare_profession(prof->get_last().get_node()->get_profession());
+    auto profession_tuple = prepare_profession(prof->get_last().get_profession());
 
     auto &output_profession = std::get<0>(profession_tuple);
     auto variant = std::get<1>(profession_tuple);
@@ -313,12 +314,13 @@ namespace imp_mirror {
                                                              scope.get_overworld_scope().get_parent(),
                                                              instantiation.get_source_point());
     overworld::Expression_Owner result(output_instantiation);
-    if (variant) {
-//      output_instantiation->set_dungeon_variant(variant);
-    }
-    else {
-      graph.connect(*output_instantiation->get_node(), output_profession.get_node());
-    }
+//    if (variant) {
+////      output_instantiation->set_dungeon_variant(variant);
+//    }
+//    else {
+//
+////      graph.connect(*output_instantiation->get_node(), output_profession.get_node());
+//    }
 
     for (auto &pair : source_arguments) {
       auto name = pair.first;
@@ -367,7 +369,7 @@ namespace imp_mirror {
                                                            Scope &scope) {
 
     auto &previous_expression = first.get_last();
-    auto &profession = previous_expression.get_node()->get_profession();
+    auto &profession = previous_expression.get_profession();
     if (second.get_type() == underworld::Expression_Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon
@@ -559,8 +561,8 @@ namespace imp_mirror {
       auto &dungeon = member->get_dungeon();
       return get_possible_generic_dungeon(dungeon);
     }
-    else if (member->get_type() == overworld::Member_Type::profession) {
-      return get_member_node(*member).get_profession();
+    else if (member->get_type() == overworld::Member_Type::profession_reference) {
+      return get_member_profession_reference(*member);
     }
     else {
       throw new Code_Error(token.get_name() + " is not a dungeon.", token.get_source_point());

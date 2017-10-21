@@ -39,7 +39,7 @@ namespace overworld {
       Node(Profession_Reference &original_profession, Element &element) :
         element(element),
         original_profession(original_profession),
-        profession(profession) {}
+        profession(original_profession) {}
 
 //      virtual ~Node() {}
 //

@@ -7,9 +7,13 @@ namespace overworld {
 
   class Dungeon_Reference : public Profession {
       Dungeon &dungeon;
+      Dungeon_Interface_Owner dungeon_owner;
 
   public:
       explicit Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
+
+      explicit Dungeon_Reference(Dungeon_Interface_Owner dungeon) :
+        dungeon(dungeon->get_original()), dungeon_owner(std::move(dungeon_owner)) {}
 
       explicit Dungeon_Reference(const Dungeon &dungeon) : dungeon(const_cast<Dungeon &>(dungeon)) {}
 

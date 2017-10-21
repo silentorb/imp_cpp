@@ -33,7 +33,7 @@ namespace imp_rendering {
         auto node = const_cast<Expression *>(&expression)->get_node();
         auto &profession = node->get_profession();
         if (profession.get_type() != Profession_Type::unknown && profession.get_type() != Profession_Type::Void)
-          member_action(Member(profession, true));
+          member_action(Member(*profession));
       }
 
   public:
@@ -202,7 +202,7 @@ namespace imp_rendering {
           if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-          helper.add_partial(Member(profession, true));
+          helper.add_partial(Member(*profession));
         }
       }
 
@@ -223,10 +223,10 @@ namespace imp_rendering {
             helper.add_full(standard_library.get_unique_pointer());
           }
           if (profession.get_ownership() == Ownership::value) {
-            helper.add_full(Member(base_profession, true));
+            helper.add_full(Member(base_profession));
           }
           else {
-            helper.add_partial(Member(base_profession, true));
+            helper.add_partial(Member(base_profession));
           }
         }
         else if (member.get_type() == Member_Type::function) {
@@ -263,10 +263,10 @@ namespace imp_rendering {
             helper.add_full(standard_library.get_unique_pointer());
           }
           if (profession.get_ownership() == Ownership::value) {
-            helper.add_full(Member(profession, true));
+            helper.add_full(Member(*profession));
           }
           else {
-            helper.add_partial(Member(profession, true));
+            helper.add_partial(Member(*profession));
           }
         }
       }

@@ -1,6 +1,7 @@
 #include "Profession_Library.h"
 #include "cloning.h"
 #include <overworld/schema/Function.h>
+#include <overworld/schema/Dungeon_Reference.h>
 
 namespace overworld {
 
@@ -179,7 +180,7 @@ namespace overworld {
                                                                   Dungeon_Interface &dungeon,
                                                                   std::vector<Profession_Reference> &professions) {
     auto variant = new Dungeon_Variant(dungeon.get_original(), professions);
-    auto reference = Profession_Reference(variant);
+    auto reference = Profession_Reference(new Dungeon_Reference(Dungeon_Interface_Owner(variant)));
     variant_array.push_back(reference);
     return reference;
   }

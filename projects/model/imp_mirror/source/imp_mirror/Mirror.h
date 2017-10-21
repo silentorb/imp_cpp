@@ -51,13 +51,13 @@ namespace imp_mirror {
       }
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_profession();
+        auto &profession = expression.get_profession();
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
         return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon());
       }
 
       overworld::Dungeon_Interface *get_dungeon_interface(overworld::Expression &expression) {
-        auto &profession = expression.get_node()->get_profession();
+        auto &profession = expression.get_profession();
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
         auto dungeon_interface = dynamic_cast<const overworld:: Dungeon_Interface*>(&dungeon_reference->get_dungeon());
         return const_cast<overworld::Dungeon_Interface *> (dungeon_interface);

@@ -38,11 +38,13 @@ namespace overworld {
       }
 
       Node *get_node() override {
+//        throw std::runtime_error("Not supported.");
         return &get_member_node(member);
       }
 
       const Node *get_node() const override {
-        return &get_member_node(member);
+//        return &get_member_node(member);
+        throw std::runtime_error("Not supported.");
       }
 
       const std::string get_name() const override {
@@ -50,7 +52,7 @@ namespace overworld {
       }
 
       Profession_Reference &get_profession() override {
-        throw std::runtime_error("Not supported.");
+        return get_member_profession_reference(member);
       }
 
       const Profession &get_profession() const override {

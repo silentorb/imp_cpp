@@ -6,18 +6,9 @@ namespace overworld {
 
   Node &get_member_node(Member &member) {
     switch (member.get_type()) {
-//      case Member_Type::function:
-//        return member.get_function()..get_node();
-
-//      case Member_Type::dungeon:
-
-//        return member.get_dungeon().get_node();
 
       case Member_Type::minion:
         return member.get_minion().get_node();
-
-      case Member_Type::profession:
-        return member.get_profession().get_node();
 
       default:
         throw std::runtime_error("Not implemented.");
@@ -43,12 +34,54 @@ namespace overworld {
     }
   }
 
-  const Node &get_member_node(const Member &member) {
-    return get_member_node(const_cast<Member &>(member));
-  }
-
   const std::string get_member_name(const Member &member) {
     return get_member_name(const_cast<Member &>(member));
   }
 
+  Profession_Reference &get_member_profession_reference(Member &member) {
+    switch (member.get_type()) {
+      case Member_Type::function:
+        return member.get_function().get_signature().get_last().get_profession();
+
+      case Member_Type::dungeon:
+        return member.get_dungeon().get_reference();
+
+      case Member_Type::minion:
+        return member.get_minion().get_profession();
+
+      case Member_Type::profession_reference:
+        return member.get_profession_reference();
+
+      case Member_Type::profession:
+//        return member.get_profession().get_name();
+        throw std::runtime_error("Not implemented.");
+
+      default:
+        throw std::runtime_error("Not implemented.");
+    }
+  }
+
+  const Profession &get_member_profession(const Member &member) {
+    switch (member.get_type()) {
+      case Member_Type::function:
+        return member.get_function().get_signature().get_last().get_profession();
+
+      case Member_Type::dungeon:
+        return member.get_dungeon().get_profession();
+
+      case Member_Type::minion:
+//        return member.get_minion().get_name();
+        throw std::runtime_error("Not implemented.");
+
+      case Member_Type::profession_reference:
+        return *member.get_profession_reference();
+
+      case Member_Type::profession:
+//        return member.get_profession().get_name();
+        throw std::runtime_error("Not implemented.");
+
+      default:
+        throw std::runtime_error("Not implemented.");
+    }
+  }
 }

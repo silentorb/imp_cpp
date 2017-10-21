@@ -17,4 +17,5 @@ namespace overworld {
       virtual Ownership get_ownership() const = 0;
   };
 
+  using Dungeon_Interface_Owner = std::unique_ptr<Dungeon_Interface>;
 };

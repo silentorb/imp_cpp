@@ -55,6 +55,10 @@ namespace overworld {
         return self;
       }
 
+      const Profession &get_profession() const {
+        return *self;
+      }
+
       bool is_class() const;
 
       void set_file(File *value) {
@@ -166,7 +170,7 @@ namespace overworld {
         if (parameter->get_name() == "")
           parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
 
-        add_member(parameter->get_name(), Member(*static_cast<Profession *>(parameter.get()), true));
+        add_member(parameter->get_name(), Member(parameter->get_reference()));
         owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
