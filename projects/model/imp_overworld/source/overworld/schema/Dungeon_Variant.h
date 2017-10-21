@@ -5,12 +5,13 @@
 
 namespace overworld {
 
-  class Dungeon_Variant : public Variant, public virtual Dungeon_Interface {
+  class Dungeon_Variant : public Dungeon_Interface {
+      Variant variant;
       Dungeon &original;
 
   public:
       Dungeon_Variant(Dungeon &original, std::vector<Profession_Reference> &professions) :
-        Variant(original.get_name(), original.get_generic_parameters(), professions),
+        variant(original.get_name(), original.get_generic_parameters(), professions),
         original(original) {
       }
 
@@ -38,7 +39,7 @@ namespace overworld {
       }
 
       const std::string get_name() const  {
-        return Variant::get_name();
+        return variant.get_name();
       }
 
       Ownership get_ownership() const override {
@@ -59,6 +60,18 @@ namespace overworld {
 
       Dungeon_Type get_dungeon_type() const override {
         return Dungeon_Type::variant;
+      }
+
+      const Generic_Parameter_Array &get_generic_parameters() const {
+        return variant.get_generic_parameters();
+      }
+
+      Generic_Argument_Array &get_arguments() {
+        return variant.get_arguments();
+      }
+
+      const Generic_Argument_Array &get_arguments() const {
+        return variant.get_arguments();
       }
 
   };

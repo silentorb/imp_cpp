@@ -6,7 +6,8 @@ namespace overworld {
 
   class Function;
 
-  class Function_Variant : public Variant, public virtual Function_Interface {
+  class Function_Variant : public virtual Function_Interface {
+      Variant variant;
       Function &original;
       Dungeon_Interface *dungeon = nullptr;
 
@@ -16,7 +17,7 @@ namespace overworld {
       ~Function_Variant() = default;
 
       const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
-        return Variant::get_generic_parameters();
+        return variant.get_generic_parameters();
       }
 
       Function &get_original() override {
@@ -25,6 +26,14 @@ namespace overworld {
 
       Dungeon_Interface &get_dungeon() {
         return *dungeon;
+      }
+
+      Generic_Argument_Array &get_arguments() {
+        return variant.get_arguments();
+      }
+
+      const Generic_Argument_Array &get_arguments() const {
+        return variant.get_arguments();
       }
   };
 
