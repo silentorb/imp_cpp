@@ -9,13 +9,8 @@ using namespace std;
 
 namespace overworld {
 
-  Scope::Scope(Scope *parent) :
-    parent(parent) {
-  }
-
-  Function_Scope::Function_Scope(Scope &parent, Function &function) :
-    Scope(&parent), function(&function) {
-
+  Scope::Scope(Scope *parent, Parent owner) :
+    parent_scope(parent), owner(owner) {
   }
 
   Scope::~Scope() {
@@ -108,16 +103,16 @@ namespace overworld {
     dungeons.push_back(std::move(dungeon));
   }
 
-  Dungeon &Scope::get_dungeon() {
-    return parent->get_dungeon();
-  }
+//  Dungeon &Scope::get_dungeon() {
+//    return parent_scope->get_dungeon();
+//  }
 
-  Parent Scope::get_parent() {
-    auto function = get_function();
-    return function
-           ? Parent(*static_cast<Function_Interface *>(function))
-           : Parent(dynamic_cast<Dungeon_Interface &>(get_dungeon()));
-  }
+//  Parent Scope::get_parent() {
+//    auto function = get_function();
+//    return function
+//           ? Parent(*static_cast<Function_Interface *>(function))
+//           : Parent(dynamic_cast<Dungeon_Interface &>(get_dungeon()));
+//  }
 
   Function *Scope::get_function(const std::string &function_name) {
     for (auto &function: functions) {

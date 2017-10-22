@@ -32,8 +32,8 @@ namespace overworld {
       Expression_Owner second;
 
   public:
-      Chain(Expression_Owner &first, Expression_Owner &second, Dungeon_Interface *dungeon,
-            Function_Interface *function, const source_mapping::Source_Range &source_range) :
+      Chain(Expression_Owner &first, Expression_Owner &second, Parent parent,
+            const source_mapping::Source_Range &source_range) :
 //        element(first->get_node()->get_element(), "chain", source_range),
         first(std::move(first)), second(std::move(second)) {}
 

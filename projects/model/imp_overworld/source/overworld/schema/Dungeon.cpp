@@ -8,14 +8,14 @@ namespace overworld {
 
   Dungeon::Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
 //        element(Element_Type::other, name, *this, source_point),
-    scope(&parent),
+    scope(&parent, Parent(*this)),
     name(name),
     self(new Dungeon_Reference(*this))
 //        node(element, this, nullptr)
   {}
 
   Dungeon::Dungeon(const std::string &name) :
-    scope(nullptr),
+    scope(nullptr, Parent(*this)),
     name(name),
     self(new Dungeon_Reference(*this)) {}
 

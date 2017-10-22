@@ -6,7 +6,7 @@ namespace overworld {
 
   class Function;
 
-  class Function_Variant : public virtual Function_Interface {
+  class Function_Variant : public Function_Interface {
       Variant variant;
       Function &original;
       Dungeon_Interface *dungeon = nullptr;

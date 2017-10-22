@@ -119,7 +119,7 @@ namespace imp_mirror {
     auto &input_function = input_lambda.get_function();
     auto output_function = new overworld::Function_With_Block(input_function.get_name(),
                                                               scope.get_overworld_scope(),
-                                                              scope.get_overworld_scope().get_dungeon(),
+                                                              scope.get_overworld_scope().get_parent(),
                                                               input_function.get_source_point());
     auto output_function_owner = overworld::Function_With_Block_Owner(output_function);
 //    scope.add_function(std::unique_ptr<overworld::Function>(output_function));
@@ -133,7 +133,8 @@ namespace imp_mirror {
     reflect_function_with_block2(input_function, *output_function, block_scope);
     reflect_function_with_block3(input_function, *output_function, block_scope);
 
-    auto lambda = new overworld::Lambda(std::move((output_function_owner)), scope.get_overworld_scope().get_function());
+    auto lambda = new overworld::Lambda(std::move((output_function_owner)),
+                                        scope.get_overworld_scope().get_parent());
     return overworld::Expression_Owner(lambda);
   }
 
@@ -190,7 +191,8 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_return_with_value(const underworld::Return_With_Value &input_return,
                                                                 Scope &scope) {
     auto expression = reflect_expression(input_return.get_value(), scope);
-    graph.connect(scope.get_overworld_scope().get_function()->get_signature().get_node(), *expression->get_node());
+    auto &first = scope.get_overworld_scope().get_parent().get_function().get_original().get_signature().get_node();
+    graph.connect(first, *expression->get_node());
     return overworld::Expression_Owner(
       new overworld::Return_With_Value(std::move(expression)));
   }
@@ -208,7 +210,7 @@ namespace imp_mirror {
     auto profession = reflect_profession(input_minion.get_profession(), scope);
     auto variable = new overworld::Minion(input_minion.get_name(),
                                           profession,
-                                          overworld::Parent(*scope.get_overworld_scope().get_function()),
+                                          overworld::Parent(scope.get_overworld_scope().get_parent().get_function()),
                                           input_minion.get_source_point());
     scope.get_overworld_scope().add_minion(overworld::Minion_Owner(variable));
     auto expression = reflect_expression(input_declaration.get_expression(), scope);
@@ -349,7 +351,7 @@ namespace imp_mirror {
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
-                                                        *scope.get_overworld_scope().get_function());
+                                                        scope.get_overworld_scope().get_parent().get_function());
       auto member = interface.get_scope().add_minion(overworld::Minion_Owner(new_member));
       auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
       new_member->add_expression(*result);
@@ -405,8 +407,8 @@ namespace imp_mirror {
     auto first = reflect_expression(input_chain.get_first(), scope);
     auto second = reflect_chain_member(*first, input_chain.get_second(), scope);
     auto chain = new overworld::Chain(first, second,
-                                      scope.get_overworld_scope().get_dungeon_if_not_function(),
-                                      scope.get_overworld_scope().get_function(), input_chain.get_source_point());
+                                      scope.get_overworld_scope().get_parent(),
+                                      input_chain.get_source_point());
     overworld::Expression_Owner result(chain);
 //    graph.connect(*first->get_node(), *second->get_node()).set_type(overworld::Connection_Type::member);
     return result;
@@ -431,7 +433,8 @@ namespace imp_mirror {
         ));
 
       case underworld::Expression_Type::self:
-        return overworld::Expression_Owner(new overworld::Self(scope.get_overworld_scope().get_dungeon(),
+        return overworld::Expression_Owner(new overworld::Self(
+          scope.get_overworld_scope().get_parent().get_dungeon().get_original(),
                                                                input_expression.get_source_point()));
 
       case underworld::Expression_Type::chain:
@@ -678,7 +681,7 @@ namespace imp_mirror {
     if (input_function_with_block) {
       auto output_function = new overworld::Function_With_Block(member.get_name(),
                                                                 scope.get_overworld_scope(),
-                                                                scope.get_overworld_scope().get_dungeon(),
+                                                                scope.get_overworld_scope().get_parent().get_dungeon(),
                                                                 member.get_source_point());
       scope.get_overworld_scope().add_function(std::unique_ptr<overworld::Function>(output_function));
 
@@ -691,7 +694,7 @@ namespace imp_mirror {
     else {
       auto output_function = new overworld::Virtual_Function(member.get_name(),
                                                              scope.get_overworld_scope(),
-                                                             scope.get_overworld_scope().get_dungeon(),
+                                                             scope.get_overworld_scope().get_parent().get_dungeon(),
                                                              member.get_source_point());
       scope.get_overworld_scope().add_function(std::unique_ptr<overworld::Function>(output_function));
 //      output_function->set_is_static(input_function.is_static());
@@ -753,7 +756,7 @@ namespace imp_mirror {
     if (profession->get_type() == overworld::Profession_Type::reference)
       profession = overworld::Profession_Reference(new overworld::Pointer(profession->get_base(profession)));
 
-    auto function = scope.get_overworld_scope().get_function();
+//    auto &function = scope.get_overworld_scope().get_parent().get_function();
     return std::unique_ptr<overworld::Minion>(
       new overworld::Minion(input_minion.get_name(), profession, scope.get_overworld_scope().get_parent(),
                             input_minion.get_source_point())

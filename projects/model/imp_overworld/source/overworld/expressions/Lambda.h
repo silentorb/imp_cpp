@@ -11,7 +11,7 @@ namespace overworld {
 
   public:
       explicit Lambda(Function_With_Block_Owner function,
-                      Function_Interface *outer_function) :
+                      Parent parent) :
         Common_Node_Expression(Parent(*function), function->get_element().get_source_point()),
         function(std::move(function)),
         node(this->function->get_profession_reference(), element) {}

@@ -44,9 +44,9 @@ namespace overworld {
 //        element(Element_Type::other, name, &dungeon, nullptr, source_point),
 //        signature_reference(signature) {}
 
-      Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+      Function(const std::string &name, Scope &parent_scope, Parent parent,
                const source_mapping::Source_Range &source_point) :
-        element(Element_Type::other, name, Parent(dungeon), source_point),
+        element(Element_Type::other, name, parent, source_point),
         signature_reference(new Function_Signature()),
         signature(*static_cast<Function_Signature *>(signature_reference.get())) {}
 
@@ -221,7 +221,7 @@ namespace overworld {
   };
 
   class Function_With_Block : public Function {
-      Function_Scope scope;
+      Scope scope;
       Block block;
       std::unique_ptr<Temporary_Interface_Manager> temporary_interface_manager;
 
@@ -233,9 +233,9 @@ namespace overworld {
 //                          Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point)
 //        : Function(name, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
 
-      Function_With_Block(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+      Function_With_Block(const std::string &name, Scope &parent_scope, Parent parent,
                           const source_mapping::Source_Range &source_point) :
-        Function(name, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
+        Function(name, parent_scope, parent, source_point), scope(&parent_scope, Parent(*this)), block(scope) {}
 
       virtual ~Function_With_Block() {}
 
@@ -247,11 +247,11 @@ namespace overworld {
         return block;
       }
 
-      const Function_Scope &get_scope() const {
+      const Scope &get_scope() const {
         return scope;
       }
 
-      Function_Scope &get_scope() {
+      Scope &get_scope() {
         return scope;
       }
 
@@ -269,20 +269,4 @@ namespace overworld {
 
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;
 
-//  class Member_Function : public Generic_Member_Reference<Function> {
-//  public:
-//      Member_Function(Function &value) : Generic_Member_Reference(value) {}
-//
-//      Member_Type get_type() const override {
-//        return Member_Type::function;
-//      }
-//
-//      const Function &get_function() const {
-//        return value;
-//      }
-//
-//      Function &get_function() {
-//        return value;
-//      }
-//  };
 }

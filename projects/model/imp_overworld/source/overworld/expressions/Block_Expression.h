@@ -37,7 +37,7 @@ namespace overworld {
 
   public:
       Block_Expression(Scope *parent) :
-        scope(parent), block(scope) {}
+        scope(parent, Parent()), block(scope) {}
 
       ~Block_Expression() override = default;
 

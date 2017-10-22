@@ -40,23 +40,6 @@ namespace overworld {
       }
   };
 
-  class Minion;
-
-//  class Minion_Element : public Common_Element {
-//      Minion &minion;
-//
-//  public:
-//      Minion_Element(Minion &minion, Profession &profession, const source_mapping::Source_Range &source_point)
-//        : Common_Element(Element_Type::minion, minion.get_name(), profession, source_point),
-//          minion(minion) {}
-//
-//      const std::string get_name() const override;
-//
-//      Element_Type get_type() const override {
-//        return Element_Type::minion;
-//      }
-//  };
-
   class Minion {
       Common_Element element;
       Node node;
@@ -82,12 +65,6 @@ namespace overworld {
       Node &get_node() {
         return node;
       }
-
-      virtual bool is_parameter() const {
-        return false;
-      }
-
-//      Dungeon *get_dungeon();
 
       Enchantment_Container &get_enchantments() {
         return enchantments;
@@ -131,21 +108,4 @@ namespace overworld {
 
   using Minion_Owner = std::unique_ptr<Minion>;
   using Simple_Minion_Owner = std::unique_ptr<Simple_Minion>;
-
-//  class Member_Minion : public Generic_Member_Reference<Minion> {
-//  public:
-//      Member_Minion(Minion &value) : Generic_Member_Reference(value) {}
-//
-//      Member_Type get_type() const override {
-//        return Member_Type::minion;
-//      }
-//
-//      const Minion &get_minion() const {
-//        return value;
-//      }
-//
-//      Minion &get_minion() {
-//        return value;
-//      }
-//  };
 }

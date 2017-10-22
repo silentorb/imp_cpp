@@ -21,7 +21,8 @@ namespace overworld {
 
   class Scope {
   protected:
-      Scope *parent;
+      Scope *parent_scope;
+      Parent owner;
       std::vector<std::unique_ptr<Function>> functions;
       std::vector<Minion_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
@@ -33,19 +34,18 @@ namespace overworld {
       void add_overload(const std::string &name, Member &member);
 
   public:
-      explicit Scope(Scope *parent);
+      explicit Scope(Scope *parent, Parent owner);
       virtual ~Scope();
       Scope(const Scope &) = delete;
 
       void add_member(const std::string &name, Member member);
       void add_function(std::unique_ptr<Function> function);
-//      Member add_minion(Minion &minion);
       Member add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);
       Member *get_member_or_null(const std::string &name);
-      virtual Member &get_member(const std::string &name);
+      Member &get_member(const std::string &name);
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
@@ -55,7 +55,7 @@ namespace overworld {
         return members;
       }
 
-      virtual Scope_Type get_scope_type() const {
+      Scope_Type get_scope_type() const {
         return Scope_Type::scope;
       }
 
@@ -65,26 +65,28 @@ namespace overworld {
         return minions;
       }
 
-      virtual Minion &get_minion(const std::string &name);
-      virtual Dungeon &get_dungeon();
+      Minion &get_minion(const std::string &name);
+//      virtual Dungeon &get_dungeon();
 
-      Dungeon *get_dungeon_if_not_function() {
-        return get_function() ? nullptr : &get_dungeon();
-      }
+//      Dungeon *get_dungeon_if_not_function() {
+//        return get_function() ? nullptr : &get_dungeon();
+//      }
 
       Scope *get_parent_scope() {
-        return parent;
+        return parent_scope;
       }
 
-      Parent get_parent();
+      Parent get_parent() {
+        return owner;
+      }
 
       const Scope *get_parent_scope() const {
-        return parent;
+        return parent_scope;
       }
 
-      virtual Function *get_function() {
-        return nullptr;
-      }
+//      Function *get_function() {
+//        return nullptr;
+//      }
 
       const std::vector<std::unique_ptr<Profession>> &get_professions() const {
         return professions;
@@ -103,14 +105,4 @@ namespace overworld {
       }
   };
 
-  class Function_Scope : public Scope {
-      Function *function = nullptr;
-
-  public:
-      Function_Scope(Scope &parent, Function &function);
-
-      Function *get_function() override {
-        return function;
-      }
-  };
 }
