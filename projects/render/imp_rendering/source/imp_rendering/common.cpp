@@ -13,6 +13,7 @@
 #include <overworld/expressions/Lambda.h>
 #include <cpp_stl/Standard_Library.h>
 #include <overworld/expressions/Range.h>
+#include <overworld/schema/Dungeon_Reference.h>
 
 using namespace std;
 using namespace overworld;
@@ -268,21 +269,20 @@ namespace imp_rendering {
   const std::string render_dungeon_interface(const Dungeon_Interface &dungeon_interface,
                                              const overworld::Scope &scope) {
     auto result = render_primary_dungeon_token(dungeon_interface, scope);
-    auto &parent = dungeon_interface.get_original().get_scope();
+    auto parent = dungeon_interface.get_original().get_scope().get_parent_scope();
 //    if (parent == &scope)
 //      return result;
 
-    throw std::runtime_error("Needs updating.");
-//    while (parent && parent != &scope) {
-//      auto parent_dungeon = dynamic_cast<const Dungeon_Interface *>(parent);
-//      if (parent_dungeon->get_original().get_name() == "")
-//        break;
-//
-//      result = render_dungeon_interface(*parent_dungeon, scope)
-//               + "::" + result;
-//
-//      parent = parent->get_parent_scope();
-//    }
+    while (parent && parent != &scope) {
+      auto &parent_dungeon = parent->get_parent().get_dungeon();
+      if (parent_dungeon.get_original().get_name() == "")
+        break;
+
+      result = render_dungeon_interface(parent_dungeon, scope)
+               + "::" + result;
+
+      parent = parent->get_parent_scope();
+    }
 
     return result;
   }
@@ -297,8 +297,8 @@ namespace imp_rendering {
       }
       case overworld::Profession_Type::dungeon:
       case overworld::Profession_Type::variant: {
-        auto &dungeon_interface = dynamic_cast<const Dungeon_Interface &>(profession);
-        return render_dungeon_interface(dungeon_interface, scope);
+				auto dungeon_reference = static_cast<const Dungeon_Reference*>(&profession);
+        return render_dungeon_interface(dungeon_reference->get_dungeon(), scope);
       }
 
       case overworld::Profession_Type::Void:
@@ -379,7 +379,7 @@ namespace imp_rendering {
         return "::";
     }
 
-    auto &profession = expression.get_node()->get_profession();
+    auto &profession = expression.get_profession();
     switch (profession.get_ownership()) {
       case Ownership::owner:
         return "->";

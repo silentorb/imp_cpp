@@ -32,6 +32,10 @@ namespace overworld {
       const Node &get_node() const {
         return node;
       }
+
+      const Profession &get_profession() const {
+        return node.get_profession();
+      }
   };
 
   using Generic_Argument_Owner = std::unique_ptr<Generic_Argument>;

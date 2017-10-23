@@ -33,6 +33,11 @@ namespace solving {
   }
 
   bool Solver::is_conflict(Connection &connection) {
+    if (connection.get_type() != Connection_Type::direct) {
+      std::cout << "WARNING: Not yet checking conflicts across mapped connections." << std::endl;
+      return false;
+    }
+
     auto &first = connection.get_first();
     auto &second = connection.get_second();
     if (first.get_status() != Node_Status::resolved || second.get_status() != Node_Status::resolved)
@@ -107,14 +112,24 @@ namespace solving {
 #if DEBUG_SOLVER > 0
       std::cout << "# " << first.get_debug_string() << " > " << second.get_debug_string() << std::endl;
 #endif
-      auto &profession = first.get_profession();
-      if (connection.get_type() == Connection_Type::direct) {
-        set_profession(second, profession);
+      if (first.get_status() == Node_Status::resolved) {
+        auto profession = connection.get_profession(first);
+        if (profession.get_type() == overworld::Profession_Type::unknown) {
+          first.get_status();
+          connection.get_profession(first);
+        }
+
+          set_profession(second, profession);
+        return 1;
       }
       else {
-        throw std::runtime_error("Not implemented.");
+        auto profession = connection.get_profession(first);
+        if (profession.get_type() == overworld::Profession_Type::unknown)
+          return 0;
+
+        set_profession(second, profession);
+        return 1;
       }
-      return 1;
     }
     else if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
 #if DEBUG_SOLVER > 0

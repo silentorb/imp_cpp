@@ -16,6 +16,7 @@ namespace overworld {
       virtual const Dungeon &get_original() const = 0;
       virtual Dungeon_Type get_dungeon_type() const = 0;
       virtual Ownership get_ownership() const = 0;
+      virtual const std::string get_debug_name() const = 0;
   };
 
   using Dungeon_Interface_Owner = std::unique_ptr<Dungeon_Interface>;

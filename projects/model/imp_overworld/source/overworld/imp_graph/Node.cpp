@@ -3,6 +3,7 @@
 #include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Function_Signature.h>
 #include <overworld/schema/Dungeon_Reference.h>
+#include <overworld/schema/Dungeon_Variant.h>
 
 namespace overworld {
 
@@ -28,8 +29,8 @@ namespace overworld {
     std::string result = "";
     if (source_point.get_source_file())
       result += //source_point.get_source_file()->get_short_file_path() + " " +
-                std::to_string(source_point.get_row()) + ":" +
-                std::to_string(source_point.get_column()) + " ";
+        std::to_string(source_point.get_row()) + ":" +
+        std::to_string(source_point.get_column()) + " ";
 
     result += element.get_name() + render_node_status(get_status())
               + ":" + profession.get_debug_name();
@@ -40,41 +41,70 @@ namespace overworld {
     return result;
   }
 
-  Node_Status get_status_using_profession(const Profession &base_profession) {
-    if (base_profession.get_type() == Profession_Type::dungeon) {
-      auto dungeon_reference = static_cast<const Dungeon_Reference*>(& base_profession);
+  template<typename Arguments>
+  Node_Status get_arguments_status(const Arguments &arguments) {
+    bool some_resolved = false;
+    bool some_unknown = false;
+    for (auto &argument : arguments) {
+      const auto &a = *argument.get();
+      auto &profession = a.get_profession();
+      if (get_status_using_profession(profession) == Node_Status::resolved) {
+        if (some_unknown)
+          return Node_Status::partial;
+
+        some_resolved = true;
+      }
+      else {
+        if (some_resolved)
+          return Node_Status::partial;
+
+        some_unknown = true;
+      }
+    }
+    return some_resolved
+           ? Node_Status::resolved
+           : Node_Status::unresolved;
+  }
+
+  Node_Status get_status_using_profession(const Profession &profession) {
+    if (profession.get_type() == Profession_Type::dungeon) {
+      auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
       auto &dungeon = dungeon_reference->get_dungeon();
-      if (!dungeon.get_generic_parameters().empty())
-        return Node_Status::unresolved;
-      else
+      auto variant = dynamic_cast<const Dungeon_Variant *>(&dungeon);
+      if (variant) {
+        return get_arguments_status(variant->get_arguments());
+      }
+      else {
         return Node_Status::resolved;
+      }
     }
 
-    else if (base_profession.get_type() == Profession_Type::function) {
-      auto signature = static_cast<const Function_Signature *>(&base_profession);
-      bool some_resolved = false;
-      bool some_unknown = false;
-      for (auto &parameter: signature->get_parameters()) {
-        if (get_status_using_profession(*parameter->get_profession()) == Node_Status::resolved) {
-          if (some_unknown)
-            return Node_Status::partial;
-
-          some_resolved = true;
-        }
-        else {
-          if (some_resolved)
-            return Node_Status::partial;
-
-          some_unknown = true;
-        }
-      }
-      return some_resolved
-             ? Node_Status::resolved
-             : Node_Status::unresolved;
+    else if (profession.get_type() == Profession_Type::function) {
+      auto signature = static_cast<const Function_Signature *>(&profession);
+      return get_arguments_status(signature->get_elements());
+//      bool some_resolved = false;
+//      bool some_unknown = false;
+//      for (auto &parameter: signature->get_parameters()) {
+//        if (get_status_using_profession(*parameter->get_profession()) == Node_Status::resolved) {
+//          if (some_unknown)
+//            return Node_Status::partial;
+//
+//          some_resolved = true;
+//        }
+//        else {
+//          if (some_resolved)
+//            return Node_Status::partial;
+//
+//          some_unknown = true;
+//        }
+//      }
+//      return some_resolved
+//             ? Node_Status::resolved
+//             : Node_Status::unresolved;
     }
     else {
-      return base_profession.get_type() != Profession_Type::unknown
-             && base_profession.get_type() != Profession_Type::generic_parameter
+      return profession.get_type() != Profession_Type::unknown
+             && profession.get_type() != Profession_Type::generic_parameter
              ? Node_Status::resolved
              : Node_Status::unresolved;
     }

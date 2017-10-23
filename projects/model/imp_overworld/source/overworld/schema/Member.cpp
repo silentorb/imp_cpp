@@ -70,8 +70,7 @@ namespace overworld {
         return member.get_dungeon().get_profession();
 
       case Member_Type::minion:
-//        return member.get_minion().get_name();
-        throw std::runtime_error("Not implemented.");
+        return member.get_minion().get_profession();
 
       case Member_Type::profession_reference:
         return *member.get_profession_reference();

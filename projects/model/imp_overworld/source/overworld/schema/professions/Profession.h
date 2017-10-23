@@ -10,6 +10,8 @@ namespace overworld {
 
   class Dungeon;
 
+  class Dungeon_Interface;
+
   class File;
 
   class Scope;
@@ -63,13 +65,15 @@ namespace overworld {
       virtual const std::vector<Profession_Reference> *get_contracts() const {
         return nullptr;
       }
+
+      Dungeon_Interface &get_dungeon_interface();
   };
 
   using Profession_Owner = std::unique_ptr<Profession>;
 
   class Profession_Reference : public Optional_Shared_Pointer<Profession> {
   public:
-      Profession_Reference() {}
+//      Profession_Reference() {}
 
       explicit Profession_Reference(Profession &pointer) : Optional_Shared_Pointer(pointer) {}
 

@@ -1,3 +1,4 @@
+#include <overworld/schema/Dungeon_Reference.h>
 #include "Profession.h"
 
 namespace overworld {
@@ -18,4 +19,8 @@ namespace overworld {
     return false;
   }
 
+  Dungeon_Interface &Profession::get_dungeon_interface() {
+    auto dungeon_reference = static_cast<Dungeon_Reference *>(this);
+    return dungeon_reference->get_dungeon_interface();
+  }
 }

@@ -125,8 +125,7 @@ namespace overworld {
       else
         result += ", ";
 
-      throw std::runtime_error("Next line is not implemented.");
-//      result += parameter->get_profession().get_name();
+      result += parameter->get_node().get_profession().get_name();
     }
     result += ">";
 

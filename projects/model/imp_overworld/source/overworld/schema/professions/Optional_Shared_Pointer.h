@@ -10,7 +10,7 @@ namespace overworld {
       std::shared_ptr<T> shared_pointer;
 
   public:
-      Optional_Shared_Pointer() {}
+//      Optional_Shared_Pointer() {}
 
       explicit Optional_Shared_Pointer(T &pointer) : pointer(&pointer) {}
 

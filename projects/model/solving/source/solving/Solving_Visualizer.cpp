@@ -69,11 +69,13 @@ namespace solving {
     }
     for (auto &node : nodes) {
       log_node(*node);
-      for (auto &other : node->get_neighbors()) {
+      for (auto &connection : node->get_connections()) {
 
-        std::cout << " * ";
+        std::cout << (connection->get_type() == Connection_Type::direct
+        ? " * "
+        : " % ");
 
-        log_node(*other);
+        log_node(connection->get_other(*node));
       }
     }
 

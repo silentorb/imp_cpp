@@ -21,7 +21,9 @@ namespace overworld {
       Profession_Reference &get_profession() {
         return node.get_profession();
       }
-
+      Profession_Reference &get_profession2() {
+        return node.get_profession();
+      }
       const Profession &get_profession() const {
         return node.get_profession();
       }

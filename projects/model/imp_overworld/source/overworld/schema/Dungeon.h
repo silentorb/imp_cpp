@@ -183,9 +183,9 @@ namespace overworld {
 
       }
 
-//      const std::string get_debug_name() const override {
-//        return format_debug_name();
-//      }
+      const std::string get_debug_name() const override {
+        return format_debug_name();
+      }
 
       std::vector<Generic_Parameter *> &get_generic_parameters() {
         return generic_parameters;

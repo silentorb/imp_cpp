@@ -80,6 +80,10 @@ namespace overworld {
         return owner;
       }
 
+      const Parent get_parent() const {
+        return owner;
+      }
+
       const Scope *get_parent_scope() const {
         return parent_scope;
       }

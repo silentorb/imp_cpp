@@ -16,19 +16,12 @@ namespace overworld {
       }
 
       virtual ~Dungeon_Variant() {
+				int k = 0;
       }
 
       Profession_Type get_type() const  {
         return Profession_Type::variant;
       }
-
-//      Scope *get_scope()  {
-//        return original.get_scope();
-//      }
-//
-//      const Scope *get_scope() const  {
-//        return original.get_scope();
-//      }
 
       File *get_file() const  {
         return original.get_file();
@@ -72,6 +65,10 @@ namespace overworld {
 
       const Generic_Argument_Array &get_arguments() const {
         return variant.get_arguments();
+      }
+
+      const std::string get_debug_name() const override {
+        return variant.get_name();
       }
 
   };

@@ -56,7 +56,7 @@ namespace overworld {
       }
 
       const Profession &get_profession() const override {
-        throw std::runtime_error("Not supported.");
+        return get_member_profession(member);
       }
   };
 }

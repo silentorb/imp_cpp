@@ -21,7 +21,7 @@ namespace overworld {
 
   class Node;
 
-  Node_Status get_status_using_profession(const Profession &base_profession);
+  Node_Status get_status_using_profession(const Profession &profession);
 
   class Profession_Setter {
   public:
@@ -40,6 +40,7 @@ namespace overworld {
         element(element),
         original_profession(original_profession),
         profession(original_profession) {}
+      Node(const Node &) = delete;
 
       virtual ~Node() {}
 

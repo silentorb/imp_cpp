@@ -8,6 +8,8 @@ namespace overworld {
 
   class Node;
 
+  class Profession_Reference;
+
   enum class Connection_Type {
       compound_to_scalar,
       direct,
@@ -26,8 +28,10 @@ namespace overworld {
         graphing::Connection<Node>(first, second) {}
 
       virtual ~Connection() {
-
+        int k = 0;
       }
+
+      Connection(const Connection &) = delete;
 
 //      bool does_conflict() const {
 //        return conflicts;
@@ -41,21 +45,25 @@ namespace overworld {
         return type;
       }
 
-//      void set_type(Connection_Type value) {
-//        type = value;
-//      }
+      virtual Profession_Reference get_profession(Node &node);
   };
 
   using Connection_Pointer = std::unique_ptr<Connection>;
 
-  class Component_To_Scalar : public Connection {
-      Component_Selection_Owner selector;
+  class Variant_To_Argument : public Connection {
+      int parameter_index;
 
   public:
-      Component_To_Scalar(Node &first, Node &second, Component_Selection_Owner &selector) :
+      Variant_To_Argument(Node &first, Node &second, int parameter_index) :
         Connection(first, second, Connection_Type::compound_to_scalar),
-        selector(std::move(selector)) {}
+        parameter_index(parameter_index) {}
 
-      virtual ~Component_To_Scalar() {}
+      virtual ~Variant_To_Argument() {
+        int k = 0;
+      }
+
+      Profession_Reference get_profession(Node &node) override;
+
+
   };
 }

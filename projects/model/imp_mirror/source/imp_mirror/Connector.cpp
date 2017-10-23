@@ -76,14 +76,17 @@ namespace imp_mirror {
 //                                               source_argument.get_source_point());
 //        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
 //        throw std::runtime_error("Not implemented.");
-//        auto connection = new Component_To_Scalar(*argument_node, second);
-//        graph.connect(*argument_node, second, std::unique_ptr<Connection>(connection));
+
+        auto connection = new Variant_To_Argument(member_container.get_node(), second, i);
+        graph.connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
+//        throw std::runtime_error("Not implemented.");
       }
       else {
         graph.connect(first, second);
         if (argument.get_type() == Expression_Type::lambda) {
           auto &lambda = static_cast<Lambda &>(argument);
           auto &member_container = find_member_container(invoke.get_expression());
+          throw std::runtime_error("Not implemented.");
 //          auto &parameter_profession = parameter.get_profession().get_base();
 //          if (parameter_profession.get_type() == Profession_Type::function) {
 //

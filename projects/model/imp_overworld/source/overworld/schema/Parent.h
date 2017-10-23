@@ -40,6 +40,13 @@ namespace overworld {
         return *dungeon;
       }
 
+     const Dungeon_Interface &get_dungeon() const{
+        if (type != Parent_Type::dungeon)
+          throw std::runtime_error("Parent is not a dungeon.");
+
+        return *dungeon;
+      }
+
       Function_Interface &get_function() {
         if (type != Parent_Type::function)
           throw std::runtime_error("Parent is not a function.");

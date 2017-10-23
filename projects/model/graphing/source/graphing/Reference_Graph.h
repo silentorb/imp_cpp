@@ -105,12 +105,13 @@ namespace graphing {
         return _connect(first, second);
       }
 
-      void connect(Node &first, Node &second, std::unique_ptr<Connection>(connection)) {
+      void connect(Node &first, Node &second, std::unique_ptr<Connection> connection) {
+        auto &connection_reference = *connection;
         connections.push_back(std::move(connection));
-        first.add_connection(*connection);
-        second.add_connection(*connection);
+        first.add_connection(connection_reference);
+        second.add_connection(connection_reference);
         if (on_connect)
-          on_connect(*connection);
+          on_connect(connection_reference);
       }
 
       Connection &connect_without_adding(Node &first, Node &second) {
