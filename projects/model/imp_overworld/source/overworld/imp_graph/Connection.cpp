@@ -31,4 +31,18 @@ namespace overworld {
       return Profession_Reference(dungeon_reference);
     }
   }
+
+  Profession_Reference Lambda_To::get_profession(Node &node) {
+    auto &first = get_first();
+    auto &second = get_second();
+
+    if (&node == &get_first()) {
+      auto &compound_profession = first.get_profession();
+      throw std::runtime_error("Not implemented.");
+    }
+    else {
+      auto &compound_profession = first.get_profession();
+      throw std::runtime_error("Not implemented.");
+    }
+  }
 }

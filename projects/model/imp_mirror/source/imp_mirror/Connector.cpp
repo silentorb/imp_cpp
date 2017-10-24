@@ -86,15 +86,9 @@ namespace imp_mirror {
         if (argument.get_type() == Expression_Type::lambda) {
           auto &lambda = static_cast<Lambda &>(argument);
           auto &member_container = find_member_container(invoke.get_expression());
-          throw std::runtime_error("Not implemented.");
-//          auto &parameter_profession = parameter.get_profession().get_base();
-//          if (parameter_profession.get_type() == Profession_Type::function) {
-//
-////            graph.connect();
-//          }
-//          else {
-//            throw std::runtime_error("Not supported.");
-//          }
+          auto connection = new Lambda_To(member_container.get_node(), second);
+          graph.connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
+//          throw std::runtime_error("Not implemented.");
         }
       }
     }

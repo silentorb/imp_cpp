@@ -35,6 +35,9 @@ namespace overworld {
 //        return false;
 //      }
       virtual Expression &get_last() = 0;
+      const Expression &get_last() const {
+        return const_cast<Expression*>(this)->get_last();
+      }
 
       virtual const Node *get_node() const = 0;
       virtual Node *get_node() = 0;

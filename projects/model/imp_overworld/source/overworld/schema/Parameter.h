@@ -14,6 +14,10 @@ namespace overworld {
         element(Element_Type::parameter, name, parent, source_range),
         node(profession, element) {}
 
+      ~Parameter() {
+        int k = 0;
+      }
+
       void set_profession(Profession_Reference &profession, Profession_Setter &setter) {
         node.set_profession(profession, setter);
       }

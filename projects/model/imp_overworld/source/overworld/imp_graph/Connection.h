@@ -13,6 +13,7 @@ namespace overworld {
   enum class Connection_Type {
       compound_to_scalar,
       direct,
+      lambda,
   };
 
   class Connection : public graphing::Connection<Node> {
@@ -65,5 +66,14 @@ namespace overworld {
       Profession_Reference get_profession(Node &node) override;
 
 
+  };
+
+  class Lambda_To : public Connection {
+
+  public:
+      Lambda_To(Node &first, Node &second) :
+        Connection(first, second, Connection_Type::lambda) {}
+
+      Profession_Reference get_profession(Node &node) override;
   };
 }

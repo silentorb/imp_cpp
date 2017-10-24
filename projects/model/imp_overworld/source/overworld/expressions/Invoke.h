@@ -21,7 +21,9 @@ namespace overworld {
         Common_Expression(source_range),
         expression(std::move(expression)), arguments(std::move(arguments)) {}
 
-      ~Invoke() override = default;
+      ~Invoke() override {
+       int k = 0;
+      }
 
       Expression_Type get_type() const override {
         return Expression_Type::invoke;
@@ -49,7 +51,11 @@ namespace overworld {
         return &get_signature().get_node();
       }
 
-      Expression &get_expression() const {
+      const Expression &get_expression() const {
+        return *expression;
+      }
+
+      Expression &get_expression() {
         return *expression;
       }
 
