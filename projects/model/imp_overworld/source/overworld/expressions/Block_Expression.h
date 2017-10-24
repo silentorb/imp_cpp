@@ -39,7 +39,7 @@ namespace overworld {
       Block_Expression(Scope *parent) :
         scope(parent, Parent()), block(scope) {}
 
-      ~Block_Expression() override = default;
+      virtual ~Block_Expression() override = default;
 
       void add_expression(Expression_Owner &expression) {
         block.add_expression(expression);

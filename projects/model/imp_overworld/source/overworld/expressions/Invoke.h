@@ -21,7 +21,7 @@ namespace overworld {
         Common_Expression(source_range),
         expression(std::move(expression)), arguments(std::move(arguments)) {}
 
-      ~Invoke() override {
+      virtual ~Invoke() override {
        int k = 0;
       }
 

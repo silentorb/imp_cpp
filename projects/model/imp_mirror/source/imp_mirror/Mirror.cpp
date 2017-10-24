@@ -845,7 +845,7 @@ namespace imp_mirror {
 
     if (output_scope.get_overworld_scope().get_scope_type() == overworld::Scope_Type::dungeon) {
       auto &input_dungeon = cast<underworld::Dungeon>(input_scope);
-      auto &output_dungeon = cast<overworld::Dungeon>(output_scope.get_overworld_scope());
+      auto &output_dungeon = output_scope.get_overworld_scope().get_parent().get_dungeon().get_original();
       for (auto &contract:input_dungeon.get_contracts()) {
         auto profession = reflect_profession(*contract, *output_scope.get_parent());
         auto dungeon = get_dungeon(*profession);

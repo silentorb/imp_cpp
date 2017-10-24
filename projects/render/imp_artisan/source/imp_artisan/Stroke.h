@@ -58,7 +58,7 @@ namespace imp_artisan {
         Stroke_Owner(Stroke_Owner &&other) :
           stroke(std::move(other.stroke)) {}
 
-        ~Stroke_Owner() {}
+        virtual ~Stroke_Owner() {}
 
         Stroke_Owner &operator=(Stroke_Owner &&other) noexcept {
           stroke = std::move(other.stroke);

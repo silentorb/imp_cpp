@@ -44,7 +44,7 @@ namespace overworld {
         return Static_Functions::_get_primitive_type();
       }
 
-      ~Literal_Implementation() override {}
+      virtual ~Literal_Implementation() override {}
 
       const T &get_value() const {
         return value;

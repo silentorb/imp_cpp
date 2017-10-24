@@ -16,7 +16,7 @@ namespace runic {
       Stream(Lexer_Interface &lexer, source_mapping::Source_File &source_file) :
         Rune_Stream(lexer), source_file(source_file) {}
 
-      ~Stream() {}
+      virtual ~Stream() {}
 
       const Token &expect_next(const Whisper &whisper) {
         if (!next().is(whisper))

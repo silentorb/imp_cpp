@@ -13,7 +13,7 @@ namespace overworld {
       Self(Dungeon &dungeon, const source_mapping::Source_Range &source_range) :
         Common_Expression(source_range), dungeon(dungeon) {}
 
-      ~Self() override = default;
+      virtual ~Self() override = default;
 
       Expression_Type get_type() const override {
         return Expression_Type::self;

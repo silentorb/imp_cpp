@@ -69,7 +69,7 @@ namespace graphing {
       }
 
   public:
-      ~Reference_Graph() {
+      virtual ~Reference_Graph() {
         for (auto node: nodes) {
           node->set_graph(nullptr);
         }

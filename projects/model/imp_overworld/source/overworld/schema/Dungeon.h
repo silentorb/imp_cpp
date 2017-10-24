@@ -5,7 +5,6 @@
 #include "File.h"
 #include "Generic_Parameter.h"
 #include "Dungeon_Interface.h"
-#include "Member_Profession.h"
 #include "Enchantment.h"
 #include "Enchantment_Container.h"
 #include <vector>

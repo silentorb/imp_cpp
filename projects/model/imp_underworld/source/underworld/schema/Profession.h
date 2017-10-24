@@ -25,6 +25,7 @@ namespace underworld {
       virtual Profession_Type get_type() const = 0;
       virtual const std::string get_name() const = 0;
       virtual const source_mapping::Source_Range get_source_point() const = 0;
+			virtual ~Profession() {}
   };
 
   using Profession_Owner = std::unique_ptr<Profession>;

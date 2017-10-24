@@ -15,7 +15,9 @@ namespace underworld {
         Member(source_point), profession(std::move(profession)) {
       }
 
-      const Profession * get_profession() const override {
+      virtual ~Profession_Member() {}
+
+      const Profession *get_profession() const override {
         return profession.get();
       }
 

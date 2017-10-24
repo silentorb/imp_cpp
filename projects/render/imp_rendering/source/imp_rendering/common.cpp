@@ -234,10 +234,13 @@ namespace imp_rendering {
       }
     }
 
+		int i = 0;
     return render_expression(function_call.get_expression(), scope) + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-             [& minions, & scope](const overworld::Expression_Owner &expression) {
-               return render_argument(*expression, **minions++, scope);
+             [& minions, & scope, &function_call, &i](const overworld::Expression_Owner &expression) {
+               auto &temp = function_call.get_signature().get_elements()[i++];
+//							 auto &temp2 = *minions;
+               return render_argument(*expression, *temp, scope);
              }), ", ") + ")";
   }
 

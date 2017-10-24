@@ -63,7 +63,7 @@ namespace overworld {
 //        throw std::runtime_error("Not implemented");
       }
 
-      ~Generic_Parameter() override = default;
+      virtual ~Generic_Parameter() override = default;
 
       const std::string get_name() const override {
         return element.get_name();

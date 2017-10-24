@@ -6,10 +6,9 @@
 namespace overworld {
 
   bool Function::is_constructor() const {
-    auto dungeon = dynamic_cast<const Dungeon *>(&get_parent_scope());
-    if (dungeon) {
-      return dungeon->get_name() == get_name();
-    }
+    auto &parent = get_parent_scope().get_parent();
+    if (parent.get_type() == Parent_Type::dungeon)
+      return parent.get_dungeon().get_original().get_name() == get_name();
 
     return false;
   }

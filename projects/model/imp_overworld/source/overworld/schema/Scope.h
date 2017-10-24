@@ -35,7 +35,7 @@ namespace overworld {
 
   public:
       explicit Scope(Scope *parent, Parent owner);
-      virtual ~Scope();
+      ~Scope();
       Scope(const Scope &) = delete;
 
       void add_member(const std::string &name, Member member);
