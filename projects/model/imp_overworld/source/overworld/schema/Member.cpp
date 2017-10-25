@@ -53,8 +53,10 @@ namespace overworld {
         return member.get_profession_reference();
 
       case Member_Type::profession:
-//        return member.get_profession().get_name();
         throw std::runtime_error("Not implemented.");
+
+      case Member_Type ::parameter:
+        return member.get_parameter().get_profession();
 
       default:
         throw std::runtime_error("Not implemented.");
@@ -78,6 +80,9 @@ namespace overworld {
       case Member_Type::profession:
 //        return member.get_profession().get_name();
         throw std::runtime_error("Not implemented.");
+
+      case Member_Type ::parameter:
+        return member.get_parameter().get_profession();
 
       default:
         throw std::runtime_error("Not implemented.");

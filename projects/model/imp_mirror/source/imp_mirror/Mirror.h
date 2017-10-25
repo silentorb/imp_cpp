@@ -141,12 +141,16 @@ namespace imp_mirror {
       overworld::Profession_Reference reflect_function_signature(const underworld::Function_Profession &input_signature,
                                                         Scope &scope);
 
+      void reflect_function_signature(const underworld::Function_Signature &input_signature,
+                                                                 overworld::Function_Signature &function_profession,
+                                                                 Scope &scope, Scope &function_scope);
+
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);
 
-      void create_block_parameter(const underworld::Parameter &input_parameter,
-                                  overworld::Function_With_Block &output_function,
-                                  Scope &block_scope, Scope &scope);
+//      void create_block_parameter(const underworld::Parameter &input_parameter,
+//                                  overworld::Function_With_Block &output_function,
+//                                  Scope &block_scope, Scope &scope);
 
       void reflect_function_with_block3(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);

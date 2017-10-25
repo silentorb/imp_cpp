@@ -21,7 +21,18 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        return "Lambda";
+        std::string result = "(";
+        bool first = true;
+        for (auto &element : function->get_signature().get_elements()) {
+          if (first)
+            first = false;
+          else
+            result += " -> ";
+
+          result += element->get_node().get_profession().get_name();
+        }
+
+        return result + ")";
       }
 
       Profession_Reference &get_profession() override {

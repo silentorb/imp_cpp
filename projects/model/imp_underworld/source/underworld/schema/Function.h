@@ -24,6 +24,9 @@ namespace underworld {
 //               Scope &parent) :
 //        name(name), Member(source) {}
 
+    virtual ~Function() {
+      int k = 0;
+    }
       Type get_type() const override {
         return Type::function;
       }
@@ -32,9 +35,9 @@ namespace underworld {
         return name;
       }
 
-//      const Profession *get_profession() const override {
-//        return signature.get_return_type();
-//      }
+      const Function_Signature &get_signature() const {
+        return signature;
+      }
 
       void add_generic_parameter(Generic_Parameter &value) {
         generic_parameters.push_back(value);
@@ -59,7 +62,7 @@ namespace underworld {
       }
 
       const std::vector<std::unique_ptr<Parameter>> &get_parameters() const {
-        return signature.get_parameters();
+        return signature.get_elements();
       }
 
       const Profession *get_profession() const override {
@@ -96,6 +99,7 @@ namespace underworld {
         return true;
       }
   };
+
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;
 
 }

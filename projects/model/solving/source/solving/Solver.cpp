@@ -112,6 +112,9 @@ namespace solving {
 #if DEBUG_SOLVER > 0
       std::cout << "# " << first.get_debug_string() << " > " << second.get_debug_string() << std::endl;
 #endif
+      if (first.get_profession().get_type() == Profession_Type::Void)
+        return 0;
+
       if (first.get_status() == Node_Status::resolved) {
         auto profession = connection.get_profession(first);
         if (profession.get_type() == overworld::Profession_Type::unknown) {

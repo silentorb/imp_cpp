@@ -10,11 +10,14 @@ namespace overworld {
 
   class Minion;
 
+  class Parameter;
+
   enum class Member_Type {
       none,
       dungeon,
       function,
       minion,
+      parameter,
       profession,
       profession_reference,
   };
@@ -25,6 +28,7 @@ namespace overworld {
           Dungeon *dungeon;
           Function *function;
           Minion *minion;
+          Parameter *parameter;
           const Profession *profession;
           Profession_Reference *profession_reference;
       };
@@ -43,6 +47,9 @@ namespace overworld {
 //        type(Member_Type::profession), profession(&profession) {
 //        throw std::runtime_error("Not supported.");
 //      }
+
+      Member(Parameter &parameter) :
+        type(Member_Type::parameter), parameter(&parameter) {}
 
       Member(const Profession &profession) :
         type(Member_Type::profession), profession(&profession) {}
@@ -70,6 +77,14 @@ namespace overworld {
 
       const Minion &get_minion() const {
         return *minion;
+      }
+
+      Parameter &get_parameter() {
+        return *parameter;
+      }
+
+      const Parameter &get_parameter() const {
+        return *parameter;
       }
 
       Function &get_function() {
@@ -100,6 +115,7 @@ namespace overworld {
         return dungeon;
       }
   };
+
   Node &get_member_node(Member &member);
 
   Profession_Reference &get_member_profession_reference(Member &member);

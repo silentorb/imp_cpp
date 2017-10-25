@@ -159,19 +159,24 @@ namespace imp_rendering {
 
   const std::string render_member_expression(const overworld::Member_Expression &member_expression) {
     auto &member = member_expression.get_member();
-    if (member.get_type() == Member_Type::function) {
-      auto &function = member.get_function();
-      return get_cpp_name(function);
+    switch (member.get_type()) {
+      case Member_Type::function: {
+        auto &function = member.get_function();
+        return get_cpp_name(function);
+      }
+      case Member_Type::minion: {
+        auto &minion = member.get_minion();
+        return get_cpp_name(minion);
+      }
+      case Member_Type::dungeon: {
+        auto &dungeon = member.get_dungeon();
+        return get_cpp_name(dungeon);
+      }
+      case Member_Type::parameter: {
+        auto &parameter = member.get_parameter();
+        return get_cpp_name(parameter);
+      }
     }
-    else if (member.get_type() == Member_Type::minion) {
-      auto &minion = member.get_minion();
-      return get_cpp_name(minion);
-    }
-    else if (member.get_type() == Member_Type::dungeon) {
-      auto &dungeon = member.get_dungeon();
-      return get_cpp_name(dungeon);
-    }
-
     throw std::runtime_error("Not supported.");
   }
 
@@ -535,6 +540,10 @@ namespace imp_rendering {
 
   const std::string get_cpp_name(const overworld::Function &function) {
     return _get_cpp_name(function);
+  }
+
+  const std::string get_cpp_name(const overworld::Parameter &parameter) {
+    return sanitize_name(parameter.get_name());
   }
 
   const std::string render_profession_owner(const overworld::Profession &profession, const Scope &scope) {

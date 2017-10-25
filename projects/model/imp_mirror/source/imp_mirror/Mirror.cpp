@@ -343,11 +343,25 @@ namespace imp_mirror {
                                                       const underworld::Member_Expression &member_expression,
                                                       Scope &scope) {
     auto &previous_member = previous_expression.get_member();
-    if (previous_member.get_type() == overworld::Member_Type::minion) {
-      auto minion = &previous_member.get_minion();
-      auto function = static_cast<overworld::Function_With_Block *>(&minion->get_node().get_parent().get_function());
-      auto parameter = function->get_signature().get_element(minion->get_name());
-      auto &interface = function->get_or_create_interface(*parameter);
+//    if (previous_member.get_type() == overworld::Member_Type::minion) {
+//      auto minion = &previous_member.get_minion();
+//      auto function = static_cast<overworld::Function_With_Block *>(&minion->get_node().get_parent().get_function());
+//      auto parameter = function->get_signature().get_element(minion->get_name());
+//      auto &interface = function->get_or_create_interface(*parameter);
+//      auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
+//                                                        overworld::Profession_Library::get_unknown(),
+//                                                        member_expression.get_source_point(),
+//                                                        scope.get_overworld_scope().get_parent().get_function());
+//      auto member = interface.get_scope().add_minion(overworld::Minion_Owner(new_member));
+//      auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
+//      new_member->add_expression(*result);
+//      return overworld::Expression_Owner(result);
+//    }
+//    else
+    if (previous_member.get_type() == overworld::Member_Type::parameter) {
+      auto &parameter = previous_member.get_parameter();
+      auto function = static_cast<overworld::Function_With_Block *>(&parameter.get_node().get_parent().get_function());
+      auto &interface = function->get_or_create_interface(parameter);
       auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
@@ -435,7 +449,7 @@ namespace imp_mirror {
       case underworld::Expression_Type::self:
         return overworld::Expression_Owner(new overworld::Self(
           scope.get_overworld_scope().get_parent().get_dungeon().get_original(),
-                                                               input_expression.get_source_point()));
+          input_expression.get_source_point()));
 
       case underworld::Expression_Type::chain:
         return reflect_chain(*dynamic_cast<const underworld::Chain *>(&input_expression), scope);
@@ -576,11 +590,6 @@ namespace imp_mirror {
     const underworld::Function_Profession &input_signature, Scope &scope) {
 
     auto function_profession = new overworld::Function_Signature();
-//    outer_dungeon,
-//      outer_function,
-//      input_signature.get_source_point()
-
-//    profession_library.store_profession(overworld::Profession_Owner(function_profession));
     auto result = overworld::Profession_Reference(function_profession);
     auto &elements = input_signature.get_elements();
     for (auto &element : elements) {
@@ -592,6 +601,27 @@ namespace imp_mirror {
       )));
     }
     return result;
+  }
+
+  void Mirror::reflect_function_signature(const underworld::Function_Signature &input_signature,
+                                          overworld::Function_Signature &function_profession,
+                                          Scope &scope, Scope &function_scope) {
+    auto &elements = input_signature.get_elements();
+    if (elements.size() < 2)
+      throw std::runtime_error("Function signatures requires at least 2 elements.");
+
+    for (auto &element : elements) {
+      auto profession = reflect_profession(element->get_profession(), scope);
+      auto parameter = new overworld::Parameter(
+        element->get_name(),
+        profession,
+        scope.get_overworld_scope().get_parent(), element->get_source_point()
+      );
+      function_profession.add_element(overworld::Parameter_Owner(parameter));
+      if (element->get_name() != "")
+        function_scope.get_overworld_scope().add_member(parameter->get_name(),
+                                                        overworld::Member(*parameter));
+    }
   }
 
   overworld::Profession_Reference Mirror::reflect_profession(const underworld::Profession &profession, Scope &scope) {
@@ -639,15 +669,15 @@ namespace imp_mirror {
     return reflect_profession(*profession, scope);
   }
 
-  void Mirror::create_block_parameter(const underworld::Parameter &input_parameter,
-                                      overworld::Function_With_Block &output_function,
-                                      Scope &block_scope, Scope &scope) {
-    auto parameter = create_parameter(input_parameter, scope,
-                                      output_function);
-    auto &minion = reflect_minion(input_parameter, block_scope);
-    graph.connect(minion.get_node(), parameter->get_node());
-    output_function.get_signature().add_element(std::move(parameter));
-  }
+//  void Mirror::create_block_parameter(const underworld::Parameter &input_parameter,
+//                                      overworld::Function_With_Block &output_function,
+//                                      Scope &block_scope, Scope &scope) {
+//    auto parameter = create_parameter(input_parameter, scope,
+//                                      output_function);
+//    auto &minion = reflect_minion(input_parameter, block_scope);
+//    graph.connect(minion.get_node(), parameter->get_node());
+//    output_function.get_signature().add_element(std::move(parameter));
+//  }
 
   void Mirror::reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                             overworld::Function_With_Block &output_function, Scope &scope) {
@@ -658,15 +688,16 @@ namespace imp_mirror {
       input_function.get_block().get_scope(),
       block_scope);
 
-    auto &parameters = input_function.get_parameters();
-    for (auto &input_parameter : parameters) {
-      create_block_parameter(*input_parameter, output_function, block_scope, scope);
-//      auto parameter = create_parameter(*source_parameter, scope,
-//                                        output_function);
-//      auto &minion = reflect_minion(*source_parameter, block_scope);
-//      graph.connect(minion.get_node(), parameter->get_node());
-//      output_function.get_signature().add_element(std::move(parameter));
-    }
+    reflect_function_signature(input_function.get_signature(), output_function.get_signature(), scope, block_scope);
+//    auto &parameters = input_function.get_parameters();
+//    for (auto &input_parameter : parameters) {
+//      create_block_parameter(*input_parameter, output_function, block_scope, scope);
+////      auto parameter = create_parameter(*source_parameter, scope,
+////                                        output_function);
+////      auto &minion = reflect_minion(*source_parameter, block_scope);
+////      graph.connect(minion.get_node(), parameter->get_node());
+////      output_function.get_signature().add_element(std::move(parameter));
+//    }
   }
 
   void Mirror::reflect_function_with_block3(const underworld::Function_With_Block &input_function,

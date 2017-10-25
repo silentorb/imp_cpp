@@ -27,6 +27,7 @@ namespace imp_rendering {
 
   const std::string get_cpp_name(const overworld::Dungeon &dungeon);
   const std::string get_cpp_name(const overworld::Minion &minion);
+  const std::string get_cpp_name(const overworld::Parameter &parameter);
   const std::string get_cpp_name(const overworld::Function &function);
 
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
