@@ -36,7 +36,7 @@ namespace overworld {
       Element &element;
 
   public:
-      Node(Profession_Reference &original_profession, Element &element) :
+      Node(Profession_Reference original_profession, Element &element) :
         element(element),
         original_profession(original_profession),
         profession(original_profession) {}

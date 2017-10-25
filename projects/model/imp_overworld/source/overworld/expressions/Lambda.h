@@ -14,7 +14,7 @@ namespace overworld {
                       Parent parent) :
         Common_Node_Expression(Parent(*function), function->get_element().get_source_point()),
         function(std::move(function)),
-        node(this->function->get_profession_reference(), element) {}
+        node(Profession_Reference(this->function->get_signature()), element) {}
 
       Expression_Type get_type() const override {
         return Expression_Type::lambda;

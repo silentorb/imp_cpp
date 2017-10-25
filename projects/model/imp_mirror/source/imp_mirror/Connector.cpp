@@ -86,7 +86,7 @@ namespace imp_mirror {
         if (argument.get_type() == Expression_Type::lambda) {
           auto &lambda = static_cast<Lambda &>(argument);
           auto &member_container = find_member_container(invoke.get_expression());
-          auto connection = new Lambda_To(member_container.get_node(), second);
+          auto connection = new Lambda_To(member_container.get_node(), second, i);
           graph.connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
 //          throw std::runtime_error("Not implemented.");
         }

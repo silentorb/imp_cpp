@@ -44,7 +44,7 @@ namespace imp_summoning {
                                    parameter_info.get_source_point());
 
     function->add_parameter(Parameter_Owner(parameter));
-    function->add_parameter(Parameter_Owner(new Parameter(parameter_info.get_name(),
+    function->add_parameter(Parameter_Owner(new Parameter("",
                                                           Profession_Owner(new Unknown(get_source_point())),
                                                           parameter_info.get_source_point())));
     input.next();

@@ -589,12 +589,12 @@ namespace imp_mirror {
   overworld::Profession_Reference Mirror::reflect_function_signature(
     const underworld::Function_Profession &input_signature, Scope &scope) {
 
-    auto function_profession = new overworld::Function_Signature();
-    auto result = overworld::Profession_Reference(function_profession);
+    auto signature = new overworld::Function_Signature();
+    auto result = overworld::Profession_Reference(signature);
     auto &elements = input_signature.get_elements();
     for (auto &element : elements) {
       auto profession = reflect_profession(element.get(), scope);
-      function_profession->add_element(overworld::Parameter_Owner(new overworld::Parameter(
+      signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
         element->get_name(),
         profession,
         scope.get_overworld_scope().get_parent(), input_signature.get_source_point()
@@ -607,7 +607,7 @@ namespace imp_mirror {
                                           overworld::Function_Signature &function_profession,
                                           Scope &scope, Scope &function_scope) {
     auto &elements = input_signature.get_elements();
-    if (elements.size() < 2)
+    if (elements.size() < 1)
       throw std::runtime_error("Function signatures requires at least 2 elements.");
 
     for (auto &element : elements) {

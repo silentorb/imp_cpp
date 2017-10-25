@@ -409,10 +409,12 @@ namespace solving {
   bool Solver::solve() {
     initialize();
 
+    int x = 0;
     while (update_changed() || update_conflicts()) {
       auto progress = process_changed() +
                       process_conflicts();
-
+if (x++ > 100)
+  return false;
       if (progress == 0) {
         if (has_unresolved_nodes() || !conflict_manager.conflicts.empty())
           return false;

@@ -69,10 +69,12 @@ namespace overworld {
   };
 
   class Lambda_To : public Connection {
+      int parameter_index;
 
   public:
-      Lambda_To(Node &first, Node &second) :
-        Connection(first, second, Connection_Type::lambda) {}
+      Lambda_To(Node &first, Node &second, int parameter_index) :
+        Connection(first, second, Connection_Type::lambda),
+        parameter_index(parameter_index) {}
 
       Profession_Reference get_profession(Node &node) override;
   };
