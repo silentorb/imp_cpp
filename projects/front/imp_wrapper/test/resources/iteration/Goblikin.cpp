@@ -1,7 +1,7 @@
-#include <memory>
 #include <iostream>
 #include "Ingredient.h"
 #include <vector>
+#include <memory>
 #include "Goblikin.h"
 
 void Goblikin::craft() {

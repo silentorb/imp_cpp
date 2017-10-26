@@ -35,11 +35,21 @@ namespace overworld {
       Profession_Reference profession;
       Element &element;
 
+  protected:
+
   public:
       Node(Profession_Reference original_profession, Element &element) :
         element(element),
         original_profession(original_profession),
-        profession(original_profession) {}
+        profession(original_profession) {
+        status = _get_status();
+      }
+
+      virtual Node_Status _get_status() const {
+        auto &base_profession = profession->get_base();
+        return get_status_using_profession(base_profession);
+      }
+
       Node(const Node &) = delete;
 
       virtual ~Node() {}
@@ -52,18 +62,17 @@ namespace overworld {
         return element;
       }
 
+      Node_Status get_status() const {
+        return status;
+      }
+
       Parent &get_parent() {
         return element.get_parent();
       }
 
-      virtual Node_Status get_status() const {
-        auto &base_profession = profession->get_base();
-        return get_status_using_profession(base_profession);
-      }
-
-      void set_status(Node_Status value) {
-        status = value;
-      }
+//      void set_status(Node_Status value) {
+//        status = value;
+//      }
 
       bool is_changed() const {
         return changed;
@@ -85,6 +94,7 @@ namespace overworld {
 
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         profession = value;
+        status = _get_status();
       }
 
   };
@@ -132,12 +142,14 @@ namespace overworld {
       Node &original;
       Profession_Reference profession;
 
+  protected:
+
   public:
       Node_Copy(Node &original, Profession_Reference &profession, Dungeon_Interface *dungeon,
                 Function_Interface *function) :
         Node(profession, original.get_element()), original(original), profession(profession) {}
 
-      Node_Status get_status() const override {
+      Node_Status _get_status() const override {
         return profession->get_base().get_type() != overworld::Profession_Type::unknown
                ? Node_Status::resolved
                : Node_Status::unresolved;

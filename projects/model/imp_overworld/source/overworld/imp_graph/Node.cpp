@@ -67,46 +67,31 @@ namespace overworld {
   }
 
   Node_Status get_status_using_profession(const Profession &profession) {
-    if (profession.get_type() == Profession_Type::dungeon) {
-      auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
-      auto &dungeon = dungeon_reference->get_dungeon();
-      auto variant = dynamic_cast<const Dungeon_Variant *>(&dungeon);
-      if (variant) {
-        return get_arguments_status(variant->get_arguments());
+    switch (profession.get_type()) {
+      case Profession_Type::dungeon: {
+        auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
+        auto &dungeon = dungeon_reference->get_dungeon();
+        auto variant = dynamic_cast<const Dungeon_Variant *>(&dungeon);
+        if (variant) {
+          return get_arguments_status(variant->get_arguments());
+        }
+        else {
+          return Node_Status::resolved;
+        }
       }
-      else {
-        return Node_Status::resolved;
-      }
-    }
 
-    else if (profession.get_type() == Profession_Type::function) {
-      auto signature = static_cast<const Function_Signature *>(&profession);
-      return get_arguments_status(signature->get_elements());
-//      bool some_resolved = false;
-//      bool some_unknown = false;
-//      for (auto &parameter: signature->get_parameters()) {
-//        if (get_status_using_profession(*parameter->get_profession()) == Node_Status::resolved) {
-//          if (some_unknown)
-//            return Node_Status::partial;
-//
-//          some_resolved = true;
-//        }
-//        else {
-//          if (some_resolved)
-//            return Node_Status::partial;
-//
-//          some_unknown = true;
-//        }
-//      }
-//      return some_resolved
-//             ? Node_Status::resolved
-//             : Node_Status::unresolved;
-    }
-    else {
-      return profession.get_type() != Profession_Type::unknown
-             && profession.get_type() != Profession_Type::generic_parameter
-             ? Node_Status::resolved
-             : Node_Status::unresolved;
+      case Profession_Type::function: {
+        auto signature = static_cast<const Function_Signature *>(&profession);
+        return get_arguments_status(signature->get_elements());
+      }
+
+      case Profession_Type::unknown:
+//      case Profession_Type::Void:
+      case Profession_Type::generic_parameter:
+        return Node_Status::unresolved;
+
+      default:
+        return Node_Status::resolved;
     }
   }
 

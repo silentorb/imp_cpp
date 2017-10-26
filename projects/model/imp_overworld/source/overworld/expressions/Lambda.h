@@ -21,18 +21,8 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        std::string result = "(";
-        bool first = true;
-        for (auto &element : function->get_signature().get_elements()) {
-          if (first)
-            first = false;
-          else
-            result += " -> ";
-
-          result += element->get_node().get_profession().get_name();
-        }
-
-        return result + ")";
+        auto signature = static_cast<const Function_Signature*>(&node.get_profession());
+        return "L" + signature->get_debug_name_with_names();
       }
 
       Profession_Reference &get_profession() override {

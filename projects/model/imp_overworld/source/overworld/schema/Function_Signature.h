@@ -45,12 +45,11 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        return "Function Profession";
+        return "Function Signature";
       }
 
-      const std::string get_debug_name() const override {
-        return "Function Profession";
-      }
+      const std::string get_debug_name() const override;
+      const std::string get_debug_name_with_names() const;
 
       Profession_Reference &get_base(Profession_Reference &self) override {
         return self;

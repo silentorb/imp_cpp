@@ -7,11 +7,20 @@ namespace overworld {
   const std::string Enchantment::get_name() const {
     return dungeon.get_name();
   }
+
   const std::string Enchantment::get_argument_string(int index) const {
     if (index >= 0 && index < arguments.size()) {
       auto literal_string = dynamic_cast<overworld::Literal_String *>(arguments[0].get());
       return literal_string->get_value();
     }
     return "";
+  }
+
+  Enchantment *Enchantment_Container::get_enchantment(const Dungeon &dungeon) const {
+    for (auto &entry : enchantments) {
+      if (&entry->get_dungeon() == &dungeon)
+        return entry.get();
+    }
+    return nullptr;
   }
 }

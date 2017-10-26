@@ -64,33 +64,38 @@ namespace imp_mirror {
       auto &first = parameter.get_node();
       auto &argument = *invoke_arguments[i];
       auto &second = *argument.get_node();
-      auto k = first.get_element().get_type();
       if (&first.get_parent().get_function() != &second.get_parent().get_function()
           && first.get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
-//        auto argument_node = new Argument_Node(first.get_profession(),
-//                                               member_container,
-//                                               scope.get_overworld_scope().get_function(),
-//                                               profession_library,
-//                                               source_argument.get_source_point());
-//        invoke.add_argument_node(std::unique_ptr<Argument_Node>(argument_node));
-//        throw std::runtime_error("Not implemented.");
-
         auto connection = new Variant_To_Argument(member_container.get_node(), second, i);
         graph.connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
-//        throw std::runtime_error("Not implemented.");
       }
       else {
-        graph.connect(first, second);
+        auto &parent = first.get_parent();
+        auto &dungeon_parent = parent.get_type() == Parent_Type::dungeon
+                          ? parent.get_dungeon()
+                          : parent.get_function().get_original().get_element().get_parent().get_dungeon();
+
+        if (!dungeon_parent.get_original().is_generic()) {
+          graph.connect(first, second);
+        }
+
         if (argument.get_type() == Expression_Type::lambda) {
           auto &lambda = static_cast<Lambda &>(argument);
           auto &member_container = find_member_container(invoke.get_expression());
-          auto connection = new Lambda_To(member_container.get_node(), second, i);
+          auto connection = new Variant_To_Lambda(member_container.get_node(), second, 0, i);
           graph.connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
-//          throw std::runtime_error("Not implemented.");
         }
       }
+    }
+  }
+
+  void Connector::connect_lambda_parameters(overworld::Node &lambda_node, overworld::Function_Signature &signature) {
+    for (int i = 0; i < signature.get_elements().size(); ++i) {
+      auto &element = signature.get_elements()[i];
+      auto connection = new Lambda_To_Parameter(lambda_node, element->get_node(), i);
+      graph.connect(lambda_node, element->get_node(), std::unique_ptr<Connection>(connection));
     }
   }
 }

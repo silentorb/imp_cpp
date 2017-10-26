@@ -22,13 +22,7 @@ namespace overworld {
           enchantments.push_back(Enchantment_Owner(new Enchantment(dungeon)));
       }
 
-      Enchantment *get_enchantment(const Dungeon &dungeon) const {
-        for (auto &entry : enchantments) {
-          if (&entry->get_dungeon() == &dungeon)
-            return entry.get();
-        }
-        return nullptr;
-      }
+      Enchantment *get_enchantment(const Dungeon &dungeon) const;
 
       bool has_enchantment(const Dungeon &enchantment) const {
         return get_enchantment(enchantment) != nullptr;

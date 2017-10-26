@@ -60,20 +60,22 @@ namespace solving {
     return result;
   }
 
-  char get_connection_symbol(Connection_Type type) {
+  std::string get_connection_symbol(Connection_Type type) {
     switch (type) {
       case Connection_Type::direct:
-        return '*';
+        return "**";
 
       case Connection_Type::compound_to_scalar:
-        return '%';
+        return "V*";
 
-      case Connection_Type::lambda:
-        return 'L';
+      case Connection_Type::variant_to_lambda:
+        return "LV";
 
-      default:
-        throw std::runtime_error("Not supported.");
+      case Connection_Type::lambda_to_parameter:
+        return "L*";
+
     }
+    throw std::runtime_error("Not supported.");
   }
 
   void log_nodes(graphing::Reference_Graph<Node, Connection> &graph) {
@@ -87,7 +89,7 @@ namespace solving {
       log_node(*node);
       for (auto &connection : node->get_connections()) {
 
-        std::cout << std::string(" ") + get_connection_symbol(connection->get_type()) + " ";
+        std::cout << std::string("  ") + get_connection_symbol(connection->get_type()) + " ";
 
         log_node(connection->get_other(*node));
       }

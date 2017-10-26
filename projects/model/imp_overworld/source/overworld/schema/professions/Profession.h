@@ -67,6 +67,7 @@ namespace overworld {
       }
 
       Dungeon_Interface &get_dungeon_interface();
+      const Dungeon_Interface &get_dungeon_interface() const;
   };
 
   using Profession_Owner = std::unique_ptr<Profession>;

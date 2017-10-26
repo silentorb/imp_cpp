@@ -8,6 +8,83 @@ using namespace overworld;
 
 namespace solving {
 
+  bool professions_match(const Profession &first, const Profession &second) {
+    if (first.get_type() != second.get_type())
+      return false;
+
+    if (&first == &second) {
+      return true;
+    }
+
+    switch (first.get_type()) {
+
+      case Profession_Type::unknown:
+      case Profession_Type::Void:
+        return true;
+
+      case Profession_Type::dungeon: {
+        auto &first_dungeon = first.get_dungeon_interface();
+        auto &second_dungeon = second.get_dungeon_interface();
+        if (&first_dungeon == &second_dungeon)
+          return true;
+
+        if (first_dungeon.get_dungeon_type() == Dungeon_Type::variant
+            && second_dungeon.get_dungeon_type() == Dungeon_Type::variant) {
+          auto first_variant = static_cast<const Dungeon_Variant *>(&first_dungeon);
+          auto second_variant = static_cast<const Dungeon_Variant *>(&second_dungeon);
+          if (&first_variant->get_original() != &second_variant->get_original())
+            return false;
+
+          if (first_variant->get_arguments().size() != second_variant->get_arguments().size())
+            throw std::runtime_error("Dungeon variants share same original but have different argument counts.");
+
+          auto second_elements = second_variant->get_arguments().begin();
+          for (auto &element : first_variant->get_arguments()) {
+            if (!professions_match(element->get_profession(), (*second_elements++)->get_profession()))
+              return false;
+          }
+
+          return true;
+        }
+        return false;
+      }
+        throw std::runtime_error("Not implemented.");
+
+      case Profession_Type::function: {
+        auto first_signature = static_cast<const Function_Signature *>(&first);
+        auto second_signature = static_cast<const Function_Signature *>(&second);
+        if (first_signature->get_elements().size() != second_signature->get_elements().size())
+          return false;
+
+        auto second_elements = second_signature->get_elements().begin();
+        for (auto &element : first_signature->get_elements()) {
+          if (!professions_match(*element->get_profession(), *(*second_elements++)->get_profession()))
+            return false;
+        }
+
+        return true;
+      }
+
+      case Profession_Type::generic_parameter:
+        throw std::runtime_error("Not implemented.");
+
+      case Profession_Type::primitive:
+        throw std::runtime_error("Not implemented.");
+
+      case Profession_Type::reference:
+        return professions_match(first.get_base(), second.get_base());
+
+
+      case Profession_Type::Union:
+        throw std::runtime_error("Not implemented.");
+
+      case Profession_Type::variant:
+        throw std::runtime_error("Not implemented.");
+    }
+
+    throw std::runtime_error("Not implemented.");
+  }
+
   void Solver::add_node(Node &node) {
     if (node.get_status() != Node_Status::resolved)
       unresolved.push_back(&node);
@@ -34,7 +111,7 @@ namespace solving {
 
   bool Solver::is_conflict(Connection &connection) {
     if (connection.get_type() != Connection_Type::direct) {
-      std::cout << "WARNING: Not yet checking conflicts across mapped connections." << std::endl;
+//      std::cout << "WARNING: Not yet checking conflicts across mapped connections." << std::endl;
       return false;
     }
 
@@ -108,64 +185,72 @@ namespace solving {
   }
 
   Progress Solver::try_push(Node &first, Node &second, Connection &connection, Direction direction) {
-    if (second.get_status() != Node_Status::resolved) {
-#if DEBUG_SOLVER > 0
-      std::cout << "# " << first.get_debug_string() << " > " << second.get_debug_string() << std::endl;
+    if (first.get_status() == Node_Status::unresolved)
+      throw std::runtime_error("Should not be trying to push an unresolved node.");
+
+    if (second.get_status() == Node_Status::resolved) {
+#if DEBUG_SOLVER >= 2
+      if (direction == Direction::out)
+        std::cout << "  (" << (int) first.get_status() << ") " << first.get_debug_string()
+                  << " !~> (" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
+      else
+        std::cout << "  (" << (int) second.get_status() << ") " << second.get_debug_string()
+                  << " <~! (" << (int) first.get_status() << ") " << first.get_debug_string() << std::endl;
 #endif
-      if (first.get_profession().get_type() == Profession_Type::Void)
-        return 0;
-
-      if (first.get_status() == Node_Status::resolved) {
-        auto profession = connection.get_profession(first);
-        if (profession.get_type() == overworld::Profession_Type::unknown) {
-          first.get_status();
-          connection.get_profession(first);
-        }
-
-          set_profession(second, profession);
-        return 1;
-      }
-      else {
-        auto profession = connection.get_profession(first);
-        if (profession.get_type() == overworld::Profession_Type::unknown)
-          return 0;
-
-        set_profession(second, profession);
-        return 1;
-      }
+      return 0;
     }
-    else if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
+
+    if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
 #if DEBUG_SOLVER > 0
       std::cout << "# " << first.get_debug_string() << " :: " << second.get_debug_string() << std::endl;
 #endif
+      return 0;
     }
-#if DEBUG_SOLVER >= 2
-    else {
-      auto foo = first.get_debug_string();
-      if (foo[foo.size() - 1] == ')') {
-        first.get_status();
-        auto k2 = foo + "bob";
-        int k = 0;
-      }
-      if (direction == Direction::out)
-        std::cout << "  " << first.get_debug_string() << " !~> " << second.get_debug_string() << std::endl;
-      else
-        std::cout << "  " << second.get_debug_string() << " <~! " << first.get_debug_string() << std::endl;
+
+    auto profession = connection.get_profession(first);
+    if (profession.get_type() == overworld::Profession_Type::unknown
+        || profession.get_type() == Profession_Type::Void) {
+      return 0;
     }
+
+    if (professions_match(*profession, *second.get_profession())) {
+#if DEBUG_SOLVER > 0
+      std::cout << "  (" << (int) first.get_status() << ") " << first.get_debug_string() << " == "
+                << "(" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
 #endif
-    return 0;
+      return 0;
+    }
+
+#if DEBUG_SOLVER > 0
+    std::string operation = ">";
+    if (connection.get_type() != Connection_Type::direct) {
+      operation = &connection.get_first() == &first
+                  ? "fs >"
+                  : "sf >";
+    }
+    std::cout << "# (" << (int) first.get_status() << ") " << first.get_debug_string() << " " << operation << " "
+              << "(" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
+#endif
+    set_profession(second, profession);
+    return 1;
   }
 
   Progress Solver::inhale(Node &node) {
     for (auto connection : node.get_connections()) {
-      if (try_push(connection->get_other(node), node, *connection, Direction::in))
-        return 1;
+      auto &other_node = connection->get_other(node);
+      if (other_node.get_status() != Node_Status::unresolved) {
+        if (try_push(other_node, node, *connection, Direction::in))
+          return 1;
+      }
     }
     return 0;
   }
 
   Progress Solver::exhale(Node &node) {
     Progress progress = 0;
+    if (node.get_status() == Node_Status::unresolved)
+      throw std::runtime_error("Should not being trying to push an unresolved node.");
+
     for (auto connection : node.get_connections()) {
       progress += try_push(node, connection->get_other(node), *connection, Direction::out);
     }
@@ -216,8 +301,8 @@ namespace solving {
     return false;
   }
 
-  Profession_Reference *
-  find_first_match(std::vector<Profession_Reference> &first_buffer, std::vector<Profession_Reference> &second_buffer) {
+  Profession_Reference *find_first_match(std::vector<Profession_Reference> &first_buffer,
+                                         std::vector<Profession_Reference> &second_buffer) {
     for (auto &first_step : first_buffer) {
       if (buffer_has_item(second_buffer, first_step.get()))
         throw std::runtime_error("Not sure if this is working right.");
@@ -362,8 +447,10 @@ namespace solving {
 
   bool Solver::has_unresolved_nodes() {
     for (auto node : graph.get_nodes()) {
-      if (node->get_status() != Node_Status::resolved)
+      if (node->get_status() != Node_Status::resolved
+          && node->get_profession().get_type() != Profession_Type::Void) {
         return true;
+      }
     }
 
     return false;
@@ -406,21 +493,46 @@ namespace solving {
 #endif
   }
 
-  bool Solver::solve() {
-    initialize();
+  void Solver::update_unresolved_without_void() {
+//    for (auto i = unresolved.size() - 1; i >= 0; --i) {
+//      auto &node = unresolved[i];
+//      if (node->get_profession().get_type() == Profession_Type::Void)
+//        unresolved.erase(unresolved.begin() + i);
+//    }
 
+    unresolved.clear();
+    for (auto node : graph.get_nodes()) {
+      if (node->get_status() != Node_Status::resolved
+          && node->get_profession().get_type() != Profession_Type::Void) {
+        unresolved.push_back(node);
+      }
+    }
+  }
+
+  bool Solver::_solve() {
     int x = 0;
     while (update_changed() || update_conflicts()) {
       auto progress = process_changed() +
                       process_conflicts();
-if (x++ > 100)
-  return false;
+
+      if (x++ > 20) {
+        std::cout << "!!! Exceeded maximum solver iterations !!!" << std::endl;
+        return false;
+      }
+
       if (progress == 0) {
-        if (has_unresolved_nodes() || !conflict_manager.conflicts.empty())
+        if (has_unresolved_nodes() || !conflict_manager.conflicts.empty()) {
           return false;
+        }
       }
     }
 
     return true;
+  }
+
+  bool Solver::solve() {
+    initialize();
+    bool result = _solve();
+    return result;
   }
 }

@@ -23,5 +23,6 @@ namespace imp_mirror {
                                             const std::vector<underworld::Expression_Owner> &source_arguments,
                                             Scope &scope);
 
+      void connect_lambda_parameters(overworld::Node &lambda_node, overworld::Function_Signature &signature);
   };
 }

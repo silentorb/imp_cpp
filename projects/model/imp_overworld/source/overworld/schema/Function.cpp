@@ -41,13 +41,14 @@ namespace overworld {
   }
 
   void Function::finalize(overworld::Profession_Library &profession_library) {
-    if (!returns_a_value()) {
-      set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
-//      node.set_status(Node_Status::resolved);
-    }
-    else {
-      set_profession(profession_library.get_unknown(), Empty_Profession_Setter::get_instance());
-    }
+    set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
+//    if (!returns_a_value()) {
+//      set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
+////      node.set_status(Node_Status::resolved);
+//    }
+//    else {
+//      set_profession(profession_library.get_unknown(), Empty_Profession_Setter::get_instance());
+//    }
   }
 
 

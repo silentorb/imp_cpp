@@ -107,6 +107,10 @@ namespace solving {
                                                               overworld::Function &function,
                                                               overworld::Generic_Parameter &parameter);
 
+      void update_unresolved_without_void();
+
+      bool _solve();
+
   public:
       Solver(Graph &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library),
@@ -123,7 +127,7 @@ namespace solving {
       void add_node(Node &node);
 
       std::vector<Node *> &get_unsolved_nodes() {
-        update_unresolved();
+        update_unresolved_without_void();
         return unresolved;
       }
 

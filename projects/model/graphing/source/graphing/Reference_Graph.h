@@ -106,6 +106,12 @@ namespace graphing {
       }
 
       void connect(Node &first, Node &second, std::unique_ptr<Connection> connection) {
+        if (!has_node(first))
+          add_node(first);
+
+        if (!has_node(second))
+          add_node(second);
+
         auto &connection_reference = *connection;
         connections.push_back(std::move(connection));
         first.add_connection(connection_reference);

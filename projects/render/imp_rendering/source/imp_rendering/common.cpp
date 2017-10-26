@@ -224,28 +224,26 @@ namespace imp_rendering {
   }
 
   Stroke render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
-    auto minions = function_call.get_signature().get_parameters().begin();
+    auto minions = function_call.get_signature().get_elements().begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
     auto &member = member_expression->get_member();
     if (member.get_type() == Member_Type::function) {
       auto &function = member.get_function();
       auto &enchantments = function.get_enchantments();
+      int i = 0;
       if (enchantments.has_enchantment(*standard_enchantments->input_stream)) {
         return render_expression(function_call.get_expression(), scope) + " << " +
                join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-                 [& minions, & scope](const overworld::Expression_Owner &expression) {
+                 [& minions, & scope, &function_call, &i](const overworld::Expression_Owner &expression) {
                    return render_argument(*expression, **minions++, scope);
                  }), " << ");
       }
     }
 
-		int i = 0;
     return render_expression(function_call.get_expression(), scope) + "(" +
            join(function_call.get_arguments(), Joiner<const overworld::Expression_Owner>(
-             [& minions, & scope, &function_call, &i](const overworld::Expression_Owner &expression) {
-               auto &temp = function_call.get_signature().get_elements()[i++];
-//							 auto &temp2 = *minions;
-               return render_argument(*expression, *temp, scope);
+             [& minions, & scope](const overworld::Expression_Owner &expression) {
+               return render_argument(*expression, **minions++, scope);
              }), ", ") + ")";
   }
 
@@ -305,7 +303,7 @@ namespace imp_rendering {
       }
       case overworld::Profession_Type::dungeon:
       case overworld::Profession_Type::variant: {
-				auto dungeon_reference = static_cast<const Dungeon_Reference*>(&profession);
+        auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
         return render_dungeon_interface(dungeon_reference->get_dungeon(), scope);
       }
 

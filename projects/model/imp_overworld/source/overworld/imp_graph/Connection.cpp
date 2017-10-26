@@ -25,7 +25,7 @@ namespace overworld {
     else {
       auto &compound_profession = first.get_profession();
       auto &dungeon = compound_profession->get_dungeon_interface();
-      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+//      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
       std::vector<overworld::Profession_Reference> professions;
       professions.push_back(second.get_profession());
       auto new_variant = new Dungeon_Variant(dungeon.get_original(), professions);
@@ -34,42 +34,96 @@ namespace overworld {
     }
   }
 
-  Profession_Reference Lambda_To::get_profession(Node &node) {
+  Profession_Reference derive_function_signature(Function_Signature &old_signature,
+                                                 Profession_Reference &new_profession, int index) {
+    auto signature = new overworld::Function_Signature();
+    auto result = overworld::Profession_Reference(signature);
+    auto &old_elements = old_signature.get_elements();
+    auto &first_old_element = old_elements[0];
+
+    for (auto i = 0; i < old_elements.size(); ++i) {
+      if (i == index) {
+        signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
+          first_old_element->get_name(),
+          new_profession,
+          first_old_element->get_element().get_parent(),
+          first_old_element->get_element().get_source_point()
+        )));
+      }
+      else {
+        auto &element = old_elements[i];
+        signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
+          element->get_name(),
+          element->get_profession(),
+          element->get_element().get_parent(),
+          element->get_element().get_source_point()
+        )));
+      }
+    }
+
+    return result;
+  }
+
+  Profession_Reference Variant_To_Lambda::get_profession(Node &node) {
     auto &first = get_first();
     auto &second = get_second();
 
+    auto &compound_profession = first.get_profession();
+    auto &dungeon = compound_profession->get_dungeon_interface();
+    auto &lambda_profession = second.get_profession().get_base(second.get_profession());
+    auto signature = static_cast<Function_Signature *>(lambda_profession.get());
+
     if (&node == &get_first()) {
-      auto &compound_profession = first.get_profession();
-      auto &dungeon = compound_profession->get_dungeon_interface();
       auto variant = static_cast<Dungeon_Variant *>(&dungeon);
       auto &arguments = variant->get_arguments();
-			auto &new_profession = arguments[parameter_index]->get_node().get_profession();
-      auto signature = new overworld::Function_Signature();
-      auto result = overworld::Profession_Reference(signature);
-      auto &second_profession = second.get_profession().get_base(second.get_profession());
-      auto old_signature = static_cast<Function_Signature *>(second_profession.get());
-      auto &old_elements = old_signature->get_elements();
-      auto &first_old_element = old_elements[0];
-      signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
-        first_old_element->get_name(),
-        new_profession,
-        first_old_element->get_element().get_parent(),
-        first_old_element->get_element().get_source_point()
-      )));
-      for (auto i = old_elements.begin() + 1; i != old_elements.end(); i++) {
-        auto &element = **i;
-        signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
-          element.get_name(),
-          element.get_profession(),
-          element.get_element().get_parent(),
-          element.get_element().get_source_point()
-        )));
-      }
-      return result;
+      auto &new_profession = arguments[variant_parameter_index]->get_node().get_profession();
+      return derive_function_signature(*signature, new_profession, lambda_parameter_index);
+//      auto signature = new overworld::Function_Signature();
+//      auto result = overworld::Profession_Reference(signature);
+//      auto old_signature = static_cast<Function_Signature *>(second_profession.get());
+//      auto &old_elements = old_signature->get_elements();
+//      auto &first_old_element = old_elements[0];
+//      signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
+//        first_old_element->get_name(),
+//        new_profession,
+//        first_old_element->get_element().get_parent(),
+//        first_old_element->get_element().get_source_point()
+//      )));
+//      for (auto i = old_elements.begin() + 1; i != old_elements.end(); i++) {
+//        auto &element = **i;
+//        signature->add_element(overworld::Parameter_Owner(new overworld::Parameter(
+//          element.get_name(),
+//          element.get_profession(),
+//          element.get_element().get_parent(),
+//          element.get_element().get_source_point()
+//        )));
+//      }
+//      return result;
     }
     else {
-      auto &compound_profession = first.get_profession();
-      throw std::runtime_error("Not implemented.");
+
+//      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+      std::vector<overworld::Profession_Reference> professions;
+      professions.push_back(signature->get_elements()[lambda_parameter_index]->get_profession());
+      auto new_variant = new Dungeon_Variant(dungeon.get_original(), professions);
+      auto dungeon_reference = new Dungeon_Reference(Dungeon_Interface_Owner(new_variant));
+      return Profession_Reference(dungeon_reference);
+    }
+  }
+
+  Profession_Reference Lambda_To_Parameter::get_profession(Node &node) {
+    auto &first = get_first();
+    auto &second = get_second();
+
+    auto &parameter_profession = second.get_profession().get_base(second.get_profession());
+    if (&node == &get_first()) {
+      auto &lambda_profession = first.get_profession().get_base(first.get_profession());
+      auto signature = static_cast<Function_Signature *>(lambda_profession.get());
+      return signature->get_elements()[lambda_parameter_index]->get_profession();
+//      throw std::runtime_error("Not implemented");
+    }
+    else {
+      return parameter_profession;
     }
   }
 }

@@ -23,4 +23,9 @@ namespace overworld {
     auto dungeon_reference = static_cast<Dungeon_Reference *>(this);
     return dungeon_reference->get_dungeon_interface();
   }
+
+  const Dungeon_Interface &Profession::get_dungeon_interface() const {
+    auto dungeon_reference = static_cast<const Dungeon_Reference *>(this);
+    return dungeon_reference->get_dungeon_interface();
+  }
 }

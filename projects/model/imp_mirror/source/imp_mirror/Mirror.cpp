@@ -64,7 +64,7 @@ namespace imp_mirror {
                        input_profession.get_source_point());
     }
 
-    return dynamic_cast<overworld::Dungeon *>(output_profession.get());
+    return &output_profession->get_dungeon_interface().get_original();
   }
 
   void Mirror::reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
@@ -72,7 +72,11 @@ namespace imp_mirror {
                                     Scope &scope) {
     for (auto &input_enchantment: input_enchantments) {
       auto dungeon = find_enchantment_dungeon(input_enchantment->get_profession(), scope);
-
+      if (!dungeon) {
+        find_enchantment_dungeon(input_enchantment->get_profession(), scope);
+        throw std::runtime_error("Could not find enchantment for profession "
+                                 + input_enchantment->get_profession().get_name());
+      }
       if (input_enchantment->get_arguments().size() > 0) {
         auto complex_enchantment = new overworld::Enchantment(*dungeon);
         output_enchantments.add_enchantment(overworld::Enchantment_Owner(complex_enchantment));
@@ -98,7 +102,6 @@ namespace imp_mirror {
            != overworld::Profession_Type::unknown) {
       target.set_profession(value_profession,
                             overworld::Empty_Profession_Setter::get_instance());
-      target.set_status(overworld::Node_Status::resolved);
     }
   }
 
@@ -135,6 +138,9 @@ namespace imp_mirror {
 
     auto lambda = new overworld::Lambda(std::move((output_function_owner)),
                                         scope.get_overworld_scope().get_parent());
+
+    connector.connect_lambda_parameters(*lambda->get_node(), output_function->get_signature());
+
     return overworld::Expression_Owner(lambda);
   }
 
@@ -424,7 +430,6 @@ namespace imp_mirror {
                                       scope.get_overworld_scope().get_parent(),
                                       input_chain.get_source_point());
     overworld::Expression_Owner result(chain);
-//    graph.connect(*first->get_node(), *second->get_node()).set_type(overworld::Connection_Type::member);
     return result;
   }
 
@@ -669,16 +674,6 @@ namespace imp_mirror {
     return reflect_profession(*profession, scope);
   }
 
-//  void Mirror::create_block_parameter(const underworld::Parameter &input_parameter,
-//                                      overworld::Function_With_Block &output_function,
-//                                      Scope &block_scope, Scope &scope) {
-//    auto parameter = create_parameter(input_parameter, scope,
-//                                      output_function);
-//    auto &minion = reflect_minion(input_parameter, block_scope);
-//    graph.connect(minion.get_node(), parameter->get_node());
-//    output_function.get_signature().add_element(std::move(parameter));
-//  }
-
   void Mirror::reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                             overworld::Function_With_Block &output_function, Scope &scope) {
     auto profession = reflect_profession(input_function.get_profession(), scope);
@@ -689,15 +684,6 @@ namespace imp_mirror {
       block_scope);
 
     reflect_function_signature(input_function.get_signature(), output_function.get_signature(), scope, block_scope);
-//    auto &parameters = input_function.get_parameters();
-//    for (auto &input_parameter : parameters) {
-//      create_block_parameter(*input_parameter, output_function, block_scope, scope);
-////      auto parameter = create_parameter(*source_parameter, scope,
-////                                        output_function);
-////      auto &minion = reflect_minion(*source_parameter, block_scope);
-////      graph.connect(minion.get_node(), parameter->get_node());
-////      output_function.get_signature().add_element(std::move(parameter));
-//    }
   }
 
   void Mirror::reflect_function_with_block3(const underworld::Function_With_Block &input_function,

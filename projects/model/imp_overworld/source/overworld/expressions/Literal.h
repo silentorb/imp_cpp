@@ -37,7 +37,7 @@ namespace overworld {
         Literal(parent, source_range),
         value(value),
         node(Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), element) {
-        node.set_status(Node_Status::resolved);
+//        node.set_status(Node_Status::resolved);
       }
 
       Primitive_Type get_primitive_type() const override {

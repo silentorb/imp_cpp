@@ -64,6 +64,7 @@ namespace imp_wrapper {
       if (unknowns.size() > 0) {
         auto &unknown = *unknowns[0];
         auto &element = unknown.get_element();
+				unknown._get_status();
         throw std::runtime_error("Could not determine type of \"" + element.get_name() +
                                  "\" at " + element.get_source_point().get_start().to_string() + ".");
       }

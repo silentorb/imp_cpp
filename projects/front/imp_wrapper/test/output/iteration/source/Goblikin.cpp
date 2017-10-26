@@ -1,7 +1,7 @@
-#include <memory>
 #include <iostream>
 #include "Ingredient.h"
 #include <vector>
+#include <memory>
 #include "Goblikin.h"
 
 void Goblikin::craft() {
@@ -9,7 +9,8 @@ void Goblikin::craft() {
   auto tail = std::unique_ptr<Ingredient>(new Ingredient());
   tail->name = "dragon's tail";
   ingredients.push_back(std::move(tail));
-  ingredients.map([&] () {
-  std::cout(i.name);
-});
+
+  for (auto &i : ingredients) {
+    std::cout << i->name;
+  }
 }

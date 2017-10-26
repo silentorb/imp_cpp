@@ -48,6 +48,10 @@ namespace overworld {
         return dungeon;
       }
 
+      const Dungeon_Interface &get_dungeon_interface() const{
+        return dungeon;
+      }
+
       Dungeon &get_dungeon() {
         return dungeon.get_original();
       }

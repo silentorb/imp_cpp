@@ -106,6 +106,10 @@ namespace overworld {
 
 //      void add_enchantment(Enchantment &enchantment);
 
+      bool is_generic() const {
+        return generic_parameters.size() > 0;
+      }
+
       Enchantment_Container &get_enchantments() {
         return enchantments;
       }
