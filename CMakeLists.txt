@@ -23,8 +23,10 @@ endif ()
 
 include("${CMAKE_TOOLS_PATH}/cmake-tools.cmake")
 
-add_subdirectory(${CMAKE_BOOST_DIR}/projects/system projects/system)
-add_subdirectory(${CMAKE_BOOST_DIR}/projects/filesystem projects/filesystem)
+add_subdirectory(${SHARED_DIR}/boost/projects/system projects/system)
+add_subdirectory(${SHARED_DIR}/boost/projects/filesystem projects/filesystem)
+
+add_subdirectory(${SHARED_DIR}/yaml projects/yaml)
 
 add_subdirectory(projects/parse/source_mapping)
 add_subdirectory(projects/parse/runic)
@@ -45,7 +47,7 @@ add_subdirectory(projects/render/imp_rendering)
 add_subdirectory(projects/front/imp_taskmaster)
 add_subdirectory(projects/front/imp_wrapper)
 
-add_subdirectory(${GTEST_DIR} projects2/googletest)
+add_subdirectory(${SHARED_DIR}/googletest projects2/googletest)
 
 add_subdirectory(projects/parse/runic_imp/test)
 add_subdirectory(projects/parse/imp_summoning/test)
@@ -53,7 +55,7 @@ add_subdirectory(projects/model/imp_mirror/test)
 add_subdirectory(projects/front/imp_wrapper/test)
 add_subdirectory(projects/parse/cpp_scanning/test)
 
-add_subdirectory(${CMAKE_BOOST_DIR}/projects/system projects2/system)
+add_subdirectory(${SHARED_DIR}/boost/projects/system projects2/system)
 
 macro(add_if_exists dir)
   if (EXISTS ${CMAKE_SOURCE_DIR}/${dir})

@@ -1,6 +1,6 @@
 {
   "external": {
-    "boost.filesystem": {
+    "boost": {
       "remote": {
         "type": "github",
         "path": "silentorb/cmake-boost"
@@ -10,6 +10,12 @@
       "remote": {
         "type": "github",
         "path": "silentorb/archmage-googletest"
+      }
+    },
+    "yaml": {
+      "remote": {
+        "type": "github",
+        "path": "silentorb/archmage-yaml"
       }
     }
   }
