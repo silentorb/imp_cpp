@@ -1,0 +1,7 @@
+
+Position {
+    @public:
+       x: Float
+       y: Float
+       z: Float
+}

@@ -12,6 +12,8 @@ namespace overworld {
 
   class Parameter;
 
+  class Temporary_Member;
+
   enum class Member_Type {
       none,
       dungeon,
@@ -20,6 +22,7 @@ namespace overworld {
       parameter,
       profession,
       profession_reference,
+      temporary,
   };
 
   class Member {
@@ -31,6 +34,7 @@ namespace overworld {
           Parameter *parameter;
           const Profession *profession;
           Profession_Reference *profession_reference;
+          Temporary_Member *temporary;
       };
 
   public:
@@ -41,12 +45,6 @@ namespace overworld {
 
       Member(const Dungeon &dungeon) :
         type(Member_Type::dungeon), dungeon(const_cast<Dungeon *>(&dungeon)) {}
-
-//      // Hack to differentiate from the Dungeon constructor.
-//      Member(Profession_Reference &profession, bool) :
-//        type(Member_Type::profession), profession(&profession) {
-//        throw std::runtime_error("Not supported.");
-//      }
 
       Member(Parameter &parameter) :
         type(Member_Type::parameter), parameter(&parameter) {}
@@ -62,6 +60,9 @@ namespace overworld {
 
       Member(Minion &minion) :
         type(Member_Type::minion), minion(&minion) {}
+
+      Member(Temporary_Member &temporary) :
+        type(Member_Type::temporary), temporary(&temporary) {}
 
       Member_Type get_type() const {
         return type;

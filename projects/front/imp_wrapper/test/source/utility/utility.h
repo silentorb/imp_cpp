@@ -8,6 +8,7 @@
 #include <imp_mirror/Temporary_Interface_Manager.h>
 #include <underworld/schema/Dungeon.h>
 #include <imp_taskmaster/project_loader.h>
+#include "imp_wrapper/Project_Bundle.h"
 
 const std::string load_file(const std::string &file_path) {
   std::ifstream input(file_path);
@@ -31,7 +32,7 @@ void _compare(const std::string &first_file, const std::string &second_file) {
     std::cout << std::endl << command << std::endl;
     STARTUPINFO info = {sizeof(info)};
     PROCESS_INFORMATION processInfo;
-    if (CreateProcess(nullptr, const_cast<char *>(command.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info,
+    if (CreateProcess(nullptr, const_cast<char *>(command.c_str()), nullptr, nullptr, true, 0, nullptr, nullptr, &info,
                       &processInfo)) {
     }
     EXPECT_EQ(first, second);
@@ -56,13 +57,14 @@ void compile(const std::string &input_name) {
   boost::filesystem::create_directory(std::string(OUTPUT_PATH));
   boost::filesystem::create_directory(output_folder);
   boost::filesystem::create_directory(full_output_path);
-  imp_wrapper::Wrapper wrapper;
+  imp_wrapper::Global_Bundle wrapper;
   imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-  underworld::Dungeon underworld_root("", nullptr);
-  wrapper.load_file(std::string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp", underworld_root);
-  wrapper.mirror(temporary_interface_manager, underworld_root);
-  wrapper.solve();
-  wrapper.render(full_output_path);
+  auto project_bundle = wrapper.create_project_bundle(input_name);
+  wrapper.load_file(std::string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp",
+                    project_bundle->get_underworld_root());
+  wrapper.mirror(temporary_interface_manager, *project_bundle);
+  wrapper.solve(project_bundle->get_graph());
+  wrapper.render(full_output_path, project_bundle->get_overworld_root());
   std::ofstream output_stream(output_folder + "/CMakeLists.txt", std::ios_base::binary | std::ios_base::out);
   if (output_stream.is_open()) {
     output_stream << "create_library(generated_" + input_name + "_test)";

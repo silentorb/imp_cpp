@@ -17,6 +17,7 @@ namespace overworld {
       unresolved,
       resolved,
       partial,
+      optional,
   };
 
   class Node;

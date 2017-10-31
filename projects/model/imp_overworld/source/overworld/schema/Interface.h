@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Temporary_Interface.h"
+
 namespace overworld {
 
   class Virtual_Function;
@@ -18,11 +20,5 @@ namespace overworld {
       }
   };
 
-  class Temporary_Interface : public Interface {
 
-  public:
-      bool is_temporary() const override {
-        return true;
-      }
-  };
 }

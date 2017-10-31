@@ -578,6 +578,20 @@ namespace imp_rendering {
     return "template <" + parameter_string + ">";
   }
 
+  Stroke render_possible_namespace_block(const overworld::Parent &parent, Stroke stroke) {
+    auto namespace_string = get_namespace_string(parent, "::");
+    if (namespace_string == "") {
+      return stroke;
+    }
+    else {
+      Stroke result{new imp_artisan::internal::Standard_Block(
+        "namespace " + namespace_string
+      )};
+      result << stroke;
+      return result;
+    }
+  }
+
   Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
                                        Stroke stroke) {
     if (generic_parameters.size() > 0) {

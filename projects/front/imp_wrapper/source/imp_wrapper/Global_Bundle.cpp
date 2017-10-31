@@ -1,4 +1,4 @@
-#include "Wrapper_Internal.h"
+#include "Global_Bundle.h"
 #include <runic/common/Stream.h>
 #include <runic/File_Text_Source.h>
 #include <imp_summoning/Summoner.h>
@@ -6,40 +6,44 @@
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Solver.h>
 #include <solving/Solving_Visualizer.h>
+#include "Project_Bundle.h"
+
 
 namespace imp_wrapper {
 
-  Wrapper_Internal::Wrapper_Internal() :
+  Global_Bundle::Global_Bundle() :
 //    underworld_root("", nullptr),
-    overworld_root(""),
-    overworld_profession_library(graph) {
+    overworld_profession_library() {
     initialize_standard_library();
   }
 
-  Wrapper_Internal::~Wrapper_Internal() = default;
+  Global_Bundle::~Global_Bundle() = default;
 
-  void Wrapper_Internal::initialize_standard_library() {
+  void Global_Bundle::initialize_standard_library() {
     standard_library = new cpp_stl::Standard_Library();
-    standard_library->initialize_overworld(overworld_profession_library, graph);
+    standard_library->initialize_overworld(overworld_profession_library);
     standard_library->initialize_underworld(zookeeper);
     imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager, header_files);
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, nullptr, temporary_interface_manager,
+                              header_files);
     imp_mirror::Scope scope(standard_library->get_overworld_dungeon().get_scope());
     mirror.reflect_root(standard_library->get_underworld_dungeon(), scope);
   }
 
-  void Wrapper_Internal::load_file(const std::string &path, underworld::Dungeon &underworld_root) {
+  void Global_Bundle::load_file(const std::string &path, underworld::Dungeon &underworld_root) {
     zookeeper.load_file(path, underworld_root);
   }
 
-  void Wrapper_Internal::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager, underworld::Dungeon &underworld_root) {
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, graph, temporary_interface_manager, header_files);
-    imp_mirror::Scope scope(overworld_root.get_scope());
-    scope.add_dungeon(standard_library->get_overworld_dungeon());
-    mirror.reflect_root(underworld_root, scope);
+  void Global_Bundle::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager,
+                             Project_Bundle &project_bundle) {
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, &project_bundle.get_graph(), temporary_interface_manager,
+                              header_files);
+//    imp_mirror::Scope scope(project_bundle.get_overworld_root().get_scope());
+//    scope.add_dungeon(standard_library->get_overworld_dungeon());
+    mirror.reflect_root(project_bundle.get_underworld_root(), project_bundle.get_mirror_scope());
   }
 
-  void Wrapper_Internal::solve() {
+  void Global_Bundle::solve(overworld::Graph &graph) {
     solving::Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
 
@@ -64,7 +68,7 @@ namespace imp_wrapper {
       if (unknowns.size() > 0) {
         auto &unknown = *unknowns[0];
         auto &element = unknown.get_element();
-				unknown._get_status();
+        unknown._get_status();
         throw std::runtime_error("Could not determine type of \"" + element.get_name() +
                                  "\" at " + element.get_source_point().get_start().to_string() + ".");
       }
@@ -78,9 +82,29 @@ namespace imp_wrapper {
     }
   }
 
-  void Wrapper_Internal::render(const std::string &output_path) {
+  void Global_Bundle::render(const std::string &output_path, overworld::Dungeon &overworld_root) {
     imp_taskmaster::Taskmaster taskmaster(overworld_root, output_path, *standard_library);
     taskmaster.render();
   }
 
+  overworld::Dungeon &Global_Bundle::create_realm(const std::string &name) {
+    auto realm = new overworld::Dungeon(name);
+    realms[name] = overworld::Dungeon_Owner(realm);
+    return *realm;
+  }
+
+  std::unique_ptr<Project_Bundle> Global_Bundle::create_project_bundle(const std::string &name) {
+    auto &realm = create_realm(name);
+    auto bundle = std::unique_ptr<Project_Bundle>(new Project_Bundle(realm));
+    auto &scope = bundle->get_mirror_scope();
+    scope.add_dungeon(standard_library->get_overworld_dungeon());
+    return bundle;
+  }
+
+  overworld::Dungeon *Global_Bundle::get_realm(const std::string &name) {
+    if (realms.count(name) == 0)
+      return nullptr;
+
+    return realms[name].get();
+  }
 }

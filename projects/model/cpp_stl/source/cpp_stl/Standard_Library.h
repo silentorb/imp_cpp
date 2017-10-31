@@ -33,7 +33,7 @@ namespace cpp_stl {
 
   public:
       Standard_Library();
-      void initialize_overworld(overworld::Profession_Library &profession_library, overworld::Graph &graph);
+      void initialize_overworld(overworld::Profession_Library &profession_library);
       void initialize_underworld(imp_summoning::Zookeeper &zookeeper);
 
       overworld::Dungeon &get_unique_pointer() const {

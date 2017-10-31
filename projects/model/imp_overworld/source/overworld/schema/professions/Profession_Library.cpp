@@ -32,7 +32,7 @@ namespace overworld {
       Profession_Reference(primitives[4]),
     };
 
-  Profession_Library::Profession_Library(Graph &graph) : graph(graph) {
+  Profession_Library::Profession_Library() {
 
   }
 

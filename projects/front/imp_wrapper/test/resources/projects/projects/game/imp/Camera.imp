@@ -1,6 +1,6 @@
 
 Camera {
-  position = spatial.Position
+  position: spatial.Position
 
   get_position() {
     return position

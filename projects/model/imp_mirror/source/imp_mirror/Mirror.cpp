@@ -12,7 +12,7 @@
 #include <overworld/expressions/Self.h>
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Instantiation.h>
-#include <overworld/schema/Temporary_Minion.h>
+#include <overworld/schema/Temporary_Interface.h>
 #include <underworld/schema/Enchantment.h>
 #include <overworld/expressions/Lambda.h>
 #include <overworld/expressions/Range.h>
@@ -46,6 +46,11 @@ namespace imp_mirror {
   };
 
   static Basic_Profession_Setter profession_setter;
+
+  void Mirror::connect(overworld::Node &first, overworld::Node &second) {
+    if (graph)
+      graph->connect(first, second);
+  }
 
   overworld::Dungeon *Mirror::find_enchantment_dungeon(const underworld::Profession &input_profession,
                                                        Scope &scope) {
@@ -91,7 +96,7 @@ namespace imp_mirror {
   }
 
   void Mirror::apply_node_assignment(overworld::Node &target, overworld::Node &value) {
-    graph.connect(target, value);
+    connect(target, value);
 
     // Optimization to reduce the amount of graph solving later on
     // since so often variables types are defined by assigning them an instantiation.
@@ -113,7 +118,7 @@ namespace imp_mirror {
     auto value = reflect_expression(*input_assignment.get_value(), scope);
 
     apply_node_assignment(*last.get_node(), *value->get_node());
-    graph.connect(*last.get_node(), *value->get_node());
+    connect(*last.get_node(), *value->get_node());
     return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
   }
 
@@ -199,7 +204,7 @@ namespace imp_mirror {
     auto expression = reflect_expression(input_return.get_value(), scope);
     auto &first = scope.get_overworld_scope().get_parent().get_function().get_original()
       .get_signature().get_last().get_node();
-    graph.connect(first, *expression->get_node());
+    connect(first, *expression->get_node());
     return overworld::Expression_Owner(
       new overworld::Return_With_Value(std::move(expression)));
   }
@@ -328,7 +333,7 @@ namespace imp_mirror {
 //    }
 //    else {
 //
-////      graph.connect(*output_instantiation->get_node(), output_profession.get_node());
+////      connect(*output_instantiation->get_node(), output_profession.get_node());
 //    }
 
     for (auto &pair : source_arguments) {
@@ -339,7 +344,7 @@ namespace imp_mirror {
 
       auto &minion = input_member->get_minion();
       auto value = reflect_expression(*pair.second, scope);
-      graph.connect(minion.get_node(), *value->get_node());
+      connect(minion.get_node(), *value->get_node());
       output_instantiation->add_expression(minion, std::move(value));
     }
 
@@ -365,16 +370,17 @@ namespace imp_mirror {
 //      return overworld::Expression_Owner(result);
 //    }
 //    else
+
     if (previous_member.get_type() == overworld::Member_Type::parameter) {
       auto &parameter = previous_member.get_parameter();
       auto function = static_cast<overworld::Function_With_Block *>(&parameter.get_node().get_parent().get_function());
       auto &interface = function->get_or_create_interface(parameter);
-      auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
+      auto new_member = new overworld::Temporary_Member(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
                                                         scope.get_overworld_scope().get_parent().get_function());
-      auto member = interface.add_minion(overworld::Minion_Owner(new_member));
-      auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
+      interface.add_member(std::unique_ptr<overworld::Temporary_Member>(new_member));
+      auto result = new overworld::Member_Expression(*new_member, member_expression.get_source_point());
       new_member->add_expression(*result);
       return overworld::Expression_Owner(result);
     }
@@ -567,7 +573,10 @@ namespace imp_mirror {
       for (auto parameter : generic_parameters) {
         professions.push_back(profession_library.get_unknown());
       }
-      return profession_library.get_or_create_dungeon_variant(dungeon, professions, graph);
+      if (!graph)
+        throw std::runtime_error("Should not be here without a graph.");
+
+      return profession_library.get_or_create_dungeon_variant(dungeon, professions, *graph);
     }
 
     return dungeon.get_reference();

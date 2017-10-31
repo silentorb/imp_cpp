@@ -19,12 +19,11 @@ namespace overworld {
 //      std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
       std::unordered_map<Basic_Dungeon *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
-      Graph &graph;
       Enchantment_Library enchantment_library;
 //      std::vector<Profession_Owner> profession_store;
 
   public:
-      explicit Profession_Library(Graph &graph);
+      explicit Profession_Library();
 
       static Profession_Reference &get_unknown();
       static Profession_Reference &get_void();

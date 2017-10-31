@@ -6,7 +6,7 @@
 #include "Parameter.h"
 #include "Function_Interface.h"
 #include "Function_Signature.h"
-#include "Interface.h"
+#include "Temporary_Interface.h"
 
 namespace overworld {
 

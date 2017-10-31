@@ -1,7 +1,7 @@
 
 World {
 
-  camera = Camera {}
+  camera: Camera
 
   get_camera() {
     return camera

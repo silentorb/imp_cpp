@@ -40,8 +40,7 @@ namespace cpp_stl {
       Expression_Owner(new Literal_String(name, Parent(), source_mapping::Source_Range())));
   }
 
-  void Standard_Library::initialize_overworld(overworld::Profession_Library &profession_library,
-                                              overworld::Graph &graph) {
+  void Standard_Library::initialize_overworld(overworld::Profession_Library &profession_library) {
     set_external_name(overworld_dungeon, "std");
     overworld_dungeon.get_enchantments().add_enchantment(profession_library.get_enchantment_library().get_external());
 

@@ -425,7 +425,8 @@ namespace solving {
   int Solver::update_unresolved() {
     unresolved.clear();
     for (auto node : graph.get_nodes()) {
-      if (node->get_status() != Node_Status::resolved)
+      if (node->get_status() != Node_Status::resolved &&
+          node->get_status() != Node_Status::optional)
         unresolved.push_back(node);
     }
 
@@ -445,7 +446,7 @@ namespace solving {
   bool Solver::has_unresolved_nodes() {
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::resolved
-          && node->get_profession().get_type() != Profession_Type::Void) {
+          && node->get_status() != Node_Status::optional) {
         return true;
       }
     }
@@ -491,16 +492,10 @@ namespace solving {
   }
 
   void Solver::update_unresolved_without_void() {
-//    for (auto i = unresolved.size() - 1; i >= 0; --i) {
-//      auto &node = unresolved[i];
-//      if (node->get_profession().get_type() == Profession_Type::Void)
-//        unresolved.erase(unresolved.begin() + i);
-//    }
-
     unresolved.clear();
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::resolved
-          && node->get_profession().get_type() != Profession_Type::Void) {
+          && node->get_status() != Node_Status::optional) {
         unresolved.push_back(node);
       }
     }

@@ -74,8 +74,13 @@ namespace imp_taskmaster {
     render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
 
     if (imp_rendering::sources::needs_source_file(dungeon)) {
+      auto namespace_path = overworld::get_namespace_string(dungeon, "/");
+      if (namespace_path.size() > 0)
+        namespace_path += "/";
+
+      auto file_path = output_path + "/" + namespace_path + dungeon.get_name() + ".cpp";
       auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
-      render_and_write_strokes(source_strokes, output_path + "/" + dungeon.get_name() + ".cpp");
+      render_and_write_strokes(source_strokes, file_path);
     }
   }
 

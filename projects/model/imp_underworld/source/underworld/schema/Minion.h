@@ -10,6 +10,7 @@ namespace underworld {
   class Minion : public Member {
       const std::string name;
       Profession_Owner profession;
+      Expression_Owner expression;
 
   public:
       Minion(const std::string &name, Profession_Owner profession, const source_mapping::Source_Range &source_point) :

@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <imp_wrapper/Wrapper.h>
+#include <imp_wrapper/Global_Bundle.h>
 #include <utility/utility.h>
 #include <imp_wrapper/project_builder.h>
 
@@ -53,4 +53,7 @@ TEST(Main_Test, iteration) {
 
 TEST(Main_Test, projects) {
   imp_wrapper::build_workspace(std::string(RESOURCE_PATH) + "projects");
+  Comparison test("projects");
+  test.compare("game/Camera.h");
+  test.compare("game/World.h");
 }

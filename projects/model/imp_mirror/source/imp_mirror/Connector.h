@@ -8,7 +8,7 @@
 namespace imp_mirror {
 
   class Connector {
-      overworld::Graph &graph;
+      overworld::Graph *graph;
       overworld::Profession_Library &profession_library;
 
       overworld::Function_Signature &get_function_signature(overworld::Expression &expression,
@@ -16,7 +16,7 @@ namespace imp_mirror {
                                                             Scope &scope);
 
   public:
-      Connector(overworld::Graph &graph, overworld::Profession_Library &profession_library) :
+      Connector(overworld::Graph *graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library) {}
 
       void connect_parameters_and_arguments(overworld::Invoke &invoke,

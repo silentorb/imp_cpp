@@ -4,4 +4,4 @@ dependencies:
 build:
   imp:
     source: imp
-    output: ../../../../output/projects/output
+    output: ../../../../output/projects/source

@@ -34,32 +34,34 @@ namespace imp_mirror {
   class Mirror {
       overworld::Profession_Library &profession_library;
       Element_Map &element_map;
-      overworld::Graph &graph;
+      overworld::Graph *graph;
       Temporary_Interface_Manager &temporary_interface_manager;
       overworld::File_Library &header_files;
       Connector connector;
 
+      void connect(overworld::Node &first, overworld::Node &second);
+
       overworld::Basic_Dungeon *get_dungeon(overworld::Profession &profession) {
-        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(&profession);
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(&profession);
         return const_cast<overworld::Basic_Dungeon *> (&dungeon_reference->get_dungeon());
       }
 
       overworld::Basic_Dungeon *get_dungeon_interface(overworld::Profession &profession) {
-        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(&profession);
-        auto dungeon_interface = dynamic_cast<const overworld:: Basic_Dungeon*>(&dungeon_reference->get_dungeon());
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(&profession);
+        auto dungeon_interface = dynamic_cast<const overworld::Basic_Dungeon *>(&dungeon_reference->get_dungeon());
         return const_cast<overworld::Basic_Dungeon *> (dungeon_interface);
       }
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_profession();
-        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(profession.get());
         return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon().get_original());
       }
 
       overworld::Basic_Dungeon *get_dungeon_interface(overworld::Expression &expression) {
         auto &profession = expression.get_profession();
-        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference*>(profession.get());
-        auto dungeon_interface = dynamic_cast<const overworld:: Basic_Dungeon*>(&dungeon_reference->get_dungeon());
+        auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(profession.get());
+        auto dungeon_interface = dynamic_cast<const overworld::Basic_Dungeon *>(&dungeon_reference->get_dungeon());
         return const_cast<overworld::Basic_Dungeon *> (dungeon_interface);
       }
 
@@ -116,18 +118,18 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
                                                     Scope &scope);
       overworld::Profession_Reference reflect_profession(const underworld::Profession *profession,
-                                                Scope &scope);
+                                                         Scope &scope);
       overworld::Profession_Reference reflect_profession(const underworld::Profession &profession,
-                                                Scope &scope);
+                                                         Scope &scope);
 
       overworld::Profession_Reference reflect_profession_child(overworld::Member &member,
-                                                      const underworld::Profession &profession, Scope &scope);
+                                                               const underworld::Profession &profession, Scope &scope);
 
       overworld::Profession_Reference reflect_dungeon_reference(const underworld::Profession &profession,
-                                                       Scope &scope);
+                                                                Scope &scope);
 
       overworld::Profession_Reference reflect_dungeon_usage(const underworld::Token_Profession &profession,
-                                                   Scope &scope);
+                                                            Scope &scope);
 
       overworld::Minion &reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
       std::unique_ptr<overworld::Parameter>
@@ -139,11 +141,11 @@ namespace imp_mirror {
       overworld::Expression_Owner reflect_range(const underworld::Range &input_range, Scope &scope);
 
       overworld::Profession_Reference reflect_function_signature(const underworld::Function_Profession &input_signature,
-                                                        Scope &scope);
+                                                                 Scope &scope);
 
       void reflect_function_signature(const underworld::Function_Signature &input_signature,
-                                                                 overworld::Function_Signature &function_profession,
-                                                                 Scope &scope, Scope &function_scope);
+                                      overworld::Function_Signature &function_profession,
+                                      Scope &scope, Scope &function_scope);
 
       void reflect_function_with_block2(const underworld::Function_With_Block &input_function,
                                         overworld::Function_With_Block &output_function, Scope &scope);
@@ -182,7 +184,7 @@ namespace imp_mirror {
 //      void reflect_dungeon2(const underworld::Dungeon &input, overworld::Dungeon &output);
 
   public:
-      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph &graph,
+      Mirror(overworld::Profession_Library &profession_library, Element_Map &element_map, overworld::Graph *graph,
              Temporary_Interface_Manager &temporary_interface_manager, overworld::File_Library &header_files) :
         profession_library(profession_library), element_map(element_map), graph(graph),
         temporary_interface_manager(temporary_interface_manager), header_files(header_files),

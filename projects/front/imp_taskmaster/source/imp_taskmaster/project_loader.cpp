@@ -5,7 +5,7 @@
 
 std::string get_absolute_path(std::string path, std::string base) {
   boost::filesystem::path base_path(base);
-  while(path.substr(0, 2) == "..") {
+  while (path.substr(0, 2) == "..") {
     path = path.substr(3);
     base_path = base_path.parent_path();
   }
@@ -15,6 +15,23 @@ std::string get_absolute_path(std::string path, std::string base) {
 }
 
 namespace imp_taskmaster {
+
+  std::string load_path(YAML::Node &node, const std::string &name, const std::string &base_path) {
+    auto entry = node[name];
+    if (entry.IsScalar()) {
+      return get_absolute_path(entry.as<std::string>(), base_path);
+    }
+
+    return "";
+  }
+
+  std::string load_existing_path(YAML::Node &node, const std::string &name, const std::string &base_path) {
+    auto result = load_path(node, name, base_path);
+    if (result != "" && !boost::filesystem::is_directory(result))
+      throw std::runtime_error("Invalid " + name + " directory: " + result);
+
+    return result;
+  }
 
   std::unique_ptr<Project> load_project(const std::string &path, Project_Map &all_projects) {
     YAML::Node node = YAML::LoadFile(path + "/arch.yaml");
@@ -56,15 +73,20 @@ namespace imp_taskmaster {
       auto imp_config = build_config["imp"];
       if (imp_config.IsMap()) {
 
-        auto output_folder = imp_config["output"];
-        if (output_folder.IsScalar()) {
-          project->set_output_folder(get_absolute_path(output_folder.as<std::string>(), path));
-        }
+//        auto output_folder = imp_config["output"];
+//        if (output_folder.IsScalar()) {
+//          auto new_path = get_absolute_path(output_folder.as<std::string>(), path);
+//          if (!boost::filesystem::is_directory(new_path))
+//            throw std::runtime_error("Invalid output directory: " + new_path);
+//
+//        }
+        project->set_output_folder(load_path(imp_config, "output", path));
+        project->set_source_folder(load_existing_path(imp_config, "source", path));
 
-        auto source_folder = imp_config["source"];
-        if (source_folder.IsScalar()) {
-          project->set_source_folder(get_absolute_path(source_folder.as<std::string>(), path));
-        }
+//        auto source_folder = imp_config["source"];
+//        if (source_folder.IsScalar()) {
+//          project->set_source_folder(get_absolute_path(source_folder.as<std::string>(), path));
+//        }
       }
     }
 

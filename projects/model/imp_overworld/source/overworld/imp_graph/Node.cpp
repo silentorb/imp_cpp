@@ -48,7 +48,8 @@ namespace overworld {
     for (auto &argument : arguments) {
       const auto &a = *argument.get();
       auto &profession = a.get_profession();
-      if (get_status_using_profession(profession) == Node_Status::resolved) {
+      auto status = get_status_using_profession(profession);
+      if (status == Node_Status::resolved || status == Node_Status::optional) {
         if (some_unknown)
           return Node_Status::partial;
 
@@ -86,9 +87,11 @@ namespace overworld {
       }
 
       case Profession_Type::unknown:
-//      case Profession_Type::Void:
       case Profession_Type::generic_parameter:
         return Node_Status::unresolved;
+
+      case Profession_Type::Void:
+        return Node_Status::optional;
 
       default:
         return Node_Status::resolved;
