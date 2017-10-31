@@ -17,7 +17,7 @@ namespace overworld {
   class Profession_Library {
 //      std::unordered_map<Profession *, std::unique_ptr<Reference>> references;
 //      std::unordered_map<Profession *, std::unique_ptr<Pointer>> pointers;
-      std::unordered_map<Dungeon_Interface *, Dungeon_Variant_Array> dungeon_variants;
+      std::unordered_map<Basic_Dungeon *, Dungeon_Variant_Array> dungeon_variants;
       Function_Variant_Map function_variants;
       Graph &graph;
       Enchantment_Library enchantment_library;
@@ -39,17 +39,17 @@ namespace overworld {
       void assign(Node &node, overworld::Profession_Reference &profession, Profession_Setter &setter);
 
       Function_Variant_Array &get_function_variant_array(Function_Interface &function);
-      Dungeon_Variant_Array &get_dungeon_variant_array(Dungeon_Interface &dungeon);
+      Dungeon_Variant_Array &get_dungeon_variant_array(Basic_Dungeon &dungeon);
 
       static Function_Variant &create_function_variant(Function_Variant_Array &variant_array,
                                                        Function_Interface &function,
-                                                       Dungeon_Interface &dungeon,
+                                                       Basic_Dungeon &dungeon,
                                                        std::vector<Profession_Reference> &professions);
       static Function_Variant *get_function_variant(Function_Variant_Array &variant_array, Function_Interface &function,
                                                     std::vector<Profession_Reference> &professions);
 
       static Dungeon_Variant_Tuple create_dungeon_variant(Dungeon_Variant_Array &variant_array,
-                                                     Dungeon_Interface &dungeon,
+                                                     Basic_Dungeon &dungeon,
                                                      std::vector<Profession_Reference> &professions);
 
       static Profession_Reference *get_dungeon_variant(Dungeon_Variant_Array &variant_array,

@@ -4,7 +4,7 @@
 #include "Scope.h"
 #include "File.h"
 #include "Generic_Parameter.h"
-#include "Dungeon_Interface.h"
+#include "Basic_Dungeon.h"
 #include "Enchantment.h"
 #include "Enchantment_Container.h"
 #include <vector>
@@ -16,14 +16,12 @@ namespace overworld {
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
   using Dungeons = std::vector<Dungeon_Owner>;
 
-  class Dungeon : public Dungeon_Interface {
+  class Dungeon : public Basic_Dungeon {
 //      Common_Element element;
       std::string name;
       Scope scope;
 
       File *header_file = nullptr;
-//      std::unique_ptr<File> header_file_owner;
-//      Element_Reference_Node node;
       Ownership default_ownership = Ownership::owner;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession_Reference> contracts;

@@ -4,6 +4,7 @@
 #include <map>
 #include "Minion.h"
 #include "overworld/schema/professions/Profession.h"
+#include "Member_Collection.h"
 #include <underworld/schema/Function.h>
 #include <overworld/expressions/Expression.h>
 #include <overworld/imp_graph/Graph.h>
@@ -11,13 +12,6 @@
 namespace overworld {
 
   class Function;
-
-  enum class Scope_Type {
-      scope,
-      dungeon
-  };
-
-  using Members = std::vector<Member>;
 
   class Scope {
   protected:
@@ -27,36 +21,37 @@ namespace overworld {
       std::vector<Minion_Owner> minions;
       std::vector<std::unique_ptr<Profession>> professions;
       std::vector<std::unique_ptr<Dungeon>> dungeons;
-      std::map<std::string, Member> members;
-      std::map<std::string, Members> overloaded_members;
-
-      void overload(const std::string &name, Member &member);
-      void add_overload(const std::string &name, Member &member);
+      Member_Collection member_collection;
 
   public:
       explicit Scope(Scope *parent, Parent owner);
       ~Scope();
       Scope(const Scope &) = delete;
 
-      void add_member(const std::string &name, Member member);
       void add_function(std::unique_ptr<Function> function);
       Member add_minion(std::unique_ptr<Minion> minion);
 
       void add_profession(std::unique_ptr<Profession> &profession);
       void add_dungeon(std::unique_ptr<Dungeon> dungeon);
-      Member *get_member_or_null(const std::string &name);
-      Member &get_member(const std::string &name);
+
+      Member *get_member_or_null(const std::string &name) {
+        return member_collection.get_member_or_null(name);
+      }
+
+      Member &get_member(const std::string &name) {
+        return member_collection.get_member(name);
+      }
+
+      void add_member(const std::string &name, Member member) {
+        member_collection.add_member(name, member);
+      }
 
       const std::vector<std::unique_ptr<Function>> &get_functions() const {
         return functions;
       }
 
       std::map<std::string, Member> &get_members() {
-        return members;
-      }
-
-      Scope_Type get_scope_type() const {
-        return Scope_Type::scope;
+        return member_collection.get_members();
       }
 
       Function *get_function(const std::string &function_name);

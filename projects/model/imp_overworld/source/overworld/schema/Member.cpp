@@ -10,6 +10,9 @@ namespace overworld {
       case Member_Type::minion:
         return member.get_minion().get_node();
 
+      case Member_Type::parameter:
+        return member.get_parameter().get_node();
+
       default:
         throw std::runtime_error("Not implemented.");
     }

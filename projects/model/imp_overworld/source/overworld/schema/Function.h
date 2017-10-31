@@ -6,6 +6,7 @@
 #include "Parameter.h"
 #include "Function_Interface.h"
 #include "Function_Signature.h"
+#include "Interface.h"
 
 namespace overworld {
 
@@ -173,7 +174,7 @@ namespace overworld {
 //                       Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point) :
 //        Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
 
-      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon_Interface &dungeon,
+      Virtual_Function(const std::string &name, Scope &parent_scope, Basic_Dungeon &dungeon,
                        const source_mapping::Source_Range &source_point) :
         Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
 
@@ -190,17 +191,17 @@ namespace overworld {
 
   class Parameter_Temporary_Interface {
       Parameter &parameter;
-      std::unique_ptr<Dungeon> interface;
+      std::unique_ptr<Temporary_Interface> interface;
 
   public:
-      Parameter_Temporary_Interface(Parameter &parameter, std::unique_ptr<Dungeon> interface) :
+      Parameter_Temporary_Interface(Parameter &parameter, std::unique_ptr<Temporary_Interface> interface) :
         parameter(parameter), interface(std::move(interface)) {}
 
       Parameter &get_parameter() const {
         return parameter;
       }
 
-      const std::unique_ptr<Dungeon> &get_interface() const {
+      const std::unique_ptr<Temporary_Interface> &get_interface() const {
         return interface;
       }
   };
@@ -213,9 +214,9 @@ namespace overworld {
         return entries;
       }
 
-      void add(Parameter &parameter, Dungeon *interface) {
+      void add(Parameter &parameter, Temporary_Interface *interface) {
         entries.push_back(Parameter_Temporary_Interface(
-          parameter, std::move(std::unique_ptr<Dungeon>(interface))
+          parameter, std::move(std::unique_ptr<Temporary_Interface>(interface))
         ));
       }
   };
@@ -264,7 +265,7 @@ namespace overworld {
       }
 
       bool is_inline() const override;
-      Dungeon &get_or_create_interface(Parameter &parameter);
+      Temporary_Interface &get_or_create_interface(Parameter &parameter);
   };
 
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;

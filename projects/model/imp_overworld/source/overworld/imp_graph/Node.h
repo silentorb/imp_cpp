@@ -11,7 +11,7 @@ namespace overworld {
 
   class Function_Interface;
 
-  class Dungeon_Interface;
+  class Basic_Dungeon;
 
   enum class Node_Status {
       unresolved,
@@ -145,7 +145,7 @@ namespace overworld {
   protected:
 
   public:
-      Node_Copy(Node &original, Profession_Reference &profession, Dungeon_Interface *dungeon,
+      Node_Copy(Node &original, Profession_Reference &profession, Basic_Dungeon *dungeon,
                 Function_Interface *function) :
         Node(profession, original.get_element()), original(original), profession(profession) {}
 

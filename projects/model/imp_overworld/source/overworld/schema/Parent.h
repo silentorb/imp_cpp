@@ -2,7 +2,7 @@
 
 namespace overworld {
 
-  class Dungeon_Interface;
+  class Basic_Dungeon;
 
   class Function_Interface;
 
@@ -15,7 +15,7 @@ namespace overworld {
   class Parent {
       Parent_Type type;
       union {
-          Dungeon_Interface *dungeon;
+          Basic_Dungeon *dungeon;
           Function_Interface *function;
       };
 
@@ -23,7 +23,7 @@ namespace overworld {
       Parent() :
         dungeon(nullptr), type(Parent_Type::none) {}
 
-      Parent(Dungeon_Interface &dungeon) :
+      Parent(Basic_Dungeon &dungeon) :
         dungeon(&dungeon), type(Parent_Type::dungeon) {}
 
       Parent(Function_Interface &function) :
@@ -33,14 +33,14 @@ namespace overworld {
         return type;
       }
 
-      Dungeon_Interface &get_dungeon() {
+      Basic_Dungeon &get_dungeon() {
         if (type != Parent_Type::dungeon)
           throw std::runtime_error("Parent is not a dungeon.");
 
         return *dungeon;
       }
 
-     const Dungeon_Interface &get_dungeon() const{
+     const Basic_Dungeon &get_dungeon() const{
         if (type != Parent_Type::dungeon)
           throw std::runtime_error("Parent is not a dungeon.");
 

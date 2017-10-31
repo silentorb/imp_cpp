@@ -6,7 +6,7 @@
 namespace overworld {
 
   struct Dungeon_Functions {
-      static Dungeon_Interface *get_context(Node &node) {
+      static Basic_Dungeon *get_context(Node &node) {
         return &node.get_element().get_parent().get_dungeon();
       }
 

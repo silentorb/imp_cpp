@@ -77,9 +77,6 @@ namespace solving {
 
       case Profession_Type::Union:
         throw std::runtime_error("Not implemented.");
-
-      case Profession_Type::variant:
-        throw std::runtime_error("Not implemented.");
     }
 
     throw std::runtime_error("Not implemented.");

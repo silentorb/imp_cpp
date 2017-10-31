@@ -10,7 +10,7 @@ namespace overworld {
 
   class Dungeon;
 
-  class Dungeon_Interface;
+  class Basic_Dungeon;
 
   class File;
 
@@ -33,7 +33,6 @@ namespace overworld {
       primitive,
       reference,
       Union,
-      variant,
       Void,
   };
 
@@ -66,8 +65,8 @@ namespace overworld {
         return nullptr;
       }
 
-      Dungeon_Interface &get_dungeon_interface();
-      const Dungeon_Interface &get_dungeon_interface() const;
+      Basic_Dungeon &get_dungeon_interface();
+      const Basic_Dungeon &get_dungeon_interface() const;
   };
 
   using Profession_Owner = std::unique_ptr<Profession>;

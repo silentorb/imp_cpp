@@ -113,11 +113,11 @@ namespace imp_rendering {
       void add_full(const Member &member) {
         if (member.get_type() == Member_Type::profession) {
           auto &profession = member.get_profession();
-          if (profession.get_type() == Profession_Type::variant) {
-            auto &variant = dynamic_cast<const Dungeon_Variant &>(profession).get_original();
-            add_full(Member(const_cast<Dungeon &>(variant)));
-            return;
-          }
+//          if (profession.get_type() == Profession_Type::variant) {
+//            auto &variant = dynamic_cast<const Dungeon_Variant &>(profession).get_original();
+//            add_full(Member(const_cast<Dungeon &>(variant)));
+//            return;
+//          }
 
           if (!is_needed(profession, dungeon))
             return;

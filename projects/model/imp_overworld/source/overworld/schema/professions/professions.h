@@ -3,7 +3,6 @@
 #include <memory>
 #include <source_mapping/Source_Point.h>
 #include <overworld/schema/Dungeon.h>
-#include <overworld/schema/Complex_Signature.h>
 #include "Profession.h"
 
 namespace overworld {

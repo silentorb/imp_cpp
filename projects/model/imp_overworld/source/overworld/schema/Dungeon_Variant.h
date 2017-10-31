@@ -5,7 +5,7 @@
 
 namespace overworld {
 
-  class Dungeon_Variant : public Dungeon_Interface {
+  class Dungeon_Variant : public Basic_Dungeon {
       Variant variant;
       Dungeon &original;
 
@@ -17,10 +17,6 @@ namespace overworld {
 
       virtual ~Dungeon_Variant() {
 				int k = 0;
-      }
-
-      Profession_Type get_type() const  {
-        return Profession_Type::variant;
       }
 
       File *get_file() const  {

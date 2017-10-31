@@ -6,11 +6,11 @@
 namespace overworld {
 
   class Dungeon_Reference : public Profession {
-      Dungeon_Interface &dungeon;
+      Basic_Dungeon &dungeon;
       Dungeon_Interface_Owner owner;
 
   public:
-      explicit Dungeon_Reference(Dungeon_Interface &dungeon) : dungeon(dungeon) {}
+      explicit Dungeon_Reference(Basic_Dungeon &dungeon) : dungeon(dungeon) {}
 
       explicit Dungeon_Reference(Dungeon_Interface_Owner dungeon) :
         dungeon(*dungeon), owner(std::move(dungeon)) {
@@ -44,11 +44,11 @@ namespace overworld {
         return *this;
       }
 
-      Dungeon_Interface &get_dungeon_interface() {
+      Basic_Dungeon &get_dungeon_interface() {
         return dungeon;
       }
 
-      const Dungeon_Interface &get_dungeon_interface() const{
+      const Basic_Dungeon &get_dungeon_interface() const{
         return dungeon;
       }
 
@@ -56,7 +56,7 @@ namespace overworld {
         return dungeon.get_original();
       }
 
-      const Dungeon_Interface &get_dungeon() const {
+      const Basic_Dungeon &get_dungeon() const {
         return dungeon;
       }
 

@@ -255,7 +255,7 @@ namespace imp_rendering {
       }), ",\n");;
   }
 
-  const std::string render_primary_dungeon_token(const Dungeon_Interface &dungeon_interface,
+  const std::string render_primary_dungeon_token(const Basic_Dungeon &dungeon_interface,
                                                  const overworld::Scope &scope) {
     if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
       auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
@@ -272,7 +272,7 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_dungeon_interface(const Dungeon_Interface &dungeon_interface,
+  const std::string render_dungeon_interface(const Basic_Dungeon &dungeon_interface,
                                              const overworld::Scope &scope) {
     auto result = render_primary_dungeon_token(dungeon_interface, scope);
     auto parent = dungeon_interface.get_original().get_scope().get_parent_scope();
@@ -301,8 +301,7 @@ namespace imp_rendering {
         auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
         return primitive_names[(int) index];
       }
-      case overworld::Profession_Type::dungeon:
-      case overworld::Profession_Type::variant: {
+      case overworld::Profession_Type::dungeon: {
         auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
         return render_dungeon_interface(dungeon_reference->get_dungeon(), scope);
       }

@@ -67,11 +67,11 @@ namespace overworld {
     if (has_enchantment(external))
       return true;
 
-    auto parent = scope.get_parent_scope();
-    if (parent && parent->get_scope_type() == Scope_Type::dungeon) {
-      throw std::runtime_error("Not implemented.");
-//      return dynamic_cast<Dungeon *>(parent)->has_enchantment(external);
-    }
+//    auto parent = scope.get_parent_scope();
+//    if (parent && parent->get_scope_type() == Scope_Type::dungeon) {
+//      throw std::runtime_error("Not implemented.");
+////      return dynamic_cast<Dungeon *>(parent)->has_enchantment(external);
+//    }
 
     return false;
   }

@@ -2,6 +2,7 @@
 #include "Function.h"
 #include "Dungeon.h"
 #include "overworld/schema/professions/Profession_Library.h"
+#include "Interface.h"
 
 namespace overworld {
 
@@ -52,7 +53,7 @@ namespace overworld {
   }
 
 
-  overworld::Dungeon &Function_With_Block::get_or_create_interface(Parameter &parameter) {
+  overworld::Temporary_Interface &Function_With_Block::get_or_create_interface(Parameter &parameter) {
     if (!temporary_interface_manager) {
       temporary_interface_manager = std::make_unique<Temporary_Interface_Manager>();
     }
@@ -63,7 +64,7 @@ namespace overworld {
       }
     }
 
-    auto dungeon = new Dungeon("?" + parameter.get_name() + "?");
+    auto dungeon = new Temporary_Interface();
     temporary_interface_manager->add(parameter, dungeon);
     return *dungeon;
   }

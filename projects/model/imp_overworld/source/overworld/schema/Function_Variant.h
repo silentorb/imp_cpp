@@ -9,10 +9,10 @@ namespace overworld {
   class Function_Variant : public Function_Interface {
       Variant variant;
       Function &original;
-      Dungeon_Interface *dungeon = nullptr;
+      Basic_Dungeon *dungeon = nullptr;
 
   public:
-      Function_Variant(Function &original, Dungeon_Interface &dungeon, std::vector<Profession_Reference> &professions);
+      Function_Variant(Function &original, Basic_Dungeon &dungeon, std::vector<Profession_Reference> &professions);
 
       virtual ~Function_Variant() = default;
 
@@ -24,7 +24,7 @@ namespace overworld {
         return original;
       }
 
-      Dungeon_Interface &get_dungeon() {
+      Basic_Dungeon &get_dungeon() {
         return *dungeon;
       }
 
