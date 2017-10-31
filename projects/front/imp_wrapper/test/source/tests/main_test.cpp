@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include <imp_wrapper/Wrapper.h>
 #include <utility/utility.h>
+#include <imp_wrapper/project_builder.h>
 
 using namespace std;
 
@@ -48,4 +49,8 @@ TEST(Main_Test, iteration) {
   test.compare("Goblikin.h");
   test.compare("Goblikin.cpp");
   test.compare("Ingredient.h");
+}
+
+TEST(Main_Test, projects) {
+  imp_wrapper::build_workspace(std::string(RESOURCE_PATH) + "projects");
 }

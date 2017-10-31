@@ -1,0 +1,8 @@
+
+Camera {
+  position = spatial.Position
+
+  get_position() {
+    return position
+  }
+}

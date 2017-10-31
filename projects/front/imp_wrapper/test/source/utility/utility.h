@@ -7,15 +7,14 @@
 #include <processthreadsapi.h>
 #include <imp_mirror/Temporary_Interface_Manager.h>
 #include <underworld/schema/Dungeon.h>
-
-using namespace std;
+#include <imp_taskmaster/project_loader.h>
 
 const std::string load_file(const std::string &file_path) {
-  ifstream input(file_path);
+  std::ifstream input(file_path);
   if (!input.is_open())
-    throw runtime_error("Could not open " + file_path);
+    throw std::runtime_error("Could not open " + file_path);
 
-  stringstream stream;
+  std::stringstream stream;
   stream << input.rdbuf();
   return stream.str();
 }
@@ -28,7 +27,7 @@ void _compare(const std::string &first_file, const std::string &second_file) {
   }
   else {
     auto arguments = " /x /s " + second_file + " " + first_file;
-    auto command = "\"" + string(DIFF_VIEWER_PATH) + "\"" + arguments;
+    auto command = "\"" + std::string(DIFF_VIEWER_PATH) + "\"" + arguments;
     std::cout << std::endl << command << std::endl;
     STARTUPINFO info = {sizeof(info)};
     PROCESS_INFORMATION processInfo;
@@ -43,23 +42,24 @@ class Comparison {
     std::string name;
 
 public:
-    Comparison(const string &name) : name(name) {}
+    Comparison(const std::string &name) : name(name) {}
 
     void compare(const std::string &filename) {
-      _compare(string(RESOURCE_PATH) + name + "/" + filename, string(OUTPUT_PATH) + name + "/source/" + filename);
+      _compare(std::string(RESOURCE_PATH) + name + "/" + filename,
+               std::string(OUTPUT_PATH) + name + "/source/" + filename);
     }
 };
 
 void compile(const std::string &input_name) {
-  string output_folder = string(OUTPUT_PATH) + '/' + input_name;
+  std::string output_folder = std::string(OUTPUT_PATH) + '/' + input_name;
   auto full_output_path = output_folder + "/source";
-  boost::filesystem::create_directory(string(OUTPUT_PATH));
+  boost::filesystem::create_directory(std::string(OUTPUT_PATH));
   boost::filesystem::create_directory(output_folder);
   boost::filesystem::create_directory(full_output_path);
   imp_wrapper::Wrapper wrapper;
   imp_mirror::Temporary_Interface_Manager temporary_interface_manager;
-  underworld:: Dungeon underworld_root("", nullptr);
-  wrapper.load_file(string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp", underworld_root);
+  underworld::Dungeon underworld_root("", nullptr);
+  wrapper.load_file(std::string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp", underworld_root);
   wrapper.mirror(temporary_interface_manager, underworld_root);
   wrapper.solve();
   wrapper.render(full_output_path);
@@ -68,4 +68,9 @@ void compile(const std::string &input_name) {
     output_stream << "create_library(generated_" + input_name + "_test)";
     output_stream.close();
   }
+}
+
+void build_project(const std::string &path) {
+  imp_taskmaster::Project_Map all_projects;
+  imp_taskmaster::load_project(path, all_projects);
 }

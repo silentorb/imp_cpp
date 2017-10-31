@@ -1,0 +1,9 @@
+
+World {
+
+  camera = Camera {}
+
+  get_camera() {
+    return camera
+  }
+}
