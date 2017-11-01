@@ -4,8 +4,6 @@
 
 namespace game {
 
-  class Camera;
-
   class World {
       Camera camera;
 

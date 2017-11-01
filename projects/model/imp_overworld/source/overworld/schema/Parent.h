@@ -33,6 +33,8 @@ namespace overworld {
         return type;
       }
 
+      const std::string get_name() const;
+
       Basic_Dungeon &get_dungeon() {
         if (type != Parent_Type::dungeon)
           throw std::runtime_error("Parent is not a dungeon.");

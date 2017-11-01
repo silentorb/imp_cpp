@@ -61,11 +61,10 @@ namespace overworld {
       }
 
       Minion &get_minion(const std::string &name);
-//      virtual Dungeon &get_dungeon();
 
-//      Dungeon *get_dungeon_if_not_function() {
-//        return get_function() ? nullptr : &get_dungeon();
-//      }
+      const std::string get_name() const {
+        return owner.get_name();
+      }
 
       Scope *get_parent_scope() {
         return parent_scope;
@@ -83,10 +82,6 @@ namespace overworld {
         return parent_scope;
       }
 
-//      Function *get_function() {
-//        return nullptr;
-//      }
-
       const std::vector<std::unique_ptr<Profession>> &get_professions() const {
         return professions;
       }
@@ -102,6 +97,8 @@ namespace overworld {
       const std::vector<std::unique_ptr<Dungeon>> &get_dungeons() const {
         return dungeons;
       }
+
+      bool is_descendant(Scope &scope);
   };
 
 }

@@ -279,16 +279,20 @@ namespace imp_rendering {
 //    if (parent == &scope)
 //      return result;
 
-    while (parent && parent != &scope) {
-      auto &parent_dungeon = parent->get_owner().get_dungeon();
-      if (parent_dungeon.get_original().get_name() == "")
-        break;
-
-      result = render_dungeon_interface(parent_dungeon, scope)
-               + "::" + result;
-
-      parent = parent->get_parent_scope();
+    if (parent) {
+      &parent->get_owner().get_dungeon() != &scope.get_owner().get_dungeon()
+      return get_namespace_string(parent->get_owner(), "::") + "::" + result;
     }
+//    while (parent && parent != &scope) {
+//      auto &parent_dungeon = parent->get_owner().get_dungeon();
+//      if (parent_dungeon.get_original().get_name() == "")
+//        break;
+//
+//      result = render_dungeon_interface(parent_dungeon, scope)
+//               + "::" + result;
+//
+//      parent = parent->get_parent_scope();
+//    }
 
     return result;
   }
@@ -551,7 +555,13 @@ namespace imp_rendering {
     if (profession.get_ownership() == Ownership::owner)
       return render_profession_owner(profession, scope);
 
-    return render_profession_internal(profession, scope);
+    std::string decorator = "";
+    if (profession.get_ownership() == Ownership::pointer)
+      decorator = " *";
+    else if (profession.get_ownership() == Ownership::reference)
+      decorator = " &";
+
+    return render_profession_internal(profession, scope) + decorator;
   }
 
 //  const std::string render_profession_as_owner(const overworld::Profession &profession) {

@@ -53,5 +53,7 @@ namespace overworld {
     return nullptr;
   }
 
-
+  bool Scope::is_descendant(Scope &scope) {
+    return false;
+  }
 }

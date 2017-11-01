@@ -72,6 +72,9 @@ namespace overworld {
 
   Ownership get_assigned_ownership(Profession_Reference &source, Profession_Reference &target) {
     if (target.get_ownership() == Ownership::unknown) {
+      if (source.get_ownership() == Ownership::value)
+        return Ownership::reference;
+
       return source.get_ownership();
     }
     else {
