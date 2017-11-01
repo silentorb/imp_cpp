@@ -71,11 +71,11 @@ namespace overworld {
         return parent_scope;
       }
 
-      Parent get_parent() {
+      Parent get_owner() {
         return owner;
       }
 
-      const Parent get_parent() const {
+      const Parent get_owner() const {
         return owner;
       }
 

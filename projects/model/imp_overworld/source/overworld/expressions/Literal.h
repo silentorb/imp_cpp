@@ -22,8 +22,8 @@ namespace overworld {
         return Profession_Library::get_primitive(get_primitive_type());
       }
 
-      const Profession &get_profession() const override {
-        return *Profession_Library::get_primitive(get_primitive_type());
+      const Profession_Reference &get_profession() const override {
+        return Profession_Library::get_primitive(get_primitive_type());
       }
   };
 

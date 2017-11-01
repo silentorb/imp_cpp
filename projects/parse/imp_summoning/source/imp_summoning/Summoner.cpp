@@ -26,9 +26,9 @@ namespace imp_summoning {
   Minion &Summoner::process_minion(Identifier &identifier, Context &context) {
     auto &minion = context.get_scope().create_minion(identifier.name, identifier.source_point);
     process_member_enchantments(minion, identifier, context);
-    if (input.current().is(lexicon.assignment)) {
-
-    }
+//    if (input.current().is(lexicon.assignment)) {
+//
+//    }
     return minion;
   }
 

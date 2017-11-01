@@ -66,7 +66,7 @@ namespace overworld {
     }
   }
 
-  const Profession &get_member_profession(const Member &member) {
+  const Profession_Reference &get_member_profession(const Member &member) {
     switch (member.get_type()) {
       case Member_Type::function:
         return member.get_function().get_signature().get_last().get_profession();
@@ -78,7 +78,7 @@ namespace overworld {
         return member.get_minion().get_profession();
 
       case Member_Type::profession_reference:
-        return *member.get_profession_reference();
+        return member.get_profession_reference();
 
       case Member_Type::profession:
 //        return member.get_profession().get_name();

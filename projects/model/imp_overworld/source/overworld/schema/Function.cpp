@@ -7,7 +7,7 @@
 namespace overworld {
 
   bool Function::is_constructor() const {
-    auto &parent = get_parent_scope().get_parent();
+    auto &parent = get_parent_scope().get_owner();
     if (parent.get_type() == Parent_Type::dungeon)
       return parent.get_dungeon().get_original().get_name() == get_name();
 

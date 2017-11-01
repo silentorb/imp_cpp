@@ -40,7 +40,7 @@ namespace solving {
 
           auto second_elements = second_variant->get_arguments().begin();
           for (auto &element : first_variant->get_arguments()) {
-            if (!professions_match(element->get_profession(), (*second_elements++)->get_profession()))
+            if (!professions_match(*element->get_profession(), *(*second_elements++)->get_profession()))
               return false;
           }
 

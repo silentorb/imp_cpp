@@ -146,7 +146,9 @@ namespace imp_rendering {
       if (forward_declarations.size() > 0)
         result << render_forward_declarations(forward_declarations);
 
-      result << render_possible_generic_block(dungeon.get_generic_parameters(), render_dungeon_body(dungeon));
+      result << render_possible_namespace_block(
+        dungeon.get_scope().get_parent_scope()->get_owner(),
+        render_possible_generic_block(dungeon.get_generic_parameters(), render_dungeon_body(dungeon)));
 
       return result;
     }

@@ -21,6 +21,29 @@ namespace overworld {
     }
   }
 
+  std::string render_ownership(const Profession_Reference &profession) {
+    if (profession.get_type() == Profession_Type::unknown
+        || profession.get_type() == Profession_Type::Void)
+      return "";
+
+    switch (profession.get_ownership()) {
+      case Ownership::value:
+        return "+";
+
+      case Ownership::reference:
+        return "&";
+
+      case Ownership::pointer:
+        return "*";
+
+      case Ownership::owner:
+        return "$";
+
+      default:
+        return "";
+    }
+  }
+
   std::string Node::get_debug_string() const {
     auto &element = get_element();
     auto &profession = get_profession();
@@ -33,10 +56,10 @@ namespace overworld {
         std::to_string(source_point.get_column()) + " ";
 
     result += element.get_name() + render_node_status(get_status())
-              + ":" + profession.get_debug_name();
+              + ":" + render_ownership(profession) + profession.get()->get_debug_name();
 
     if (profession.get_type() == Profession_Type::reference)
-      result += dynamic_cast<const Reference *>(&profession)->is_pointer() ? "*" : "&";
+      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
 
     return result;
   }
@@ -67,10 +90,10 @@ namespace overworld {
            : Node_Status::unresolved;
   }
 
-  Node_Status get_status_using_profession(const Profession &profession) {
+  Node_Status get_status_using_profession(const Profession_Reference &profession) {
     switch (profession.get_type()) {
       case Profession_Type::dungeon: {
-        auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
+        auto dungeon_reference = static_cast<const Dungeon_Reference *>(profession.get());
         auto &dungeon = dungeon_reference->get_dungeon();
         auto variant = dynamic_cast<const Dungeon_Variant *>(&dungeon);
         if (variant) {
@@ -82,7 +105,7 @@ namespace overworld {
       }
 
       case Profession_Type::function: {
-        auto signature = static_cast<const Function_Signature *>(&profession);
+        auto signature = static_cast<const Function_Signature *>(profession.get());
         return get_arguments_status(signature->get_elements());
       }
 

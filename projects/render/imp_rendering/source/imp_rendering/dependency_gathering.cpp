@@ -32,7 +32,7 @@ namespace imp_rendering {
 
         auto &profession = expression.get_profession();
         if (profession.get_type() != Profession_Type::unknown && profession.get_type() != Profession_Type::Void)
-          member_action(Member(profession));
+          member_action(Member(*profession));
       }
 
   public:

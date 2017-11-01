@@ -28,6 +28,9 @@ namespace runic {
         if (result < 0)
           result = 0;
 
+        if (file_stream.eof())
+          return 0;
+
         return result;
       }
   };

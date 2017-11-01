@@ -21,7 +21,7 @@ namespace overworld {
       }
 
       const std::string get_name() const override {
-        auto signature = static_cast<const Function_Signature*>(&node.get_profession());
+        auto signature = static_cast<const Function_Signature*>(node.get_profession().get());
         return "L" + signature->get_debug_name_with_names();
       }
 
@@ -29,7 +29,7 @@ namespace overworld {
         return node.get_profession();
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return node.get_profession();
       }
 

@@ -48,7 +48,7 @@ namespace overworld {
       virtual bool is_statement() const = 0;
 
       virtual Profession_Reference &get_profession() = 0;
-      virtual const Profession &get_profession() const = 0;
+      virtual const Profession_Reference &get_profession() const = 0;
 
 //      virtual void set_profession(Profession_Reference &value) {
 //        throw std::runtime_error("Not supported.");
@@ -149,7 +149,7 @@ namespace overworld {
         throw std::runtime_error("Not supported.");
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         throw std::runtime_error("Not supported.");
       }
   };

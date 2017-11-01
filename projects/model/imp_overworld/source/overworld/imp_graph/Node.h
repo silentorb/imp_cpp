@@ -4,7 +4,6 @@
 #include <vector>
 #include <graphing/Node.h>
 #include "Connection.h"
-#include <overworld/schema/professions/Profession_Reference.h>
 #include <overworld/schema/Element.h>
 
 namespace overworld {
@@ -22,7 +21,7 @@ namespace overworld {
 
   class Node;
 
-  Node_Status get_status_using_profession(const Profession &profession);
+  Node_Status get_status_using_profession(const Profession_Reference &profession);
 
   class Profession_Setter {
   public:
@@ -36,8 +35,6 @@ namespace overworld {
       Profession_Reference profession;
       Element &element;
 
-  protected:
-
   public:
       Node(Profession_Reference original_profession, Element &element) :
         element(element),
@@ -47,7 +44,8 @@ namespace overworld {
       }
 
       virtual Node_Status _get_status() const {
-        auto &base_profession = profession->get_base();
+        auto &p = const_cast<Profession_Reference&>(profession);
+        auto &base_profession = p.get_base(p);
         return get_status_using_profession(base_profession);
       }
 
@@ -89,7 +87,11 @@ namespace overworld {
         return profession;
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
+        return profession;
+      }
+
+      const Profession &get_simple_profession() const {
         return *profession;
       }
 

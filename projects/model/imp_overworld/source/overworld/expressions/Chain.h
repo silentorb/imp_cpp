@@ -75,8 +75,8 @@ namespace overworld {
         return second->get_profession();
       }
 
-      const Profession &get_profession() const override {
-        return *second->get_profession();
+      const Profession_Reference &get_profession() const override {
+        return second->get_profession();
       }
   };
 }

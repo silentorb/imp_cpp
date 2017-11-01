@@ -55,7 +55,7 @@ namespace overworld {
         return get_member_profession_reference(member);
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return get_member_profession(member);
       }
   };

@@ -120,7 +120,7 @@ namespace overworld {
   Node &get_member_node(Member &member);
 
   Profession_Reference &get_member_profession_reference(Member &member);
-  const Profession &get_member_profession(const Member &member);
+  const Profession_Reference &get_member_profession(const Member &member);
 
   const std::string get_member_name(const Member &member);
 

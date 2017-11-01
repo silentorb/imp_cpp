@@ -43,9 +43,9 @@ namespace imp_rendering {
       reference
   };
 
-  Reference_Type get_reference_type(const Profession &profession) {
+  Reference_Type get_reference_type(const Profession_Reference &profession) {
     if (profession.get_type() == Profession_Type::reference) {
-      auto &reference = dynamic_cast<const Reference &>(profession);
+      auto &reference = dynamic_cast<const Reference &>(*profession);
       return reference.is_pointer()
              ? Reference_Type::pointer
              : Reference_Type::reference;
@@ -58,7 +58,7 @@ namespace imp_rendering {
       return Reference_Type::pointer;
 
     auto &profession = const_cast<Expression &>(expression).get_node()->get_profession();
-    return get_reference_type(*profession);
+    return get_reference_type(profession);
   }
 
   template<typename A, typename B>
@@ -194,7 +194,7 @@ namespace imp_rendering {
     auto &minion = declaration.get_minion();
     auto &profession = minion.get_profession();
     auto reference_symbol = profession.get_type() == Profession_Type::reference
-                            ? render_reference_symbol(*dynamic_cast<const Reference *>(&profession))
+                            ? render_reference_symbol(*dynamic_cast<const Reference *>(profession.get()))
                             : "";
 
     return "auto " + reference_symbol + minion.get_name();
@@ -261,7 +261,7 @@ namespace imp_rendering {
       auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
       std::string parameter_string = join(variant.get_arguments(), Joiner<const Generic_Argument_Owner &>(
         [& scope](const Generic_Argument_Owner &argument) {
-          return render_profession(*argument->get_node().get_profession(), scope);
+          return render_profession(argument->get_node().get_profession(), scope);
         }), ", ");
 
       return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
@@ -280,7 +280,7 @@ namespace imp_rendering {
 //      return result;
 
     while (parent && parent != &scope) {
-      auto &parent_dungeon = parent->get_parent().get_dungeon();
+      auto &parent_dungeon = parent->get_owner().get_dungeon();
       if (parent_dungeon.get_original().get_name() == "")
         break;
 
@@ -293,16 +293,16 @@ namespace imp_rendering {
     return result;
   }
 
-  const std::string render_profession_internal(const overworld::Profession &profession, const Scope &scope) {
+  const std::string render_profession_internal(const overworld::Profession_Reference &profession, const Scope &scope) {
     auto type = profession.get_type();
 
     switch (type) {
       case overworld::Profession_Type::primitive: {
-        auto index = dynamic_cast<const overworld::Primitive *>(&profession)->get_primitive_type();
+        auto index = dynamic_cast<const overworld::Primitive *>(profession.get())->get_primitive_type();
         return primitive_names[(int) index];
       }
       case overworld::Profession_Type::dungeon: {
-        auto dungeon_reference = static_cast<const Dungeon_Reference *>(&profession);
+        auto dungeon_reference = static_cast<const Dungeon_Reference *>(profession.get());
         return render_dungeon_interface(dungeon_reference->get_dungeon(), scope);
       }
 
@@ -310,7 +310,7 @@ namespace imp_rendering {
         return "void";
 
       case Profession_Type::reference: {
-        auto &reference = *dynamic_cast<const Reference *>(&profession);
+        auto &reference = *dynamic_cast<const Reference *>(profession.get());
         return render_profession_internal(reference.get_profession(), scope) + " " + render_reference_symbol(reference);
       }
 
@@ -543,11 +543,11 @@ namespace imp_rendering {
     return sanitize_name(parameter.get_name());
   }
 
-  const std::string render_profession_owner(const overworld::Profession &profession, const Scope &scope) {
+  const std::string render_profession_owner(const overworld::Profession_Reference &profession, const Scope &scope) {
     return "std::unique_ptr<" + render_profession_internal(profession, scope) + ">";
   }
 
-  const std::string render_profession(const overworld::Profession &profession, const Scope &scope) {
+  const std::string render_profession(const overworld::Profession_Reference &profession, const Scope &scope) {
     if (profession.get_ownership() == Ownership::owner)
       return render_profession_owner(profession, scope);
 
@@ -587,7 +587,7 @@ namespace imp_rendering {
       Stroke result{new imp_artisan::internal::Standard_Block(
         "namespace " + namespace_string
       )};
-      result << stroke;
+      result.add(stroke);
       return result;
     }
   }

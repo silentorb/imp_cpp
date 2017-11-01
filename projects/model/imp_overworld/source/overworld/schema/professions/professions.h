@@ -194,8 +194,8 @@ namespace overworld {
         return profession.get_base();
       }
 
-      const Profession &get_profession() const {
-        return *profession;
+      const Profession_Reference &get_profession() const {
+        return profession;
       }
 
       virtual bool is_pointer() const {

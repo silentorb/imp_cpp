@@ -51,7 +51,7 @@ namespace overworld {
         return &node;
       }
 
-      const Profession &get_profession() const override {
+      const Profession_Reference &get_profession() const override {
         return node.get_profession();
       }
 

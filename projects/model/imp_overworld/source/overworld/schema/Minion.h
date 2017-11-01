@@ -7,7 +7,6 @@
 #include "Enchantment_Container.h"
 #include <underworld/schema/Minion.h>
 #include <overworld/imp_graph/Node.h>
-#include <overworld/schema/professions/Profession_Reference.h>
 
 namespace overworld {
 
@@ -82,8 +81,12 @@ namespace overworld {
         return Element_Type::minion;
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
         return node.get_profession();
+      }
+
+      const Profession &get_simple_profession() const {
+        return node.get_simple_profession();
       }
 
       Profession_Reference &get_profession() {

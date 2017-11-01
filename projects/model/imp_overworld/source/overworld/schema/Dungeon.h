@@ -53,8 +53,8 @@ namespace overworld {
         return self;
       }
 
-      const Profession &get_profession() const {
-        return *self;
+      const Profession_Reference &get_profession() const {
+        return self;
       }
 
       bool is_class() const;

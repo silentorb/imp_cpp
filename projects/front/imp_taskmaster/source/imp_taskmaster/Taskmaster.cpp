@@ -56,6 +56,8 @@ namespace imp_taskmaster {
   void Taskmaster::render_and_write_strokes(const imp_artisan::building::Stroke_Owner &stroke,
                                             const std::string &file_path) {
 //    imp_artisan::Artisan artisan;
+    auto parent_path = boost::filesystem::path(file_path).parent_path().string();
+    boost::filesystem::create_directories(parent_path);
     auto text = stroke.render("");
     std::ofstream output_stream(file_path, std::ios_base::binary | std::ios_base::out);
     if (output_stream.is_open()) {
@@ -69,18 +71,19 @@ namespace imp_taskmaster {
     imp_rendering::set_standard_library(standard_library);
     include_manager.gather_headers(standard_library);
 
+    auto namespace_path = overworld::get_namespace_string(dungeon.get_scope().get_parent_scope()->get_owner(), "/");
+    if (namespace_path.size() > 0)
+      namespace_path += "/";
+    auto header_path = output_path + "/" + namespace_path + dungeon.get_name() + ".h";
+
     auto header_strokes = imp_rendering::headers::render(dungeon, include_manager.get_header_includes(),
                                                          include_manager.get_forward_declarations());
-    render_and_write_strokes(header_strokes, output_path + "/" + dungeon.get_name() + ".h");
+    render_and_write_strokes(header_strokes, header_path);
 
     if (imp_rendering::sources::needs_source_file(dungeon)) {
-      auto namespace_path = overworld::get_namespace_string(dungeon, "/");
-      if (namespace_path.size() > 0)
-        namespace_path += "/";
-
-      auto file_path = output_path + "/" + namespace_path + dungeon.get_name() + ".cpp";
+      auto source_path = output_path + "/" + namespace_path + dungeon.get_name() + ".cpp";
       auto source_strokes = imp_rendering::sources::render(dungeon, include_manager.get_source_includes());
-      render_and_write_strokes(source_strokes, file_path);
+      render_and_write_strokes(source_strokes, source_path);
     }
   }
 

@@ -56,36 +56,41 @@ namespace overworld {
     return primitive_references[static_cast<int>(type)];
   }
 
-//  Profession_Reference &Profession_Library::get_reference(Profession &profession) {
-//    if (references.count(&profession))
-//      return *references[&profession];
+//  Profession_Reference clone_profession(Profession_Reference &profession) {
+//    switch (profession.get_ownership()) {
 //
-//    auto reference = new Reference(profession);
-//    references[&profession] = std::unique_ptr<Reference>(reference);
-//    return *reference;
+//      case Ownership::value: {
+//        auto result = profession;
+//        result.set_ownership(Ownership::reference);
+//        return result;
+//      }
+//
+//      default:
+//        return profession;
+//    }
 //  }
 
-//  Pointer &Profession_Library::get_pointer(Profession &profession) {
-//    if (pointers.count(&profession))
-//      return *pointers[&profession];
-//
-//    auto pointer = new Pointer(profession);
-//    pointers[&profession] = std::unique_ptr<Pointer>(pointer);
-//    return *pointer;
-//  }
-
-  void Profession_Library::assign(Node &node, overworld::Profession_Reference &profession, Profession_Setter &setter) {
-    auto &previous = node.get_profession();
-    if (previous.get_type() == Profession_Type::reference) {
-      auto reference = dynamic_cast<Reference *>(previous.get());
-      auto new_profession = reference->is_pointer()
-                            ? Profession_Reference(new Pointer(profession.get_base(profession)))
-                            : Profession_Reference(new Reference(profession.get_base(profession)));
-      node.set_profession(new_profession, setter);
+  Ownership get_assigned_ownership(Profession_Reference &source, Profession_Reference &target) {
+    if (target.get_ownership() == Ownership::unknown) {
+      return source.get_ownership();
     }
     else {
-      node.set_profession(profession, setter);
+      return target.get_ownership();
     }
+  }
+
+  void Profession_Library::assign(Node &node, Profession_Reference &profession, Profession_Setter &setter) {
+    auto &previous = node.get_profession();
+//    if (previous.get_type() == Profession_Type::reference) {
+//      auto reference = dynamic_cast<Reference *>(previous.get());
+      auto base_source = profession.get_base(profession);
+      auto ownership = get_assigned_ownership(base_source, previous);
+      auto new_profession = Profession_Reference(base_source, ownership);
+      node.set_profession(new_profession, setter);
+//    }
+//    else {
+//      node.set_profession(profession, setter);
+//    }
   }
 
   template<typename A, typename B>

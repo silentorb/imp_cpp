@@ -20,9 +20,11 @@ namespace overworld {
 
   enum class Ownership {
       unknown,
-      value,
+
       owner,
+      pointer,
       reference,
+      value,
   };
 
   enum class Profession_Type {
@@ -40,7 +42,6 @@ namespace overworld {
 
   class Profession {
   public:
-
       virtual ~Profession() = default;
 
       virtual Profession_Type get_type() const = 0;
@@ -72,28 +73,29 @@ namespace overworld {
   using Profession_Owner = std::unique_ptr<Profession>;
 
   class Profession_Reference : public Optional_Shared_Pointer<Profession> {
+      Ownership ownership;
+
   public:
-//      Profession_Reference() {}
+      explicit Profession_Reference(Profession_Reference &reference, Ownership ownership) :
+        Optional_Shared_Pointer(reference.shared_pointer, reference.pointer), ownership(ownership) {}
 
-      explicit Profession_Reference(Profession &pointer) : Optional_Shared_Pointer(pointer) {}
+      explicit Profession_Reference(Profession &pointer, Ownership ownership = Ownership::unknown) :
+        Optional_Shared_Pointer(pointer), ownership(ownership) {}
 
-      explicit Profession_Reference(std::shared_ptr<Profession> &shared_pointer) : Optional_Shared_Pointer(
-        shared_pointer) {}
+      explicit Profession_Reference(std::shared_ptr<Profession> &shared_pointer,
+                                    Ownership ownership = Ownership::unknown) :
+        Optional_Shared_Pointer(shared_pointer), ownership(ownership) {}
 
-      explicit Profession_Reference(Profession *shared_pointer) :
-        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)) {}
+      explicit Profession_Reference(Profession *shared_pointer, Ownership ownership = Ownership::unknown) :
+        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)), ownership(ownership) {}
 
       Profession_Type get_type() const {
         return get()->get_type();
       }
 
-//      Scope *get_scope() {
-//        return get()->get_scope();
-//      }
-//
-//      const Scope *get_scope() const {
-//        return get()->get_scope();
-//      }
+      void set_ownership(Ownership ownership) {
+        Profession_Reference::ownership = ownership;
+      }
 
       File *get_file() const {
         return get()->get_file();
@@ -108,7 +110,7 @@ namespace overworld {
       }
 
       Ownership get_ownership() const {
-        return get()->get_ownership();
+        return ownership;
       }
 
       Profession_Reference &get_base(Profession_Reference &self) {

@@ -33,7 +33,7 @@ namespace overworld {
         return node;
       }
 
-      const Profession &get_profession() const {
+      const Profession_Reference &get_profession() const {
         return node.get_profession();
       }
   };
