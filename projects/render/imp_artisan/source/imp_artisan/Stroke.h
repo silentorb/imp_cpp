@@ -44,8 +44,6 @@ namespace imp_artisan {
         internal::Stroke_Stream &get_stream();
 
     public:
-//        Stroke_Owner(Stroke_Owner &stroke) :
-//          stroke(std::move(stroke)) {}
         Stroke_Owner();
 
         Stroke_Owner(internal::Stroke *stroke) :
@@ -64,10 +62,6 @@ namespace imp_artisan {
           stroke = std::move(other.stroke);
           return *this;
         }
-
-//        internal::Stroke::Type get_type() const {
-//          return stroke->get_type();
-//        }
 
         const internal::Stroke *get_pointer() const {
           return stroke.get();
@@ -95,6 +89,7 @@ namespace imp_artisan {
   }
 
   namespace internal {
+
     class Text_Stroke : public virtual Stroke {
         const std::string value;
 
@@ -109,43 +104,12 @@ namespace imp_artisan {
           return value;
         }
 
-//        Type get_type() const override {
-//          return Type::text;
-//        }
-
         bool is_paragraph() const override {
           return false;
         }
 
         std::string render(const Indent &indent) const override {
           return indent + value;
-        }
-    };
-
-    class Special_Text : public virtual Stroke {
-        const std::string value;
-
-    public:
-        Special_Text(const std::string &value) : value(value) {}
-
-        virtual ~Special_Text() {
-
-        }
-
-        const std::string &get_value() const {
-          return value;
-        }
-
-//        Type get_type() const override {
-//          return Type::special;
-//        }
-
-        bool is_paragraph() const override {
-          return false;
-        }
-
-        std::string render(const Indent &indent) const override {
-          return indent.substr(tab_string.size()) + value;
         }
     };
 
@@ -195,50 +159,32 @@ namespace imp_artisan {
     };
 
     class Block : public virtual Stroke, public Stroke_Stream {
+    protected:
+        std::string create_indent(int steps) const;
+        const std::string render_main(const Indent &indent, int steps, const std::string &opening,
+                                      const std::string &closing) const;
+
     public:
-        virtual const std::string get_header() const = 0;
-        virtual const std::string get_start() const = 0;
-        virtual const std::string get_end() const = 0;
-        virtual int get_indent() const = 0;
-
-//        Type get_type() const override {
-//          return Type::block;
-//        }
-
         bool is_paragraph() const override {
           return true;
         }
 
-        std::string render(const Indent &indent) const override;
     };
 
-    class Standard_Block : public virtual Block {
+    class Standard_Block : public Block {
+    protected:
         std::string header;
-        int indent = 1;
+
+    protected:
+        const std::string render_standard(const Indent &indent, int steps) const;
 
     public:
-        Standard_Block(const std::string &header, int indent = 1) :
-          header(header), indent(indent) {}
+        explicit Standard_Block(const std::string &header) :
+          header(header) {}
 
-        virtual ~Standard_Block() {
+        virtual ~Standard_Block() {}
 
-        }
-
-        const std::string get_header() const {
-          return header;
-        }
-
-        const std::string get_start() const {
-          return "{";
-        }
-
-        const std::string get_end() const {
-          return "}";
-        }
-
-        int get_indent() const {
-          return indent;
-        }
+        std::string render(const Indent &indent) const override;
     };
 
     class Group : public virtual Stroke, public Stroke_Stream {
@@ -278,6 +224,8 @@ namespace imp_artisan {
       std::string render(const Indent &indent) const override;
   };
 
+  std::string render_strokes(const building::Strokes &strokes, const Indent &indent);
+
   namespace building {
     inline Stroke_Owner::Stroke_Owner() : stroke(new internal::Group()) {}
 
@@ -306,16 +254,5 @@ namespace imp_artisan {
     inline internal::Stroke_Stream &Stroke_Owner::get_stream() {
       return *dynamic_cast<internal::Stroke_Stream *>(stroke.get());
     }
-
-//    inline const std::string &Stroke_Owner::get_value() const {
-//      return stroke->get_value();
-////      if (stroke->get_type() == internal::Stroke::Type::text) {
-////        return dynamic_cast<const internal::Text_Stroke *>(stroke.get())->get_value();
-////      }
-////      else {
-////        return dynamic_cast<const internal::Special_Text *>(stroke.get())->get_value();
-////      }
-//    }
-
   }
 }

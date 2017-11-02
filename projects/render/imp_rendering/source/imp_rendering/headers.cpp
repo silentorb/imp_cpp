@@ -12,10 +12,10 @@ namespace imp_rendering {
 
     class Class_Block : public imp_artisan::internal::Standard_Block {
     public:
-        Class_Block(const string &header) : Standard_Block(header, 0) {}
+        explicit Class_Block(const string &header) : Standard_Block(header) {}
 
-        const string get_end() const override {
-          return "};";
+        std::string render(const imp_artisan::Indent &indent) const {
+          return render_standard(indent, 0) + ";";
         }
     };
 
@@ -23,48 +23,26 @@ namespace imp_rendering {
         std::string header;
 
     public:
-        Whitespace_Block(const string &header) : header(header) {}
+        explicit Whitespace_Block(const string &header) : header(header) {}
 
-        const string get_header() const override {
-          return header;
-        }
-
-        const string get_start() const override {
-          return "";
-        }
-
-        int get_indent() const override {
-          return 2;
-        }
-
-        const string get_end() const override {
-          return "";
+        std::string render(const imp_artisan::Indent &indent) const {
+//          return render_main(indent, 2, header + "\n", "");
+          return strokes.empty()
+                 ? indent + header
+                 : indent + header + "\n"
+                   + imp_artisan::render_strokes(strokes, indent + create_indent(2));
         }
     };
 
     class Simple_Block : public imp_artisan::internal::Block {
-
     public:
-        Simple_Block() {}
-
-        const string get_header() const override {
-          return "";
-        }
-
-        const string get_start() const override {
-          return "";
-        }
-
-        int get_indent() const override {
-          return 2;
-        }
-
-        const string get_end() const override {
-          return "";
-        }
-
         bool is_paragraph() const override {
           return false;
+        }
+
+        std::string render(const imp_artisan::Indent &indent) const {
+          return imp_artisan::render_strokes(strokes, indent + create_indent(2));
+          return render_main(indent, 2, "", "");
         }
     };
 

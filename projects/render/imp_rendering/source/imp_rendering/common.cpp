@@ -88,29 +88,29 @@ namespace imp_rendering {
     return result;
   }
 
-  const std::string render_minion_with_signature(const overworld::Minion &minion, const overworld::Scope &scope) {
-    auto signature = render_profession(minion.get_profession(), scope);
-    auto last_character = signature[signature.size() - 1];
-    string separator = last_character == '*' || last_character == '&'
-                       ? ""
-                       : " ";
+  const std::string render_profession_with_spacing(const overworld::Profession_Reference &profession,
+                                                   const Scope &scope) {
+    auto result = render_profession(profession, scope);
+    auto last_character = result[result.size() - 1];
+    return last_character == '*' || last_character == '&'
+           ? result
+           : result + " ";
+  }
 
-    return signature + separator + minion.get_name();
+  const std::string render_minion_with_signature(const overworld::Minion &minion, const overworld::Scope &scope) {
+    auto signature = render_profession_with_spacing(minion.get_profession(), scope);
+    return signature + minion.get_name();
   }
 
   const std::string render_parameter(const overworld::Parameter &parameter, const overworld::Scope &scope) {
     auto &profession = parameter.get_profession();
-    auto profession_string = render_profession(profession, scope);
-    auto last_character = profession_string[profession_string.size() - 1];
-    auto separator = last_character == '&' || last_character == '*'
-                     ? ""
-                     : " ";
+    auto profession_string = render_profession_with_spacing(profession, scope);
 //    std::string separator =
 //      profession.get_ownership() == Ownership::owner || profession.get_ownership() == Ownership::reference
 //      ? " &"
 //      : " ";
 
-    return profession_string + separator + parameter.get_name();
+    return profession_string + parameter.get_name();
   }
 
   const std::string render_function_parameters(const overworld::Function &function) {
@@ -124,8 +124,8 @@ namespace imp_rendering {
   const std::string render_function_return_signature(const overworld::Function &function) {
     string return_text = function.is_constructor()
                          ? ""
-                         : render_profession(function.get_signature().get_last().get_profession(),
-                                             function.get_parent_scope()) + " ";
+                         : render_profession_with_spacing(function.get_signature().get_last().get_profession(),
+                                                          function.get_parent_scope());
 
     return return_text;
   }
@@ -275,24 +275,14 @@ namespace imp_rendering {
   const std::string render_dungeon_interface(const Basic_Dungeon &dungeon_interface,
                                              const overworld::Scope &scope) {
     auto result = render_primary_dungeon_token(dungeon_interface, scope);
-    auto parent = dungeon_interface.get_original().get_scope().get_parent_scope();
-//    if (parent == &scope)
-//      return result;
-
-    if (parent) {
-      &parent->get_owner().get_dungeon() != &scope.get_owner().get_dungeon()
-      return get_namespace_string(parent->get_owner(), "::") + "::" + result;
+    auto &target_parent = dungeon_interface.get_original().get_scope().get_parent_scope()->get_owner();
+    auto local_parent_scope = scope.get_parent_scope();
+    if (local_parent_scope) {
+      auto &local_parent = local_parent_scope->get_owner();
+      if (&local_parent.get_dungeon() != &target_parent.get_dungeon()) {
+        return get_namespace_string(target_parent, "::") + "::" + result;
+      }
     }
-//    while (parent && parent != &scope) {
-//      auto &parent_dungeon = parent->get_owner().get_dungeon();
-//      if (parent_dungeon.get_original().get_name() == "")
-//        break;
-//
-//      result = render_dungeon_interface(parent_dungeon, scope)
-//               + "::" + result;
-//
-//      parent = parent->get_parent_scope();
-//    }
 
     return result;
   }
@@ -588,13 +578,26 @@ namespace imp_rendering {
     return "template <" + parameter_string + ">";
   }
 
+  class Namespace_Block : public imp_artisan::internal::Standard_Block {
+  public:
+      explicit Namespace_Block(const string &header) : Standard_Block(header) {}
+
+      std::string render(const imp_artisan::Indent &indent) const {
+        return render_main(
+          indent, 1,
+          header + " {\n\n",
+          "\n" + indent + "}"
+        );
+      }
+  };
+
   Stroke render_possible_namespace_block(const overworld::Parent &parent, Stroke stroke) {
     auto namespace_string = get_namespace_string(parent, "::");
     if (namespace_string == "") {
       return stroke;
     }
     else {
-      Stroke result{new imp_artisan::internal::Standard_Block(
+      Stroke result{new Namespace_Block(
         "namespace " + namespace_string
       )};
       result.add(stroke);

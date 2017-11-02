@@ -132,17 +132,4 @@ namespace overworld {
     return result;
   }
 
-  const std::string get_namespace_string(const Parent &parent, const std::string &delimiter) {
-    if (parent.get_type() == Parent_Type::dungeon) {
-      auto &parent2 = parent.get_dungeon().get_original();
-      if (parent2.get_name() != "") {
-        auto parent_scope = parent2.get_scope().get_parent_scope();
-        return parent_scope
-               ? get_namespace_string(parent_scope->get_owner(), delimiter) + delimiter + parent2.get_name()
-               : parent2.get_name();
-      }
-    }
-
-    return "";
-  }
 }

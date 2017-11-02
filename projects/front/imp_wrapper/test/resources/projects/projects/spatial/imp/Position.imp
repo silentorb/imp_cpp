@@ -1,4 +1,5 @@
 
+@external("spatial/Position.h")
 Position {
     @public:
        x: Float

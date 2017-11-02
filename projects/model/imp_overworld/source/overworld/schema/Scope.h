@@ -70,7 +70,7 @@ namespace overworld {
         return parent_scope;
       }
 
-      Parent get_owner() {
+      Parent &get_owner() {
         return owner;
       }
 

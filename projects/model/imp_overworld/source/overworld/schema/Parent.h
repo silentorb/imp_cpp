@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 namespace overworld {
 
   class Basic_Dungeon;
@@ -33,6 +35,8 @@ namespace overworld {
         return type;
       }
 
+      Parent *get_parent() const;
+
       const std::string get_name() const;
 
       Basic_Dungeon &get_dungeon() {
@@ -56,4 +60,7 @@ namespace overworld {
         return *function;
       }
   };
+
+  const std::string get_namespace_string(const Parent &parent, const std::string &delimiter);
+
 }

@@ -214,23 +214,4 @@ namespace overworld {
   };
 
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
-
-  const std::string get_namespace_string(const Parent &parent, const std::string &delimiter);
-//  class Member_Dungeon : public Generic_Member_Reference<Dungeon> {
-//  public:
-//      Member_Dungeon(Dungeon &value) : Generic_Member_Reference(value) {}
-//
-//      Member_Type get_type() const override {
-//        return Member_Type::dungeon;
-//      }
-//
-//      const Dungeon &get_dungeon() const {
-//        return value;
-//      }
-//
-//      Dungeon &get_dungeon() {
-//        return value;
-//      }
-//  };
-//  using Member_Dungeon_Owner = std::unique_ptr<Member_Dungeon>;
 }
