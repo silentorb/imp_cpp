@@ -28,6 +28,10 @@ namespace overworld {
         }
       }
 
+      Node & get_node(){
+        return node;
+      }
+
 //      Function_Signature &get_or_create_signature() {
 //        if (!signature) {
 //          signature = std::unique_ptr<Function_Signature>(new Function_Signature());

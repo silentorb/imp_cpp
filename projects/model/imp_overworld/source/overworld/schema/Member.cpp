@@ -13,6 +13,9 @@ namespace overworld {
       case Member_Type::parameter:
         return member.get_parameter().get_node();
 
+      case Member_Type:: temporary:
+        return member.get_temporary_member().get_node();
+
       default:
         throw std::runtime_error("Not implemented.");
     }

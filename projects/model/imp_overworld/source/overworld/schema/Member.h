@@ -96,6 +96,14 @@ namespace overworld {
         return *dungeon;
       }
 
+      Temporary_Member &get_temporary_member() {
+        return *temporary;
+      }
+
+     const Temporary_Member &get_temporary_member() const{
+        return *temporary;
+      }
+
       Profession_Reference &get_profession_reference() {
         return *profession_reference;
       }
