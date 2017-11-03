@@ -44,11 +44,13 @@ namespace overworld {
       }
 
       Node *get_node() override {
-        return &get_signature().get_node();
+//        return &get_signature().get_node();
+      throw std::runtime_error("Not supported.");
       }
 
       const Node *get_node() const override {
-        return &get_signature().get_node();
+//        return &get_signature().get_node();
+        throw std::runtime_error("Not supported.");
       }
 
       const Expression &get_expression() const {

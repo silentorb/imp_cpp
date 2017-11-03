@@ -28,10 +28,6 @@ namespace overworld {
         return Profession_Type::dungeon;
       }
 
-      virtual Node &get_node() override {
-        throw std::runtime_error("Not supported.");
-      }
-
       Ownership get_ownership() const override {
         return dungeon.get_ownership();
       }

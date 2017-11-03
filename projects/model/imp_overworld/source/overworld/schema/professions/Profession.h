@@ -34,6 +34,7 @@ namespace overworld {
       generic_parameter,
       primitive,
       reference,
+      temporary_interface,
       Union,
       Void,
   };
@@ -51,8 +52,6 @@ namespace overworld {
       virtual const std::string get_debug_name() const {
         return get_name();
       };
-
-      virtual Node &get_node() = 0;
 
       virtual Ownership get_ownership() const = 0;
       virtual Profession_Reference &get_base(Profession_Reference &self) = 0;
@@ -105,9 +104,9 @@ namespace overworld {
         return get()->get_name();
       }
 
-      Node &get_node() {
-        return get()->get_node();
-      }
+//      Node &get_node() {
+//        return get()->get_node();
+//      }
 
       Ownership get_ownership() const {
         return ownership;

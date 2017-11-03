@@ -11,7 +11,8 @@ namespace overworld {
       instantiation,
       minion,
       parameter,
-      other
+      other,
+      temporary,
   };
 
   class Node;
