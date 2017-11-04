@@ -35,6 +35,12 @@ namespace overworld {
       case Member_Type::profession:
         return member.get_profession().get_name();
 
+      case Member_Type::temporary:
+        return member.get_temporary_member().get_node().get_element().get_name();
+
+      case Member_Type::parameter:
+        return member.get_parameter().get_name();
+
       default:
         throw std::runtime_error("Not implemented.");
     }

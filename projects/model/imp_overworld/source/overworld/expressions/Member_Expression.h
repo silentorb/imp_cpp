@@ -43,7 +43,7 @@ namespace overworld {
 //      }
 
       const std::string get_name() const override {
-        return "Member_Expression";
+        return "..." + get_member_name(member);
       }
 
       Profession_Reference &get_profession() override {

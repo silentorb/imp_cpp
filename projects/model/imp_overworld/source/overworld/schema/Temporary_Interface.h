@@ -48,8 +48,8 @@ namespace overworld {
 //        signature->add_element(std::move(parameter));
 //      }
   };
-/*
-  class Temporary_Interface {
+
+  class Temporary_Interface : public Profession {
       std::vector<std::unique_ptr<Temporary_Member>> members;
 
   public:
@@ -57,6 +57,8 @@ namespace overworld {
       void add_member(std::unique_ptr<Temporary_Member> member) {
         members.push_back(std::move(member));
       }
+
+
   };
-  */
+
 }

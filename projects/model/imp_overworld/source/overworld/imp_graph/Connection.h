@@ -94,14 +94,14 @@ namespace overworld {
       Profession_Reference get_profession(Node &node) override;
   };
 
-  class Container_To_Member : public Connection {
-      std::string member_name;
-
-  public:
-      Container_To_Member(Node &first, Node &second, const std::string &member_name) :
-        Connection(first, second, Connection_Type::lambda_to_parameter),
-        member_name(member_name) {}
-
-      Profession_Reference get_profession(Node &node) override;
-  };
+//  class Container_To_Member : public Connection {
+//      std::string member_name;
+//
+//  public:
+//      Container_To_Member(Node &first, Node &second, const std::string &member_name) :
+//        Connection(first, second, Connection_Type::lambda_to_parameter),
+//        member_name(member_name) {}
+//
+//      Profession_Reference get_profession(Node &node) override;
+//  };
 }

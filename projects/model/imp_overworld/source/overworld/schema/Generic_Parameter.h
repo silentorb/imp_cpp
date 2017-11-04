@@ -77,9 +77,9 @@ namespace overworld {
         element.set_name(value);
       }
 
-      Node &get_node() override {
-        return node;
-      }
+//      Node &get_node() override {
+//        return node;
+//      }
 
       const Node &get_node() const {
         return node;

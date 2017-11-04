@@ -403,7 +403,7 @@ namespace imp_mirror {
 
         auto result = new overworld::Member_Expression(*member, scope.get_overworld_scope().get_owner(),
                                                        profession, second.get_source_point());
-        graph->connect(*result->get_node(), overworld::get_member_node(*member));
+//        graph->connect(*result->get_node(), overworld::get_member_node(*member));
         return overworld::Expression_Owner(result);
       }
       else if (profession.get_type() == overworld::Profession_Type::unknown) {
@@ -412,8 +412,8 @@ namespace imp_mirror {
           auto child_member = create_temporary_member(*previous_member_expression, member_expression, *graph, scope);
           auto &first = *previous_expression.get_node();
           auto &second = *child_member->get_node();
-          auto connection = new overworld::Container_To_Member(first, second, member_expression.get_name());
-          graph->connect(first, second, std::unique_ptr<overworld::Connection>(connection));
+//          auto connection = new overworld::Container_To_Member(first, second, member_expression.get_name());
+//          graph->connect(first, second, std::unique_ptr<overworld::Connection>(connection));
 
           return child_member;
         }

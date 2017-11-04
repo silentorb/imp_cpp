@@ -127,7 +127,7 @@ namespace overworld {
       return parameter_profession;
     }
   }
-
+/*
   Profession_Reference Container_To_Member::get_profession(Node &node) {
     auto &first = get_first();
     auto &second = get_second();
@@ -150,8 +150,10 @@ namespace overworld {
       return overworld::get_member_profession_reference(*dungeon_member);
     }
     else {
+      auto second_profession = second.get_profession();
       throw std::runtime_error("Not implemented.");
     }
 
   }
+  */
 }
