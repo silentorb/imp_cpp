@@ -34,7 +34,7 @@ namespace overworld {
       generic_parameter,
       primitive,
       reference,
-      temporary,
+      temporary_interface,
       Union,
       Void,
   };
@@ -47,7 +47,7 @@ namespace overworld {
 
       virtual Profession_Type get_type() const = 0;
 
-      virtual File *get_file() {
+      virtual File *get_file() const {
         return nullptr;
       }
 
@@ -63,8 +63,13 @@ namespace overworld {
         return Ownership::unknown;
       }
 
-      Profession_Reference &get_base(Profession_Reference &self);
-      const Profession &get_base() const;
+      virtual Profession_Reference &get_base(Profession_Reference &self) {
+        return self;
+      }
+
+      virtual const Profession &get_base() const {
+        return *this;
+      }
 
       virtual std::vector<Profession_Reference> *get_contracts() {
         return nullptr;

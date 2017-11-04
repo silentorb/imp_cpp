@@ -19,7 +19,12 @@ namespace imp_rendering {
           return;
 
         if (expression.get_type() == Expression_Type::member) {
-          auto &member = dynamic_cast<const Member_Expression *>(&expression)->get_member();
+          auto member_expression = dynamic_cast<const Member_Expression *>(&expression);
+//          auto &member = member_expression
+//                         ? member_expression->get_member()
+//                         : dynamic_cast<const Member_Expression_With_Node *>(&expression)->get_member();
+          auto member = member_expression->get_member();
+
           if (member.get_type() == Member_Type::function)
             member_action(member);
           else

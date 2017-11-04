@@ -64,7 +64,8 @@ namespace imp_mirror {
       auto &first = parameter.get_node();
       auto &argument = *invoke_arguments[i];
       auto &second = *argument.get_node();
-      if (&first.get_parent().get_function() != &second.get_parent().get_function()
+      if (second.get_parent().get_type() == Parent_Type::function
+          && &first.get_parent().get_function() != &second.get_parent().get_function()
           && first.get_profession().get_type() == Profession_Type::generic_parameter) {
         auto &member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
@@ -74,8 +75,8 @@ namespace imp_mirror {
       else {
         auto &parent = first.get_parent();
         auto &dungeon_parent = parent.get_type() == Parent_Type::dungeon
-                          ? parent.get_dungeon()
-                          : parent.get_function().get_original().get_element().get_parent().get_dungeon();
+                               ? parent.get_dungeon()
+                               : parent.get_function().get_original().get_element().get_parent().get_dungeon();
 
         if (!dungeon_parent.get_original().is_generic()) {
           graph->connect(first, second);

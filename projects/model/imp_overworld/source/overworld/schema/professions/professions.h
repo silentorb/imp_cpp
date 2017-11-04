@@ -25,24 +25,12 @@ namespace overworld {
         return nullptr;
       }
 
-      Node &get_node() override {
-        throw std::runtime_error("Not supported.");
-      }
-
       const std::string get_name() const override {
         return "?";
       }
 
       Ownership get_ownership() const override {
         return Ownership::value;
-      }
-
-      Profession_Reference &get_base(Profession_Reference &self) override {
-        return self;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
       }
   };
 
@@ -64,10 +52,6 @@ namespace overworld {
         return nullptr;
       }
 
-      Node &get_node() override {
-        throw std::runtime_error("Not supported.");
-      }
-
       const std::string get_name() const override {
         return "void";
       }
@@ -76,13 +60,6 @@ namespace overworld {
         return Ownership::value;
       }
 
-      Profession_Reference &get_base(Profession_Reference &self) override {
-        return self;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
-      }
   };
 
   enum class Primitive_Type {
@@ -121,10 +98,6 @@ namespace overworld {
 //        return nullptr;
 //      }
 
-      Node &get_node() override {
-        throw std::runtime_error("Not supported.");
-      }
-
       File *get_file() const override {
         return file;
       }
@@ -133,14 +106,6 @@ namespace overworld {
 
       Ownership get_ownership() const override {
         return Ownership::value;
-      }
-
-      Profession_Reference &get_base(Profession_Reference &self) override {
-        return self;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
       }
   };
 
@@ -161,10 +126,6 @@ namespace overworld {
 //      Scope *get_scope() override {
 //        return nullptr;
 //      }
-
-      Node &get_node() override {
-        throw std::runtime_error("Not supported.");
-      }
 
 //      const Scope *get_scope() const override {
 //        return nullptr;

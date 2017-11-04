@@ -145,7 +145,7 @@ namespace solving {
       throw std::runtime_error("Invalid type.");
 #endif
 
-    auto &original_profession = node.get_profession().get_base();
+    auto &previous_profession = node.get_profession().get_base();
     profession_library.assign(node, profession, setter);
     if (node.get_element().get_type() == Element_Type::minion
         && base_profession.get_type() == Profession_Type::generic_parameter) {
@@ -155,6 +155,10 @@ namespace solving {
         auto &function = *dynamic_cast<Virtual_Function *>(&generic_parameter.get_node().get_parent().get_function());
         migrate_generic_parameter_from_function_to_dungeon(*dungeon, function, generic_parameter);
       }
+    }
+
+    if (previous_profession.get_type() == Profession_Type::temporary_interface) {
+      throw std::runtime_error("Not implemented.");
     }
 //    if (node.get_profession_reference().get_element_type() == Element_Type::minion
 //        && original_profession.get_type() == Profession_Type::generic_parameter) {

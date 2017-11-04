@@ -13,7 +13,7 @@ namespace overworld {
   public:
       Temporary_Member(const std::string &name, Profession_Reference &profession,
                        const source_mapping::Source_Range source_point, Function_Interface &function) :
-        element(Element_Type::minion, name, Parent(), source_point),
+        element(Element_Type::temporary, name, Parent(), source_point),
         node(profession, element) {}
 
       virtual ~Temporary_Member() {}
@@ -28,7 +28,7 @@ namespace overworld {
         }
       }
 
-      Node & get_node(){
+      Node &get_node() {
         return node;
       }
 
@@ -53,12 +53,21 @@ namespace overworld {
       std::vector<std::unique_ptr<Temporary_Member>> members;
 
   public:
-
       void add_member(std::unique_ptr<Temporary_Member> member) {
         members.push_back(std::move(member));
       }
 
+      Profession_Type get_type() const override {
+        return Profession_Type::temporary_interface;
+      }
 
+      const std::string get_name() const override {
+        return "Temporary_Interface";
+      }
+
+      Ownership get_ownership() const override {
+        return Ownership::unknown;
+      }
   };
 
 }

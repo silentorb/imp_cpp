@@ -28,12 +28,4 @@ namespace overworld {
     auto dungeon_reference = static_cast<const Dungeon_Reference *>(this);
     return dungeon_reference->get_dungeon_interface();
   }
-
-  Profession_Reference &Profession::get_base(Profession_Reference &self) {
-    return <#initializer#>;
-  }
-
-  const Profession &Profession::get_base() const {
-    return <#initializer#>;
-  }
 }

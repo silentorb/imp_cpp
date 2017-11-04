@@ -187,10 +187,7 @@ namespace imp_mirror {
     if (!member)
       throw Code_Error("Unknown symbol " + name, input_member_expression.get_source_point());
 
-    auto result = new overworld::Member_Expression(
-      *member, scope.get_overworld_scope().get_owner(),
-      overworld::get_member_profession_reference(*member),
-      input_member_expression.get_source_point());
+    auto result = new overworld::Member_Expression(*member, input_member_expression.get_source_point());
 //    graph->connect(*result->get_node(), overworld::get_member_node(*member));
     return overworld::Expression_Owner(result);
   }
@@ -369,14 +366,19 @@ namespace imp_mirror {
                                                         member_expression.get_source_point(),
                                                         scope.get_overworld_scope().get_owner().get_function());
 //      interface.add_member(std::unique_ptr<overworld::Temporary_Member>(new_member));
-      auto result = new overworld::Member_Expression(*new_member, scope.get_overworld_scope().get_owner(),
-                                                     overworld::Profession_Library::get_unknown(),
-                                                     member_expression.get_source_point());
+
+//      auto result = new overworld::Member_Expression_With_Node(
+//        *new_member, scope.get_overworld_scope().get_owner(),
+//        overworld::Profession_Library::get_unknown(),
+//        member_expression.get_source_point());
+
+      auto result = new overworld::Member_Expression(
+        *new_member, member_expression.get_source_point());
 //      auto connection = new overworld::Container_To_Member(*result->get_node(), new_member->get_node(),
 //                                                           result->get_name());
 //      graph.connect(*result->get_node(), new_member->get_node(), std::unique_ptr<overworld::Connection>(connection));
 //      new_member->add_expression(*result);
-      graph.connect(*result->get_node(), new_member->get_node());
+//      graph.connect(*result->get_node(), new_member->get_node());
       return overworld::Expression_Owner(result);
     }
 //          else if (member.get_type() == overworld::Member_Type::function) {
@@ -401,8 +403,7 @@ namespace imp_mirror {
                            member_expression.get_source_point());
         }
 
-        auto result = new overworld::Member_Expression(*member, scope.get_overworld_scope().get_owner(),
-                                                       profession, second.get_source_point());
+        auto result = new overworld::Member_Expression(*member, second.get_source_point());
 //        graph->connect(*result->get_node(), overworld::get_member_node(*member));
         return overworld::Expression_Owner(result);
       }
@@ -410,8 +411,8 @@ namespace imp_mirror {
         if (previous_expression.get_type() == overworld::Expression_Type::member) {
           auto previous_member_expression = dynamic_cast<overworld::Member_Expression *>(&previous_expression);
           auto child_member = create_temporary_member(*previous_member_expression, member_expression, *graph, scope);
-          auto &first = *previous_expression.get_node();
-          auto &second = *child_member->get_node();
+//          auto &first = *previous_expression.get_node();
+//          auto &second = *child_member->get_node();
 //          auto connection = new overworld::Container_To_Member(first, second, member_expression.get_name());
 //          graph->connect(first, second, std::unique_ptr<overworld::Connection>(connection));
 

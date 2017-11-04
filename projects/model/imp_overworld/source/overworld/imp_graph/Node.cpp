@@ -116,6 +116,9 @@ namespace overworld {
       case Profession_Type::Void:
         return Node_Status::optional;
 
+      case Profession_Type::temporary_interface:
+        return Node_Status::unresolved;
+
       default:
         return Node_Status::resolved;
     }

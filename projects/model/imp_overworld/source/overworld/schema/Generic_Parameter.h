@@ -77,9 +77,9 @@ namespace overworld {
         element.set_name(value);
       }
 
-//      Node &get_node() override {
-//        return node;
-//      }
+      Node &get_node() {
+        return node;
+      }
 
       const Node &get_node() const {
         return node;
@@ -89,28 +89,8 @@ namespace overworld {
         return Profession_Type::generic_parameter;
       }
 
-//      Scope *get_scope() override {
-//        return nullptr;
-//      }
-//
-//      const Scope *get_scope() const override {
-//        return nullptr;
-//      }
-
-      File *get_file() const override {
-        return nullptr;
-      }
-
       Ownership get_ownership() const override {
         return Ownership::owner;
-      }
-
-      Profession_Reference &get_base(Profession_Reference &self) override {
-        return self;
-      }
-
-      const Profession &get_base() const override {
-        return *this;
       }
 
       Generic_Parameter_Element &get_element() {
