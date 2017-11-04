@@ -52,7 +52,7 @@ namespace overworld {
 //    }
   }
 
-
+/*
   overworld::Temporary_Interface &Function_With_Block::get_or_create_interface(Parameter &parameter) {
     if (!temporary_interface_manager) {
       temporary_interface_manager = std::make_unique<Temporary_Interface_Manager>();
@@ -68,7 +68,7 @@ namespace overworld {
     temporary_interface_manager->add(parameter, dungeon);
     return *dungeon;
   }
-
+*/
 //  Minion &Function::create_parameter(const std::string &name, Profession &profession) {
 //    auto &minion = scope.create_minion(name, profession);
 //    add_parameter(minion);

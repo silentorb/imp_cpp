@@ -188,7 +188,7 @@ namespace overworld {
         return parent_scope;
       }
   };
-
+/*
   class Parameter_Temporary_Interface {
       Parameter &parameter;
       std::unique_ptr<Temporary_Interface> interface;
@@ -220,11 +220,11 @@ namespace overworld {
         ));
       }
   };
-
+*/
   class Function_With_Block : public Function {
       Scope scope;
       Block block;
-      std::unique_ptr<Temporary_Interface_Manager> temporary_interface_manager;
+//      std::unique_ptr<Temporary_Interface_Manager> temporary_interface_manager;
 
   protected:
       bool returns_a_value() const override;
@@ -265,7 +265,7 @@ namespace overworld {
       }
 
       bool is_inline() const override;
-      Temporary_Interface &get_or_create_interface(Parameter &parameter);
+//      Temporary_Interface &get_or_create_interface(Parameter &parameter);
   };
 
   using Function_With_Block_Owner = std::unique_ptr<Function_With_Block>;

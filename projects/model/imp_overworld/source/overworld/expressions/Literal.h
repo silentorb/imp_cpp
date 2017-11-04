@@ -9,8 +9,8 @@ namespace overworld {
   class Literal : public Common_Node_Expression {
 
   public:
-      Literal(Parent parent, const source_mapping::Source_Range &source_range) :
-        Common_Node_Expression(parent, source_range) {}
+      Literal(Parent parent, Profession_Reference profession, const source_mapping::Source_Range &source_range) :
+        Common_Node_Expression(parent, profession, source_range) {}
 
       Expression_Type get_type() const override {
         return Expression_Type::literal;
@@ -30,13 +30,11 @@ namespace overworld {
   template<typename T, typename Static_Functions>
   class Literal_Implementation : public Literal {
       T value;
-      Node node;
 
   public:
       Literal_Implementation(T value, Parent parent, const source_mapping::Source_Range &source_range) :
-        Literal(parent, source_range),
-        value(value),
-        node(Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), element) {
+        Literal(parent, Profession_Library::get_primitive(Static_Functions::_get_primitive_type()), source_range),
+        value(value) {
 //        node.set_status(Node_Status::resolved);
       }
 

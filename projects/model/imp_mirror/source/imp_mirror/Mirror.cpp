@@ -183,12 +183,16 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_member(const underworld::Member_Expression &input_member_expression,
                                                      Scope &scope) {
     auto name = input_member_expression.get_name();
-    auto input_member = scope.find_member(name);
-    if (!input_member)
+    auto member = scope.find_member(name);
+    if (!member)
       throw Code_Error("Unknown symbol " + name, input_member_expression.get_source_point());
 
-    return overworld::Expression_Owner(new overworld::Member_Expression(*input_member,
-                                                                        input_member_expression.get_source_point()));
+    auto result = new overworld::Member_Expression(
+      *member, scope.get_overworld_scope().get_owner(),
+      overworld::get_member_profession_reference(*member),
+      input_member_expression.get_source_point());
+//    graph->connect(*result->get_node(), overworld::get_member_node(*member));
+    return overworld::Expression_Owner(result);
   }
 
   overworld::Operator_Type Mirror::reflect_operator(const underworld::Operator &input_operator) {
@@ -353,42 +357,30 @@ namespace imp_mirror {
 
   overworld::Expression_Owner create_temporary_member(overworld::Member_Expression &previous_expression,
                                                       const underworld::Member_Expression &member_expression,
+                                                      overworld::Graph &graph,
                                                       Scope &scope) {
     auto &previous_member = previous_expression.get_member();
-//    if (previous_member.get_type() == overworld::Member_Type::minion) {
-//      auto minion = &previous_member.get_minion();
-//      auto function = static_cast<overworld::Function_With_Block *>(&minion->get_node().get_parent().get_function());
-//      auto parameter = function->get_signature().get_element(minion->get_name());
-//      auto &interface = function->get_or_create_interface(*parameter);
-//      auto new_member = new overworld::Temporary_Minion(member_expression.get_name(),
-//                                                        overworld::Profession_Library::get_unknown(),
-//                                                        member_expression.get_source_point(),
-//                                                        scope.get_overworld_scope().get_parent().get_function());
-//      auto member = interface.get_scope().add_minion(overworld::Minion_Owner(new_member));
-//      auto result = new overworld::Member_Expression(member, member_expression.get_source_point());
-//      new_member->add_expression(*result);
-//      return overworld::Expression_Owner(result);
-//    }
-//    else
-
     if (previous_member.get_type() == overworld::Member_Type::parameter) {
       auto &parameter = previous_member.get_parameter();
       auto function = static_cast<overworld::Function_With_Block *>(&parameter.get_node().get_parent().get_function());
-      auto &interface = function->get_or_create_interface(parameter);
+//      auto &interface = function->get_or_create_interface(parameter);
       auto new_member = new overworld::Temporary_Member(member_expression.get_name(),
                                                         overworld::Profession_Library::get_unknown(),
                                                         member_expression.get_source_point(),
                                                         scope.get_overworld_scope().get_owner().get_function());
-      interface.add_member(std::unique_ptr<overworld::Temporary_Member>(new_member));
-      auto result = new overworld::Member_Expression(*new_member, member_expression.get_source_point());
-      new_member->add_expression(*result);
+//      interface.add_member(std::unique_ptr<overworld::Temporary_Member>(new_member));
+      auto result = new overworld::Member_Expression(*new_member, scope.get_overworld_scope().get_owner(),
+                                                     overworld::Profession_Library::get_unknown(),
+                                                     member_expression.get_source_point());
+//      auto connection = new overworld::Container_To_Member(*result->get_node(), new_member->get_node(),
+//                                                           result->get_name());
+//      graph.connect(*result->get_node(), new_member->get_node(), std::unique_ptr<overworld::Connection>(connection));
+//      new_member->add_expression(*result);
+      graph.connect(*result->get_node(), new_member->get_node());
       return overworld::Expression_Owner(result);
     }
 //          else if (member.get_type() == overworld::Member_Type::function) {
-//            auto &minion = cast<overworld::Function>(member);
-//            auto &interface = temporary_interface_manager.get_or_create_interface(minion);
-//            auto &function = interface.create_function(member_expression.get_name(), profession_library.get_unknown());
-//            return overworld::Expression_Owner(new overworld::Member_Expression(function));
+
 //          }
     throw std::runtime_error("Not implemented.");
   }
@@ -409,12 +401,21 @@ namespace imp_mirror {
                            member_expression.get_source_point());
         }
 
-        return overworld::Expression_Owner(new overworld::Member_Expression(*member, second.get_source_point()));
+        auto result = new overworld::Member_Expression(*member, scope.get_overworld_scope().get_owner(),
+                                                       profession, second.get_source_point());
+        graph->connect(*result->get_node(), overworld::get_member_node(*member));
+        return overworld::Expression_Owner(result);
       }
       else if (profession.get_type() == overworld::Profession_Type::unknown) {
         if (previous_expression.get_type() == overworld::Expression_Type::member) {
           auto previous_member_expression = dynamic_cast<overworld::Member_Expression *>(&previous_expression);
-          return create_temporary_member(*previous_member_expression, member_expression, scope);
+          auto child_member = create_temporary_member(*previous_member_expression, member_expression, *graph, scope);
+          auto &first = *previous_expression.get_node();
+          auto &second = *child_member->get_node();
+          auto connection = new overworld::Container_To_Member(first, second, member_expression.get_name());
+          graph->connect(first, second, std::unique_ptr<overworld::Connection>(connection));
+
+          return child_member;
         }
       }
 

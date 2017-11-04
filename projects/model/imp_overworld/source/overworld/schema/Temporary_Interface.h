@@ -48,7 +48,7 @@ namespace overworld {
 //        signature->add_element(std::move(parameter));
 //      }
   };
-
+/*
   class Temporary_Interface {
       std::vector<std::unique_ptr<Temporary_Member>> members;
 
@@ -58,4 +58,5 @@ namespace overworld {
         members.push_back(std::move(member));
       }
   };
+  */
 }

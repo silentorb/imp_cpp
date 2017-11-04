@@ -35,8 +35,9 @@ namespace overworld {
 //        return false;
 //      }
       virtual Expression &get_last() = 0;
+
       const Expression &get_last() const {
-        return const_cast<Expression*>(this)->get_last();
+        return const_cast<Expression *>(this)->get_last();
       }
 
       virtual const Node *get_node() const = 0;
@@ -84,6 +85,10 @@ namespace overworld {
 
         return Element_Type::other;
       }
+
+      Expression & get_expression(){
+        return expression;
+      }
   };
 
   class Common_Expression : public Expression {
@@ -105,10 +110,13 @@ namespace overworld {
   class Common_Node_Expression : public Expression {
   protected:
       Expression_Element element;
+      Node node;
 
   public:
-      Common_Node_Expression(Parent parent, const source_mapping::Source_Range &source_range) :
-        element(*this, parent, source_range) {}
+      Common_Node_Expression(Parent parent, Profession_Reference profession,
+                             const source_mapping::Source_Range &source_range) :
+        element(*this, parent, source_range),
+        node(profession, element) {}
 
       Expression &get_last() override {
         return *this;
@@ -116,6 +124,14 @@ namespace overworld {
 
       bool is_statement() const override {
         return false;
+      }
+
+      Node *get_node() override {
+        return &node;
+      }
+
+      const Node *get_node() const override {
+        return &node;
       }
   };
 

@@ -2,6 +2,7 @@
 #include <overworld/schema/Dungeon_Reference.h>
 #include <overworld/schema/Parameter.h>
 #include <overworld/schema/Function_Signature.h>
+#include <overworld/expressions/Member_Expression.h>
 #include "Connection.h"
 #include "Node.h"
 
@@ -125,5 +126,32 @@ namespace overworld {
     else {
       return parameter_profession;
     }
+  }
+
+  Profession_Reference Container_To_Member::get_profession(Node &node) {
+    auto &first = get_first();
+    auto &second = get_second();
+
+    if (&node == &get_first()) {
+      auto &first_profession = first.get_profession();
+      auto &dungeon = first_profession->get_dungeon_interface().get_original();
+      auto dungeon_member = dungeon.get_scope().get_member_or_null(member_name);
+
+      // There should eventually be a mechanism for this to return a conflict.
+      if (!dungeon_member)
+        throw std::runtime_error("Could not find member named " + member_name);
+
+      auto expression_element = dynamic_cast<Expression_Element *>(&second.get_element());
+      auto member_expression = dynamic_cast<Member_Expression *>(&expression_element->get_expression());
+      auto &member = member_expression->get_member();
+      if (member.get_type() == Member_Type::temporary) {
+        throw std::runtime_error("Not implemented.");
+      }
+      return overworld::get_member_profession_reference(*dungeon_member);
+    }
+    else {
+      throw std::runtime_error("Not implemented.");
+    }
+
   }
 }

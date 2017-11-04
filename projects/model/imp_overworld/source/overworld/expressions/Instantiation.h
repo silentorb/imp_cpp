@@ -9,13 +9,11 @@ namespace overworld {
 
   class Instantiation : public Common_Node_Expression {
       std::map<Minion *, Expression_Owner> dictionary;
-      Node node;
 
   public:
       Instantiation(Profession_Reference &profession, Parent parent,
                     const source_mapping::Source_Range &source_range) :
-        Common_Node_Expression(parent, source_range),
-        node(profession, element) {}
+        Common_Node_Expression(parent, profession, source_range) {}
 
       virtual ~Instantiation() = default;
 
@@ -41,14 +39,6 @@ namespace overworld {
 
       Profession_Reference &get_profession() override {
         return node.get_profession();
-      }
-
-      Node *get_node() override {
-        return &node;
-      }
-
-      const Node *get_node() const override {
-        return &node;
       }
 
       const Profession_Reference &get_profession() const override {

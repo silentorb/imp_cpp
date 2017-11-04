@@ -13,6 +13,7 @@ namespace overworld {
   enum class Connection_Type {
       compound_to_scalar,
       direct,
+      container_to_member,
       lambda_to_parameter,
       variant_to_lambda,
   };
@@ -89,6 +90,17 @@ namespace overworld {
       Lambda_To_Parameter(Node &first, Node &second, int lambda_parameter_index) :
         Connection(first, second, Connection_Type::lambda_to_parameter),
         lambda_parameter_index(lambda_parameter_index) {}
+
+      Profession_Reference get_profession(Node &node) override;
+  };
+
+  class Container_To_Member : public Connection {
+      std::string member_name;
+
+  public:
+      Container_To_Member(Node &first, Node &second, const std::string &member_name) :
+        Connection(first, second, Connection_Type::lambda_to_parameter),
+        member_name(member_name) {}
 
       Profession_Reference get_profession(Node &node) override;
   };
