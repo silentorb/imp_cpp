@@ -7,46 +7,13 @@
 
 namespace overworld {
 
-  std::string render_node_status(Node_Status status) {
-    switch (status) {
-
-      case Node_Status::unresolved:
-        return "?";
-
-      case Node_Status::partial:
-        return "!?";
-
-      default:
-        return "";
-    }
-  }
-
-  std::string render_ownership(const Profession_Reference &profession) {
-    if (profession.get_type() == Profession_Type::unknown
-        || profession.get_type() == Profession_Type::Void)
-      return "";
-
-    switch (profession.get_ownership()) {
-      case Ownership::value:
-        return "+";
-
-      case Ownership::reference:
-        return "&";
-
-      case Ownership::pointer:
-        return "*";
-
-      case Ownership::owner:
-        return "$";
-
-      default:
-        return "";
-    }
-  }
-
   std::string Node::get_debug_string() const {
-    auto &element = get_element();
-    auto &profession = get_profession();
+    return get_element().get_name();
+  }
+
+  const std::string Node::get_advanced_debug_string(const Node &node) {
+    auto &element = node.get_element();
+    auto &profession = node.get_profession();
     auto &source_point = element.get_source_point().get_start();
 
     std::string result = "";
@@ -55,8 +22,7 @@ namespace overworld {
         std::to_string(source_point.get_row()) + ":" +
         std::to_string(source_point.get_column()) + " ";
 
-    result += element.get_name() + render_node_status(get_status())
-              + ":" + render_ownership(profession) + profession.get()->get_debug_name();
+    result += node.get_debug_string() + ":" + profession.get()->get_debug_name();
 
     if (profession.get_type() == Profession_Type::reference)
       result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";

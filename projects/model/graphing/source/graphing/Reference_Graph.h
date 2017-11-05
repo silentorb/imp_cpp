@@ -79,6 +79,10 @@ namespace graphing {
         return nodes;
       }
 
+      std::vector<Node *> &get_nodes() {
+        return nodes;
+      }
+
       const std::vector<Connection_Owner> &get_connections() const {
         return connections;
       }

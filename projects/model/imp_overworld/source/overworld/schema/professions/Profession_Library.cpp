@@ -70,25 +70,24 @@ namespace overworld {
 //    }
 //  }
 
-  Ownership get_assigned_ownership(Profession_Reference &source, Profession_Reference &target) {
-    if (target.get_ownership() == Ownership::unknown) {
-      if (source.get_ownership() == Ownership::value)
-        return Ownership::reference;
-
-      return source.get_ownership();
-    }
-    else {
-      return target.get_ownership();
-    }
-  }
+//  Ownership get_assigned_ownership(Profession_Reference &source, Profession_Reference &target) {
+//    if (target.get_ownership() == Ownership::unknown) {
+//      if (source.get_ownership() == Ownership::value)
+//        return Ownership::reference;
+//
+//      return source.get_ownership();
+//    }
+//    else {
+//      return target.get_ownership();
+//    }
+//  }
 
   void Profession_Library::assign(Node &node, Profession_Reference &profession, Profession_Setter &setter) {
     auto &previous = node.get_profession();
 //    if (previous.get_type() == Profession_Type::reference) {
 //      auto reference = dynamic_cast<Reference *>(previous.get());
       auto base_source = profession.get_base(profession);
-      auto ownership = get_assigned_ownership(base_source, previous);
-      auto new_profession = Profession_Reference(base_source, ownership);
+      auto new_profession = Profession_Reference(base_source, previous.get_ownership());
       node.set_profession(new_profession, setter);
 //    }
 //    else {

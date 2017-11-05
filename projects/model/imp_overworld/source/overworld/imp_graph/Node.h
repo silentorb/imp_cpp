@@ -100,6 +100,8 @@ namespace overworld {
         status = _get_status();
       }
 
+      static const std::string get_advanced_debug_string(const Node &node);
+
   };
 
   class Empty_Profession_Setter : public overworld::Profession_Setter {

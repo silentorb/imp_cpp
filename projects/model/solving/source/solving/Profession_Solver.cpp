@@ -1,4 +1,5 @@
-#include "Solver.h"
+#include "Profession_Solver.h"
+#include "Solving_Visualizer.h"
 #include <algorithm>
 #include <overworld/schema/Function.h>
 #include <overworld/schema/professions/cloning.h>
@@ -82,31 +83,31 @@ namespace solving {
     throw std::runtime_error("Not implemented.");
   }
 
-  void Solver::add_node(Node &node) {
+  void Profession_Solver::add_node(Node &node) {
     if (node.get_status() != Node_Status::resolved)
       unresolved.push_back(&node);
   }
 
-  void Solver::scan_fresh() {
+  void Profession_Solver::scan_fresh() {
     for (auto node : graph.get_nodes()) {
       add_node(*node);
     }
   }
 
-  void Solver::add_conflict(Connection &connection) {
-    for (auto conflict: conflict_manager.conflicts) {
+  void Profession_Solver::add_conflict(Connection &connection) {
+    for (auto conflict: conflict_manager.get_conflicts()) {
       if (&conflict.get_connection() == &connection)
         return;
     }
 
-    conflict_manager.conflicts.push_back({connection, false});
+    conflict_manager.add_conflict({connection, false});
   }
 
-  bool Solver::assignment_is_compatible(overworld::Profession &first, overworld::Profession &second) {
+  bool Profession_Solver::assignment_is_compatible(overworld::Profession &first, overworld::Profession &second) {
     return can_cast(first, second);
   }
 
-  bool Solver::is_conflict(Connection &connection) {
+  bool Profession_Solver::is_conflict(Connection &connection) {
     if (connection.get_type() != Connection_Type::direct) {
 //      std::cout << "WARNING: Not yet checking conflicts across mapped connections." << std::endl;
       return false;
@@ -124,20 +125,20 @@ namespace solving {
     return false;
   }
 
-  void Solver::check_node_conflicts(Node &node) {
+  void Profession_Solver::check_node_conflicts(Node &node) {
     for (auto connection: node.get_connections()) {
       if (is_conflict(*connection))
         add_conflict(*connection);
     }
   }
 
-  void Solver::set_changed(Node &node) {
+  void Profession_Solver::set_changed(Node &node) {
     node.set_changed(true);
     next_changed->push_back(&node);
     check_node_conflicts(node);
   }
 
-  void Solver::set_profession(Node &node, overworld::Profession_Reference &profession) {
+  void Profession_Solver::set_profession(Node &node, overworld::Profession_Reference &profession) {
     auto &base_profession = profession.get_base(profession);
 
 #if DEBUG_SOLVER > 0
@@ -148,7 +149,7 @@ namespace solving {
     auto &previous_profession = node.get_profession().get_base(node.get_profession());
 
     if (previous_profession.get_type() == Profession_Type::temporary_interface) {
-      auto temporary = static_cast<Temporary_Interface*>(previous_profession.get());
+      auto temporary = static_cast<Temporary_Interface *>(previous_profession.get());
       temporary->replace(profession);
 //      throw std::runtime_error("Not implemented.");
     }
@@ -183,32 +184,32 @@ namespace solving {
     set_changed(node);
   }
 
-  void Solver::migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
-                                                                  overworld::Function &function,
-                                                                  overworld::Generic_Parameter &parameter) {
+  void Profession_Solver::migrate_generic_parameter_from_function_to_dungeon(overworld::Dungeon &dungeon,
+                                                                             overworld::Function &function,
+                                                                             overworld::Generic_Parameter &parameter) {
     auto parameter_owner = function.detach_generic_parameter(parameter);
     dungeon.add_generic_parameter(std::move(parameter_owner));
   }
 
-  Progress Solver::try_push(Node &first, Node &second, Connection &connection, Direction direction) {
+  Progress Profession_Solver::try_push(Node &first, Node &second, Connection &connection, Direction direction) {
     if (first.get_status() == Node_Status::unresolved)
       throw std::runtime_error("Should not be trying to push an unresolved node.");
 
     if (second.get_status() == Node_Status::resolved) {
 #if DEBUG_SOLVER >= 2
       if (direction == Direction::out)
-        std::cout << "  (" << (int) first.get_status() << ") " << first.get_debug_string()
-                  << " !~> (" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
+        std::cout << "  (" << (int) first.get_status() << ") " << get_node_debug_string(first)
+                  << " !~> (" << (int) second.get_status() << ") " << get_node_debug_string(second) << std::endl;
       else
-        std::cout << "  (" << (int) second.get_status() << ") " << second.get_debug_string()
-                  << " <~! (" << (int) first.get_status() << ") " << first.get_debug_string() << std::endl;
+        std::cout << "  (" << (int) second.get_status() << ") " << get_node_debug_string(second)
+                  << " <~! (" << (int) first.get_status() << ") " << get_node_debug_string(first) << std::endl;
 #endif
       return 0;
     }
 
     if (second.get_status() == Node_Status::partial && first.get_status() == Node_Status::partial) {
 #if DEBUG_SOLVER > 0
-      std::cout << "# " << first.get_debug_string() << " :: " << second.get_debug_string() << std::endl;
+      std::cout << "# " << get_node_debug_string(first) << " :: " << get_node_debug_string(second) << std::endl;
 #endif
       return 0;
     }
@@ -221,8 +222,8 @@ namespace solving {
 
     if (professions_match(*profession, *second.get_profession())) {
 #if DEBUG_SOLVER > 0
-      std::cout << "  (" << (int) first.get_status() << ") " << first.get_debug_string() << " == "
-                << "(" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
+      std::cout << "  (" << (int) first.get_status() << ") " << get_node_debug_string(first) << " == "
+                << "(" << (int) second.get_status() << ") " << get_node_debug_string(second) << std::endl;
 #endif
       return 0;
     }
@@ -234,14 +235,14 @@ namespace solving {
                   ? "fs >"
                   : "sf >";
     }
-    std::cout << "# (" << (int) first.get_status() << ") " << first.get_debug_string() << " " << operation << " "
-              << "(" << (int) second.get_status() << ") " << second.get_debug_string() << std::endl;
+    std::cout << "# (" << (int) first.get_status() << ") " << get_node_debug_string(first) << " " << operation << " "
+              << "(" << (int) second.get_status() << ") " << get_node_debug_string(second) << std::endl;
 #endif
     set_profession(second, profession);
     return 1;
   }
 
-  Progress Solver::inhale(Node &node) {
+  Progress Profession_Solver::inhale(Node &node) {
     for (auto connection : node.get_connections()) {
       auto &other_node = connection->get_other(node);
       if (other_node.get_status() != Node_Status::unresolved) {
@@ -252,7 +253,7 @@ namespace solving {
     return 0;
   }
 
-  Progress Solver::exhale(Node &node) {
+  Progress Profession_Solver::exhale(Node &node) {
     Progress progress = 0;
     if (node.get_status() == Node_Status::unresolved)
       throw std::runtime_error("Should not being trying to push an unresolved node.");
@@ -263,7 +264,7 @@ namespace solving {
     return progress;
   }
 
-  Progress Solver::process_changed() {
+  Progress Profession_Solver::process_changed() {
     Progress progress = 0;
     for (auto node : *changed) {
       if (!node)
@@ -318,8 +319,9 @@ namespace solving {
     return nullptr;
   }
 
-  Function_Variant &Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
-                                                    Node &starting_node, Profession_Reference &profession) {
+  Function_Variant &
+  Profession_Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
+                                             Node &starting_node, Profession_Reference &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
     professions.push_back(profession);
     auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
@@ -333,8 +335,9 @@ namespace solving {
     return *variant;
   }
 
-  void Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array, overworld::Dungeon &dungeon,
-                                      Node &starting_node, overworld::Profession_Reference &profession) {
+  void Profession_Solver::create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
+                                                 overworld::Dungeon &dungeon,
+                                                 Node &starting_node, overworld::Profession_Reference &profession) {
     auto professions = to_professions(dungeon.get_generic_parameters(), 1);
     professions.push_back(profession);
     auto variant = Profession_Library::get_dungeon_variant(variant_array, professions);
@@ -344,7 +347,7 @@ namespace solving {
     }
   }
 
-  void Solver::resolve_with_template_function(Connection &connection) {
+  void Profession_Solver::resolve_with_template_function(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
 
@@ -360,7 +363,7 @@ namespace solving {
     create_function_variant(variant_array, function, first, second_profession.get_base(second_profession));
   }
 
-  void Solver::resolve_with_template_dungeon(Connection &connection) {
+  void Profession_Solver::resolve_with_template_dungeon(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
     auto &parent = first.get_parent();
@@ -378,7 +381,7 @@ namespace solving {
     }
   }
 
-  bool Solver::resolve_conflict(Connection &connection) {
+  bool Profession_Solver::resolve_conflict(Connection &connection) {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
     auto &first_profession = first.get_profession();
@@ -392,7 +395,7 @@ namespace solving {
 //    }
 
 #if DEBUG_SOLVER > 0
-    std::cout << "C " << first.get_debug_string() << " != " << second.get_debug_string() << std::endl;
+    std::cout << "C " << get_node_debug_string(first) << " != " << get_node_debug_string(second) << std::endl;
 #endif
 
     get_ancestors(*first_profession, ancestors_buffer1);
@@ -411,15 +414,15 @@ namespace solving {
     return false;
   }
 
-  Progress Solver::process_conflicts() {
+  Progress Conflict_Manager::process_conflicts(const Conflict_Resolver &resolve) {
     Progress progress = 0;
-    auto i = conflict_manager.conflicts.begin();
-    while (i != conflict_manager.conflicts.end()) {
+    auto i = conflicts.begin();
+    while (i != conflicts.end()) {
       auto &conflict = *i;
       if (!conflict.attempted_resolution) {
-        if (resolve_conflict(conflict.get_connection())) {
+        if (resolve(conflict.get_connection())) {
           ++progress;
-          conflict_manager.conflicts.erase(i++);
+          conflicts.erase(i++);
           continue;
         }
         else {
@@ -431,7 +434,13 @@ namespace solving {
     return progress;
   }
 
-  int Solver::update_unresolved() {
+  Progress Profession_Solver::process_conflicts() {
+    return conflict_manager.process_conflicts([this](Connection &connection) {
+      return resolve_conflict(connection);
+    });;
+  }
+
+  int Profession_Solver::update_unresolved() {
     unresolved.clear();
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::resolved &&
@@ -442,7 +451,7 @@ namespace solving {
     return unresolved.size();
   }
 
-  int Solver::update_changed() {
+  int Profession_Solver::update_changed() {
     changed->clear();
 
     // Flip buffers
@@ -452,7 +461,7 @@ namespace solving {
     return changed->size();
   }
 
-  bool Solver::has_unresolved_nodes() {
+  bool Profession_Solver::has_unresolved_nodes() {
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::resolved
           && node->get_status() != Node_Status::optional) {
@@ -463,20 +472,20 @@ namespace solving {
     return false;
   }
 
-  int Solver::update_conflicts() {
-    return conflict_manager.conflicts.size();
+  int Profession_Solver::update_conflicts() {
+    return conflict_manager.get_conflicts().size();
   }
 
-  void Solver::on_add(Node &node) {
+  void Profession_Solver::on_add(Node &node) {
     set_changed(node);
   }
 
-  void Solver::on_connect(Connection &connection) {
+  void Profession_Solver::on_connect(Connection &connection) {
     set_changed(connection.get_first());
     set_changed(connection.get_second());
   }
 
-  void Solver::on_remove(Node &node) {
+  void Profession_Solver::on_remove(Node &node) {
     for (auto i = 0; i < changed->size(); ++i) {
       if ((*changed)[i] == &node) {
         (*changed)[i] = nullptr;
@@ -485,22 +494,14 @@ namespace solving {
     }
   }
 
-  void Solver::initialize() {
+  void Profession_Solver::initialize() {
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::unresolved)
         set_changed(*node);
     }
-
-#if DEBUG_SOLVER > 0
-//    std::cout << "\nChanged Nodes:" << std::endl;
-//
-//    for (auto node : *next_changed) {
-//      std::cout << "  " << node->get_debug_string() << std::endl;
-//    }
-#endif
   }
 
-  void Solver::update_unresolved_without_void() {
+  void Profession_Solver::update_unresolved_without_void() {
     unresolved.clear();
     for (auto node : graph.get_nodes()) {
       if (node->get_status() != Node_Status::resolved
@@ -510,7 +511,8 @@ namespace solving {
     }
   }
 
-  bool Solver::_solve() {
+  bool Profession_Solver::solve() {
+    initialize();
     int x = 0;
     while (update_changed() || update_conflicts()) {
       auto progress = process_changed() +
@@ -522,18 +524,12 @@ namespace solving {
       }
 
       if (progress == 0) {
-        if (has_unresolved_nodes() || !conflict_manager.conflicts.empty()) {
+        if (has_unresolved_nodes() || !conflict_manager.get_conflicts().empty()) {
           return false;
         }
       }
     }
 
     return true;
-  }
-
-  bool Solver::solve() {
-    initialize();
-    bool result = _solve();
-    return result;
   }
 }

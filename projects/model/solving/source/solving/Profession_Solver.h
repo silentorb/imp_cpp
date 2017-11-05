@@ -2,6 +2,7 @@
 
 #include "overworld/imp_graph/Node.h"
 #include "overworld/imp_graph/Connection.h"
+#include "solving_types.h"
 #include <vector>
 #include <list>
 #include <graphing/Reference_Graph.h>
@@ -12,7 +13,6 @@ namespace solving {
   using Node = overworld::Node;
   using Connection = overworld::Connection;
 
-  using Progress = unsigned int;
   using Graph = graphing::Reference_Graph<Node, Connection>;
 
   struct Conflict {
@@ -31,17 +31,29 @@ namespace solving {
       }
   };
 
-  // Working around a bug in CLion debugger not being able to render lists.
-  struct Conflict_Manager {
+  using Conflict_Resolver = std::function<bool(Connection &connection)>;
+
+  class Conflict_Manager {
       std::list<Conflict> conflicts;
+
+  public:
+
+      Progress process_conflicts(const Conflict_Resolver &resolve);
+
+      std::list<Conflict> &get_conflicts() {
+        return conflicts;
+      }
+
+      const std::list<Conflict> &get_conflicts() const{
+        return conflicts;
+      }
+
+      void add_conflict(const Conflict &conflict) {
+        conflicts.push_back(conflict);
+      }
   };
 
-  enum class Direction {
-      in,
-      out,
-  };
-
-  class Solver {
+  class Profession_Solver {
       Graph &graph;
       std::vector<Node *> unresolved;
       std::vector<Node *> changed_buffers[2];
@@ -53,9 +65,9 @@ namespace solving {
       std::vector<overworld::Profession_Reference> ancestors_buffer2;
 
       class Solver_Profession_Setter : public overworld::Profession_Setter {
-          Solver &solver;
+          Profession_Solver &solver;
       public:
-          explicit Solver_Profession_Setter(Solver &solver) : solver(solver) {}
+          explicit Solver_Profession_Setter(Profession_Solver &solver) : solver(solver) {}
 
           void set_profession(Node &node, overworld::Profession_Reference &profession) override {
             solver.set_profession(node, profession);
@@ -97,7 +109,8 @@ namespace solving {
 
       overworld::Function_Variant &create_function_variant(overworld::Function_Variant_Array &variant_array,
                                                            overworld::Function &function,
-                                                           Node &starting_node, overworld::Profession_Reference &profession);
+                                                           Node &starting_node,
+                                                           overworld::Profession_Reference &profession);
 
       void create_dungeon_variant(overworld::Dungeon_Variant_Array &variant_array,
                                   overworld::Dungeon &dungeon,
@@ -109,10 +122,8 @@ namespace solving {
 
       void update_unresolved_without_void();
 
-      bool _solve();
-
   public:
-      Solver(Graph &graph, overworld::Profession_Library &profession_library) :
+      Profession_Solver(Graph &graph, overworld::Profession_Library &profession_library) :
         graph(graph), profession_library(profession_library),
         setter(*this) {
         graph.set_on_add([this](Node &node) { on_add(node); });
@@ -132,7 +143,7 @@ namespace solving {
       }
 
       const std::list<Conflict> &get_conflicts() const {
-        return conflict_manager.conflicts;
+        return conflict_manager.get_conflicts();
       }
   };
 }

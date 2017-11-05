@@ -4,7 +4,7 @@
 #include <imp_summoning/Summoner.h>
 #include <imp_mirror/Mirror.h>
 #include <imp_taskmaster/Taskmaster.h>
-#include <solving/Solver.h>
+#include <solving/Profession_Solver.h>
 #include <solving/Solving_Visualizer.h>
 #include "Project_Bundle.h"
 
@@ -44,7 +44,7 @@ namespace imp_wrapper {
   }
 
   void Global_Bundle::solve(overworld::Graph &graph) {
-    solving::Solver solver(graph, overworld_profession_library);
+    solving::Profession_Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
 
 #if DEBUG_SOLVER > 2
@@ -76,8 +76,8 @@ namespace imp_wrapper {
       auto &conflicts = solver.get_conflicts();
       if (conflicts.size() > 0) {
         auto &conflict = conflicts.front();
-        throw std::runtime_error(conflict.get_connection().get_first().get_debug_string() + " is not compatible with "
-                                 + conflict.get_connection().get_second().get_debug_string());
+        throw std::runtime_error(solving::get_node_debug_string(conflict.get_connection().get_first()) + " is not compatible with "
+                                 + solving::get_node_debug_string(conflict.get_connection().get_second()));
       }
     }
   }
