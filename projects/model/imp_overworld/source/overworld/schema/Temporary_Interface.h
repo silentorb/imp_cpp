@@ -1,6 +1,7 @@
 #pragma once
 
 #include <overworld/expressions/Member_Expression.h>
+#include <overworld/imp_graph/Graph.h>
 
 namespace overworld {
 
@@ -68,6 +69,11 @@ namespace overworld {
       Ownership get_ownership() const override {
         return Ownership::unknown;
       }
+
+      Expression_Owner create_temporary_member(Member_Expression &previous_expression,
+                                               const std::string &child_name,const source_mapping::Source_Range source_point,
+                                               overworld::Graph &graph,
+                                               Scope &scope);
   };
 
 }
