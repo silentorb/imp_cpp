@@ -31,7 +31,7 @@ namespace overworld {
       professions.push_back(second.get_profession());
       auto new_variant = new Dungeon_Variant(dungeon.get_original(), professions);
       auto dungeon_reference = new Dungeon_Reference(Dungeon_Interface_Owner(new_variant));
-      return Profession_Reference(dungeon_reference);
+      return Profession_Reference(dungeon_reference, dungeon.get_ownership());
     }
   }
 

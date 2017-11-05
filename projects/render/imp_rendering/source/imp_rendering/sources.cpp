@@ -23,18 +23,26 @@ namespace imp_rendering {
                                 + sanitize_name(function.get_name())
                                 + render_function_parameters(function);
 
-      auto with_block = static_cast<const overworld:: Function_With_Block*>(& function);
+      auto with_block = static_cast<const overworld::Function_With_Block *>(&function);
       return render_block(function_signature, with_block->get_block());
     }
 
-
-    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File_Reference> &files) {
+    Stroke render_functions(const overworld::Dungeon &dungeon) {
       Stroke result;
-      result << render_includes(files);
       for (auto &function : dungeon.get_functions()) {
         if (!function->is_inline())
           result << render_function(*function, dungeon);
       }
+      return result;
+    }
+
+    Stroke render(const overworld::Dungeon &dungeon, const std::vector<overworld::File_Reference> &files) {
+      Stroke result;
+      result << render_includes(files);
+      result << render_possible_namespace_block(
+        dungeon.get_scope().get_parent_scope()->get_owner(),
+        render_functions(dungeon)
+      );
 
       return result;
     }

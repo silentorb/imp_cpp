@@ -1,8 +1,11 @@
 #pragma once
 
-class Goblikin {
+namespace iteration {
+
+  class Goblikin {
 
 
-public:
-    void craft();
-};
+  public:
+      void craft();
+  };
+}

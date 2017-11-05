@@ -29,6 +29,10 @@ namespace overworld {
         }
       }
 
+      const std::string get_name() const {
+        return element.get_name();
+      }
+
       Node &get_node() {
         return node;
       }
@@ -71,9 +75,12 @@ namespace overworld {
       }
 
       Expression_Owner create_temporary_member(Member_Expression &previous_expression,
-                                               const std::string &child_name,const source_mapping::Source_Range source_point,
+                                               const std::string &child_name,
+                                               const source_mapping::Source_Range source_point,
                                                overworld::Graph &graph,
                                                Scope &scope);
+
+      void replace(Profession_Reference &profession);
   };
 
 }

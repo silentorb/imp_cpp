@@ -18,12 +18,28 @@ namespace overworld {
                                              source_point,
                                              scope.get_owner().get_function());
       members.push_back(std::unique_ptr<Temporary_Member>(new_member));
-
       auto result = new Member_Expression(*new_member, source_point);
+      new_member->add_expression(*result);
       return Expression_Owner(result);
     }
 
     throw std::runtime_error("Not implemented.");
   }
 
+  void Temporary_Interface::replace(Profession_Reference &profession) {
+    if (profession.get_type() == Profession_Type::dungeon) {
+      auto &dungeon = profession->get_dungeon_interface().get_original();
+      auto &scope = dungeon.get_scope();
+      for (auto &member : members) {
+        auto new_member = scope.get_member_or_null(member->get_name());
+        if (!new_member)
+          throw std::runtime_error(dungeon.get_name() + " does not have a member named " + member->get_name());
+
+        member->replace_with(*new_member);
+      }
+    }
+    else {
+      throw std::runtime_error("Not supported.");
+    }
+  }
 }

@@ -2,9 +2,12 @@
 
 #include <string>
 
-class Ingredient {
+namespace iteration {
+
+  class Ingredient {
 
 
-public:
-    std::string name;
-};
+  public:
+      std::string name;
+  };
+}

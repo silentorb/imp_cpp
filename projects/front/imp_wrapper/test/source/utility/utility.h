@@ -47,7 +47,7 @@ public:
 
     void compare(const std::string &filename) {
       _compare(std::string(RESOURCE_PATH) + name + "/" + filename,
-               std::string(OUTPUT_PATH) + name + "/source/" + filename);
+               std::string(OUTPUT_PATH) + name + "/source/" + name + "/" + filename);
     }
 };
 
