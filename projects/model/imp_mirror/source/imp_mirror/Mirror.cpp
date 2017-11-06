@@ -759,7 +759,7 @@ namespace imp_mirror {
     if (profession->get_ownership() == overworld::Ownership::reference)
       profession = overworld::Profession_Reference(profession->get_base(profession), overworld::Ownership::pointer);
     else
-      profession.set_ownership(overworld::Ownership::value);
+      profession.set_ownership(overworld::Ownership::unknown);
 
 //    auto &function = scope.get_overworld_scope().get_parent().get_function();
     return std::unique_ptr<overworld::Minion>(

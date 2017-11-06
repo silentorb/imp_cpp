@@ -38,7 +38,7 @@ namespace solving {
         return "$";
 
       default:
-        return "";
+        return "~";
     }
   }
 
@@ -55,7 +55,7 @@ namespace solving {
 
     result += node.get_debug_string() + render_node_status(node.get_status())
               + ":"
-//              + render_ownership(profession)
+              + render_ownership(profession)
               + profession.get()->get_debug_name();
 
     if (profession.get_type() == Profession_Type::reference)

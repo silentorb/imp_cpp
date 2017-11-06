@@ -90,7 +90,7 @@ namespace overworld {
       }
 
       Ownership get_ownership() const override {
-        return Ownership::owner;
+        return Ownership::unknown;
       }
 
       Generic_Parameter_Element &get_element() {

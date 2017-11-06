@@ -30,7 +30,7 @@ namespace overworld {
       }
 
       Ownership get_ownership() const override {
-        return Ownership::value;
+        return Ownership::unknown;
       }
   };
 
@@ -57,7 +57,7 @@ namespace overworld {
       }
 
       Ownership get_ownership() const override {
-        return Ownership::value;
+        return Ownership::unknown;
       }
 
   };
