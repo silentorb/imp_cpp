@@ -1,5 +1,6 @@
 #include "Ownership_Solver.h"
 #include "Generic_Solver.h"
+#include "Solving_Visualizer.h"
 
 using namespace overworld;
 
@@ -37,6 +38,7 @@ namespace solving {
       }
 
       Progress try_push(Node &first, Node &second, Connection &connection, Direction direction) {
+        std::cout << get_node_ownership_string(first) << " > " << get_node_ownership_string(second) << std::endl;
         auto ownership = get_transfer_ownership(first);
         second.get_profession().set_ownership(ownership);
         return 1;

@@ -6,6 +6,7 @@
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Profession_Solver.h>
 #include <solving/Solving_Visualizer.h>
+#include <solving/Ownership_Solver.h>
 #include "Project_Bundle.h"
 
 
@@ -80,6 +81,9 @@ namespace imp_wrapper {
                                  + solving::get_node_debug_string(conflict.get_connection().get_second()));
       }
     }
+
+    solving::Ownership_Solver ownership_solver(graph);
+    ownership_solver.solve();
   }
 
   void Global_Bundle::render(const std::string &output_path, overworld::Dungeon &overworld_root) {
