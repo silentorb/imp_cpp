@@ -19,12 +19,23 @@ namespace overworld {
     if (type == Parent_Type::dungeon) {
       auto scope = dungeon->get_original().get_scope().get_parent_scope();
       return scope
-             ? &scope->get_parent_scope()->get_owner()
+             ? &scope->get_owner()
              : nullptr;
     }
     else {
       throw std::runtime_error("Not implemented.");
     }
+  }
+
+  bool Parent::is_descendant_of(const Parent &other) const {
+    auto parent = get_parent();
+    if (!parent)
+      return false;
+
+    if (&parent->get_dungeon() == &other.get_dungeon())
+      return true;
+
+    return parent->is_descendant_of(other);
   }
 
   const std::string get_namespace_string(const Parent &parent, const std::string &delimiter) {

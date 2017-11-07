@@ -809,10 +809,6 @@ namespace imp_mirror {
     auto &enchantment_library = profession_library.get_enchantment_library();
     process_external(*output_dungeon, enchantment_library, header_files);
 
-    if (output_dungeon->has_enchantment(enchantment_library.get_value())) {
-      output_dungeon->set_default_ownership(overworld::Ownership::value);
-    }
-
     Scope block_scope(output_dungeon->get_scope(), output_scope);
 
     reflect_scope1(input_dungeon, block_scope);

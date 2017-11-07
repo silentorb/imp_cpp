@@ -30,6 +30,8 @@ namespace imp_rendering {
   const std::string get_cpp_name(const overworld::Parameter &parameter);
   const std::string get_cpp_name(const overworld::Function &function);
 
+  const std::string render_namespace(const overworld::Parent &parent, const overworld::Parent *current, const std::string &delimiter);
+
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
                                     const overworld::Scope &scope);
   const std::string render_expression(const overworld::Expression &input_expression, const overworld::Scope &scope);

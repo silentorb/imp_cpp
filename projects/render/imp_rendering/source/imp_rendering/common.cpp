@@ -279,8 +279,8 @@ namespace imp_rendering {
     auto local_parent_scope = scope.get_parent_scope();
     if (local_parent_scope) {
       auto &local_parent = local_parent_scope->get_owner();
-      if (&local_parent.get_dungeon() != &target_parent.get_dungeon()) {
-        return get_namespace_string(target_parent, "::") + "::" + result;
+      if (!local_parent.is_descendant_of(target_parent)) {
+        return render_namespace(target_parent, &local_parent, "::") + "::" + result;
       }
     }
 
@@ -537,6 +537,24 @@ namespace imp_rendering {
     return sanitize_name(parameter.get_name());
   }
 
+  const std::string render_namespace(const Parent &parent, const overworld::Parent *current,
+                                     const std::string &delimiter) {
+    if (parent.get_type() == Parent_Type::dungeon) {
+      if (parent.get_name() != "") {
+        auto parent2 = parent.get_parent();
+        if (parent2 && (!current || !current->is_descendant_of(*parent2))) {
+          return render_namespace(*parent2, current, delimiter) + delimiter +
+                 get_cpp_name(parent2->get_dungeon().get_original());
+        }
+        else {
+          return get_cpp_name(parent.get_dungeon().get_original());
+        }
+      }
+    }
+
+    return "";
+  }
+
   const std::string render_profession_owner(const overworld::Profession_Reference &profession, const Scope &scope) {
     return "std::unique_ptr<" + render_profession_internal(profession, scope) + ">";
   }
@@ -592,7 +610,7 @@ namespace imp_rendering {
   };
 
   Stroke render_possible_namespace_block(const overworld::Parent &parent, Stroke stroke) {
-    auto namespace_string = get_namespace_string(parent, "::");
+    auto namespace_string = render_namespace(parent, nullptr, "::");
     if (namespace_string == "") {
       return stroke;
     }
