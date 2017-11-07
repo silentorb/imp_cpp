@@ -61,25 +61,8 @@ namespace solving {
 
   Ownership_Solver::~Ownership_Solver() {}
 
-//  void Ownership_Solver::update_node(Node &node) {
-//    auto &profession = node.get_profession();
-//    auto ownership = profession.get_ownership();
-//    if (ownership != Ownership::unknown)
-//      return;
-//
-//    for (auto &neighbor : node.get_neighbors()) {
-//      auto neighbor_ownership = neighbor->get_profession().get_ownership();
-//      if (neighbor_ownership != Ownership::unknown) {
-//
-//      }
-//    }
-//  }
-
   void Ownership_Solver::solve() {
     interface->solve();
-//    for (auto &node: graph.get_nodes()) {
-//      update_node(*node);
-//    }
   }
 
 
