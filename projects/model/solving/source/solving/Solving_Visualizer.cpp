@@ -38,7 +38,7 @@ namespace solving {
         return "$";
 
       default:
-        return "~";
+        return "?";
     }
   }
 

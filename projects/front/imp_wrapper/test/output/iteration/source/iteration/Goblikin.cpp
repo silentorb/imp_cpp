@@ -1,4 +1,3 @@
-#include <memory>
 #include <iostream>
 #include "Ingredient.h"
 #include <vector>
@@ -7,8 +6,8 @@
 namespace iteration {
 
   void Goblikin::craft() {
-    auto ingredients = std::unique_ptr<stl::vector<iteration::Ingredient>>(new stl::vector<iteration::Ingredient>());
-    auto tail = std::unique_ptr<iteration::Ingredient>(new iteration::Ingredient());
+    auto ingredients = stl::vector<iteration::Ingredient>();
+    auto tail = iteration::Ingredient();
     tail.name = "dragon's tail";
     ingredients.push_back(tail);
 

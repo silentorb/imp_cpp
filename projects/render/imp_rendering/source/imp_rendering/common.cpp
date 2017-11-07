@@ -322,11 +322,11 @@ namespace imp_rendering {
     auto core = render_profession_internal(profession, scope) + "("
                 + render_dictionary(instantiation.get_dictionary(), scope) + ")";
 
-    if (profession.get_ownership() == Ownership::value) {
-      return core;
+    if (profession.get_ownership() == Ownership::owner) {
+      return render_profession_owner(profession, scope) + "(new " + core + ")";
     }
 
-    return render_profession_owner(profession, scope) + "(new " + core + ")";
+    return core;
   }
 
   const std::string render_operator(overworld::Operator_Type value) {

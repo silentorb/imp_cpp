@@ -22,7 +22,7 @@ namespace overworld {
       Scope scope;
 
       File *header_file = nullptr;
-      Ownership default_ownership = Ownership::owner;
+      Ownership default_ownership = Ownership::unknown;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession_Reference> contracts;
       std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
