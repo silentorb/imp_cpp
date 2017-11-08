@@ -7,14 +7,14 @@
 namespace graphing {
 
   template<typename N, typename Connection>
-  class Node {
+  class Generic_Node {
       std::vector<Connection *> connections;
       std::vector<N *> nodes;
 
       Abstract_Graph<N, Connection> *graph = nullptr;
 
   public:
-      virtual ~Node() {
+      virtual ~Generic_Node() {
         if (graph) {
           graph->remove(*static_cast<N *>(this));
         }
@@ -50,9 +50,9 @@ namespace graphing {
         return nullptr;
       }
 
-      void connect(N &other) {
-        graph->connect(*static_cast<N *>(this), other);
-      }
+//      void connect(N &other) {
+//        graph->connect(*static_cast<N *>(this), other);
+//      }
 
       bool is_connected(N &other) {
         for (auto node : nodes) {

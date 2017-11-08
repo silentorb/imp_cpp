@@ -13,7 +13,7 @@ namespace solving {
   using Node = overworld::Node;
   using Connection = overworld::Connection;
 
-  using Graph = graphing::Reference_Graph<Node, Connection>;
+  using Graph = overworld::Graph;
 
   struct Conflict {
       Connection *connection;

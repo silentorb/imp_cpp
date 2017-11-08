@@ -59,6 +59,8 @@ namespace overworld {
 
         return *function;
       }
+
+      bool is_descendant_of(const Parent &other) const;
   };
 
   const std::string get_namespace_string(const Parent &parent, const std::string &delimiter);

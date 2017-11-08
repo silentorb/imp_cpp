@@ -61,9 +61,33 @@ namespace solving {
 
   Ownership_Solver::~Ownership_Solver() {}
 
-  void Ownership_Solver::solve() {
-    interface->solve();
+  Ownership try_ownership(Node &node) {
+    auto &profession = node.get_profession();
+    if (node.get_element().get_type() == Element_Type::instantiation) {
+      if (profession.get_type() == Profession_Type::dungeon) {
+        auto &dungeon = profession->get_dungeon_interface().get_original();
+        if (dungeon.has_enchantment(Enchantment_Library::get_value())) {
+          return overworld::Ownership::value;
+        }
+      }
+      return Ownership::owner;
+    }
+
+    return Ownership::unknown;
   }
 
+  void determine_types(Graph &graph) {
+    for (auto &node: graph.get_nodes()) {
+      if (node->get_profession().get_ownership() == Ownership::unknown) {
+        auto ownership = try_ownership(*node);
+        if (ownership != Ownership::unknown)
+          node->get_profession().set_ownership(ownership);
+      }
+    }
+  }
 
+  void Ownership_Solver::solve() {
+    determine_types(graph);
+    interface->solve();
+  }
 }

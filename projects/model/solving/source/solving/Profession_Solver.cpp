@@ -108,7 +108,7 @@ namespace solving {
   }
 
   bool Profession_Solver::is_conflict(Connection &connection) {
-    if (connection.get_type() != Connection_Type::direct) {
+    if (!connection.is_direct()) {
 //      std::cout << "WARNING: Not yet checking conflicts across mapped connections." << std::endl;
       return false;
     }
@@ -230,7 +230,7 @@ namespace solving {
 
 #if DEBUG_SOLVER > 0
     std::string operation = ">";
-    if (connection.get_type() != Connection_Type::direct) {
+    if (!connection.is_direct()) {
       operation = &connection.get_first() == &first
                   ? "fs >"
                   : "sf >";

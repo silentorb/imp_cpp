@@ -140,8 +140,6 @@ namespace solving {
 
   std::string get_connection_symbol(Connection_Type type) {
     switch (type) {
-      case Connection_Type::direct:
-        return "**";
 
       case Connection_Type::compound_to_scalar:
         return "V*";
@@ -152,11 +150,13 @@ namespace solving {
       case Connection_Type::lambda_to_parameter:
         return "L*";
 
+      default:
+        return "**";
     }
     throw std::runtime_error("Not supported.");
   }
 
-  void log_nodes(graphing::Reference_Graph<Node, Connection> &graph, Node_Info node_info) {
+  void log_nodes(Graph &graph, Node_Info node_info) {
     std::cout << std::endl << "Logging nodes:" << std::endl;
 
     std::vector<overworld::Node *> nodes;
