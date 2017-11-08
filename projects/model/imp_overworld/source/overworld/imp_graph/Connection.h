@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <graphing/Generic_Connection.h>
+#include <graphing/Connection.h>
 #include "Component_Selection.h"
 
 namespace overworld {
@@ -11,21 +11,24 @@ namespace overworld {
   class Profession_Reference;
 
   enum class Connection_Type {
-      direct_assignment,
-      direct_general,
-
       compound_to_scalar,
+      direct,
       container_to_member,
       lambda_to_parameter,
       variant_to_lambda,
   };
 
-  class Connection : public graphing::Generic_Connection<Node> {
-      Connection_Type type;
+  class Connection : public graphing::Connection<Node> {
+//      bool conflicts = false;
+      Connection_Type type = Connection_Type::direct;
+
+  protected:
+      Connection(Node &first, Node &second, Connection_Type type) :
+        graphing::Connection<Node>(first, second), type(type) {}
 
   public:
-      Connection(Node &first, Node &second, Connection_Type type = Connection_Type::direct_general) :
-        graphing::Generic_Connection<Node>(first, second), type(type) {}
+      Connection(Node &first, Node &second) :
+        graphing::Connection<Node>(first, second) {}
 
       virtual ~Connection() {
         int k = 0;
@@ -43,11 +46,6 @@ namespace overworld {
 
       Connection_Type get_type() const {
         return type;
-      }
-
-      bool is_direct() const {
-        return type == Connection_Type::direct_general
-               || type == Connection_Type::direct_assignment;
       }
 
       virtual Profession_Reference get_profession(Node &node);

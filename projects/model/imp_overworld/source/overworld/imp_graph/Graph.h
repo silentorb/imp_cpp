@@ -26,15 +26,5 @@ namespace overworld {
 //      }
 //  };
 
-  class Graph : public graphing::Reference_Graph<Node, Connection> {
-
-  public:
-//      Connection &connect(Node &first, Node &second) {
-//        return connect(first, second,
-//                       std::unique_ptr<Connection>(new Connection(first, second))
-//        );
-//      }
-  };
-
-//  using Graph = graphing::Reference_Graph<Node, Connection>;
+  using Graph = graphing::Reference_Graph<Node, Connection>;
 }

@@ -53,20 +53,20 @@ namespace graphing {
         return false;
       }
 
-//      Connection &_connect(Node &first, Node &second) {
-//        auto existing_connection = first.get_connection(second);
-//        if (existing_connection)
-//          return *existing_connection;
-//
-//        auto connection = new Connection(first, second);
-//        connections.push_back(std::unique_ptr<Connection>(connection));
-//        first.add_connection(*connection);
-//        second.add_connection(*connection);
-//        if (on_connect)
-//          on_connect(*connection);
-//
-//        return *connection;
-//      }
+      Connection &_connect(Node &first, Node &second) {
+        auto existing_connection = first.get_connection(second);
+        if (existing_connection)
+          return *existing_connection;
+
+        auto connection = new Connection(first, second);
+        connections.push_back(std::unique_ptr<Connection>(connection));
+        first.add_connection(*connection);
+        second.add_connection(*connection);
+        if (on_connect)
+          on_connect(*connection);
+
+        return *connection;
+      }
 
   public:
       virtual ~Reference_Graph() {
@@ -99,15 +99,15 @@ namespace graphing {
         }
       }
 
-//      Connection &connect(Node &first, Node &second) override {
-//        if (!has_node(first))
-//          add_node(first);
-//
-//        if (!has_node(second))
-//          add_node(second);
-//
-//        return _connect(first, second);
-//      }
+      Connection &connect(Node &first, Node &second) override {
+        if (!has_node(first))
+          add_node(first);
+
+        if (!has_node(second))
+          add_node(second);
+
+        return _connect(first, second);
+      }
 
       void connect(Node &first, Node &second, std::unique_ptr<Connection> connection) {
         if (!has_node(first))
@@ -124,9 +124,9 @@ namespace graphing {
           on_connect(connection_reference);
       }
 
-//      Connection &connect_without_adding(Node &first, Node &second) {
-//        return _connect(first, second);
-//      }
+      Connection &connect_without_adding(Node &first, Node &second) {
+        return _connect(first, second);
+      }
 
       void disconnect(Node &first, Node &second) override {
         auto connection = first.get_connection(second);

@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include <graphing/Generic_Node.h>
+#include <graphing/Node.h>
 #include "Connection.h"
 #include <overworld/schema/Element.h>
 
@@ -28,7 +28,7 @@ namespace overworld {
       virtual void set_profession(Node &node, Profession_Reference &profession) = 0;
   };
 
-  class Node : public graphing::Generic_Node<Node, Connection> {
+  class Node : public graphing::Node<Node, Connection> {
       Node_Status status = Node_Status::unresolved;
       bool changed = false;
       Profession_Reference original_profession;

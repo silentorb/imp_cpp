@@ -5,11 +5,11 @@
 namespace graphing {
 
   template<typename Node>
-  class Generic_Connection {
+  class Connection {
       Node *nodes[2];
 
   public:
-      Generic_Connection(Node &first, Node &second) {
+      Connection(Node &first, Node &second) {
         nodes[0] = &first;
         nodes[1] = &second;
       }
