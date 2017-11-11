@@ -6,7 +6,7 @@
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Profession_Solver.h>
 #include <solving/Solving_Visualizer.h>
-#include <solving/Ownership_Solver.h>
+#include <solving/ownership/Ownership_Solver.h>
 #include "Project_Bundle.h"
 
 

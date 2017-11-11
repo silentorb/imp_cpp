@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Profession_Solver.h"
+#include "lifetime/Profession_Solver.h"
 
-namespace solving {
+namespace lifetime {
 
   template<typename Interface, typename Node>
   class Generic_Solver;

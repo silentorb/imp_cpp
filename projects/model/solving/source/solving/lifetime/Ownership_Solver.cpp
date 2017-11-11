@@ -1,10 +1,10 @@
 #include "Ownership_Solver.h"
-#include "Generic_Solver.h"
-#include "Solving_Visualizer.h"
+#include "lifetime/Generic_Solver.h"
+#include "lifetime/lifetime_Visualizer.h"
 
 using namespace overworld;
 
-namespace solving {
+namespace lifetime {
 
   Ownership get_transfer_ownership(const Node &node) {
     auto &profession = node.get_profession();
