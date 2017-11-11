@@ -6,6 +6,7 @@
 
 namespace underworld {
   class Member_Expression;
+  class Chain;
 }
 
 namespace imp_summoning {
@@ -18,6 +19,7 @@ namespace imp_summoning {
       Expression_Owner process_condition(Context &context);
       Expression_Owner process_statement(Context &context);
       Expression_Owner process_child(Expression_Owner &expression, Context &context);
+      void process_chain(underworld::Chain &chain);
       Expression_Owner identify_root(Context &context);
       Expression_Owner process_path(Context &context);
       Expression_Owner process_function_call(Expression_Owner &expression, Context &context);

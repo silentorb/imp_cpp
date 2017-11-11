@@ -28,39 +28,39 @@ namespace overworld {
 //  };
 
   class Chain : public Expression {
-      Expression_Owner first;
-      Expression_Owner second;
+      std::vector<Expression_Owner> expressions;
 
   public:
-      Chain(Expression_Owner &first, Expression_Owner &second, Parent parent,
-            const source_mapping::Source_Range &source_range) :
-//        element(first->get_node()->get_element(), "chain", source_range),
-        first(std::move(first)), second(std::move(second)) {}
+      Chain(Parent parent, const source_mapping::Source_Range &source_range) {}
 
       virtual ~Chain() = default;
+
+      void add_expression(Expression_Owner expression) {
+        expressions.push_back(std::move(expression));
+      }
 
       Expression_Type get_type() const override {
         return Expression_Type::chain;
       }
 
       Expression &get_last() override {
-        return second->get_last();
+        return expressions[expressions.size() - 1]->get_last();
       }
 
       Node *get_node() override {
-        return second->get_node();
+        return get_last().get_node();
       }
 
       const Node *get_node() const override {
-        return second->get_node();
+        return expressions[expressions.size() - 1]->get_node();
       }
 
       Expression &get_first() const {
-        return *first;
+        return *expressions[0];
       }
 
-      Expression &get_second() const {
-        return *second;
+      const std::vector<Expression_Owner> &get_expressions() const {
+        return expressions;
       }
 
       bool is_statement() const override {
@@ -72,11 +72,11 @@ namespace overworld {
       }
 
       Profession_Reference &get_profession() override {
-        return second->get_profession();
+        return get_last().get_profession();
       }
 
       const Profession_Reference &get_profession() const override {
-        return second->get_profession();
+        return expressions[expressions.size() - 1]->get_profession();
       }
   };
 }

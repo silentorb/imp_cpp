@@ -160,19 +160,55 @@ namespace solving {
     std::cout << std::endl << "Logging nodes:" << std::endl;
 
     std::vector<overworld::Node *> nodes;
-    for (auto first : graph.get_nodes()) {
-      insert_node(nodes, first);
+    for (auto node : graph.get_nodes()) {
+      insert_node(nodes, node);
     }
     for (auto &node : nodes) {
 //      log_node(*node);
 //      std::cout << get_node_debug_string(*node);
       std::cout << node_info(*node) << std::endl;
       for (auto &connection : node->get_connections()) {
-
         std::cout << std::string("  ") + get_connection_symbol(connection->get_type()) + " ";
-
         log_node(connection->get_other(*node));
       }
+    }
+
+    std::cout << std::endl;
+  }
+
+  bool is_root(Node &node) {
+    for (auto connection : node.get_connections()) {
+      if (&connection->get_second() == &node)
+        return false;
+    }
+    return true;
+  }
+
+  void log_node_recursive(Node &node, Node_Info node_info, const std::string &indent = "") {
+    if (indent.size() > 2 * 20)
+      throw std::runtime_error("Infinite loop.");
+
+    std::cout << node_info(node) << std::endl;
+
+    for (auto &connection : node.get_connections()) {
+      if (&connection->get_first() == &node) {
+        std::cout << indent + get_connection_symbol(connection->get_type()) + " ";
+        log_node_recursive(connection->get_other(node), node_info, indent + "  ");
+      }
+    }
+  }
+
+  void log_node_trees(Graph &graph, Node_Info node_info) {
+    std::cout << std::endl << "Logging nodes:" << std::endl;
+
+    std::vector<overworld::Node *> nodes;
+    for (auto node : graph.get_nodes()) {
+      if (is_root(*node))
+        insert_node(nodes, node);
+    }
+
+    for (auto &node : nodes) {
+      log_node_recursive(*node, node_info);
     }
 
     std::cout << std::endl;

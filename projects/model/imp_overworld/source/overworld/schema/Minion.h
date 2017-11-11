@@ -5,6 +5,7 @@
 #include "overworld/schema/professions/Profession.h"
 #include "Enchantment.h"
 #include "Enchantment_Container.h"
+#include "Variable.h"
 #include <underworld/schema/Minion.h>
 #include <overworld/imp_graph/Node.h>
 
@@ -39,31 +40,18 @@ namespace overworld {
       }
   };
 
-  class Minion {
-      Common_Element element;
-      Node node;
+  class Minion : public Variable {
       Enchantment_Container enchantments;
       File *header_file = nullptr;
 
   public:
       Minion(const std::string &name, Profession_Reference &profession, Parent parent,
              const source_mapping::Source_Range &source_point) :
-        element(Element_Type::minion, name, parent, source_point),
-        node(profession, element) {}
+        Variable(Element_Type::minion, name, profession, parent, source_point) {}
 
       Minion(const Minion &) = delete;
 
-      virtual ~Minion() {
-        int k = 0;
-      }
-
-      Common_Element &get_element() {
-        return element;
-      }
-
-      Node &get_node() {
-        return node;
-      }
+      virtual ~Minion() {}
 
       Enchantment_Container &get_enchantments() {
         return enchantments;
@@ -81,31 +69,12 @@ namespace overworld {
         return Element_Type::minion;
       }
 
-      const Profession_Reference &get_profession() const {
-        return node.get_profession();
-      }
-
-      const Profession &get_simple_profession() const {
-        return node.get_simple_profession();
-      }
-
-      Profession_Reference &get_profession() {
-        return node.get_profession();
-      }
-
       const File *get_file() const {
         return header_file;
       }
 
       void set_file(File *value) {
         header_file = value;
-      }
-//      virtual void set_profession(Profession &value) {
-//        element.set_profession(value);
-//      }
-
-      const std::string get_name() const {
-        return element.get_name();
       }
   };
 

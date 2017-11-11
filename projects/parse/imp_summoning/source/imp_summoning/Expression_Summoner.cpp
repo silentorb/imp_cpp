@@ -149,33 +149,22 @@ namespace imp_summoning {
     return result;
   }
 
-  Expression_Owner Expression_Summoner::process_child(Expression_Owner &expression, Context &context) {
-//    auto expression = Expression_Owner(new Member_Expression(member));
-    if (input.current().is(lexicon.dot)) {
+  void Expression_Summoner::process_chain(Chain &chain) {
+    do {
       auto name = input.next().get_text();
       auto child_expression = Expression_Owner(new Member_Expression(name, get_source_point()));
       input.next();
-      auto second = process_child(child_expression, context);
-      return Expression_Owner(new Chain(expression, second));
+      chain.add_expression(std::move(child_expression));
+    } while (input.current().is(lexicon.dot));
+  }
 
-//      auto &profession = expression->get_profession();
-//      if (profession.get_type() == Profession_Type::unknown) {
-//        auto second = Expression_Owner(new Unresolved_Member_Expression(name, input.get_source_point()));
-//        return Expression_Owner(new Chain(expression, second));
-//      }
-//      if (profession.get_type() == Profession_Type::dungeon) {
-//        auto &dungeon = *dynamic_cast<const Dungeon *>(&profession);
-//        auto member = const_cast<Dungeon &>(dungeon).get_member(name);
-//        if (member) {
-//          auto child_expression = Expression_Owner(new Member_Expression(*member));
-//          auto second = process_child(child_expression, context);
-//          return Expression_Owner(new Chain(expression, second));
-//        }
-//      }
-
-//      throw imp_summoning::Token_Exception(input.current(), "Type " + profession.get_name()
-//                                                            + " does not have a member named "
-//                                                            + name + ".");
+  Expression_Owner Expression_Summoner::process_child(Expression_Owner &expression, Context &context) {
+    if (input.current().is(lexicon.dot)) {
+      auto chain = new Chain();
+      auto result = Expression_Owner(chain);
+      chain->add_expression(std::move(expression));
+      process_chain(*chain);
+      return result;
     }
     else {
       return std::move(expression);

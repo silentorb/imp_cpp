@@ -407,12 +407,24 @@ namespace imp_mirror {
   }
 
   overworld::Expression_Owner Mirror::reflect_chain(const underworld::Chain &input_chain, Scope &scope) {
-    auto first = reflect_expression(input_chain.get_first(), scope);
-    auto second = reflect_chain_member(*first, input_chain.get_second(), scope);
-    auto chain = new overworld::Chain(first, second,
-                                      scope.get_overworld_scope().get_owner(),
+    auto &links = input_chain.get_expressions();
+    auto first = reflect_expression(*links[0], scope);
+    auto previous = first.get();
+    auto chain = new overworld::Chain(scope.get_overworld_scope().get_owner(),
                                       input_chain.get_source_point());
     overworld::Expression_Owner result(chain);
+    chain->add_expression(std::move(first));
+
+    for (auto it = links.begin() + 1; it != links.end(); ++it) {
+      auto &input_link = *it;
+      auto link = reflect_chain_member(*previous, *input_link, scope);
+      previous = link.get();
+      chain->add_expression(std::move(link));
+    }
+//    auto second = reflect_chain_member(*first, input_chain.get_second(), scope);
+//    auto chain = new overworld::Chain(first, second,
+//                                      scope.get_overworld_scope().get_owner(),
+//                                      input_chain.get_source_point());
     return result;
   }
 

@@ -22,16 +22,24 @@ namespace overworld {
         return Expression_Type::assignment;
       }
 
-      const Expression_Owner &get_target() const {
-        return target;
+      const Expression &get_target() const {
+        return *target;
+      }
+
+      Expression &get_target() {
+        return *target;
       }
 
       Operator_Type get_operator() const {
         return operator_type;
       }
 
-      const Expression_Owner &get_value() const {
-        return value;
+      const Expression &get_value() const {
+        return *value;
+      }
+
+      Expression &get_value() {
+        return *value;
       }
   };
 }

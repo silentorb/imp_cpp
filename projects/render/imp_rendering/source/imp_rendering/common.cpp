@@ -341,11 +341,11 @@ namespace imp_rendering {
     auto &target = declaration.get_target();
     auto &value = declaration.get_value();
 
-    return render_expression(*target, scope) + ' '
+    return render_expression(target, scope) + ' '
            + render_operator(declaration.get_operator()) + ' '
-           + render_cast(*target->get_node()->get_profession(),
-                         *value->get_node()->get_profession(),
-                         render_expression(*value, scope))
+           + render_cast(*target.get_node()->get_profession(),
+                         *value.get_node()->get_profession(),
+                         render_expression(value, scope))
            + ";";
   }
 
@@ -411,9 +411,17 @@ namespace imp_rendering {
   }
 
   std::string render_chain(const overworld::Chain &chain, const overworld::Scope &scope) {
-    return render_expression(chain.get_first(), scope)
-           + render_separator(chain.get_first())
-           + render_expression(chain.get_second(), scope);
+    std::string result = "";
+    auto &links = chain.get_expressions();
+    auto last = links[links.size() - 1].get();
+
+    for (auto &link : links) {
+      result += render_expression(*link, scope);
+      if (link.get() != last)
+        result += render_separator(*link);
+    }
+
+    return result;
   }
 
   const std::string render_range(const Range &range) {

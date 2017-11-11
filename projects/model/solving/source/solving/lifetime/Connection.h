@@ -5,7 +5,7 @@
 namespace lifetime {
 
   enum Connection_Type {
-
+      direct
   };
 
   class Node;
@@ -43,5 +43,5 @@ namespace lifetime {
       }
   };
 
-  using Owned_Connections = std::vector<Connection>
+  using Owned_Connections = std::vector<Connection>;
 }

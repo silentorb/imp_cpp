@@ -1,6 +1,7 @@
 #pragma once
 
 #include <overworld/schema/Dungeon.h>
+#include <solving/lifetime/Graph.h>
 
 namespace imp_wrapper {
 
@@ -9,6 +10,7 @@ namespace imp_wrapper {
       underworld::Dungeon underworld_root;
       imp_mirror::Scope mirror_scope;
       overworld::Graph graph;
+      lifetime::Graph ownership_graph;
 
   public:
       explicit Project_Bundle(overworld::Dungeon &overworld_root) :
@@ -30,6 +32,10 @@ namespace imp_wrapper {
 
       overworld::Graph &get_graph() {
         return graph;
+      }
+
+       lifetime::Graph &get_ownership_graph()  {
+        return ownership_graph;
       }
   };
 }

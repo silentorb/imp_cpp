@@ -6,7 +6,8 @@
 #include <imp_taskmaster/Taskmaster.h>
 #include <solving/Profession_Solver.h>
 #include <solving/Solving_Visualizer.h>
-#include <solving/ownership/Ownership_Solver.h>
+#include <solving/lifetime/Ownership_Solver.h>
+#include <solving/lifetime/Ownership_Mirror.h>
 #include "Project_Bundle.h"
 
 
@@ -37,14 +38,16 @@ namespace imp_wrapper {
 
   void Global_Bundle::mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager,
                              Project_Bundle &project_bundle) {
-    imp_mirror::Mirror mirror(overworld_profession_library, element_map, &project_bundle.get_graph(), temporary_interface_manager,
+    imp_mirror::Mirror mirror(overworld_profession_library, element_map, &project_bundle.get_graph(),
+                              temporary_interface_manager,
                               header_files);
-//    imp_mirror::Scope scope(project_bundle.get_overworld_root().get_scope());
-//    scope.add_dungeon(standard_library->get_overworld_dungeon());
     mirror.reflect_root(project_bundle.get_underworld_root(), project_bundle.get_mirror_scope());
+
+    lifetime::Ownership_Mirror ownership_mirror(project_bundle.get_ownership_graph());
+    ownership_mirror.reflect(project_bundle.get_overworld_root());
   }
 
-  void Global_Bundle::solve(overworld::Graph &graph) {
+  void Global_Bundle::solve(overworld::Graph &graph, lifetime::Graph &ownership_graph) {
     solving::Profession_Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
 
@@ -77,12 +80,14 @@ namespace imp_wrapper {
       auto &conflicts = solver.get_conflicts();
       if (conflicts.size() > 0) {
         auto &conflict = conflicts.front();
-        throw std::runtime_error(solving::get_node_debug_string(conflict.get_connection().get_first()) + " is not compatible with "
-                                 + solving::get_node_debug_string(conflict.get_connection().get_second()));
+        throw std::runtime_error(
+          solving::get_node_debug_string(conflict.get_connection().get_first()) + " is not compatible with "
+          + solving::get_node_debug_string(conflict.get_connection().get_second()));
       }
     }
 
-    solving::Ownership_Solver ownership_solver(graph);
+    solving::log_node_trees(graph);
+    lifetime::Ownership_Solver ownership_solver(ownership_graph);
     ownership_solver.solve();
   }
 

@@ -23,7 +23,7 @@ namespace solving {
       }
 
       void initialize() {
-        for (auto node : interface.get_nodes()) {
+        for (auto &node : interface.get_nodes()) {
           if (Interface::is_resolved(*node))
             set_changed(*node);
         }
@@ -73,7 +73,7 @@ namespace solving {
       }
 
       bool is_resolved() {
-        for (auto node : interface.get_nodes()) {
+        for (auto &node : interface.get_nodes()) {
           if (!Interface::is_resolved(*node)) {
             return false;
           }

@@ -2,15 +2,33 @@
 
 #include <memory>
 #include <vector>
+#include <overworld/schema/professions/Profession.h>
 #include "Connection.h"
+#include "Context.h"
+#include "Overworld_Element.h"
 
 namespace lifetime {
+
+  enum class Lifetime_Ownership {
+      unknown,
+
+      anchor,
+      copy,
+      move,
+      reference,
+  };
 
   class Node {
       std::vector<Connection *> connections;
       std::vector<Node *> nodes;
+      Lifetime_Ownership ownership;
+      Overworld_Element element;
 
   public:
+      Node(const Overworld_Element &element, Lifetime_Ownership ownership) :
+        element(element),
+        ownership(ownership) {}
+
       std::vector<Connection *> &get_connections() {
         return connections;
       }
@@ -50,6 +68,13 @@ namespace lifetime {
         return false;
       }
 
+      Lifetime_Ownership get_ownership() const {
+        return ownership;
+      }
+
+      void set_ownership(Lifetime_Ownership ownership) {
+        Node::ownership = ownership;
+      }
   };
 
   using Node_Owner = std::unique_ptr<Node>;

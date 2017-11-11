@@ -16,8 +16,8 @@ namespace overworld {
 
         case Expression_Type::assignment: {
           auto &assignment = *static_cast<const Assignment *>(&expression);
-          explore_expression(*assignment.get_target());
-          explore_expression(*assignment.get_value());
+          explore_expression(assignment.get_target());
+          explore_expression(assignment.get_value());
           break;
         }
 
@@ -44,8 +44,9 @@ namespace overworld {
 
         case Expression_Type::chain: {
           auto &chain = static_cast<const Chain &>(expression);
-          explore_expression(chain.get_first());
-          explore_expression(chain.get_second());
+          for (auto &link: chain.get_expressions()) {
+            explore_expression(*link);
+          }
         }
       }
     }

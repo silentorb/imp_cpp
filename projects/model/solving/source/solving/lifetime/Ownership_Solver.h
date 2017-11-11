@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lifetime/Profession_Solver.h"
+#include "Graph.h"
 
 namespace lifetime {
 
@@ -14,6 +14,7 @@ namespace lifetime {
 //      std::unique_ptr<Generic_Solver<Ownership_Solver, Node>> generic_solver;
       std::unique_ptr<Ownership_Interface> interface;
 //      void update_node(Node &node);
+      void post_apply();
 
   public:
       Ownership_Solver(Graph &graph);
