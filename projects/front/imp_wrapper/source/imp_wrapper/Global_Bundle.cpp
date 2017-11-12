@@ -86,8 +86,8 @@ namespace imp_wrapper {
       }
     }
 
-    solving::log_node_trees(graph);
     lifetime::Ownership_Solver ownership_solver(ownership_graph);
+    solving::log_node_trees(ownership_graph);
     ownership_solver.solve();
   }
 

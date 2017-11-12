@@ -1,5 +1,6 @@
 #include "Solving_Visualizer.h"
 #include <iostream>
+#include <solving/lifetime/Graph.h>
 
 using namespace overworld;
 
@@ -100,7 +101,8 @@ namespace solving {
     return false;
   }
 
-  void insert_node(std::vector<overworld::Node *> &nodes, overworld::Node *node) {
+  template<typename Node>
+  void insert_node(std::vector<Node *> &nodes, Node *node) {
     for (auto i = nodes.begin(); i != nodes.end(); i++) {
       auto first = node->get_element().get_source_point().get_start();
       auto second = (*i)->get_element().get_source_point().get_start();
@@ -176,7 +178,7 @@ namespace solving {
     std::cout << std::endl;
   }
 
-  bool is_root(Node &node) {
+  bool is_root(lifetime::Node &node) {
     for (auto connection : node.get_connections()) {
       if (&connection->get_second() == &node)
         return false;
@@ -184,31 +186,53 @@ namespace solving {
     return true;
   }
 
-  void log_node_recursive(Node &node, Node_Info node_info, const std::string &indent = "") {
+  const std::string get_node_debug_string2(const lifetime::Node &node) {
+//    auto &element = node.get_element();
+//    auto &profession = node.get_profession();
+//    auto &source_point = element.get_source_point().get_start();
+
+    std::string result = "";
+//    if (source_point.get_source_file())
+//      result += //source_point.get_source_file()->get_short_file_path() + " " +
+//        std::to_string(source_point.get_row()) + ":" +
+//        std::to_string(source_point.get_column()) + " ";
+//
+//    result += node.get_debug_string() + render_node_status(node.get_status())
+//              + ":"
+//              + render_ownership(profession)
+//              + profession.get()->get_debug_name();
+//
+//    if (profession.get_type() == Profession_Type::reference)
+//      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
+
+    return result;
+  }
+
+  void log_node_recursive(lifetime::Node &node, const std::string &indent = "") {
     if (indent.size() > 2 * 20)
       throw std::runtime_error("Infinite loop.");
 
-    std::cout << node_info(node) << std::endl;
+    std::cout << get_node_debug_string2(node) << std::endl;
 
     for (auto &connection : node.get_connections()) {
       if (&connection->get_first() == &node) {
-        std::cout << indent + get_connection_symbol(connection->get_type()) + " ";
-        log_node_recursive(connection->get_other(node), node_info, indent + "  ");
+        std::cout << indent ;//+ get_connection_symbol(connection->get_type()) + " ";
+        log_node_recursive(connection->get_other(node), indent + "  ");
       }
     }
   }
 
-  void log_node_trees(Graph &graph, Node_Info node_info) {
+  void log_node_trees(lifetime::Graph &graph) {
     std::cout << std::endl << "Logging nodes:" << std::endl;
 
-    std::vector<overworld::Node *> nodes;
-    for (auto node : graph.get_nodes()) {
+    std::vector<lifetime::Node *> nodes;
+    for (auto &node : graph.get_nodes()) {
       if (is_root(*node))
-        insert_node(nodes, node);
+        insert_node(nodes, node.get());
     }
 
     for (auto &node : nodes) {
-      log_node_recursive(*node, node_info);
+      log_node_recursive(*node);
     }
 
     std::cout << std::endl;

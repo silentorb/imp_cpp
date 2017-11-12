@@ -1,3 +1,4 @@
+#include <overworld/expressions/Literal.h>
 #include "Ownership_Mirror.h"
 
 using namespace overworld;
@@ -10,7 +11,7 @@ namespace lifetime {
   }
 
   Node &Ownership_Mirror::reflect_instantiation(overworld::Instantiation &instantiation) {
-    return create_node(Overworld_Element(instantiation.get_profession()), Lifetime_Ownership::move);
+    return create_node(Overworld_Element(*instantiation.get_node()), Lifetime_Ownership::move);
   }
 
   void Ownership_Mirror::reflect_assignment(overworld::Assignment &assignment) {
@@ -69,7 +70,7 @@ namespace lifetime {
       }
 
       case Expression_Type::literal: {
-        return create_node(Overworld_Element(), Lifetime_Ownership::copy);
+        return create_node(Overworld_Element(*static_cast<Literal &>(expression).get_node()), Lifetime_Ownership::copy);
       }
 
       case Expression_Type::block:

@@ -75,6 +75,10 @@ namespace lifetime {
       void set_ownership(Lifetime_Ownership ownership) {
         Node::ownership = ownership;
       }
+
+       Overworld_Element &get_element() {
+        return element;
+      }
   };
 
   using Node_Owner = std::unique_ptr<Node>;

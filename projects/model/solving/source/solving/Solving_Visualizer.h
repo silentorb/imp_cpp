@@ -2,6 +2,10 @@
 
 #include "Profession_Solver.h"
 
+namespace lifetime {
+  class Graph;
+}
+
 namespace solving {
   const std::string render_node_status(overworld::Node_Status status);
   const std::string render_ownership(const overworld::Profession_Reference &profession);
@@ -12,6 +16,6 @@ namespace solving {
 
   using Node_Info = std::function<const std::string(const overworld::Node &node)>;
   void log_nodes(Graph &graph, Node_Info node_info = get_node_debug_string);
-  void log_node_trees(Graph &graph, Node_Info node_info = get_node_debug_string);
+  void log_node_trees(lifetime::Graph &graph);
 
 }
