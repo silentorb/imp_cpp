@@ -89,6 +89,7 @@ namespace imp_wrapper {
     lifetime::Ownership_Solver ownership_solver(ownership_graph);
     solving::log_node_trees(ownership_graph);
     ownership_solver.solve();
+    solving::log_node_trees(ownership_graph);
   }
 
   void Global_Bundle::render(const std::string &output_path, overworld::Dungeon &overworld_root) {

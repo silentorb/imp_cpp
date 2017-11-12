@@ -46,9 +46,9 @@ TEST(Main_Test, fail_generic_dungeon) {
 TEST(Main_Test, iteration) {
   compile("iteration");
   Comparison test("iteration");
-  test.compare("Goblikin.h");
-  test.compare("Goblikin.cpp");
-  test.compare("Ingredient.h");
+//  test.compare("Goblikin.h");
+//  test.compare("Goblikin.cpp");
+//  test.compare("Ingredient.h");
 }
 
 TEST(Main_Test, projects) {

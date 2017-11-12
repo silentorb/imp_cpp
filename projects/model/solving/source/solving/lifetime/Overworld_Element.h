@@ -9,7 +9,7 @@ namespace lifetime {
 //      none,
 //      profession_reference,
         node,
-      variable,
+//      variable,
   };
 
   class Overworld_Element {
@@ -23,7 +23,7 @@ namespace lifetime {
 //      explicit Overworld_Element(overworld::Profession_Reference &profession_reference) :
 //        profession_reference(&profession_reference), type(Element_Type::profession_reference) {}
 
-      explicit Overworld_Element(overworld::Variable &variable) : variable(&variable) {}
+//      explicit Overworld_Element(overworld::Variable &variable) : variable(&variable), type(Element_Type::variable) {}
 
       union {
           overworld::Node *node;
@@ -41,6 +41,6 @@ namespace lifetime {
 
       overworld::Element &get_element();
       source_mapping::Source_Range get_source_point();
-
+      const std::string get_debug_string() const;
   };
 }

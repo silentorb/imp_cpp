@@ -38,7 +38,7 @@ namespace lifetime {
 //      void reflect_variable_declaration(overworld::Minion_Declaration &variable_declaration);
       Node &reflect_chain(overworld::Chain &chain);
       void reflect_variable_declaration_and_assignment(overworld::Minion_Declaration_And_Assignment
-                                                       &variable_declaration);
+                                                       &declaration);
       Node &reflect_expression(overworld::Expression &expression);
       Node *reflect_expression_statement(overworld::Expression &expression);
       void reflect_statement(overworld::Expression &expression);

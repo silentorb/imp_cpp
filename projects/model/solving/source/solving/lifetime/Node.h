@@ -29,6 +29,8 @@ namespace lifetime {
         element(element),
         ownership(ownership) {}
 
+      Node(const Node &) = delete;
+
       std::vector<Connection *> &get_connections() {
         return connections;
       }
@@ -72,11 +74,11 @@ namespace lifetime {
         return ownership;
       }
 
-      void set_ownership(Lifetime_Ownership ownership) {
-        Node::ownership = ownership;
+      void set_ownership(Lifetime_Ownership value) {
+        ownership = value;
       }
 
-       Overworld_Element &get_element() {
+      Overworld_Element &get_element() {
         return element;
       }
   };

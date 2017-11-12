@@ -37,8 +37,10 @@ namespace lifetime {
   }
 
   void Ownership_Mirror::reflect_variable_declaration_and_assignment(
-    overworld::Minion_Declaration_And_Assignment &variable_declaration) {
-
+    overworld::Minion_Declaration_And_Assignment &declaration) {
+    auto &variable = graph.get_or_create_variable_node(declaration.get_minion());
+    auto &value = reflect_expression(declaration.get_expression());
+    graph.connect(value, variable);
   }
 
   Node &Ownership_Mirror::reflect_chain(overworld::Chain &chain) {

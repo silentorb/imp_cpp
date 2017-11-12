@@ -23,6 +23,10 @@ namespace overworld {
       const Minion &get_minion() const {
         return minion;
       }
+
+      Minion &get_minion() {
+        return minion;
+      }
   };
 
   class Minion_Declaration_And_Assignment : public Minion_Declaration {
@@ -37,6 +41,10 @@ namespace overworld {
       }
 
       const Expression &get_expression() const {
+        return *expression;
+      }
+
+      Expression &get_expression() {
         return *expression;
       }
   };

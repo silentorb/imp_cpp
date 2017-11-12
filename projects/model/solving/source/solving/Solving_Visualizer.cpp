@@ -65,25 +65,6 @@ namespace solving {
     return result;
   }
 
-  const std::string get_node_ownership_string(const Node &node) {
-    auto &element = node.get_element();
-    auto &profession = node.get_profession();
-    auto &source_point = element.get_source_point().get_start();
-
-    std::string result = "";
-    if (source_point.get_source_file())
-      result += //source_point.get_source_file()->get_short_file_path() + " " +
-        std::to_string(source_point.get_row()) + ":" +
-        std::to_string(source_point.get_column()) + " ";
-
-    result += node.get_debug_string() + ":" + render_ownership(profession) + profession.get()->get_debug_name();
-
-    if (profession.get_type() == Profession_Type::reference)
-      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "(*)" : "(&)";
-
-    return result;
-  }
-
   unsigned int get_row(overworld::Node &node) {
     return node.get_element().get_source_point().get_start().get_row();
   }
@@ -186,22 +167,45 @@ namespace solving {
     return true;
   }
 
-  const std::string get_node_debug_string2(const lifetime::Node &node) {
-//    auto &element = node.get_element();
+  const std::string render_ownership2(lifetime::Lifetime_Ownership ownership) {
+    switch (ownership) {
+      case lifetime::Lifetime_Ownership::unknown:
+        return "unknown";
+
+      case lifetime::Lifetime_Ownership::anchor:
+        return "anchor";
+
+      case lifetime::Lifetime_Ownership::copy:
+        return "copy";
+
+      case lifetime::Lifetime_Ownership::move:
+        return "move";
+
+      case lifetime::Lifetime_Ownership::reference:
+        return "reference";
+    }
+
+    throw std::runtime_error("Not supported.");
+  }
+
+  const std::string get_node_debug_string2(lifetime::Node &node) {
+    auto &element = node.get_element().get_element();
 //    auto &profession = node.get_profession();
-//    auto &source_point = element.get_source_point().get_start();
+    auto &source_point = element.get_source_point().get_start();
 
     std::string result = "";
-//    if (source_point.get_source_file())
-//      result += //source_point.get_source_file()->get_short_file_path() + " " +
-//        std::to_string(source_point.get_row()) + ":" +
-//        std::to_string(source_point.get_column()) + " ";
-//
-//    result += node.get_debug_string() + render_node_status(node.get_status())
+    if (source_point.get_source_file())
+      result += //source_point.get_source_file()->get_short_file_path() + " " +
+        std::to_string(source_point.get_row()) + ":" +
+        std::to_string(source_point.get_column()) + " ";
+
+    result += node.get_element().get_debug_string()
+      + " | " + render_ownership2(node.get_ownership());
+//              + render_node_status(node.get_status())
 //              + ":"
 //              + render_ownership(profession)
 //              + profession.get()->get_debug_name();
-//
+
 //    if (profession.get_type() == Profession_Type::reference)
 //      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
 
@@ -212,11 +216,10 @@ namespace solving {
     if (indent.size() > 2 * 20)
       throw std::runtime_error("Infinite loop.");
 
-    std::cout << get_node_debug_string2(node) << std::endl;
+    std::cout << indent << get_node_debug_string2(node) << std::endl;
 
     for (auto &connection : node.get_connections()) {
       if (&connection->get_first() == &node) {
-        std::cout << indent ;//+ get_connection_symbol(connection->get_type()) + " ";
         log_node_recursive(connection->get_other(node), indent + "  ");
       }
     }

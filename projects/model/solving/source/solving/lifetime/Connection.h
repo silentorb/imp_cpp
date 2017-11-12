@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 namespace lifetime {
 
@@ -43,5 +44,6 @@ namespace lifetime {
       }
   };
 
-  using Owned_Connections = std::vector<Connection>;
+  using Connection_Owner = std::unique_ptr<Connection>;
+  using Owned_Connections = std::vector<Connection_Owner>;
 }

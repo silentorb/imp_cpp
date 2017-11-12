@@ -37,10 +37,62 @@ namespace lifetime {
         return node.get_ownership() != Lifetime_Ownership::unknown;
       }
 
-      Progress try_push(Node &first, Node &second, Connection &connection, Direction direction) {
-//        std::cout << get_node_ownership_string(first) << " > " << get_node_ownership_string(second) << std::endl;
-//        auto ownership = get_transfer_ownership(first);
-//        second.get_profession().set_ownership(ownership);
+      Lifetime_Ownership get_forward_ownership(Lifetime_Ownership ownership) {
+        switch (ownership) {
+
+          case Lifetime_Ownership::anchor:
+            return Lifetime_Ownership::reference;
+
+          case Lifetime_Ownership::copy:
+            return Lifetime_Ownership::copy;
+
+          case Lifetime_Ownership::move:
+            return Lifetime_Ownership::anchor;
+
+          case Lifetime_Ownership::reference:
+            return Lifetime_Ownership::reference;
+
+          default:
+            throw std::runtime_error("Not supported");
+        }
+      }
+
+      Lifetime_Ownership get_backwards_ownership(Lifetime_Ownership ownership) {
+        switch (ownership) {
+
+          case Lifetime_Ownership::anchor:
+            return Lifetime_Ownership::move;
+
+          case Lifetime_Ownership::copy:
+            return Lifetime_Ownership::copy;
+
+          case Lifetime_Ownership::move:
+            return Lifetime_Ownership::move;
+
+          case Lifetime_Ownership::reference:
+            return Lifetime_Ownership::unknown;
+
+          default:
+            throw std::runtime_error("Not supported");
+        }
+      }
+
+
+      Progress try_push(Node &first, Node &second, Connection &connection, Direction not_used) {
+        if (second.get_ownership() != Lifetime_Ownership::unknown)
+          throw std::runtime_error("Should not be setting ownership of a known node.");
+
+        auto is_forward = &connection.get_first() == &first;
+        auto ownership = first.get_ownership();
+
+        auto new_ownership = is_forward
+                             ? get_forward_ownership(ownership)
+                             : get_backwards_ownership(ownership);
+
+        if (new_ownership == Lifetime_Ownership::unknown)
+          return 0;
+
+        second.set_ownership(new_ownership);
         return 1;
       }
 

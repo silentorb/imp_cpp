@@ -20,10 +20,10 @@ namespace lifetime {
         if (existing_connection)
           return;
 
-        auto connection = Connection(first, second, type);
-        connections.push_back(connection);
-        first.add_connection(connection);
-        second.add_connection(connection);
+        auto connection = new Connection(first, second, type);
+        connections.push_back(Connection_Owner(connection));
+        first.add_connection(*connection);
+        second.add_connection(*connection);
       }
 
       void add_node(Node_Owner node) {
@@ -34,7 +34,7 @@ namespace lifetime {
         return nodes;
       }
 
-      Owned_Connections &getConnections() {
+      Owned_Connections &get_connections() {
         return connections;
       }
 
@@ -42,8 +42,9 @@ namespace lifetime {
         if (variable_nodes.count(&variable))
           return *variable_nodes[&variable];
 
-        auto node = new Node(Overworld_Element(variable), Lifetime_Ownership::unknown);
+        auto node = new Node(Overworld_Element(variable.get_node()), Lifetime_Ownership::unknown);
         add_node(Node_Owner(node));
+        variable_nodes[&variable] = node;
         return *node;
       }
   };
