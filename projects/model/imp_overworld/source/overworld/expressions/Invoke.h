@@ -21,19 +21,21 @@ namespace overworld {
         Common_Expression(source_range),
         expression(std::move(expression)), arguments(std::move(arguments)) {}
 
-      virtual ~Invoke() override {
-       int k = 0;
-      }
+      virtual ~Invoke() override {}
 
       Expression_Type get_type() const override {
         return Expression_Type::invoke;
       }
 
-      Function_Signature &get_signature() const {
+      Function &get_function() const {
         auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
         auto &member = member_expression.get_member();
-        return member.get_function().get_signature();
+        return member.get_function();
       }
+
+//      Function_Signature &get_signature() const {
+//        return get_function().get_signature();
+//      }
 
       std::vector<Expression_Owner> &get_arguments() {
         return arguments;
@@ -44,12 +46,10 @@ namespace overworld {
       }
 
       Node *get_node() override {
-//        return &get_signature().get_node();
-      throw std::runtime_error("Not supported.");
+        throw std::runtime_error("Not supported.");
       }
 
       const Node *get_node() const override {
-//        return &get_signature().get_node();
         throw std::runtime_error("Not supported.");
       }
 
@@ -60,10 +60,6 @@ namespace overworld {
       Expression &get_expression() {
         return *expression;
       }
-
-//      void add_argument_node(std::unique_ptr<Argument_Node> argument_node) {
-//        argument_nodes.push_back(std::move(argument_node));
-//      }
 
       const std::string get_name() const override {
         return "`Invoke`";

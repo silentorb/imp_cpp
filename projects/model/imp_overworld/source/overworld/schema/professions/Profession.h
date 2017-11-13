@@ -21,6 +21,7 @@ namespace overworld {
   enum class Ownership {
       unknown,
 
+      move,
       owner,
       pointer,
       reference,

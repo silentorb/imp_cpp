@@ -8,6 +8,7 @@ namespace overworld {
   protected:
       Common_Element element;
       Node node;
+      Enchantment_Container enchantments;
 
   public:
       Variable(Element_Type element_type, const std::string &name, Profession_Reference &profession,
@@ -41,6 +42,18 @@ namespace overworld {
 
       const std::string get_name() const {
         return element.get_name();
+      }
+
+      Enchantment_Container &get_enchantments() {
+        return enchantments;
+      }
+
+      const Enchantment_Container &get_enchantments() const {
+        return enchantments;
+      }
+
+      bool has_enchantment(const Dungeon &enchantment) const {
+        return enchantments.has_enchantment(enchantment);
       }
   };
 }

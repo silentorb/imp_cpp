@@ -21,6 +21,7 @@ namespace overworld {
       static Dungeon &get_private();
       static Dungeon &get_protected();
       static Dungeon &get_value();
+      static Dungeon &get_assignment();
 
   };
 }

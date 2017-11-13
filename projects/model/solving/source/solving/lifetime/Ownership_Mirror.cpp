@@ -4,14 +4,44 @@
 using namespace overworld;
 
 namespace lifetime {
-  Node &Ownership_Mirror::create_node(const Overworld_Element &profession_source, Lifetime_Ownership ownership) {
-    auto node = new Node(profession_source, ownership);
+
+  Lifetime_Ownership reflect_ownership(overworld::Ownership ownership) {
+    switch (ownership) {
+
+      case overworld::Ownership::unknown:
+        return Lifetime_Ownership::unknown;
+
+      case overworld::Ownership::owner:
+        return Lifetime_Ownership::anchor;
+
+      case overworld::Ownership::reference:
+        return Lifetime_Ownership::reference;
+
+      case overworld::Ownership::pointer:
+        return Lifetime_Ownership::reference;
+
+      case overworld::Ownership::value:
+        return Lifetime_Ownership::copy;
+
+      case overworld::Ownership::move:
+        return Lifetime_Ownership::move;
+    }
+
+    throw std::runtime_error("Not supported.");
+  }
+
+  Node &Ownership_Mirror::create_node(const Overworld_Element &element, Lifetime_Ownership ownership) {
+    auto node = new Node(element, ownership);
     graph.add_node(Node_Owner(node));
     return *node;
   }
 
+  Node &Ownership_Mirror::create_node(const Overworld_Element &element) {
+    return create_node(element, reflect_ownership(element.get_ownership()));
+  }
+
   Node &Ownership_Mirror::reflect_instantiation(overworld::Instantiation &instantiation) {
-    return create_node(Overworld_Element(*instantiation.get_node()), Lifetime_Ownership::move);
+    return create_node(Overworld_Element(*instantiation.get_node()), Lifetime_Ownership::implicit_move);
   }
 
   void Ownership_Mirror::reflect_assignment(overworld::Assignment &assignment) {
@@ -47,6 +77,21 @@ namespace lifetime {
     return reflect_expression(chain.get_last());
   }
 
+  void Ownership_Mirror::reflect_void_invoke(overworld::Invoke &invoke) {
+    auto &elements = invoke.get_function().get_signature().get_elements();
+    auto arg_it = invoke.get_arguments().begin();
+    for (auto it = elements.begin(); it < elements.end() - 1; ++it) {
+      auto &element = *it;
+      if (element->has_enchantment(overworld::Enchantment_Library::get_assignment())) {
+        auto &argument_expression = *arg_it;
+        auto &argument = reflect_expression(*argument_expression);
+        auto &parameter = create_node(Overworld_Element(element->get_node()));
+        graph.connect(argument, parameter);
+      }
+      ++arg_it;
+    }
+  }
+
   Node &Ownership_Mirror::reflect_expression(Expression &expression) {
     auto type = expression.get_type();
     switch (expression.get_type()) {
@@ -75,6 +120,7 @@ namespace lifetime {
         return create_node(Overworld_Element(*static_cast<Literal &>(expression).get_node()), Lifetime_Ownership::copy);
       }
 
+      case Expression_Type::invoke:
       case Expression_Type::block:
       case Expression_Type::Else:
       case Expression_Type::If:
@@ -93,9 +139,10 @@ namespace lifetime {
   Node *Ownership_Mirror::reflect_expression_statement(overworld::Expression &expression) {
     auto type = expression.get_type();
     switch (expression.get_type()) {
-      case Expression_Type::invoke: {
-        return nullptr;
-      }
+//      case Expression_Type::invoke: {
+//        reflect_void_invoke(static_cast<Invoke &>(expression));
+//        return nullptr;
+//      }
     }
 
     throw std::runtime_error("Not implemented");
@@ -104,15 +151,18 @@ namespace lifetime {
   void Ownership_Mirror::reflect_statement(overworld::Expression &expression) {
     switch (expression.get_type()) {
 
-      case Expression_Type::assignment: {
+      case Expression_Type::assignment:
         reflect_assignment(static_cast<Assignment &>(expression));
         break;
-      }
 
-      case Expression_Type::variable_declaration_and_assignment: {
+      case Expression_Type::invoke:
+        reflect_void_invoke(static_cast<Invoke &>(expression));
+        break;
+
+      case Expression_Type::variable_declaration_and_assignment:
         reflect_variable_declaration_and_assignment(static_cast<Minion_Declaration_And_Assignment &>(expression));
         break;
-      }
+
       default:
         reflect_expression_statement(expression);
     }

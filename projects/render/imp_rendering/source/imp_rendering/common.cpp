@@ -210,7 +210,7 @@ namespace imp_rendering {
   }
 
   Stroke render_for_loop(const overworld::Invoke &function_call, const overworld::Scope &scope) {
-    auto &parameters = function_call.get_signature().get_parameters();
+    auto &parameters = function_call.get_function().get_signature().get_parameters();
     auto minions = parameters.begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
     auto &member = member_expression->get_member();
@@ -224,7 +224,7 @@ namespace imp_rendering {
   }
 
   Stroke render_function_call(const overworld::Invoke &function_call, const overworld::Scope &scope) {
-    auto minions = function_call.get_signature().get_elements().begin();
+    auto minions = function_call.get_function().get_signature().get_elements().begin();
     auto *member_expression = dynamic_cast<const Member_Expression *>(&function_call.get_expression().get_last());
     auto &member = member_expression->get_member();
     if (member.get_type() == Member_Type::function) {

@@ -1,6 +1,6 @@
 #pragma once
 
-class String;
+#include <string>
 
 namespace iteration {
 

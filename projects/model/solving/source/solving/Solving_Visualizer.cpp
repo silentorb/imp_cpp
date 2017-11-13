@@ -181,6 +181,9 @@ namespace solving {
       case lifetime::Lifetime_Ownership::move:
         return "move";
 
+      case lifetime::Lifetime_Ownership::implicit_move:
+        return "implicit_move";
+
       case lifetime::Lifetime_Ownership::reference:
         return "reference";
     }

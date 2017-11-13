@@ -6,6 +6,7 @@
 #include <overworld/expressions/Assignment.h>
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/expressions/Chain.h>
+#include <overworld/expressions/Invoke.h>
 #include "Graph.h"
 
 namespace lifetime {
@@ -31,8 +32,10 @@ namespace lifetime {
 
   class Ownership_Mirror {
       Graph &graph;
-      Node &create_node(const Overworld_Element &profession_source, Lifetime_Ownership ownership);
+      Node &create_node(const Overworld_Element &element, Lifetime_Ownership ownership);
+      Node &create_node(const Overworld_Element &element);
       Node &reflect_instantiation(overworld::Instantiation &instantiation);
+      void reflect_void_invoke(overworld::Invoke &invoke);
       Node &reflect_member(overworld::Member_Expression &member_expression);
       void reflect_assignment(overworld::Assignment &assignment);
 //      void reflect_variable_declaration(overworld::Minion_Declaration &variable_declaration);

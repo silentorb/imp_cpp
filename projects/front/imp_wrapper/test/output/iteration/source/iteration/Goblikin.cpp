@@ -6,12 +6,12 @@
 namespace iteration {
 
   void Goblikin::craft() {
-    auto ingredients = std::vector<Ingredient>();
-    auto tail = Ingredient();
-    tail.name = "dragon's tail";
-    ingredients.push_back(tail);
+    auto ingredients = std::unique_ptr<std::vector<Ingredient>>(new std::vector<Ingredient>());
+    auto tail = std::unique_ptr<Ingredient>(new Ingredient());
+    tail->name = "dragon's tail";
+    ingredients->push_back(tail);
 
-    for (auto &i : ingredients) {
+    for (auto &i : ingredients-) {
       std::cout << i.name;
     }
   }

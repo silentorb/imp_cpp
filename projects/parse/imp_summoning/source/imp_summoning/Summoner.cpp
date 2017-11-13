@@ -184,11 +184,19 @@ namespace imp_summoning {
     input.if_is(lexicon.left_paren);
     while (input.current().is_not(lexicon.right_paren) && input.current().is_not(lexicon.end_of_file)) {
 //     throw Syntax_Exception(input.current());
+      underworld::Enchantment_Array enchantments;
+      if (input.current().is(lexicon.at_sign)) {
+        process_enchantments(enchantments, context);
+      }
       auto name = input.expect(lexicon.identifier).get_text();
       auto source_point = input.get_source_point();
       input.next();
       auto profession = process_optional_profession(context);
-      parameters.push_back(Parameter_Owner(new Parameter(name, std::move(profession), source_point)));
+      auto parameter = new Parameter(name, std::move(profession), source_point);
+      parameters.push_back(Parameter_Owner(parameter));
+      for (auto &enchantment : enchantments) {
+        parameter->add_enchantment(enchantment);
+      }
     }
     input.next();
   }

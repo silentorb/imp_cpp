@@ -41,7 +41,6 @@ namespace overworld {
   };
 
   class Minion : public Variable {
-      Enchantment_Container enchantments;
       File *header_file = nullptr;
 
   public:
@@ -52,22 +51,6 @@ namespace overworld {
       Minion(const Minion &) = delete;
 
       virtual ~Minion() {}
-
-      Enchantment_Container &get_enchantments() {
-        return enchantments;
-      }
-
-      const Enchantment_Container &get_enchantments() const {
-        return enchantments;
-      }
-
-      bool has_enchantment(const Dungeon &enchantment) const {
-        return enchantments.has_enchantment(enchantment);
-      }
-
-      virtual Element_Type get_element_type() const {
-        return Element_Type::minion;
-      }
 
       const File *get_file() const {
         return header_file;

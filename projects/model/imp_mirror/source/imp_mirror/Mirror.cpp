@@ -756,10 +756,11 @@ namespace imp_mirror {
                                                                  Scope &scope,
                                                                  overworld::Function_Interface &function) {
     auto profession = reflect_profession(input_minion.get_profession(), scope);
-    return overworld::Parameter_Owner(
-      new overworld::Parameter(input_minion.get_name(), profession, overworld::Parent(function),
-                               input_minion.get_source_point())
-    );
+    auto parameter = new overworld::Parameter(input_minion.get_name(), profession, overworld::Parent(function),
+                                              input_minion.get_source_point());
+    auto result = overworld::Parameter_Owner(parameter);
+    reflect_enchantments(input_minion.get_enchantments(), parameter->get_enchantments(), scope);
+    return result;
   }
 
   std::unique_ptr<overworld::Minion> Mirror::create_minion(const underworld::Minion &input_minion,

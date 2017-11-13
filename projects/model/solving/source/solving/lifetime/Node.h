@@ -15,6 +15,7 @@ namespace lifetime {
       anchor,
       copy,
       move,
+      implicit_move,
       reference,
   };
 

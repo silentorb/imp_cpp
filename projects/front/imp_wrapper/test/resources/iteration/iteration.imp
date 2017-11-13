@@ -7,7 +7,7 @@ Ingredient {
 Goblikin {
 @public:
   craft() {
-    var ingredients = stl.Array {}
+    var ingredients = stl.Array<$> {}
     var tail = Ingredient {}
     tail.name = "dragon's tail"
     ingredients.add(tail)

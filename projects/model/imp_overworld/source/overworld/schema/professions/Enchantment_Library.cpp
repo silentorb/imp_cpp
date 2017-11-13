@@ -14,6 +14,7 @@ namespace overworld {
       Dungeon value;
       Dungeon external;
       Dungeon external_name;
+      Dungeon assignment;
 
       Enchantments() :
         Static("static"),
@@ -22,7 +23,8 @@ namespace overworld {
         Protected("protected"),
         value("value"),
         external("external"),
-        external_name("external_name") {
+        external_name("external_name"),
+        assignment("assignment") {
 
       }
   };
@@ -94,5 +96,9 @@ namespace overworld {
 
   Dungeon &Enchantment_Library::get_value() {
     return simple_enchantments.value;
+  }
+
+  Dungeon &Enchantment_Library::get_assignment() {
+    return simple_enchantments.assignment;
   }
 }

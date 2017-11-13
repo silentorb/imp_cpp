@@ -6,6 +6,10 @@
 #include "Parser_Lookup.h"
 #include "Context.h"
 
+namespace underworld {
+  class Dungeon_Variant;
+}
+
 namespace imp_summoning {
 
   class Base_Summoner {
@@ -16,6 +20,7 @@ namespace imp_summoning {
 //      underworld::Profession_Library &profession_library;
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
+      void process_variant_arguments(underworld::Dungeon_Variant &variant, Context &context);
       underworld::Profession_Owner process_profession_token(Context &context);
       underworld::Profession_Owner process_profession_internal(Context &context);
       underworld::Profession_Owner process_profession(Context &context);

@@ -8,18 +8,6 @@ using namespace solving;
 
 namespace lifetime {
 
-//  Ownership get_transfer_ownership(const Node &node) {
-//    switch (node.get_ownership()) {
-//      case Lifetime_Ownership::owner:
-//      case Lifetime_Ownership::value:
-//      case Lifetime_Ownership::pointer:
-//        return Ownership::reference;
-//
-//      default:
-//        throw std::runtime_error("Not supported");
-//    }
-//  }
-
   class Ownership_Interface {
       Graph &graph;
       solving::Generic_Solver<Ownership_Interface, Node> generic_solver;
@@ -47,6 +35,7 @@ namespace lifetime {
             return Lifetime_Ownership::copy;
 
           case Lifetime_Ownership::move:
+          case Lifetime_Ownership::implicit_move:
             return Lifetime_Ownership::anchor;
 
           case Lifetime_Ownership::reference:
@@ -67,6 +56,7 @@ namespace lifetime {
             return Lifetime_Ownership::copy;
 
           case Lifetime_Ownership::move:
+          case Lifetime_Ownership::implicit_move:
             return Lifetime_Ownership::move;
 
           case Lifetime_Ownership::reference:
@@ -76,7 +66,6 @@ namespace lifetime {
             throw std::runtime_error("Not supported");
         }
       }
-
 
       Progress try_push(Node &first, Node &second, Connection &connection, Direction not_used) {
         if (second.get_ownership() != Lifetime_Ownership::unknown)
@@ -138,8 +127,38 @@ namespace lifetime {
 //    }
   }
 
-  void Ownership_Solver::post_apply() {
+  overworld::Ownership translate_ownership(Lifetime_Ownership ownership) {
+    switch (ownership) {
+      case Lifetime_Ownership::unknown:
+        return overworld::Ownership::unknown;
 
+      case Lifetime_Ownership::reference:
+        return overworld::Ownership::reference;
+
+      case Lifetime_Ownership::anchor:
+        return overworld::Ownership::owner;
+
+      case Lifetime_Ownership::move:
+        return overworld::Ownership::move;
+
+      case Lifetime_Ownership::implicit_move:
+        return overworld::Ownership::owner;
+
+      case Lifetime_Ownership::copy:
+        return overworld::Ownership::value;
+    }
+
+    throw std::runtime_error("Not supported.");
+  }
+
+  void Ownership_Solver::post_apply() {
+    for (auto &node: graph.get_nodes()) {
+      auto overworld_ownership = translate_ownership(node->get_ownership());
+      auto overworld_node = node->get_element().node;
+      if (overworld_node->get_profession().get_ownership() != overworld::Ownership::pointer) {
+        overworld_node->get_profession().set_ownership(overworld_ownership);
+      }
+    }
   }
 
   void Ownership_Solver::solve() {

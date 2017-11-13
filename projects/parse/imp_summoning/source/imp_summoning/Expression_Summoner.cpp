@@ -68,6 +68,9 @@ namespace imp_summoning {
         throw std::runtime_error(last.get_name() + " is not a function.");
       }
     }
+    else if (input.current().is(lexicon.lesser_than)) {
+      return process_instantiation(std::move(path), context);
+    }
     else if (input.current().is(lexicon.left_brace)) {
       return process_instantiation(std::move(path), context);
     }
