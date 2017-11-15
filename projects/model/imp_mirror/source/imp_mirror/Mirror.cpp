@@ -314,12 +314,11 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
                                                             Scope &scope) {
     auto &input_profession_expression = instantiation.get_profession_expression();
-    auto prof = reflect_expression(input_profession_expression,
-                                   scope);
-    auto profession_tuple = prepare_profession(prof->get_last().get_profession());
+    auto output_profession = reflect_profession(input_profession_expression, scope);
+//    auto profession_tuple = prepare_profession(prof->get_last().get_profession());
 
-    auto &output_profession = std::get<0>(profession_tuple);
-    auto variant = std::get<1>(profession_tuple);
+//    auto &output_profession = std::get<0>(profession_tuple);
+//    auto variant = std::get<1>(profession_tuple);
 
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + output_profession.get_name(), instantiation.get_source_point());

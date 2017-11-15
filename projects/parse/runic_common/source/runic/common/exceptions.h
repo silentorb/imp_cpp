@@ -5,15 +5,6 @@
 
 namespace runic {
 
-//  class Token_Exception : public std::runtime_error {
-//      const Token token;
-//
-//  public:
-//      Token_Exception(const Token &token, const std::string &__arg) :
-//        token(token), runtime_error(__arg) {}
-//
-//  };
-
   class Invalid_Token_Exception : public Token_Exception<Token> {
       const Token token;
 
@@ -57,4 +48,13 @@ namespace runic {
       Expected_Whisper_Exception(const Token &token, const Whisper &whisper, const std::string &filename) :
         Expected_Exception("" + whisper.get_name() + "", token, filename) {}
   };
+
+  class Range_Exception : public std::runtime_error {
+      const source_mapping::Source_Range range;
+
+  public:
+      Range_Exception(const source_mapping::Source_Range &range, const std::string &__arg) :
+        range(range), runtime_error(__arg + " at " + range.get_start().to_string()) {}
+  };
+
 }

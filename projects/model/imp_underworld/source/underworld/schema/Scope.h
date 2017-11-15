@@ -31,6 +31,7 @@ namespace underworld {
       Scope(Scope *parent) : parent(parent) {}
 
       void add_member(std::unique_ptr<Member> member);
+      bool add_member2(std::unique_ptr<Member> member);
 //      Function &create_function(const std::string &member_name, Profession_Owner &profession,
 //                                const source_mapping::Source_Range &source);
       Minion &create_minion(const std::string &name, const source_mapping::Source_Range &source);

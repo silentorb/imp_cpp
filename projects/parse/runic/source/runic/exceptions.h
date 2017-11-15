@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+#include "Range.h"
 
 namespace runic {
 
@@ -20,7 +21,6 @@ namespace runic {
       End_Of_File_Exception(const Token &token) :
         Token_Exception<Token>(token, "Unexpected end of file.") {}
   };
-
 
 //  template<typename Token, typename Whisper>
 //  class Expected_Exception : public Token_Exception<Token> {

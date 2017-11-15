@@ -31,15 +31,16 @@ namespace imp_summoning {
     input.next();
   }
 
-  underworld::Profession_Owner Base_Summoner::process_profession_token(Context &context) {
-    auto name = input.expect(lexicon.identifier).get_text();
-    if (input.next().is(lexicon.dot)) {
+  underworld::Profession_Owner Base_Summoner::process_profession_token(const Link &link, Context &context) {
+    if (input.current().is(lexicon.dot)) {
       input.expect_next(lexicon.identifier);
-      auto child = process_profession_token(context);
-      return Profession_Owner(new Dungeon_Reference_Profession(name, child, get_source_point()));
+      Link child_link = {input.current().get_text(), get_source_point()};
+			input.next();
+      auto child = process_profession_token(child_link, context);
+      return Profession_Owner(new Dungeon_Reference_Profession(link.name, std::move(child), link.source_point));
     }
     else if (input.current().is(lexicon.lesser_than)) {
-      auto token = Profession_Owner(new Token_Profession(name, get_source_point()));
+      auto token = Profession_Owner(new Token_Profession(link.name, link.source_point));
       auto variant = new Dungeon_Variant(std::move(token));
       auto variant_owner = Profession_Owner(variant);
       input.next();
@@ -47,7 +48,7 @@ namespace imp_summoning {
       return variant_owner;
     }
     else {
-      return Profession_Owner(new Token_Profession(name, get_source_point()));
+      return Profession_Owner(new Token_Profession(link.name, link.source_point));
     }
   }
 
@@ -65,11 +66,17 @@ namespace imp_summoning {
 
     auto primitive = lookup.get_primitive(input.current().get_match().get_type());
     if (primitive != Primitive_Type::Unknown) {
+      auto result = Profession_Owner(new Primitive(primitive, get_source_point()));
       input.next();
-      return Profession_Owner(new Primitive(primitive, get_source_point()));
+      return result;
     }
 
-    return process_profession_token(context);
+    Link link = {
+      input.expect(lexicon.identifier).get_text(),
+      get_source_point()
+    };
+    input.next();
+    return process_profession_token(link, context);
   }
 
   underworld::Profession_Owner Base_Summoner::process_profession(Context &context) {

@@ -54,48 +54,57 @@ namespace imp_summoning {
     return Expression_Owner(lambda);
   }
 
+  Expression_Owner create_chain(std::vector<Link> &path) {
+    auto chain = new Chain();
+    auto result = Expression_Owner(chain);
+    for (auto &link: path) {
+      chain->add_expression(Expression_Owner(new Member_Expression(link.name, link.source_point)));
+    }
+    return result;
+  }
+
+  underworld::Profession_Owner Expression_Summoner::path_to_profession(const std::vector<Link> &path,
+                                                                       Context &context) {
+    auto last = process_profession_token(path[path.size() - 1], context);
+    for (auto it = path.end() - 1; it >= path.begin(); --it) {
+      auto &link = *it;
+      last = Profession_Owner(new Dungeon_Reference_Profession(link.name, std::move(last), link.source_point));
+    }
+
+    return last;
+  }
+
   Expression_Owner Expression_Summoner::process_identifier(Context &context) {
-    auto path = process_path(context);
+    std::vector<Link> path;
+    process_path(path, context);
+
+    if (input.current().is(lexicon.lesser_than) || input.current().is(lexicon.left_brace)) {
+      return process_instantiation(path_to_profession(path, context), context);
+    }
+
+    auto chain = create_chain(path);
+
     if (input.current().is(lexicon.left_paren)) {
       input.next();
-      auto &last = path->get_last();
+      auto &last = chain->get_last();
       if (last.get_type() == Expression_Type::member) {
         auto &member_expression = cast<Member_Expression>(last, Expression_Type::member,
                                                           last.get_name() + " is not a function");
-        return process_function_call(path, context);
+        return process_function_call(chain, context);
       }
       else {
         throw std::runtime_error(last.get_name() + " is not a function.");
       }
     }
-    else if (input.current().is(lexicon.lesser_than)) {
-      return process_instantiation(std::move(path), context);
-    }
-    else if (input.current().is(lexicon.left_brace)) {
-      return process_instantiation(std::move(path), context);
-    }
     else if (input.current().is(lexicon.assignment)) {
       auto operator_type = process_assignment_operator(context);
       auto value = process_expression(context);
-      return Expression_Owner(new Assignment(path, operator_type, value));
+      return Expression_Owner(new Assignment(std::move(chain), operator_type, std::move(value)));
     }
     else {
-      return path;
+      return chain;
     }
   }
-
-//  void Expression_Summoner::process_constructor_invocation(Member &member) {
-//    auto &profession = cast<Profession_Member>(member).get_profession();
-//    if (profession.get_type() == Profession_Type::dungeon) {
-//      auto &dungeon = cast<Dungeon>(profession);
-//      auto function = dungeon.get_function(dungeon.get_name());
-//      if (!function) {
-//        auto &function2 = dungeon.create_function(dungeon.get_name(),
-//                                                  dungeon,
-//                                                  input.get_source_point());
-//      }
-//    }
-//  }
 
   Expression_Owner Expression_Summoner::process_expression(Context &context) {
     auto &token = input.current();
@@ -152,44 +161,28 @@ namespace imp_summoning {
     return result;
   }
 
-  void Expression_Summoner::process_chain(Chain &chain) {
-    do {
-      auto name = input.next().get_text();
-      auto child_expression = Expression_Owner(new Member_Expression(name, get_source_point()));
-      input.next();
-      chain.add_expression(std::move(child_expression));
-    } while (input.current().is(lexicon.dot));
-  }
-
-  Expression_Owner Expression_Summoner::process_child(Expression_Owner &expression, Context &context) {
-    if (input.current().is(lexicon.dot)) {
-      auto chain = new Chain();
-      auto result = Expression_Owner(chain);
-      chain->add_expression(std::move(expression));
-      process_chain(*chain);
-      return result;
-    }
-    else {
-      return std::move(expression);
-    }
-  }
-
   Expression_Owner Expression_Summoner::identify_root(Context &context) {
     if (input.current().get_text() == "this") {
       input.next();
       return Expression_Owner(new Self(context.get_scope().get_dungeon()));
     }
     else {
-//      auto &member = find_member(input.current(), context);
       auto result = Expression_Owner(new Member_Expression(input.current().get_text(), get_source_point()));
       input.next();
       return result;
     }
   }
 
-  Expression_Owner Expression_Summoner::process_path(Context &context) {
-    auto expression = identify_root(context);
-    return process_child(expression, context);
+  void Expression_Summoner::process_path(std::vector<Link> &path, Context &context) {
+    path.push_back({input.current().get_text(), get_source_point()});
+    input.next();
+
+    while (input.current().is(lexicon.dot)) {
+      input.expect_next(lexicon.identifier);
+      auto name = input.current().get_text();
+      input.next();
+      path.push_back({name, get_source_point()});
+    }
   }
 
   Expression_Owner Expression_Summoner::process_function_call(Expression_Owner &expression, Context &context) {
@@ -205,11 +198,7 @@ namespace imp_summoning {
   }
 
   Expression_Owner
-  Expression_Summoner::process_instantiation(Expression_Owner profession_expression, Context &context) {
-//    auto profession = process_profession(context);
-//    if (profession->get_type() == underworld::Profession_Type::unknown)
-//      throw runic::Syntax_Exception(input.current());
-
+  Expression_Summoner::process_instantiation(Profession_Owner profession_expression, Context &context) {
     auto instantiation = new underworld::Instantiation(std::move(profession_expression), get_source_point());
     Expression_Owner result(instantiation);
     input.next();
@@ -244,15 +233,6 @@ namespace imp_summoning {
     }
     else if (token.is(lexicon.identifier)) {
       return process_identifier(context);
-//      auto path = process_path(context);
-//      if (input.peek().is(lexicon.left_paren)) {
-//        return process_function_call(context);
-//      }
-//      else {
-//        auto operator_type = process_assignment_operator(context);
-//        auto value = process_expression(context);
-//        return Expression_Owner(new Assignment(path, operator_type, value));
-//      }
     }
     else {
       throw runic::Syntax_Exception(input.current(), input.get_source_file().get_file_path());

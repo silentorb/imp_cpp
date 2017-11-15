@@ -141,6 +141,7 @@ namespace imp_summoning {
   void Summoner::process_enchantments(underworld::Enchantment_Array &enchantments, Context &context) {
     while (input.current().is(lexicon.at_sign)) {
       input.expect_next(lexicon.identifier);
+			auto temp = input.current().get_text();
       auto profession = process_profession(context);
 //      auto name = input.expect_next(lexicon.identifier).get_text();
 //      input.next();
@@ -220,7 +221,9 @@ namespace imp_summoning {
     }
     else {
       auto function = new Virtual_Function(identifier.name, identifier.source_point, context.get_scope());
-      context.get_scope().add_member(std::unique_ptr<Member>(function));
+      if (!context.get_scope().add_member2(std::unique_ptr<Member>(function)))
+        throw runic::Range_Exception(get_source_point(), "Duplicate identifier: " + identifier.name);
+
       function->add_parameters(parameters);
       function->add_parameter(Parameter_Owner(new Parameter("", std::move(profession), return_type_source_range)));
 

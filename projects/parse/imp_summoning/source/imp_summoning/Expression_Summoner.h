@@ -6,6 +6,7 @@
 
 namespace underworld {
   class Member_Expression;
+
   class Chain;
 }
 
@@ -18,15 +19,16 @@ namespace imp_summoning {
       Expression_Owner process_if(Context &context);
       Expression_Owner process_condition(Context &context);
       Expression_Owner process_statement(Context &context);
-      Expression_Owner process_child(Expression_Owner &expression, Context &context);
-      void process_chain(underworld::Chain &chain);
+//      void process_child(Expression_Owner &expression, std::vector<Link> &path, Context &context);
+//      void process_chain(std::vector<Link> &path);
       Expression_Owner identify_root(Context &context);
-      Expression_Owner process_path(Context &context);
+      void process_path(std::vector<Link> &path, Context &context);
       Expression_Owner process_function_call(Expression_Owner &expression, Context &context);
-      Expression_Owner process_instantiation(Expression_Owner profession_expression, Context &context);
+      Expression_Owner process_instantiation(underworld::Profession_Owner profession_expression, Context &context);
       underworld::Operator_Type process_assignment_operator(Context &context);
       underworld::Operator_Type process_expression_operator(Context &context);
       Expression_Owner process_identifier(Context &context);
+      underworld::Profession_Owner path_to_profession(const std::vector<Link> &path, Context &context);
       Expression_Owner process_lambda(underworld::Member_Expression &parameter_info, Context &context);
 
   public:

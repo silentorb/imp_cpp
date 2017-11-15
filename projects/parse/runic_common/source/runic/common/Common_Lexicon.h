@@ -52,6 +52,7 @@ namespace runic {
       Whisper ampersand = "&";
       Whisper at_sign = "@";
       Whisper question_mark = "?";
+      Whisper dollar_sign = "$";
   };
 
   // The way the parser currently works, the first character of each of these whispers must exist in Single_Symbols

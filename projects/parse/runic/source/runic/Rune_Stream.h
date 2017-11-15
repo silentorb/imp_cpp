@@ -29,6 +29,7 @@ namespace runic {
           buffer.pop_front();
         }
         else {
+          buffer.resize(1);
           lexer.next_token(buffer.front());
         }
 

@@ -12,6 +12,11 @@ namespace underworld {
 
 namespace imp_summoning {
 
+  struct Link {
+      std::string name;
+      source_mapping::Source_Range source_point;
+  };
+
   class Base_Summoner {
   protected:
       runic::Stream &input;
@@ -21,7 +26,7 @@ namespace imp_summoning {
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
       void process_variant_arguments(underworld::Dungeon_Variant &variant, Context &context);
-      underworld::Profession_Owner process_profession_token(Context &context);
+      underworld::Profession_Owner process_profession_token(const Link &link, Context &context);
       underworld::Profession_Owner process_profession_internal(Context &context);
       underworld::Profession_Owner process_profession(Context &context);
       underworld::Profession_Owner parse_profession_path(std::vector<std::string> &path, Context &context);

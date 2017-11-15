@@ -25,6 +25,14 @@ namespace underworld {
     members[member->get_name()] = std::move(member);
   }
 
+  bool Scope::add_member2(std::unique_ptr<Member> member) {
+    if (members.count(member->get_name()) != 0)
+      return false;
+
+    members[member->get_name()] = std::move(member);
+    return true;
+  }
+
   Minion &Scope::create_minion(const std::string &name, const source_mapping::Source_Range &source) {
     check_has_member(name);
 

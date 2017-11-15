@@ -2,4 +2,4 @@
 @external("iostream")
 @external_name("cout")
 @enchantments.input_stream
-print(value: String)
+print(value2: String)

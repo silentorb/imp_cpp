@@ -77,7 +77,7 @@ namespace underworld {
       const source_mapping::Source_Range source_point;
 
   public:
-      Dungeon_Reference_Profession(const std::string &name, Profession_Owner &child,
+      Dungeon_Reference_Profession(const std::string &name, Profession_Owner child,
                                    const source_mapping::Source_Range &source_point) :
         name(name), child(std::move(child)), source_point(source_point) {}
 
