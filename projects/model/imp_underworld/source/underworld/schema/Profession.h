@@ -14,7 +14,7 @@ namespace underworld {
       Enum,
       function,
       pointer,
-      reference,
+      decorator,
       token,
       variant,
   };

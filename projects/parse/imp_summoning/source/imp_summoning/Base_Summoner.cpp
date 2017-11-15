@@ -35,7 +35,7 @@ namespace imp_summoning {
     if (input.current().is(lexicon.dot)) {
       input.expect_next(lexicon.identifier);
       Link child_link = {input.current().get_text(), get_source_point()};
-			input.next();
+      input.next();
       auto child = process_profession_token(child_link, context);
       return Profession_Owner(new Dungeon_Reference_Profession(link.name, std::move(child), link.source_point));
     }
@@ -52,12 +52,24 @@ namespace imp_summoning {
     }
   }
 
-  underworld::Profession_Owner Base_Summoner::process_profession_internal(Context &context) {
-    if (input.current().is(lexicon.ampersand)) {
-      input.next();
+  underworld::Profession_Owner Base_Summoner::process_decorator(underworld::Decorator_Type decorator_type,
+                                                                Context &context) {
+    input.next();
+    if (input.current().is(lexicon.identifier)) {
       auto child = process_profession(context);
-      return Profession_Owner(new Reference(std::move(child)));
+      return Profession_Owner(new Decorator(decorator_type, std::move(child)));
     }
+    else {
+      return Profession_Owner(new Decorator(decorator_type, Profession_Owner(new Unknown(get_source_point()))));
+    }
+  }
+
+  underworld::Profession_Owner Base_Summoner::process_profession_internal(Context &context) {
+    if (input.current().is(lexicon.ampersand))
+      return process_decorator(Decorator_Type::reference, context);
+
+    if (input.current().is(lexicon.dollar_sign))
+      return process_decorator(Decorator_Type::owner, context);
 
     if (input.current().is(lexicon.question_mark)) {
       input.next();

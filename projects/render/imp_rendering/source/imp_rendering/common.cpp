@@ -37,18 +37,10 @@ namespace imp_rendering {
     "void"
   };
 
-  enum class Reference_Type {
-      none,
-      pointer,
-      reference
-  };
-
   Reference_Type get_reference_type(const Profession_Reference &profession) {
     if (profession.get_type() == Profession_Type::reference) {
       auto &reference = dynamic_cast<const Reference &>(*profession);
-      return reference.is_pointer()
-             ? Reference_Type::pointer
-             : Reference_Type::reference;
+      return reference.get_reference_type();
     }
     return Reference_Type::none;
   }
@@ -73,7 +65,7 @@ namespace imp_rendering {
   }
 
   const std::string render_reference_symbol(const Reference &reference) {
-    return reference.is_pointer() ? "*" : "&";
+    return std::string(1, reference.get_symbol());
   }
 
   Stroke render_block(const std::string &header, const overworld::Block &block) {
@@ -393,8 +385,11 @@ namespace imp_rendering {
     if (target.get_type() == Profession_Type::reference && source.get_type() == Profession_Type::reference) {
       auto &target_reference = dynamic_cast<const Reference &>(target);
       auto &source_reference = dynamic_cast<const Reference &>(source);
-      if (target_reference.is_pointer()) {
-        if (!source_reference.is_pointer()) {
+      if (target_reference.get_reference_type() == Reference_Type::pointer) {
+        if (source_reference.get_reference_type() == Reference_Type::owner) {
+          return value + ".get()";
+        }
+        else if (source_reference.get_reference_type() != Reference_Type::pointer) {
           return "&" + value;
         }
       }

@@ -181,7 +181,7 @@ namespace cpp_scanning {
 
     auto profession = process_profession_internal(context);
     if (input.if_is(lexicon.ampersand)) {
-      return Profession_Owner(new Reference(std::move(profession)));
+      return Profession_Owner(new Decorator(std::move(profession)));
     }
 
     if (input.if_is(lexicon.asterisk)) {

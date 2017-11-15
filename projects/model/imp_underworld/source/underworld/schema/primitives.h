@@ -41,15 +41,22 @@ namespace underworld {
       }
   };
 
-  class Reference : public Profession {
+  enum class Decorator_Type {
+      owner,
+      reference,
+      pointer,
+  };
+
+  class Decorator : public Profession {
       Profession_Owner profession;
+      Decorator_Type type;
 
   public:
-      Reference(Profession_Owner profession) :
-        profession(std::move(profession)) {}
+      Decorator(Decorator_Type type, Profession_Owner profession) :
+        profession(std::move(profession)), type(type) {}
 
       Profession_Type get_type() const override {
-        return Profession_Type::reference;
+        return Profession_Type::decorator;
       }
 
       const std::string get_name() const override {
@@ -63,16 +70,20 @@ namespace underworld {
       const Profession &get_profession() const {
         return *profession;
       }
-  };
 
-  class Pointer : public Reference {
-  public:
-      Pointer(Profession_Owner profession) : Reference(std::move(profession)) {}
-
-      Profession_Type get_type() const override {
-        return Profession_Type::pointer;
+      Decorator_Type get_decorator_type() const {
+        return type;
       }
   };
+
+//  class Pointer : public Decorator {
+//  public:
+//      Pointer(Profession_Owner profession) : Decorator(std::move(profession)) {}
+//
+//      Profession_Type get_type() const override {
+//        return Profession_Type::pointer;
+//      }
+//  };
 
 //  class Function_Signature : public virtual Profession {
 //  public:

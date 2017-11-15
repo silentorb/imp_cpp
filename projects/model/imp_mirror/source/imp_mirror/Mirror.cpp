@@ -626,6 +626,19 @@ namespace imp_mirror {
     }
   }
 
+  overworld::Reference_Type map_reference_decorator(underworld::Decorator_Type type) {
+    switch (type) {
+      case underworld::Decorator_Type::reference:
+        return overworld::Reference_Type::reference;
+
+      case underworld::Decorator_Type::owner:
+        return overworld::Reference_Type::owner;
+
+      case underworld::Decorator_Type::pointer:
+        return overworld::Reference_Type::pointer;
+    }
+  }
+
   overworld::Profession_Reference Mirror::reflect_profession(const underworld::Profession &profession, Scope &scope) {
     switch (profession.get_type()) {
       case underworld::Profession_Type::primitive:
@@ -643,16 +656,12 @@ namespace imp_mirror {
       case underworld::Profession_Type::unknown:
         return profession_library.get_unknown();
 
-      case underworld::Profession_Type::reference: {
-        auto &input_child_profession = cast<underworld::Reference>(profession).get_profession();
+      case underworld::Profession_Type::decorator: {
+        auto &decorator = cast<underworld::Decorator>(profession);
+        auto &input_child_profession = decorator.get_profession();
         auto output_child_profession = reflect_profession(input_child_profession, scope);
-        return overworld::Profession_Reference(new overworld::Reference(output_child_profession));
-      }
-
-      case underworld::Profession_Type::pointer: {
-        auto &input_child_profession = cast<underworld::Reference>(profession).get_profession();
-        auto output_child_profession = reflect_profession(input_child_profession, scope);
-        return overworld::Profession_Reference(new overworld::Pointer(output_child_profession));
+        auto type = map_reference_decorator(decorator.get_decorator_type());
+        return overworld::Profession_Reference(new overworld::Reference(type, output_child_profession));
       }
 
       case underworld::Profession_Type::function: {

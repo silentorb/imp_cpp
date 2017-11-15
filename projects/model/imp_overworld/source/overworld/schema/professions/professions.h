@@ -109,12 +109,20 @@ namespace overworld {
       }
   };
 
+  enum class Reference_Type {
+      none,
+      owner,
+      pointer,
+      reference,
+  };
+
   class Reference : public Profession {
   protected:
       Profession_Reference profession;
+      Reference_Type type;
 
   public:
-      Reference(Profession_Reference &profession) :
+      Reference(Reference_Type type, Profession_Reference &profession) :
         profession(profession) {}
 
       virtual ~Reference() {}
@@ -122,14 +130,6 @@ namespace overworld {
       Profession_Type get_type() const override {
         return Profession_Type::reference;
       }
-
-//      Scope *get_scope() override {
-//        return nullptr;
-//      }
-
-//      const Scope *get_scope() const override {
-//        return nullptr;
-//      }
 
       File *get_file() const override {
         return nullptr;
@@ -143,8 +143,13 @@ namespace overworld {
         return profession.get_name();
       }
 
+      const char get_symbol() const {
+        static char symbols[] = { '$', '*', '&'};
+        return symbols[(int)type];
+      }
+
       const std::string get_debug_name() const override {
-        return "&" + profession->get_debug_name();
+        return get_symbol() + profession->get_debug_name();
       }
 
       Profession_Reference &get_base(Profession_Reference &self) override {
@@ -159,21 +164,21 @@ namespace overworld {
         return profession;
       }
 
-      virtual bool is_pointer() const {
-        return false;
+      Reference_Type get_reference_type() const {
+        return type;
       }
   };
 
-  class Pointer : public Reference {
-  public:
-      Pointer(Profession_Reference &profession) : Reference(profession) {}
-
-      const std::string get_debug_name() const override {
-        return "*" + profession->get_debug_name();
-      }
-
-      bool is_pointer() const override {
-        return true;
-      }
-  };
+//  class Pointer : public Reference {
+//  public:
+//      Pointer(Profession_Reference &profession) : Reference(profession) {}
+//
+//      const std::string get_debug_name() const override {
+//        return "*" + profession->get_debug_name();
+//      }
+//
+//      bool is_pointer() const override {
+//        return true;
+//      }
+//  };
 }

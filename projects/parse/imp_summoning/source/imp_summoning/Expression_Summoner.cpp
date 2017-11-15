@@ -110,7 +110,8 @@ namespace imp_summoning {
     auto &token = input.current();
     if (token.is(lexicon.identifier)) {
       auto result = process_identifier(context);
-      if (result->get_type() == Expression_Type::member && token.is(lexicon.double_arrow)) {
+      auto type = result->get_type();
+      if (result->get_type() == Expression_Type::member && input.current().is(lexicon.double_arrow)) {
         auto member = dynamic_cast<Member_Expression *>(result.get());
         return process_lambda(*member, context);
       }

@@ -25,6 +25,8 @@ namespace imp_summoning {
 //      underworld::Profession_Library &profession_library;
 
 //      underworld::Member &find_member(const Token &rune, Context &context);
+
+      underworld::Profession_Owner process_decorator(underworld::Decorator_Type decorator_type, Context &context);
       void process_variant_arguments(underworld::Dungeon_Variant &variant, Context &context);
       underworld::Profession_Owner process_profession_token(const Link &link, Context &context);
       underworld::Profession_Owner process_profession_internal(Context &context);

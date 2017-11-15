@@ -25,7 +25,7 @@ namespace overworld {
     result += node.get_debug_string() + ":" + profession.get()->get_debug_name();
 
     if (profession.get_type() == Profession_Type::reference)
-      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
+      result += dynamic_cast<const Reference *>(profession.get())->get_symbol();
 
     return result;
   }
