@@ -66,9 +66,9 @@ namespace imp_summoning {
   underworld::Profession_Owner Expression_Summoner::path_to_profession(const std::vector<Link> &path,
                                                                        Context &context) {
     auto last = process_profession_token(path[path.size() - 1], context);
-    for (auto it = path.end() - 1; it >= path.begin(); --it) {
+    for (auto it = path.rbegin() + 1; it < path.rend(); ++it) {
       auto &link = *it;
-      last = Profession_Owner(new Dungeon_Reference_Profession(link.name, std::move(last), link.source_point));
+      last = Profession_Owner(new Token_Profession(link.name, std::move(last), link.source_point));
     }
 
     return last;
@@ -82,9 +82,9 @@ namespace imp_summoning {
       return process_instantiation(path_to_profession(path, context), context);
     }
 
-    auto chain = create_chain(path);
 
     if (input.current().is(lexicon.left_paren)) {
+      auto chain = create_chain(path);
       input.next();
       auto &last = chain->get_last();
       if (last.get_type() == Expression_Type::member) {
@@ -97,12 +97,16 @@ namespace imp_summoning {
       }
     }
     else if (input.current().is(lexicon.assignment)) {
+      auto chain = create_chain(path);
       auto operator_type = process_assignment_operator(context);
       auto value = process_expression(context);
       return Expression_Owner(new Assignment(std::move(chain), operator_type, std::move(value)));
     }
     else {
-      return chain;
+      if (path.size() == 1)
+        return Expression_Owner(new Member_Expression(path[0].name, path[0].source_point));
+      else
+        return create_chain(path);
     }
   }
 

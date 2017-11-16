@@ -15,8 +15,16 @@ namespace underworld {
 
       }
 
+      const Profession &get_original() const {
+        return *original;
+      }
+
       void add_argument(Profession_Owner argument) {
         arguments.push_back(std::move(argument));
+      }
+
+      const std::vector<Profession_Owner> &get_arguments() const {
+        return arguments;
       }
 
       Profession_Type get_type() const override {
@@ -24,7 +32,7 @@ namespace underworld {
       }
 
       const std::string get_name() const override {
-        return original->get_name() + "<>";
+        return original->get_name();
       }
 
       const source_mapping::Source_Range get_source_point() const override {

@@ -37,7 +37,7 @@ namespace imp_summoning {
       Link child_link = {input.current().get_text(), get_source_point()};
       input.next();
       auto child = process_profession_token(child_link, context);
-      return Profession_Owner(new Dungeon_Reference_Profession(link.name, std::move(child), link.source_point));
+      return Profession_Owner(new Token_Profession(link.name, std::move(child), link.source_point));
     }
     else if (input.current().is(lexicon.lesser_than)) {
       auto token = Profession_Owner(new Token_Profession(link.name, link.source_point));

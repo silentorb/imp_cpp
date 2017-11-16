@@ -17,6 +17,7 @@
 #include <overworld/expressions/Lambda.h>
 #include <overworld/expressions/Range.h>
 #include <overworld/schema/Dungeon_Reference.h>
+#include <underworld/schema/Dungeon_Variant.h>
 #include "Mirror.h"
 #include "Code_Error.h"
 
@@ -287,7 +288,7 @@ namespace imp_mirror {
     ));
   }
 
-  using Prepared_Profession_Tuple = std::tuple<overworld::Profession_Reference, overworld::Dungeon_Variant *>;;
+  using Prepared_Profession_Tuple = std::tuple<overworld::Profession_Reference, overworld::Dungeon_Variant *>;
 
   Prepared_Profession_Tuple prepare_profession(overworld::Profession_Reference &initial_profession) {
     if (initial_profession.get_type() == overworld::Profession_Type::dungeon) {
@@ -376,7 +377,7 @@ namespace imp_mirror {
           auto interface = new overworld::Temporary_Interface();
 //          auto interface = std::make_shared<overworld::Temporary_Interface>();
           auto pointer = std::shared_ptr<overworld::Profession>(interface);
-          auto parent_profession = overworld::Profession_Reference(pointer);
+          auto parent_profession = overworld::Profession_Reference(std::move(pointer));
           auto child_member = interface->create_temporary_member(*previous_member_expression,
                                                                  member_expression.get_name(),
                                                                  member_expression.get_source_point(),
@@ -519,6 +520,43 @@ namespace imp_mirror {
     return profession_library.get_primitive(primitive_type);
   }
 
+  overworld::Member &reflect_dungeon_member(const underworld::Profession &profession,
+                                            Scope &scope) {
+    auto input_dungeon = dynamic_cast<const underworld::Token_Profession *>(&profession);
+    auto name = input_dungeon->get_name();
+    auto member = scope.find_member(name);
+    if (!member)
+      throw Code_Error("Could not find " + name, input_dungeon->get_source_point());
+
+    return *member;
+  }
+
+  overworld::Profession_Reference Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
+                                                                    Scope &scope) {
+    auto input_dungeon = dynamic_cast<const underworld::Token_Profession *>(&profession);
+    auto member = reflect_dungeon_member(profession, scope);
+    if (input_dungeon->get_child()) {
+      return reflect_profession_child(member, *input_dungeon->get_child(), scope);
+    }
+    else {
+      return member.get_dungeon().get_profession();
+    }
+  }
+
+  overworld::Profession_Reference Mirror::reflect_dungeon_variant(const underworld::Dungeon_Variant &input_variant,
+                                                                  Scope &scope) {
+    auto &member = reflect_dungeon_member(input_variant.get_original(), scope);
+    auto &original = member.get_dungeon();
+    auto &input_arguments = input_variant.get_arguments();
+    std::vector<overworld::Profession_Reference> professions;
+    for (auto &input_argument : input_arguments) {
+      professions.push_back(reflect_profession(*input_argument, scope));
+    }
+    auto output_variant = new overworld::Dungeon_Variant(original, professions);
+    auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Interface_Owner(output_variant));
+    return overworld::Profession_Reference(dungeon_reference2);
+  }
+
   overworld::Profession_Reference Mirror::reflect_profession_child(overworld::Member &member,
                                                                    const underworld::Profession &profession,
                                                                    Scope &scope) {
@@ -528,29 +566,24 @@ namespace imp_mirror {
       if (!child)
         throw Code_Error("Could not find " + profession.get_name(), profession.get_source_point());
 
-      if (profession.get_type() == underworld::Profession_Type::dungeon_reference) {
-        Scope dungeon_scope(dungeon.get_scope(), scope);
-        return reflect_dungeon_reference(profession, dungeon_scope);
-      }
+//      if (profession.get_type() == underworld::Profession_Type::dungeon_reference) {
+//        Scope dungeon_scope(dungeon.get_scope(), scope);
+//        return reflect_dungeon_reference(profession, dungeon_scope);
+//      }
       else if (profession.get_type() == underworld::Profession_Type::token) {
-
         return get_possible_generic_dungeon(get_dungeon(*child));
+      }
+      else if (profession.get_type() == underworld::Profession_Type::variant) {
+        Scope dungeon_scope(dungeon.get_scope(), scope);
+//         reflect_dungeon_reference(profession, dungeon_scope);
+        auto input_variant = dynamic_cast<const underworld::Dungeon_Variant *>(&profession);
+        return reflect_dungeon_variant(*input_variant, scope);
+
       }
       throw std::runtime_error("Not implemented");
     }
 
     throw std::runtime_error("Not implemented");
-  }
-
-  overworld::Profession_Reference Mirror::reflect_dungeon_reference(const underworld::Profession &profession,
-                                                                    Scope &scope) {
-    auto input_dungeon = dynamic_cast<const underworld::Dungeon_Reference_Profession *>(&profession);
-    auto name = input_dungeon->get_name();
-    auto member = scope.find_member(name);
-    if (!member)
-      throw Code_Error("Could not find " + name, input_dungeon->get_source_point());
-
-    return reflect_profession_child(*member, input_dungeon->get_child(), scope);
   }
 
   overworld::Profession_Reference Mirror::get_possible_generic_dungeon(overworld::Dungeon &dungeon) {
@@ -636,6 +669,9 @@ namespace imp_mirror {
 
       case underworld::Decorator_Type::pointer:
         return overworld::Reference_Type::pointer;
+
+      default:
+        throw std::runtime_error("Not supported.");
     }
   }
 
@@ -644,14 +680,14 @@ namespace imp_mirror {
       case underworld::Profession_Type::primitive:
         return reflect_primitive(cast<underworld::Primitive>(profession));
 
-      case underworld::Profession_Type::dungeon_reference: {
+      case underworld::Profession_Type::token: {
         return reflect_dungeon_reference(profession, scope);
       }
 
-      case underworld::Profession_Type::token: {
-        auto &token = cast<underworld::Token_Profession>(profession);
-        return reflect_dungeon_usage(token, scope);
-      }
+//      case underworld::Profession_Type::token: {
+//        auto &token = cast<underworld::Token_Profession>(profession);
+//        return reflect_dungeon_usage(token, scope);
+//      }
 
       case underworld::Profession_Type::unknown:
         return profession_library.get_unknown();

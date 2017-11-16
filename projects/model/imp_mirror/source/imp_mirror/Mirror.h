@@ -125,6 +125,9 @@ namespace imp_mirror {
       overworld::Profession_Reference reflect_profession_child(overworld::Member &member,
                                                                const underworld::Profession &profession, Scope &scope);
 
+      overworld::Profession_Reference reflect_dungeon_variant(const underworld::Dungeon_Variant &input_variant,
+                                                              Scope &scope);
+
       overworld::Profession_Reference reflect_dungeon_reference(const underworld::Profession &profession,
                                                                 Scope &scope);
 

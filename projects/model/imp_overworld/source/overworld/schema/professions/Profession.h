@@ -96,7 +96,7 @@ namespace overworld {
       explicit Profession_Reference(Profession &pointer, Ownership ownership = Ownership::unknown) :
         Optional_Shared_Pointer(pointer), ownership(ownership) {}
 
-      explicit Profession_Reference(std::shared_ptr<Profession> &shared_pointer,
+      explicit Profession_Reference(std::shared_ptr<Profession> shared_pointer,
                                     Ownership ownership = Ownership::unknown) :
         Optional_Shared_Pointer(shared_pointer), ownership(ownership) {}
 
