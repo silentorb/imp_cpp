@@ -65,6 +65,8 @@ namespace overworld {
 
       virtual ~Generic_Parameter() override = default;
 
+      Generic_Parameter(const Generic_Parameter&) = delete;
+
       const std::string get_name() const override {
         return element.get_name();
       }

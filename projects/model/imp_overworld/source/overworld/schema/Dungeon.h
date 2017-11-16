@@ -179,7 +179,9 @@ namespace overworld {
           parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
 
         scope.add_member(parameter->get_name(), Member(parameter->get_reference()));
-        owned_generic_parameters.push_back(std::move(parameter));
+				auto temp = std::move(parameter);
+				auto k = 0;
+//        owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
       }

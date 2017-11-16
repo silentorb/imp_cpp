@@ -11,7 +11,10 @@ namespace overworld {
       std::shared_ptr<T> shared_pointer;
 
   public:
-      explicit Optional_Shared_Pointer(T &pointer) : pointer(&pointer) {}
+      explicit Optional_Shared_Pointer(T &pointer) : pointer(&pointer) {
+        if (!this->pointer)
+          throw std::runtime_error("Pointer cannot be null.");
+      }
 
       explicit Optional_Shared_Pointer(std::shared_ptr<T> shared_pointer, T *pointer) :
         shared_pointer(shared_pointer),
