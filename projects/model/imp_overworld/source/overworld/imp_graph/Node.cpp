@@ -61,9 +61,8 @@ namespace overworld {
       case Profession_Type::dungeon: {
         auto dungeon_reference = static_cast<const Dungeon_Reference *>(profession.get());
         auto &dungeon = dungeon_reference->get_dungeon();
-        auto variant = dynamic_cast<const Dungeon *>(&dungeon);
-        if (variant) {
-          return get_arguments_status(variant->get_arguments());
+        if (dungeon.is_generic()) {
+          return get_arguments_status(dungeon.get_arguments());
         }
         else {
           return Node_Status::resolved;

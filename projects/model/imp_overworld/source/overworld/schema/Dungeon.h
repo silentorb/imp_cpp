@@ -21,7 +21,7 @@ namespace overworld {
       Scope scope;
       Generic_Parameter_Array generic_parameters;
       Generic_Argument_Array arguments;
-      Dungeon *original;
+      Dungeon *original = nullptr;
       File *header_file = nullptr;
       Ownership default_ownership = Ownership::unknown;
       Dungeon *base_dungeon = nullptr;
@@ -41,6 +41,7 @@ namespace overworld {
       Dungeon(Dungeon &original, std::vector<Profession_Reference> &professions) :
         Dungeon(original.get_name(), *original.get_scope().get_parent_scope(), source_mapping::Source_Range()) {
         this->original = &original;
+        generic_parameters = original.get_generic_parameters();
         for (auto i = 0; i < generic_parameters.size(); ++i) {
           arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
         }
@@ -64,12 +65,18 @@ namespace overworld {
         return self;
       }
 
-      Dungeon *get_original2() {
+      Dungeon *get_original() {
         return original;
       }
 
-      const Dungeon *get_original2() const {
+      const Dungeon *get_original() const {
         return original;
+      }
+
+      const Dungeon &get_base_original() const {
+        return original
+               ? original->get_base_original()
+               : *this;
       }
 
       bool is_class() const;
@@ -129,7 +136,13 @@ namespace overworld {
       }
 
       bool has_enchantment(const Dungeon &enchantment) const {
-        return enchantments.has_enchantment(enchantment);
+        if (enchantments.has_enchantment(enchantment))
+          return true;
+
+        if (original)
+          return original->has_enchantment(enchantment);
+
+        return false;
       }
 
       bool is_external() const;
@@ -162,6 +175,8 @@ namespace overworld {
 
         contracts.push_back(profession);
       }
+
+      Member *get_member_or_null(const std::string &name);
 
       const std::vector<Profession_Reference> *get_contracts() const {
         return &contracts;
@@ -216,6 +231,8 @@ namespace overworld {
 //        return *this;
 //      }
   };
+
+  Function &create_variant_function(Dungeon &owning_dungeon, Function &original_function);
 
   using Dungeon_Owner = std::unique_ptr<Dungeon>;
 }

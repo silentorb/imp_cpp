@@ -15,9 +15,9 @@ namespace imp_rendering {
   void set_standard_library(cpp_stl::Standard_Library &library);
 
   using Stroke = imp_artisan::building::Stroke_Owner;
-  const std::string render_function_parameters(const overworld::Function &function);
-  const std::string render_function_return_signature(const overworld::Function &function);
-  const std::string render_function_declaration(const overworld::Function &function);
+  const std::string render_function_parameters(const overworld::Function &function, const overworld::Scope &scope);
+  const std::string render_function_return_signature(const overworld::Function &function, const overworld::Scope &scope);
+  const std::string render_function_declaration(const overworld::Function &function, const overworld::Scope &scope);
   const std::string render_profession(const overworld::Profession_Reference &profession, const overworld::Scope &scope);
   const std::string render_profession_owner(const overworld::Profession_Reference &profession, const overworld::Scope &scope);
   const std::string render_separator(const overworld::Expression &expression);
@@ -42,7 +42,7 @@ namespace imp_rendering {
 
   std::string sanitize_name(const std::string &name);
 
-  Stroke render_function_definition(const overworld::Function &function);
+  Stroke render_function_definition(const overworld::Function &function, const overworld::Scope &scope);
   Stroke render_possible_namespace_block(const overworld::Parent &parent, Stroke stroke);
   Stroke render_possible_generic_block(const std::vector<overworld::Generic_Parameter *> &generic_parameters,
                                        Stroke stroke);

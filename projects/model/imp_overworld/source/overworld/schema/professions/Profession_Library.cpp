@@ -119,7 +119,7 @@ namespace overworld {
                                                         Dungeon &dungeon,
                                                         std::vector<Profession_Reference> &professions) {
 
-    auto variant = new Virtual_Function(function, dungeon.get_scope(), professions);
+    auto variant = new Virtual_Function(function, professions);
     variant_array.push_back(Function_Owner(variant));
     return *variant;
   }

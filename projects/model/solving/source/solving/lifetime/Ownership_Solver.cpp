@@ -89,7 +89,7 @@ namespace lifetime {
         auto &first_profession = first.get_element().node->get_profession();
         auto first_variant = first_profession->as_variant();
         auto second_variant = second.get_element().node->get_profession()->as_variant();
-        if (first_variant && second_variant) {
+        if (first_variant && second_variant && first_variant->is_generic() && second_variant->is_generic()) {
           auto a2 = graph.get_node(first_variant->get_arguments()[0]->get_node());
           auto b2 = graph.get_node(second_variant->get_arguments()[0]->get_node());
 //          b.set_ownership(a.get_ownership());

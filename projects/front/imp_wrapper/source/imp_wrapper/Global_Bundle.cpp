@@ -121,3 +121,14 @@ namespace imp_wrapper {
     return realms[name].get();
   }
 }
+
+// TODO iterators
+// TODO while loops
+// TODO ranges
+// TODO numeric and string indexes
+// TODO enums
+// TODO casting
+// TODO instantatiation field initialization
+// TODO #import
+// TODO aliases
+// TODO implicit return

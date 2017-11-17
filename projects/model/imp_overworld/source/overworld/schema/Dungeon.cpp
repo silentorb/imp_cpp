@@ -31,20 +31,21 @@ namespace overworld {
 //    throw std::runtime_error("Could not find constructor.");
   }
 
-//  const Profession &Dungeon::get_profession() const {
-//    return static_cast<Dungeon_Reference &>(*self);
-//  }
+  Member *Dungeon::get_member_or_null(const std::string &name) {
+    auto member = scope.get_member_or_null(name);
+    if (member)
+      return member;
 
-//  Function &Dungeon::create_function(const std::string &name, Profession &profession,
-//                                     const source_mapping::Source_Range &source_point) {
-//    auto function = new Function_With_Block(name, profession, *this, source_point);
-//    functions.push_back(unique_ptr<Function>(function));
-////    if (!function->is_constructor())
-////      graph.add_node(function->get_node());
-//
-//    add_member(name, Member(*function));
-//    return *function;
-//  }
+    if (original) {
+      member = original->get_member_or_null(name);
+      if (member) {
+        // Eventually clone this for better generics graphing.
+        return member;
+      }
+    }
+
+    return nullptr;
+  }
 
   bool Dungeon::is_class() const {
     if (scope.get_minions().size() > 0)
@@ -133,4 +134,12 @@ namespace overworld {
     return result;
   }
 
+//  Function &create_variant_function(Dungeon &owning_dungeon, Function &original_function) {
+//
+//    for (auto & parameter: owning_dungeon.get_generic_parameters()) {
+//
+//    }
+//
+//    auto new_function = new Virtual_Function(original_function, )
+//  }
 }

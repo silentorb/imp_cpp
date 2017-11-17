@@ -107,28 +107,28 @@ namespace imp_rendering {
     return profession_string + parameter.get_name();
   }
 
-  const std::string render_function_parameters(const overworld::Function &function) {
+  const std::string render_function_parameters(const overworld::Function &function, const Scope &scope) {
     return "(" +
            join(function.get_signature().get_parameters(), Joiner<overworld::Parameter *>(
-             [& function](const overworld::Parameter *minion) {
-               return render_parameter(*minion, function.get_parent_scope());
+             [& function, &scope](const overworld::Parameter *minion) {
+               return render_parameter(*minion, scope);
              }), ", ") + ")";
   }
 
-  const std::string render_function_return_signature(const overworld::Function &function) {
-    string return_text = function.is_constructor()
+  const std::string render_function_return_signature(const overworld::Function &function, const overworld::Scope &scope) {
+    string return_text = function.is_constructor(scope.get_owner())
                          ? ""
                          : render_profession_with_spacing(function.get_signature().get_last().get_profession(),
-                                                          function.get_parent_scope());
+                                                          scope);
 
     return return_text;
   }
 
-  const std::string render_function_declaration(const overworld::Function &function) {
+  const std::string render_function_declaration(const overworld::Function &function, const overworld::Scope &scope) {
     auto static_clause = function.has_enchantment(Enchantment_Library::get_static()) ? "static " : "";
-    return static_clause + render_function_return_signature(function)
+    return static_clause + render_function_return_signature(function, scope)
            + sanitize_name(function.get_name())
-           + render_function_parameters(function);
+           + render_function_parameters(function, scope);
   }
 
   const std::string render_literal(const overworld::Literal &literal) {
@@ -400,7 +400,7 @@ namespace imp_rendering {
     auto &function = lambda.get_function();
     auto token = render_block("", function.get_block());
     auto block = token.render("");
-    return "[&] " + render_function_parameters(function)
+    return "[&] " + render_function_parameters(function, scope)
            + block;
   }
 
@@ -524,7 +524,7 @@ namespace imp_rendering {
   }
 
   const std::string get_cpp_name(const overworld::Dungeon &dungeon) {
-    return _get_cpp_name(dungeon);
+    return _get_cpp_name(dungeon.get_base_original());
   }
 
   const std::string get_cpp_name(const overworld::Minion &minion) {
@@ -639,14 +639,14 @@ namespace imp_rendering {
     }
   }
 
-  Stroke render_function_definition(const overworld::Function &function) {
+  Stroke render_function_definition(const overworld::Function &function, const overworld::Scope &scope) {
     auto static_clause = function.is_inline() && function.has_enchantment(Enchantment_Library::get_static())
                          ? "static "
                          : "";
 
-    auto function_signature = static_clause + render_function_return_signature(function)
+    auto function_signature = static_clause + render_function_return_signature(function, scope)
                               + sanitize_name(function.get_name())
-                              + render_function_parameters(function);
+                              + render_function_parameters(function, scope);
 
     auto with_block = static_cast<const overworld::Function_With_Block *>(&function);
     return render_possible_generic_block(function.get_generic_parameters(),

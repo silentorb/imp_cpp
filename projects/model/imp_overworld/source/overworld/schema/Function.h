@@ -17,7 +17,7 @@ namespace overworld {
       Profession_Reference signature_reference;
       Function_Signature &signature;
       Common_Element element;
-      Function *original;
+      Function *original = nullptr;
       virtual bool returns_a_value() const;
       std::vector<std::unique_ptr<Generic_Parameter>> owned_generic_parameters;
       Generic_Argument_Array arguments;
@@ -45,7 +45,7 @@ namespace overworld {
         return element.get_name();
       }
 
-      bool is_constructor() const;
+      bool is_constructor(const Parent & parent) const;
 
       virtual bool is_inline() const {
         return false;
@@ -104,8 +104,8 @@ namespace overworld {
         return generic_parameters;
       }
 
-      virtual Scope &get_parent_scope() = 0;
-      virtual const Scope &get_parent_scope() const = 0;
+//      virtual Scope &get_parent_scope() = 0;
+//      virtual const Scope &get_parent_scope() const = 0;
 
 
       Enchantment_Container &get_enchantments() {
@@ -148,27 +148,27 @@ namespace overworld {
   using Function_Owner = std::unique_ptr<Function>;
 
   class Virtual_Function : public Function {
-      Scope &parent_scope;
+//      Scope &parent_scope;
 
   public:
-      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon &dungeon,
+      Virtual_Function(const std::string &name, Dungeon &dungeon,
                        const source_mapping::Source_Range &source_point) :
-        Function(name, dungeon, source_point), parent_scope(parent_scope) {}
+        Function(name, dungeon, source_point) {}
 
-      Virtual_Function(Function &original, Scope &parent_scope, std::vector<Profession_Reference> &professions) :
-        Function(original, professions), parent_scope(parent_scope) {
+      Virtual_Function(Function &original, std::vector<Profession_Reference> &professions) :
+        Function(original, professions) {
 
       }
 
       virtual ~Virtual_Function() {}
 
-      Scope &get_parent_scope() override {
-        return parent_scope;
-      }
+//      Scope &get_parent_scope() override {
+//        return parent_scope;
+//      }
 
-      const Scope &get_parent_scope() const override {
-        return parent_scope;
-      }
+//      const Scope &get_parent_scope() const override {
+//        return parent_scope;
+//      }
   };
 
   class Function_With_Block : public Function {
@@ -201,13 +201,13 @@ namespace overworld {
         return scope;
       }
 
-      Scope &get_parent_scope() override {
-        return *scope.get_parent_scope();
-      }
+//      Scope &get_parent_scope() override {
+//        return *scope.get_parent_scope();
+//      }
 
-      const Scope &get_parent_scope() const override {
-        return *scope.get_parent_scope();
-      }
+//      const Scope &get_parent_scope() const override {
+//        return *scope.get_parent_scope();
+//      }
 
       bool is_inline() const override;
 //      Temporary_Interface &get_or_create_interface(Parameter &parameter);

@@ -9,19 +9,11 @@ using namespace overworld;
 namespace imp_rendering {
   namespace sources {
 
-//    Stroke render_includes(const overworld::Dungeon &dungeon, const std::vector<File *> &files) {
-//      Stroke result;
-//      result << "#include \"" + dungeon.get_name() + ".h\""
-//      << render_includes(files);
-//
-//      return result;
-//    }
-
     Stroke render_function(const overworld::Function &function, const overworld::Dungeon &dungeon) {
-      auto function_signature = render_function_return_signature(function)
+      auto function_signature = render_function_return_signature(function, dungeon.get_scope())
                                 + dungeon.get_name() + "::"
                                 + sanitize_name(function.get_name())
-                                + render_function_parameters(function);
+                                + render_function_parameters(function, dungeon.get_scope());
 
       auto with_block = static_cast<const overworld::Function_With_Block *>(&function);
       return render_block(function_signature, with_block->get_block());

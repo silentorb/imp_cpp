@@ -361,7 +361,7 @@ namespace imp_mirror {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon) {
         auto dungeon = get_dungeon_interface(first.get_last());
-        auto member = dungeon->get_scope().get_member_or_null(member_expression.get_name());
+        auto member = dungeon->get_member_or_null(member_expression.get_name());
         if (!member) {
           throw Code_Error("Could not find member `" + member_expression.get_name() + "`",
                            member_expression.get_source_point());
@@ -754,7 +754,6 @@ namespace imp_mirror {
     }
     else {
       auto output_function = new overworld::Virtual_Function(member.get_name(),
-                                                             scope.get_overworld_scope(),
                                                              scope.get_overworld_scope().get_owner().get_dungeon(),
                                                              member.get_source_point());
       scope.get_overworld_scope().add_function(std::unique_ptr<overworld::Function>(output_function));

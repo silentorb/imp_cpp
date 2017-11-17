@@ -55,12 +55,12 @@ namespace imp_rendering {
       return "class " + get_cpp_name(dungeon) + ancestors;
     }
 
-    Stroke render_function_declaration_or_definition(const Function &function) {
+    Stroke render_function_declaration_or_definition(const Function &function, const overworld::Scope &scope) {
       if (function.is_inline()) {
-        return render_function_definition(function);
+        return render_function_definition(function, scope);
       }
       else {
-        return render_function_declaration(function) + ";";
+        return render_function_declaration(function, scope) + ";";
       }
     }
 
@@ -88,10 +88,10 @@ namespace imp_rendering {
 
       for (auto &function : dungeon.get_functions()) {
         if (function->has_enchantment(Enchantment_Library::get_public())) {
-          public_block << render_function_declaration_or_definition(*function);
+          public_block << render_function_declaration_or_definition(*function, dungeon.get_scope());
         }
         else {
-          private_block << render_function_declaration_or_definition(*function);
+          private_block << render_function_declaration_or_definition(*function, dungeon.get_scope());
         }
       }
 
