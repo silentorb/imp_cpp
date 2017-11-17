@@ -136,24 +136,24 @@ namespace overworld {
       }
   };
 
-  template<typename T>
-  class Owned_Profession_Reference {
-      std::unique_ptr<T> owner;
-      Profession_Reference reference;
-
-  public:
-      Owned_Profession_Reference(std::unique_ptr<T> owner) :
-        owner(std::move(owner)),
-        reference(*owner) {}
-
-      T &get_owner() {
-        return *owner;
-      }
-
-      Profession_Reference &get_reference() {
-        return reference;
-      }
-  };
+//  template<typename T>
+//  class Owned_Profession_Reference {
+//      std::unique_ptr<T> owner;
+//      Profession_Reference reference;
+//
+//  public:
+//      Owned_Profession_Reference(std::unique_ptr<T> owner) :
+//        owner(std::move(owner)),
+//        reference(*owner) {}
+//
+//      T &get_owner() {
+//        return *owner;
+//      }
+//
+//      Profession_Reference &get_reference() {
+//        return reference;
+//      }
+//  };
 
   bool can_cast(Profession &target, Profession &source);
 

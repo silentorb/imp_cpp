@@ -25,7 +25,7 @@ namespace overworld {
       Ownership default_ownership = Ownership::unknown;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession_Reference> contracts;
-      std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
+      std::vector<std::unique_ptr<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       Profession_Reference self;
@@ -178,10 +178,8 @@ namespace overworld {
         if (parameter->get_name() == "")
           parameter->set_name(get_generic_parameter_name(generic_parameters.size() - 1));
 
-        scope.add_member(parameter->get_name(), Member(parameter->get_reference()));
-				auto temp = std::move(parameter);
-				auto k = 0;
-//        owned_generic_parameters.push_back(std::move(parameter));
+        scope.add_member(parameter->get_name(), Member(*parameter));
+        owned_generic_parameters.push_back(std::move(parameter));
 //        rename_generic_parameters(owned_generic_parameters);
 
       }

@@ -51,29 +51,28 @@ namespace overworld {
   class Generic_Parameter : public Profession {
       Generic_Parameter_Element element;
       Node node;
-      Profession_Reference self;
+//      Profession_Reference self;
 
   public:
       Generic_Parameter(const std::string &name, Profession_Reference &profession,
                         Parent parent,
                         const source_mapping::Source_Range &source_point) :
         element(Element_Type::other, name, profession, parent, source_point),
-        node(profession, element),
-        self(*this) {
+        node(profession, element) {
 //        throw std::runtime_error("Not implemented");
       }
 
       virtual ~Generic_Parameter() override = default;
 
-      Generic_Parameter(const Generic_Parameter&) = delete;
+      Generic_Parameter(const Generic_Parameter &) = delete;
 
       const std::string get_name() const override {
         return element.get_name();
       }
 
-      Profession_Reference &get_reference() {
-        return self;
-      }
+//      Profession_Reference &get_reference() {
+//        return self;
+//      }
 
       void set_name(const std::string &value) {
         element.set_name(value);
@@ -103,9 +102,8 @@ namespace overworld {
   using Generic_Parameter_Owner = std::unique_ptr<Generic_Parameter>;
   using Generic_Parameter_Array = std::vector<Generic_Parameter *>;
 
-  Owned_Profession_Reference<Generic_Parameter> &add_generic_parameter_to_vector(
-    std::vector<Owned_Profession_Reference<Generic_Parameter>> &generic_parameters,
-    Parent parent);
+  std::unique_ptr<Generic_Parameter> &
+  add_generic_parameter_to_vector(std::vector<std::unique_ptr<Generic_Parameter>> &generic_parameters, Parent parent);
 
 //  void rename_generic_parameters(std::vector<Generic_Parameter_Owner> &generic_parameters);
   std::vector<Profession_Reference> to_professions(const Generic_Parameter_Array &generic_parameters,

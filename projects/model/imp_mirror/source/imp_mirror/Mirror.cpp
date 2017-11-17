@@ -539,7 +539,7 @@ namespace imp_mirror {
       return reflect_profession_child(member, *input_dungeon->get_child(), scope);
     }
     else {
-      return member.get_profession_reference();
+      return overworld::Profession_Reference(const_cast<overworld::Profession&>(member.get_profession()));
     }
   }
 

@@ -20,7 +20,7 @@ namespace overworld {
       Common_Element element;
 //      Element_Reference_Node node;
       virtual bool returns_a_value() const;
-      std::vector<Owned_Profession_Reference<Generic_Parameter>> owned_generic_parameters;
+      std::vector<std::unique_ptr<Generic_Parameter>> owned_generic_parameters;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
@@ -109,7 +109,7 @@ namespace overworld {
         }
 
         for (auto i = owned_generic_parameters.begin(); i != owned_generic_parameters.end(); i++) {
-          if (&(*i).get_owner() == &parameter) {
+          if ((*i).get() == &parameter) {
             throw std::runtime_error("No longer works like this...");
 //            auto result = std::move(*i);
 //            owned_generic_parameters.erase(i);

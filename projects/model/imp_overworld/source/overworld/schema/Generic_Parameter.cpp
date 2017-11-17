@@ -7,8 +7,8 @@ namespace overworld {
     return std::string(1, 'A' + (char) index);
   }
 
-  Owned_Profession_Reference<Generic_Parameter> &add_generic_parameter_to_vector(
-    std::vector<Owned_Profession_Reference<Generic_Parameter>> &generic_parameters,
+  std::unique_ptr<Generic_Parameter> &add_generic_parameter_to_vector(
+    std::vector<std::unique_ptr<Generic_Parameter>> &generic_parameters,
     Parent parent) {
     if (generic_parameters.size() > 25)
       throw std::runtime_error("Too many generic parameters.");
