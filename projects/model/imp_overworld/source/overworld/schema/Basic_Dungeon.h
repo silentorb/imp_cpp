@@ -9,6 +9,8 @@ namespace overworld {
       variant
   };
 
+  class Dungeon_Variant;
+
   class Basic_Dungeon {
   public:
       virtual ~Basic_Dungeon() = default;
@@ -17,6 +19,8 @@ namespace overworld {
       virtual Dungeon_Type get_dungeon_type() const = 0;
       virtual Ownership get_ownership() const = 0;
       virtual const std::string get_debug_name() const = 0;
+
+      Dungeon_Variant *as_variant();
   };
 
   using Dungeon_Interface_Owner = std::unique_ptr<Basic_Dungeon>;

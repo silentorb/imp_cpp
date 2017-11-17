@@ -47,5 +47,15 @@ namespace lifetime {
         variable_nodes[&variable] = node;
         return *node;
       }
+
+      Node *get_node(overworld::Node &overworld_node) {
+        for (auto &node : nodes) {
+          if (node->get_element().node == &overworld_node) {
+            return node.get();
+          }
+        }
+        return nullptr;
+//        throw std::runtime_error("Could not find node");
+      }
   };
 }

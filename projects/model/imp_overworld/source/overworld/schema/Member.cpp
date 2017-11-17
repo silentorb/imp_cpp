@@ -4,6 +4,12 @@
 
 namespace overworld {
 
+  Member::Member(Parameter &parameter) :
+  type(Member_Type::parameter), parameter(&parameter) {
+    if (!dynamic_cast<Parameter*>(this->parameter))
+      throw std::runtime_error("Member is not a parameter.");
+  }
+
   Node &get_member_node(Member &member) {
     switch (member.get_type()) {
 
@@ -50,6 +56,31 @@ namespace overworld {
     return get_member_name(const_cast<Member &>(member));
   }
 
+  Profession_Reference get_member_profession_reference2(Member &member) {
+    switch (member.get_type()) {
+      case Member_Type::function:
+        return member.get_function().get_signature().get_last().get_profession();
+
+      case Member_Type::dungeon:
+        return member.get_dungeon().get_reference();
+
+      case Member_Type::minion:
+        return member.get_minion().get_profession();
+
+//      case Member_Type::profession_reference:
+//        return member.get_profession_reference();
+
+      case Member_Type::profession:
+        return Profession_Reference(const_cast<Profession &>(member.get_profession()));
+
+      case Member_Type::parameter:
+        return member.get_parameter().get_profession();
+
+      default:
+        throw std::runtime_error("Not implemented.");
+    }
+  }
+
   Profession_Reference &get_member_profession_reference(Member &member) {
     switch (member.get_type()) {
       case Member_Type::function:
@@ -61,8 +92,8 @@ namespace overworld {
       case Member_Type::minion:
         return member.get_minion().get_profession();
 
-      case Member_Type::profession_reference:
-        return member.get_profession_reference();
+//      case Member_Type::profession_reference:
+//        return member.get_profession_reference();
 
       case Member_Type::profession:
         throw std::runtime_error("Not implemented.");
@@ -86,8 +117,8 @@ namespace overworld {
       case Member_Type::minion:
         return member.get_minion().get_profession();
 
-      case Member_Type::profession_reference:
-        return member.get_profession_reference();
+//      case Member_Type::profession_reference:
+//        return member.get_profession_reference();
 
       case Member_Type::profession:
 //        return member.get_profession().get_name();

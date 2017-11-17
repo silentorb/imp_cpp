@@ -4,7 +4,7 @@
 @external_name("vector")
 Array<T> {
   @external_name("push_back")
-  add(@assignment item:T)
+  add(@container_assignment item:T)
 
   @enchantments.functional.map
   map(func:&T -> ?)

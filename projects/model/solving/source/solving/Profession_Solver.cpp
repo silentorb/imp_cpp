@@ -215,8 +215,9 @@ namespace solving {
     }
 
     auto profession = connection.get_profession(first);
-    if (profession.get_type() == overworld::Profession_Type::unknown
-        || profession.get_type() == Profession_Type::Void) {
+		auto &base_profession = profession.get_base();
+    if (base_profession.get_type() == overworld::Profession_Type::unknown
+        || base_profession.get_type() == Profession_Type::Void) {
       return 0;
     }
 

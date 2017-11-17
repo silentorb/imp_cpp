@@ -90,6 +90,9 @@ namespace imp_wrapper {
     solving::log_node_trees(ownership_graph);
     ownership_solver.solve();
     solving::log_node_trees(ownership_graph);
+#if DEBUG_SOLVER > 0
+    solving::log_nodes(graph);
+#endif
   }
 
   void Global_Bundle::render(const std::string &output_path, overworld::Dungeon &overworld_root) {

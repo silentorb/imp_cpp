@@ -33,7 +33,7 @@ namespace overworld {
           Minion *minion;
           Parameter *parameter;
           const Profession *profession;
-          Profession_Reference *profession_reference;
+//          Profession_Reference *profession_reference;
           Temporary_Member *temporary;
       };
 
@@ -46,14 +46,13 @@ namespace overworld {
       Member(const Dungeon &dungeon) :
         type(Member_Type::dungeon), dungeon(const_cast<Dungeon *>(&dungeon)) {}
 
-      Member(Parameter &parameter) :
-        type(Member_Type::parameter), parameter(&parameter) {}
+      Member(Parameter &parameter);
 
       Member(const Profession &profession) :
         type(Member_Type::profession), profession(&profession) {}
 
-      Member(Profession_Reference &profession) :
-        type(Member_Type::profession_reference), profession_reference(&profession) {}
+//      Member(Profession_Reference &profession) :
+//        type(Member_Type::profession_reference), profession_reference(&profession) {}
 
       Member(Function &function) :
         type(Member_Type::function), function(&function) {}
@@ -100,17 +99,17 @@ namespace overworld {
         return *temporary;
       }
 
-     const Temporary_Member &get_temporary_member() const{
+      const Temporary_Member &get_temporary_member() const {
         return *temporary;
       }
 
-      Profession_Reference &get_profession_reference() {
-        return *profession_reference;
-      }
-
-      const Profession_Reference &get_profession_reference() const {
-        return *profession_reference;
-      }
+//      Profession_Reference &get_profession_reference() {
+//        return *profession_reference;
+//      }
+//
+//      const Profession_Reference &get_profession_reference() const {
+//        return *profession_reference;
+//      }
 
       const Profession &get_profession() const {
         return *profession;
@@ -128,6 +127,8 @@ namespace overworld {
   Node &get_member_node(Member &member);
 
   Profession_Reference &get_member_profession_reference(Member &member);
+  Profession_Reference get_member_profession_reference2(Member &member);
+
   const Profession_Reference &get_member_profession(const Member &member);
 
   const std::string get_member_name(const Member &member);

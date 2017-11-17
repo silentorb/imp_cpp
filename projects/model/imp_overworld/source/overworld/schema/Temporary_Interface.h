@@ -58,6 +58,8 @@ namespace overworld {
       std::vector<std::unique_ptr<Temporary_Member>> members;
 
   public:
+		virtual ~Temporary_Interface() {	}
+
       void add_member(std::unique_ptr<Temporary_Member> member) {
         members.push_back(std::move(member));
       }

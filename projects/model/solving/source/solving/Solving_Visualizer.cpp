@@ -229,7 +229,7 @@ namespace solving {
   }
 
   void log_node_trees(lifetime::Graph &graph) {
-    std::cout << std::endl << "Logging nodes:" << std::endl;
+    std::cout << std::endl << "Logging ownership:" << std::endl;
 
     std::vector<lifetime::Node *> nodes;
     for (auto &node : graph.get_nodes()) {

@@ -40,7 +40,22 @@ namespace lifetime {
     return create_node(element, reflect_ownership(element.get_ownership()));
   }
 
+//  void Ownership_Mirror::reflect_profession(overworld::Profession_Reference &profession) {
+//    switch (profession.get_type()) {
+//      case Profession_Type::dungeon: {
+//        auto &dungeon_interface = profession.get()->get_dungeon_interface();
+//        if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
+//          auto variant = dynamic_cast<Dungeon_Variant *>(&dungeon_interface);
+//          for (auto &argument : variant->get_arguments()) {
+//
+//          }
+//        }
+//      }
+//    }
+//  }
+
   Node &Ownership_Mirror::reflect_instantiation(overworld::Instantiation &instantiation) {
+//    reflect_profession(instantiation.get_profession());
     return create_node(Overworld_Element(*instantiation.get_node()), Lifetime_Ownership::implicit_move);
   }
 
@@ -78,14 +93,18 @@ namespace lifetime {
   }
 
   void Ownership_Mirror::reflect_void_invoke(overworld::Invoke &invoke) {
-    auto &elements = invoke.get_function().get_signature().get_elements();
+    auto &function = invoke.get_function();
+    auto &elements = function.get_signature().get_elements();
     auto arg_it = invoke.get_arguments().begin();
     for (auto it = elements.begin(); it < elements.end() - 1; ++it) {
       auto &element = *it;
-      if (element->has_enchantment(overworld::Enchantment_Library::get_assignment())) {
+      if (element->has_enchantment(overworld::Enchantment_Library::get_container_assignment())) {
         auto &argument_expression = *arg_it;
         auto &argument = reflect_expression(*argument_expression);
-        auto &parameter = create_node(Overworld_Element(element->get_node()));
+        auto &container = find_member_container(invoke.get_expression());
+        auto variant = container.get_profession().get()->get_dungeon_interface().as_variant();
+        auto &parameter = create_node(variant->get_arguments()[0]->get_node());
+//        auto &parameter = create_node(Overworld_Element(element->get_node()));
         graph.connect(argument, parameter);
       }
       ++arg_it;

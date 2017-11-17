@@ -42,13 +42,6 @@ namespace imp_mirror {
     throw std::runtime_error("Expression is not a function.");
   }
 
-  overworld::Minion &find_member_container(overworld::Expression &expression) {
-    auto &chain = dynamic_cast<overworld::Chain &>(expression);
-    auto &member_expression = dynamic_cast<overworld::Member_Expression &>( chain.get_first());
-    auto &minion = member_expression.get_member().get_minion();
-    return minion;
-  }
-
   void Connector::connect_parameters_and_arguments(overworld::Invoke &invoke,
                                                    const std::vector<underworld::Expression_Owner> &source_arguments,
                                                    Scope &scope) {

@@ -42,6 +42,8 @@ namespace overworld {
 
   class Profession_Reference;
 
+  class Dungeon_Variant;
+
   class Profession {
   public:
       virtual ~Profession() = default;
@@ -82,6 +84,8 @@ namespace overworld {
 
       Basic_Dungeon &get_dungeon_interface();
       const Basic_Dungeon &get_dungeon_interface() const;
+
+      Dungeon_Variant *as_variant();
   };
 
   using Profession_Owner = std::unique_ptr<Profession>;
@@ -91,17 +95,27 @@ namespace overworld {
 
   public:
       explicit Profession_Reference(Profession_Reference &reference, Ownership ownership) :
-        Optional_Shared_Pointer(reference.shared_pointer, reference.pointer), ownership(ownership) {}
+        Optional_Shared_Pointer(reference.shared_pointer, reference.pointer), ownership(ownership) {
+        get()->get_base();
+      }
 
       explicit Profession_Reference(Profession &pointer, Ownership ownership = Ownership::unknown) :
-        Optional_Shared_Pointer(pointer), ownership(ownership) {}
+        Optional_Shared_Pointer(pointer), ownership(ownership) {
+        get()->get_base();
+      }
 
       explicit Profession_Reference(std::shared_ptr<Profession> shared_pointer,
                                     Ownership ownership = Ownership::unknown) :
-        Optional_Shared_Pointer(shared_pointer), ownership(ownership) {}
+        Optional_Shared_Pointer(shared_pointer), ownership(ownership) {
+        get()->get_base();
+      }
 
       explicit Profession_Reference(Profession *shared_pointer, Ownership ownership = Ownership::unknown) :
-        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)), ownership(ownership) {}
+        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)), ownership(ownership) {
+        get()->get_base();
+      }
+
+      virtual ~Profession_Reference() {}
 
       Profession_Type get_type() const {
         return get()->get_type();

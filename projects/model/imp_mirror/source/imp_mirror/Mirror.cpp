@@ -539,7 +539,7 @@ namespace imp_mirror {
       return reflect_profession_child(member, *input_dungeon->get_child(), scope);
     }
     else {
-      return overworld::Profession_Reference(const_cast<overworld::Profession&>(member.get_profession()));
+      return get_member_profession_reference2(member);
     }
   }
 
@@ -577,7 +577,7 @@ namespace imp_mirror {
         Scope dungeon_scope(dungeon.get_scope(), scope);
 //         reflect_dungeon_reference(profession, dungeon_scope);
         auto input_variant = dynamic_cast<const underworld::Dungeon_Variant *>(&profession);
-        return reflect_dungeon_variant(*input_variant, scope);
+        return reflect_dungeon_variant(*input_variant, dungeon_scope);
 
       }
       throw std::runtime_error("Not implemented");
@@ -659,16 +659,16 @@ namespace imp_mirror {
     }
   }
 
-  overworld::Reference_Type map_reference_decorator(underworld::Decorator_Type type) {
+  overworld::Ownership map_reference_decorator(underworld::Decorator_Type type) {
     switch (type) {
       case underworld::Decorator_Type::reference:
-        return overworld::Reference_Type::reference;
+        return overworld::Ownership::reference;
 
       case underworld::Decorator_Type::owner:
-        return overworld::Reference_Type::owner;
+        return overworld::Ownership::owner;
 
       case underworld::Decorator_Type::pointer:
-        return overworld::Reference_Type::pointer;
+        return overworld::Ownership::pointer;
 
       default:
         throw std::runtime_error("Not supported.");
@@ -697,12 +697,14 @@ namespace imp_mirror {
         auto &input_child_profession = decorator.get_profession();
         auto output_child_profession = reflect_profession(input_child_profession, scope);
         auto type = map_reference_decorator(decorator.get_decorator_type());
-        return overworld::Profession_Reference(new overworld::Reference(type, output_child_profession));
+        output_child_profession.set_ownership(type);
+				return output_child_profession;
+//        return overworld::Profession_Reference(new overworld::Reference(type, output_child_profession));
       }
 
       case underworld::Profession_Type::function: {
-        auto &signature = cast<underworld::Function_Profession>(profession);
-        return reflect_function_signature(signature, scope);
+        auto signature = dynamic_cast<const underworld::Function_Profession*>(&profession);
+        return reflect_function_signature(*signature, scope);
       }
     }
 

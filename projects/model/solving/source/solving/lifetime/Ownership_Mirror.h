@@ -34,6 +34,7 @@ namespace lifetime {
       Graph &graph;
       Node &create_node(const Overworld_Element &element, Lifetime_Ownership ownership);
       Node &create_node(const Overworld_Element &element);
+      void reflect_profession(overworld::Profession_Reference &profession);
       Node &reflect_instantiation(overworld::Instantiation &instantiation);
       void reflect_void_invoke(overworld::Invoke &invoke);
       Node &reflect_member(overworld::Member_Expression &member_expression);

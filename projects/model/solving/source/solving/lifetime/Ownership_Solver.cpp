@@ -1,4 +1,8 @@
 #include <overworld/schema/professions/Profession.h>
+#include <overworld/schema/Basic_Dungeon.h>
+#include <overworld/schema/Dungeon.h>
+#include <overworld/schema/Dungeon_Variant.h>
+#include <overworld/schema/professions/Enchantment_Library.h>
 #include "Ownership_Solver.h"
 #include "../Generic_Solver.h"
 #include "../solving_types.h"
@@ -82,6 +86,17 @@ namespace lifetime {
           return 0;
 
         second.set_ownership(new_ownership);
+        auto &first_profession = first.get_element().node->get_profession();
+        auto first_variant = first_profession->as_variant();
+        auto second_variant = second.get_element().node->get_profession()->as_variant();
+        if (first_variant && second_variant) {
+          auto a2 = graph.get_node(first_variant->get_arguments()[0]->get_node());
+          auto b2 = graph.get_node(second_variant->get_arguments()[0]->get_node());
+//          b.set_ownership(a.get_ownership());
+          auto &a = first_variant->get_arguments()[0]->get_node();
+          auto &b = second_variant->get_arguments()[0]->get_node();
+          b.get_profession().set_ownership(a.get_profession().get_ownership());
+        }
         return 1;
       }
 
@@ -151,11 +166,27 @@ namespace lifetime {
     throw std::runtime_error("Not supported.");
   }
 
+  bool is_value(Profession &profession) {
+    if (profession.get_type() == Profession_Type::dungeon) {
+      auto &dungeon = profession.get_dungeon_interface().get_original();
+      return dungeon.has_enchantment(Enchantment_Library::get_value());
+    }
+
+    return false;
+  }
+
   void Ownership_Solver::post_apply() {
     for (auto &node: graph.get_nodes()) {
       auto overworld_ownership = translate_ownership(node->get_ownership());
       auto overworld_node = node->get_element().node;
-      if (overworld_node->get_profession().get_ownership() != overworld::Ownership::pointer) {
+      auto &profession = overworld_node->get_profession();
+      if (profession.get_ownership() == overworld::Ownership::pointer)
+        continue;
+
+      if (overworld_ownership == overworld::Ownership::owner && is_value(*profession)) {
+        overworld_node->get_profession().set_ownership(overworld::Ownership::value);
+      }
+      else {
         overworld_node->get_profession().set_ownership(overworld_ownership);
       }
     }

@@ -1,4 +1,5 @@
 #include <overworld/schema/Dungeon_Reference.h>
+#include <overworld/schema/Dungeon_Variant.h>
 #include "Profession.h"
 
 namespace overworld {
@@ -27,5 +28,16 @@ namespace overworld {
   const Basic_Dungeon &Profession::get_dungeon_interface() const {
     auto dungeon_reference = static_cast<const Dungeon_Reference *>(this);
     return dungeon_reference->get_dungeon_interface();
+  }
+
+  Dungeon_Variant *Profession::as_variant() {
+    if (get_type() == Profession_Type::dungeon) {
+      auto &interface = get_dungeon_interface();
+      if (interface.get_dungeon_type() == Dungeon_Type::variant) {
+        return dynamic_cast<Dungeon_Variant *>(&interface);
+      }
+    }
+
+    return nullptr;
   }
 }

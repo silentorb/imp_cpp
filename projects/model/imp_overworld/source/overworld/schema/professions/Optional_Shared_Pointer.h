@@ -30,6 +30,8 @@ namespace overworld {
           throw std::runtime_error("Pointer cannot be null.");
       }
 
+			virtual ~Optional_Shared_Pointer() {}
+
       T &operator*() const {
         return *pointer;
       }
