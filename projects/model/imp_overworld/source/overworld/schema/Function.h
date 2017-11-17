@@ -2,54 +2,42 @@
 
 #include <memory>
 #include <overworld/expressions/Block_Expression.h>
-#include <overworld/schema/professions/Profession_Library.h>
 #include "Parameter.h"
-#include "Function_Interface.h"
 #include "Function_Signature.h"
 #include "Temporary_Interface.h"
+#include "Parent.h"
+#include "Scope.h"
 
 namespace overworld {
 
   class Profession_Library;
 
-  class Function : public Function_Interface {
+  class Function {
   protected:
       Profession_Reference signature_reference;
       Function_Signature &signature;
-//      Profession_Reference signature_reference;
       Common_Element element;
-//      Element_Reference_Node node;
+      Function *original;
       virtual bool returns_a_value() const;
       std::vector<std::unique_ptr<Generic_Parameter>> owned_generic_parameters;
+      Generic_Argument_Array arguments;
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
 
-//      const Profession &_get_profession() const {
-//        return signature;
-////        auto profession = signature.get_return_type();
-////        if (!profession)
-////          return Profession_Library::get_unknown();
-////
-////        return *profession;
-//      }
-
-//      Profession_Reference &_get_profession() {
-//        return signature_reference;
-//      }
-
   public:
-//      Function(const std::string &name, Profession &return_type, Scope &parent_scope,
-//               Dungeon_Interface &dungeon,
-//               const source_mapping::Source_Range &source_point) :
-//        element(Element_Type::other, name, &dungeon, nullptr, source_point),
-//        signature_reference(signature) {}
-
-      Function(const std::string &name, Scope &parent_scope, Parent parent,
-               const source_mapping::Source_Range &source_point) :
+      Function(const std::string &name, Parent parent, const source_mapping::Source_Range &source_point) :
         element(Element_Type::other, name, parent, source_point),
         signature_reference(new Function_Signature()),
         signature(*static_cast<Function_Signature *>(signature_reference.get())) {}
+
+      Function(Function &original, std::vector<Profession_Reference> &professions) :
+        Function(original.get_name(), original.get_element().get_parent(), source_mapping::Source_Range()) {
+        this->original = &original;
+        for (auto i = 0; i < generic_parameters.size(); ++i) {
+          arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
+        }
+      }
 
       virtual ~Function() {}
 
@@ -62,18 +50,6 @@ namespace overworld {
       virtual bool is_inline() const {
         return false;
       }
-
-//      Element_Reference_Node &get_node() {
-//        return node;
-//      }
-//
-//      Profession_Reference &get_profession() {
-//        return _get_profession();
-//      }
-//
-//      const Profession &get_profession() const {
-//        return _get_profession();
-//      }
 
       Profession_Reference &get_profession_reference() {
         return signature_reference;
@@ -124,16 +100,13 @@ namespace overworld {
         return generic_parameters;
       }
 
-      const std::vector<Generic_Parameter *> &get_generic_parameters() const override {
+      const std::vector<Generic_Parameter *> &get_generic_parameters() const {
         return generic_parameters;
       }
 
       virtual Scope &get_parent_scope() = 0;
       virtual const Scope &get_parent_scope() const = 0;
 
-      Function &get_original() override {
-        return *this;
-      }
 
       Enchantment_Container &get_enchantments() {
         return enchantments;
@@ -145,6 +118,14 @@ namespace overworld {
 
       bool has_enchantment(const Dungeon &enchantment) const {
         return enchantments.has_enchantment(enchantment);
+      }
+
+      Generic_Argument_Array &get_arguments() {
+        return arguments;
+      }
+
+      const Generic_Argument_Array &get_arguments() const {
+        return arguments;
       }
 
       const File *get_file() const {
@@ -170,13 +151,14 @@ namespace overworld {
       Scope &parent_scope;
 
   public:
-//      Virtual_Function(const std::string &name, Scope &parent_scope,
-//                       Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point) :
-//        Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
-
-      Virtual_Function(const std::string &name, Scope &parent_scope, Basic_Dungeon &dungeon,
+      Virtual_Function(const std::string &name, Scope &parent_scope, Dungeon &dungeon,
                        const source_mapping::Source_Range &source_point) :
-        Function(name, parent_scope, dungeon, source_point), parent_scope(parent_scope) {}
+        Function(name, dungeon, source_point), parent_scope(parent_scope) {}
+
+      Virtual_Function(Function &original, Scope &parent_scope, std::vector<Profession_Reference> &professions) :
+        Function(original, professions), parent_scope(parent_scope) {
+
+      }
 
       virtual ~Virtual_Function() {}
 
@@ -188,55 +170,18 @@ namespace overworld {
         return parent_scope;
       }
   };
-/*
-  class Parameter_Temporary_Interface {
-      Parameter &parameter;
-      std::unique_ptr<Temporary_Interface> interface;
 
-  public:
-      Parameter_Temporary_Interface(Parameter &parameter, std::unique_ptr<Temporary_Interface> interface) :
-        parameter(parameter), interface(std::move(interface)) {}
-
-      Parameter &get_parameter() const {
-        return parameter;
-      }
-
-      const std::unique_ptr<Temporary_Interface> &get_interface() const {
-        return interface;
-      }
-  };
-
-  class Temporary_Interface_Manager {
-      std::vector<Parameter_Temporary_Interface> entries;
-
-  public:
-      std::vector<Parameter_Temporary_Interface> &get_entries() {
-        return entries;
-      }
-
-      void add(Parameter &parameter, Temporary_Interface *interface) {
-        entries.push_back(Parameter_Temporary_Interface(
-          parameter, std::move(std::unique_ptr<Temporary_Interface>(interface))
-        ));
-      }
-  };
-*/
   class Function_With_Block : public Function {
       Scope scope;
       Block block;
-//      std::unique_ptr<Temporary_Interface_Manager> temporary_interface_manager;
 
   protected:
       bool returns_a_value() const override;
 
   public:
-//      Function_With_Block(const std::string &name, Scope &parent_scope,
-//                          Dungeon_Interface &dungeon, const source_mapping::Source_Range &source_point)
-//        : Function(name, parent_scope, dungeon, source_point), scope(parent_scope, *this), block(scope) {}
-
       Function_With_Block(const std::string &name, Scope &parent_scope, Parent parent,
                           const source_mapping::Source_Range &source_point) :
-        Function(name, parent_scope, parent, source_point), scope(&parent_scope, Parent(*this)), block(scope) {}
+        Function(name, parent, source_point), scope(&parent_scope, Parent(*this)), block(scope) {}
 
       virtual ~Function_With_Block() {}
 

@@ -1,4 +1,4 @@
-#include <overworld/schema/Dungeon_Variant.h>
+#include <overworld/schema/Dungeon.h>
 #include <set>
 #include <overworld/schema/Function.h>
 #include "cloning.h"
@@ -6,22 +6,23 @@
 namespace overworld {
 
   struct Dungeon_Functions {
-      static Basic_Dungeon *get_context(Node &node) {
+      static Dungeon *get_context(Node &node) {
         return &node.get_element().get_parent().get_dungeon();
       }
 
-      static Node_Copy *create_node(Node &other, Dungeon_Variant &variant) {
+      static Node_Copy *create_node(Node &other, Dungeon &variant) {
         return new Node_Copy(other, other.get_profession(), &variant, nullptr);
       }
   };
 
   struct Function_Functions {
-      static Function_Interface *get_context(Node &node) {
+      static Function *get_context(Node &node) {
         return &node.get_element().get_parent().get_function();
       }
 
-      static Node_Copy *create_node(Node &other, Function_Variant &variant) {
-        return new Node_Copy(other, other.get_profession(), &variant.get_dungeon(), &variant);
+      static Node_Copy *create_node(Node &other, Function &variant) {
+        throw std::runtime_error("Not implemented.");
+//        return new Node_Copy(other, other.get_profession(), &variant..get_dungeon(), &variant);
       }
   };
 
@@ -45,7 +46,7 @@ namespace overworld {
     }
   }
 
-  Node &clone_function_graph(Function_Variant &variant, Node &starting_node, Profession_Reference &new_profession,
+  Node &clone_function_graph(Function &variant, Node &starting_node, Profession_Reference &new_profession,
                              Graph &graph) {
     throw std::runtime_error("No longer handled this way.");
 //    auto &function = variant.get_original();
@@ -56,8 +57,7 @@ namespace overworld {
 //    return *node;
   }
 
-  Node &clone_dungeon_graph(Dungeon_Variant &variant, Graph &graph) {
-    auto &dungeon = variant.get_original();
+  Node &clone_dungeon_graph(Dungeon &variant, Graph &graph) {
     throw std::runtime_error("Not implemented.");
 
 //    auto node = new Node_Copy(dungeon.get_node(), variant, &variant, nullptr);

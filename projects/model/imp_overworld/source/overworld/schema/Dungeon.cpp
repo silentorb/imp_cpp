@@ -1,3 +1,4 @@
+#include <overworld/schema/professions/Enchantment_Library.h>
 #include "Dungeon.h"
 #include "Function.h"
 #include "Dungeon_Reference.h"
@@ -6,7 +7,7 @@ using namespace std;
 
 namespace overworld {
 
-  Dungeon::Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_point) :
+  Dungeon::Dungeon(const std::string &name, Scope &parent, const source_mapping::Source_Range source_range) :
 //        element(Element_Type::other, name, *this, source_point),
     scope(&parent, Parent(*this)),
     name(name),

@@ -13,7 +13,6 @@ namespace overworld {
       Generic_Parameter_Array &generic_parameters;
       Generic_Argument_Array arguments;
       std::string name;
-      std::vector<Node_Owner> nodes;
 
       const std::string format_name(const std::string &original_name);
 
@@ -47,12 +46,6 @@ namespace overworld {
 
       const std::string get_name() const {
         return name;
-      }
-
-      Node &add_node(Node_Owner node) {
-        auto &result = *node;
-        nodes.push_back(std::move(node));
-        return result;
       }
   };
 

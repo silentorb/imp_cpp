@@ -41,28 +41,28 @@ namespace imp_mirror {
 
       void connect(overworld::Node &first, overworld::Node &second);
 
-      overworld::Basic_Dungeon *get_dungeon(overworld::Profession &profession) {
+      overworld::Dungeon *get_dungeon(overworld::Profession &profession) {
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(&profession);
-        return const_cast<overworld::Basic_Dungeon *> (&dungeon_reference->get_dungeon());
+        return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon());
       }
 
-      overworld::Basic_Dungeon *get_dungeon_interface(overworld::Profession &profession) {
+      overworld::Dungeon *get_dungeon_interface(overworld::Profession &profession) {
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(&profession);
-        auto dungeon_interface = dynamic_cast<const overworld::Basic_Dungeon *>(&dungeon_reference->get_dungeon());
-        return const_cast<overworld::Basic_Dungeon *> (dungeon_interface);
+        auto dungeon_interface = dynamic_cast<const overworld::Dungeon *>(&dungeon_reference->get_dungeon());
+        return const_cast<overworld::Dungeon *> (dungeon_interface);
       }
 
       overworld::Dungeon *get_dungeon(overworld::Expression &expression) {
         auto &profession = expression.get_profession();
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(profession.get());
-        return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon().get_original());
+        return const_cast<overworld::Dungeon *> (&dungeon_reference->get_dungeon());
       }
 
-      overworld::Basic_Dungeon *get_dungeon_interface(overworld::Expression &expression) {
+      overworld::Dungeon *get_dungeon_interface(overworld::Expression &expression) {
         auto &profession = expression.get_profession();
         auto dungeon_reference = dynamic_cast<const overworld::Dungeon_Reference *>(profession.get());
-        auto dungeon_interface = dynamic_cast<const overworld::Basic_Dungeon *>(&dungeon_reference->get_dungeon());
-        return const_cast<overworld::Basic_Dungeon *> (dungeon_interface);
+        auto dungeon_interface = dynamic_cast<const overworld::Dungeon *>(&dungeon_reference->get_dungeon());
+        return const_cast<overworld::Dungeon *> (dungeon_interface);
       }
 
       overworld::Dungeon &get_dungeon(overworld::Member &member) {
@@ -137,7 +137,7 @@ namespace imp_mirror {
       overworld::Minion &reflect_minion(const underworld::Minion &input_minion, Scope &output_scope);
       std::unique_ptr<overworld::Parameter>
       create_parameter(const underworld::Minion &input_minion, Scope &scope,
-                       overworld::Function_Interface &function);
+                       overworld::Function &function);
       std::unique_ptr<overworld::Minion> create_minion(const underworld::Minion &input_minion,
                                                        Scope &scope);
 

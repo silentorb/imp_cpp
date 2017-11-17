@@ -32,7 +32,7 @@ namespace overworld {
 //
 //  public:
 //      Argument_Node(Profession_Reference &profession, Minion &member_container,
-//                    Function_Interface *function, Profession_Library &profession_library,
+//                    Function *function, Profession_Library &profession_library,
 //                    const source_mapping::Source_Range &source_point) :
 //        Node(profession, element),
 //        element(member_container, profession, profession_library, *this, source_point) {}

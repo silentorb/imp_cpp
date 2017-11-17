@@ -1,5 +1,5 @@
 #include <overworld/schema/professions/Profession.h>
-#include <overworld/schema/Basic_Dungeon.h>
+#include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Dungeon_Variant.h>
 #include <overworld/schema/professions/Enchantment_Library.h>
@@ -168,7 +168,7 @@ namespace lifetime {
 
   bool is_value(Profession &profession) {
     if (profession.get_type() == Profession_Type::dungeon) {
-      auto &dungeon = profession.get_dungeon_interface().get_original();
+      auto &dungeon = profession.get_dungeon_interface();
       return dungeon.has_enchantment(Enchantment_Library::get_value());
     }
 

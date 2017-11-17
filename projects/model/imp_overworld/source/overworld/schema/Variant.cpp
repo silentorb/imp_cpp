@@ -2,21 +2,21 @@
 
 namespace overworld {
 
-  const std::string Variant::format_name(const std::string &original_name) {
-    auto name = original_name + "<";
-    auto first = true;
-    for (auto &argument : arguments) {
-      if (first)
-        first = false;
-      else
-        name += ", ";
-
-      name += argument->get_node().get_profession().get_name();
-    }
-    name += ">";
-
-    return name;
-  }
+//  const std::string Variant::format_name(const std::string &original_name) {
+//    auto name = original_name + "<";
+//    auto first = true;
+//    for (auto &argument : arguments) {
+//      if (first)
+//        first = false;
+//      else
+//        name += ", ";
+//
+//      name += argument->get_node().get_profession().get_name();
+//    }
+//    name += ">";
+//
+//    return name;
+//  }
 
   bool professions_match(const std::vector<Profession_Reference> &first, const std::vector<Profession_Reference> &second) {
     if (first.size() != second.size())

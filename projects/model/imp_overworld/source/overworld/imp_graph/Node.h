@@ -8,9 +8,9 @@
 
 namespace overworld {
 
-  class Function_Interface;
+  class Function;
 
-  class Basic_Dungeon;
+  class Dungeon;
 
   enum class Node_Status {
       unresolved,
@@ -116,7 +116,7 @@ namespace overworld {
 //
 //  public:
 //      Element_Reference_Node(Element &element, Dungeon_Interface *dungeon,
-//                             Function_Interface *function) :
+//                             Function *function) :
 //        Node(element.get_profession(), dungeon, function), element(element) {}
 //
 //      Node_Status get_status() const override;
@@ -137,7 +137,7 @@ namespace overworld {
 //
 //  public:
 //      Element_Owner_Node(Element_Owner element, Dungeon_Interface *dungeon,
-//                         Function_Interface *function) :
+//                         Function *function) :
 //        Node(element->get_profession(), dungeon, function),
 //        element(std::move((element))) {}
 //
@@ -150,8 +150,8 @@ namespace overworld {
   protected:
 
   public:
-      Node_Copy(Node &original, Profession_Reference &profession, Basic_Dungeon *dungeon,
-                Function_Interface *function) :
+      Node_Copy(Node &original, Profession_Reference &profession, Dungeon *dungeon,
+                Function *function) :
         Node(profession, original.get_element()), original(original), profession(profession) {}
 
       Node_Status _get_status() const override {

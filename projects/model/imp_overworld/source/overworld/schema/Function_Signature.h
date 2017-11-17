@@ -13,7 +13,7 @@ namespace overworld {
       std::vector<Parameter_Owner> elements;
 
   public:
-//      Function_Signature(Dungeon_Interface *dungeon, Function_Interface *function,
+//      Function_Signature(Dungeon_Interface *dungeon, Function *function,
 //                         const source_mapping::Source_Range &source_range) :
 //        element(Element_Type::other, "Function Signature", *this, source_range),
 //        node(element, dungeon, function) {}

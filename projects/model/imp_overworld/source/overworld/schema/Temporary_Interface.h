@@ -13,7 +13,7 @@ namespace overworld {
 
   public:
       Temporary_Member(const std::string &name, Profession_Reference &profession,
-                       const source_mapping::Source_Range source_point, Function_Interface &function) :
+                       const source_mapping::Source_Range source_point, Function &function) :
         element(Element_Type::temporary, name, Parent(), source_point),
         node(profession, element) {}
 

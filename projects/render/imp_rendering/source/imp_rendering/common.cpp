@@ -57,6 +57,8 @@ namespace imp_rendering {
   const std::string render_cast(const A &target, const B &source, const std::string &text) {
     auto target_type = get_reference_type(target);
     auto source_type = get_reference_type(source);
+    if (target.get_ownership() == Ownership::owner)
+      return "std::move(" + text + ")";
 
     if (target_type == Reference_Type::reference && source_type == Reference_Type::pointer)
       return "*" + text;
@@ -195,9 +197,6 @@ namespace imp_rendering {
   const std::string render_argument(const overworld::Expression &argument, const overworld::Parameter &parameter,
                                     const overworld::Scope &scope) {
     auto result = render_expression(argument, scope);
-    if (parameter.get_profession().get_ownership() == Ownership::owner)
-      return "std::move(" + result + ")";
-
     return render_cast(parameter.get_profession(), argument, result);
   }
 
@@ -247,16 +246,16 @@ namespace imp_rendering {
       }), ",\n");;
   }
 
-  const std::string render_primary_dungeon_token(const Basic_Dungeon &dungeon_interface,
+  const std::string render_primary_dungeon_token(const Dungeon &dungeon_interface,
                                                  const overworld::Scope &scope) {
-    if (dungeon_interface.get_dungeon_type() == Dungeon_Type::variant) {
-      auto &variant = dynamic_cast<const Dungeon_Variant &>(dungeon_interface);
+    if (dungeon_interface.is_generic()) {
+      auto &variant = dynamic_cast<const Dungeon &>(dungeon_interface);
       std::string parameter_string = join(variant.get_arguments(), Joiner<const Generic_Argument_Owner &>(
         [& scope](const Generic_Argument_Owner &argument) {
           return render_profession(argument->get_node().get_profession(), scope);
         }), ", ");
 
-      return get_cpp_name(variant.get_original()) + "<" + parameter_string + ">";
+      return get_cpp_name(variant) + "<" + parameter_string + ">";
     }
     else {
       auto &dungeon = dynamic_cast<const Dungeon &>(dungeon_interface);
@@ -264,10 +263,10 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_dungeon_interface(const Basic_Dungeon &dungeon_interface,
+  const std::string render_dungeon_interface(const Dungeon &dungeon_interface,
                                              const overworld::Scope &scope) {
     auto result = render_primary_dungeon_token(dungeon_interface, scope);
-    auto &target_parent = dungeon_interface.get_original().get_scope().get_parent_scope()->get_owner();
+    auto &target_parent = dungeon_interface.get_scope().get_parent_scope()->get_owner();
     auto local_parent_scope = scope.get_parent_scope();
     if (local_parent_scope) {
       auto &local_parent = local_parent_scope->get_owner();
@@ -547,10 +546,10 @@ namespace imp_rendering {
         auto parent2 = parent.get_parent();
         if (parent2 && (!current || !current->is_descendant_of(*parent2))) {
           return render_namespace(*parent2, current, delimiter) + delimiter +
-                 get_cpp_name(parent2->get_dungeon().get_original());
+                 get_cpp_name(parent2->get_dungeon());
         }
         else {
-          return get_cpp_name(parent.get_dungeon().get_original());
+          return get_cpp_name(parent.get_dungeon());
         }
       }
     }

@@ -7,7 +7,7 @@
 
 namespace overworld {
 
-  class Function_Interface;
+  class Function;
 
 //  using Generic_Parameter_Node = Node;
 //  class Generic_Parameter_Node : public Node {
@@ -15,7 +15,7 @@ namespace overworld {
 //
 //  public:
 //      Generic_Parameter_Node(Element &element, Dungeon_Interface *dungeon,
-//                             Function_Interface *function) :
+//                             Function *function) :
 //        Node(element.get_profession(), dungeon, function), element(element) {}
 //
 //      Node_Status get_status() const override {

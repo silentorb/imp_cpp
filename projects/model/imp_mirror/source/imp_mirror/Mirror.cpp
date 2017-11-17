@@ -70,7 +70,7 @@ namespace imp_mirror {
                        input_profession.get_source_point());
     }
 
-    return &output_profession->get_dungeon_interface().get_original();
+    return &output_profession->get_dungeon_interface();
   }
 
   void Mirror::reflect_enchantments(const underworld::Enchantment_Array &input_enchantments,
@@ -204,7 +204,7 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_return_with_value(const underworld::Return_With_Value &input_return,
                                                                 Scope &scope) {
     auto expression = reflect_expression(input_return.get_value(), scope);
-    auto &first = scope.get_overworld_scope().get_owner().get_function().get_original()
+    auto &first = scope.get_overworld_scope().get_owner().get_function()
       .get_signature().get_last().get_node();
     connect(first, *expression->get_node());
     return overworld::Expression_Owner(
@@ -288,7 +288,7 @@ namespace imp_mirror {
     ));
   }
 
-  using Prepared_Profession_Tuple = std::tuple<overworld::Profession_Reference, overworld::Dungeon_Variant *>;
+  using Prepared_Profession_Tuple = std::tuple<overworld::Profession_Reference, overworld::Dungeon *>;
 
   Prepared_Profession_Tuple prepare_profession(overworld::Profession_Reference &initial_profession) {
     if (initial_profession.get_type() == overworld::Profession_Type::dungeon) {
@@ -298,8 +298,8 @@ namespace imp_mirror {
         if (parameter->get_type() == overworld::Profession_Type::generic_parameter) {
           std::vector<overworld::Profession_Reference> professions;
           professions.push_back(overworld::Profession_Library::get_unknown());
-          auto variant = new overworld::Dungeon_Variant(dungeon, professions);
-          auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Interface_Owner(variant));
+          auto variant = new overworld::Dungeon(dungeon, professions);
+          auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(variant));
           return Prepared_Profession_Tuple(
             overworld::Profession_Reference(dungeon_reference2),
             variant
@@ -360,8 +360,8 @@ namespace imp_mirror {
     if (second.get_type() == underworld::Expression_Type::member) {
       auto &member_expression = cast<underworld::Member_Expression>(second);
       if (profession.get_type() == overworld::Profession_Type::dungeon) {
-        auto &dungeon = get_dungeon_interface(first.get_last())->get_original();
-        auto member = dungeon.get_scope().get_member_or_null(member_expression.get_name());
+        auto dungeon = get_dungeon_interface(first.get_last());
+        auto member = dungeon->get_scope().get_member_or_null(member_expression.get_name());
         if (!member) {
           throw Code_Error("Could not find member `" + member_expression.get_name() + "`",
                            member_expression.get_source_point());
@@ -448,7 +448,7 @@ namespace imp_mirror {
 
       case underworld::Expression_Type::self:
         return overworld::Expression_Owner(new overworld::Self(
-          scope.get_overworld_scope().get_owner().get_dungeon().get_original(),
+          scope.get_overworld_scope().get_owner().get_dungeon(),
           input_expression.get_source_point()));
 
       case underworld::Expression_Type::chain:
@@ -552,8 +552,8 @@ namespace imp_mirror {
     for (auto &input_argument : input_arguments) {
       professions.push_back(reflect_profession(*input_argument, scope));
     }
-    auto output_variant = new overworld::Dungeon_Variant(original, professions);
-    auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Interface_Owner(output_variant));
+    auto output_variant = new overworld::Dungeon(original, professions);
+    auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(output_variant));
     return overworld::Profession_Reference(dungeon_reference2);
   }
 
@@ -800,7 +800,7 @@ namespace imp_mirror {
 
   std::unique_ptr<overworld::Parameter> Mirror::create_parameter(const underworld::Minion &input_minion,
                                                                  Scope &scope,
-                                                                 overworld::Function_Interface &function) {
+                                                                 overworld::Function &function) {
     auto profession = reflect_profession(input_minion.get_profession(), scope);
     auto parameter = new overworld::Parameter(input_minion.get_name(), profession, overworld::Parent(function),
                                               input_minion.get_source_point());

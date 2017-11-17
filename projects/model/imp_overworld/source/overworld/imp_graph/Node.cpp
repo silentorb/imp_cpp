@@ -3,7 +3,7 @@
 #include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Function_Signature.h>
 #include <overworld/schema/Dungeon_Reference.h>
-#include <overworld/schema/Dungeon_Variant.h>
+#include <overworld/schema/Dungeon.h>
 
 namespace overworld {
 
@@ -61,7 +61,7 @@ namespace overworld {
       case Profession_Type::dungeon: {
         auto dungeon_reference = static_cast<const Dungeon_Reference *>(profession.get());
         auto &dungeon = dungeon_reference->get_dungeon();
-        auto variant = dynamic_cast<const Dungeon_Variant *>(&dungeon);
+        auto variant = dynamic_cast<const Dungeon *>(&dungeon);
         if (variant) {
           return get_arguments_status(variant->get_arguments());
         }

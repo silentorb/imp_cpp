@@ -69,9 +69,9 @@ namespace imp_mirror {
         auto &parent = first.get_parent();
         auto &dungeon_parent = parent.get_type() == Parent_Type::dungeon
                                ? parent.get_dungeon()
-                               : parent.get_function().get_original().get_element().get_parent().get_dungeon();
+                               : parent.get_function().get_element().get_parent().get_dungeon();
 
-        if (!dungeon_parent.get_original().is_generic()) {
+        if (!dungeon_parent.is_generic()) {
           graph->connect(first, second);
         }
 

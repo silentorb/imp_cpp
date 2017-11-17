@@ -4,9 +4,9 @@
 
 namespace overworld {
 
-  class Basic_Dungeon;
+  class Dungeon;
 
-  class Function_Interface;
+  class Function;
 
   enum class Parent_Type {
       none,
@@ -17,18 +17,18 @@ namespace overworld {
   class Parent {
       Parent_Type type;
       union {
-          Basic_Dungeon *dungeon;
-          Function_Interface *function;
+          Dungeon *dungeon;
+          Function *function;
       };
 
   public:
       Parent() :
         dungeon(nullptr), type(Parent_Type::none) {}
 
-      Parent(Basic_Dungeon &dungeon) :
+      Parent(Dungeon &dungeon) :
         dungeon(&dungeon), type(Parent_Type::dungeon) {}
 
-      Parent(Function_Interface &function) :
+      Parent(Function &function) :
         function(&function), type(Parent_Type::function) {}
 
       Parent_Type get_type() const {
@@ -39,21 +39,21 @@ namespace overworld {
 
       const std::string get_name() const;
 
-      Basic_Dungeon &get_dungeon() {
+      Dungeon &get_dungeon() {
         if (type != Parent_Type::dungeon)
           throw std::runtime_error("Parent is not a dungeon.");
 
         return *dungeon;
       }
 
-     const Basic_Dungeon &get_dungeon() const{
+      const Dungeon &get_dungeon() const {
         if (type != Parent_Type::dungeon)
           throw std::runtime_error("Parent is not a dungeon.");
 
         return *dungeon;
       }
 
-      Function_Interface &get_function() {
+      Function &get_function() {
         if (type != Parent_Type::function)
           throw std::runtime_error("Parent is not a function.");
 

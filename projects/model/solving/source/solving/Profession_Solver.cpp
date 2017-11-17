@@ -29,11 +29,11 @@ namespace solving {
         if (&first_dungeon == &second_dungeon)
           return true;
 
-        if (first_dungeon.get_dungeon_type() == Dungeon_Type::variant
-            && second_dungeon.get_dungeon_type() == Dungeon_Type::variant) {
-          auto first_variant = static_cast<const Dungeon_Variant *>(&first_dungeon);
-          auto second_variant = static_cast<const Dungeon_Variant *>(&second_dungeon);
-          if (&first_variant->get_original() != &second_variant->get_original())
+        if (first_dungeon.is_generic()
+            && second_dungeon.is_generic()) {
+          auto first_variant = static_cast<const Dungeon *>(&first_dungeon);
+          auto second_variant = static_cast<const Dungeon *>(&second_dungeon);
+          if (&first_variant != &second_variant)
             return false;
 
           if (first_variant->get_arguments().size() != second_variant->get_arguments().size())
@@ -215,7 +215,7 @@ namespace solving {
     }
 
     auto profession = connection.get_profession(first);
-		auto &base_profession = profession.get_base();
+    auto &base_profession = profession.get_base();
     if (base_profession.get_type() == overworld::Profession_Type::unknown
         || base_profession.get_type() == Profession_Type::Void) {
       return 0;
@@ -320,9 +320,8 @@ namespace solving {
     return nullptr;
   }
 
-  Function_Variant &
-  Profession_Solver::create_function_variant(Function_Variant_Array &variant_array, Function &function,
-                                             Node &starting_node, Profession_Reference &profession) {
+  Function &Profession_Solver::create_function_variant(Function_Array &variant_array, Function &function,
+                                                       Node &starting_node, Profession_Reference &profession) {
     auto professions = to_professions(function.get_generic_parameters(), 1);
     professions.push_back(profession);
     auto variant = Profession_Library::get_function_variant(variant_array, function, professions);
@@ -352,7 +351,7 @@ namespace solving {
     auto &first = connection.get_first();
     auto &second = connection.get_second();
 
-    auto &function = first.get_parent().get_function().get_original();
+    auto &function = first.get_parent().get_function();
     auto &variant_array = profession_library.get_function_variant_array(function);
     if (variant_array.size() == 0) {
       auto &parameter = function.add_generic_parameter();
@@ -371,13 +370,13 @@ namespace solving {
     if (parent.get_type() == Parent_Type::dungeon) {
       auto &dungeon = parent.get_dungeon();
       auto &variant_array = profession_library.get_dungeon_variant_array(dungeon);
-      create_dungeon_variant(variant_array, dungeon.get_original(), first, second.get_profession());
+      create_dungeon_variant(variant_array, dungeon, first, second.get_profession());
     }
     else {
       auto &function = parent.get_function();
       auto &variant_array = profession_library.get_function_variant_array(function);
       auto &second_profession = second.get_profession();
-      create_function_variant(variant_array, function.get_original(), first,
+      create_function_variant(variant_array, function, first,
                               second_profession.get_base(second_profession));
     }
   }

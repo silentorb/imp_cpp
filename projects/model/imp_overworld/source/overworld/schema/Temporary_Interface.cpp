@@ -1,6 +1,7 @@
 #include "Temporary_Interface.h"
 #include "Function.h"
 #include <underworld/expressions/Member_Expression.h>
+#include <overworld/schema/professions/Profession_Library.h>
 
 namespace overworld {
 
@@ -28,7 +29,7 @@ namespace overworld {
 
   void Temporary_Interface::replace(Profession_Reference &profession) {
     if (profession.get_type() == Profession_Type::dungeon) {
-      auto &dungeon = profession->get_dungeon_interface().get_original();
+      auto &dungeon = profession->get_dungeon_interface();
       auto &scope = dungeon.get_scope();
       for (auto &member : members) {
         auto new_member = scope.get_member_or_null(member->get_name());

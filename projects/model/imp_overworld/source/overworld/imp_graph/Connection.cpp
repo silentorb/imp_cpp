@@ -1,4 +1,4 @@
-#include <overworld/schema/Dungeon_Variant.h>
+#include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Dungeon_Reference.h>
 #include <overworld/schema/Parameter.h>
 #include <overworld/schema/Function_Signature.h>
@@ -17,20 +17,20 @@ namespace overworld {
     if (&node == &get_first()) {
       auto &compound_profession = first.get_profession();
       auto &dungeon = compound_profession->get_dungeon_interface();
-      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+      auto variant = static_cast<Dungeon *>(&dungeon);
       auto &arguments = variant->get_arguments();
       return arguments[parameter_index]->get_node().get_profession();
     }
     else {
       auto &compound_profession = first.get_profession();
       auto &dungeon = compound_profession->get_dungeon_interface();
-      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+      auto variant = static_cast<Dungeon *>(&dungeon);
       std::vector<overworld::Profession_Reference> professions;
       auto argument_profession = second.get_profession();
       argument_profession.set_ownership(variant->get_arguments()[0]->get_profession().get_ownership());
       professions.push_back(argument_profession);
-      auto new_variant = new Dungeon_Variant(dungeon.get_original(), professions);
-      auto dungeon_reference = new Dungeon_Reference(Dungeon_Interface_Owner(new_variant));
+      auto new_variant = new Dungeon(dungeon, professions);
+      auto dungeon_reference = new Dungeon_Reference(Dungeon_Owner(new_variant));
       return Profession_Reference(dungeon_reference, dungeon.get_ownership());
     }
   }
@@ -75,18 +75,18 @@ namespace overworld {
     auto signature = static_cast<Function_Signature *>(lambda_profession.get());
 
     if (&node == &get_first()) {
-      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+      auto variant = static_cast<Dungeon *>(&dungeon);
       auto &arguments = variant->get_arguments();
       auto &new_profession = arguments[variant_parameter_index]->get_node().get_profession();
       return derive_function_signature(*signature, new_profession, lambda_parameter_index);
     }
     else {
 
-//      auto variant = static_cast<Dungeon_Variant *>(&dungeon);
+//      auto variant = static_cast<Dungeon *>(&dungeon);
       std::vector<overworld::Profession_Reference> professions;
       professions.push_back(signature->get_elements()[lambda_parameter_index]->get_profession());
-      auto new_variant = new Dungeon_Variant(dungeon.get_original(), professions);
-      auto dungeon_reference = new Dungeon_Reference(Dungeon_Interface_Owner(new_variant));
+      auto new_variant = new Dungeon(dungeon, professions);
+      auto dungeon_reference = new Dungeon_Reference(Dungeon_Owner(new_variant));
       return Profession_Reference(dungeon_reference);
     }
   }
@@ -113,7 +113,7 @@ namespace overworld {
 
     if (&node == &get_first()) {
       auto &first_profession = first.get_profession();
-      auto &dungeon = first_profession->get_dungeon_interface().get_original();
+      auto &dungeon = first_profession->get_dungeon_interface();
       auto dungeon_member = dungeon.get_scope().get_member_or_null(member_name);
 
       // There should eventually be a mechanism for this to return a conflict.

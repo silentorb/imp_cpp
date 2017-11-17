@@ -107,7 +107,7 @@ namespace solving {
       void resolve_with_template_function(Connection &connection);
       void resolve_with_template_dungeon(Connection &connection);
 
-      overworld::Function_Variant &create_function_variant(overworld::Function_Variant_Array &variant_array,
+      overworld::Function &create_function_variant(overworld::Function_Array &variant_array,
                                                            overworld::Function &function,
                                                            Node &starting_node,
                                                            overworld::Profession_Reference &profession);

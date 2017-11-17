@@ -21,11 +21,11 @@ namespace overworld {
         return Expression_Type::instantiation;
       }
 
-//      const Dungeon_Variant &get_dungeon_variant() const {
+//      const Dungeon &get_dungeon_variant() const {
 //        return *dungeon_variant;
 //      }
 //
-//      void set_dungeon_variant(std::unique_ptr<Dungeon_Variant> value) {
+//      void set_dungeon_variant(std::unique_ptr<Dungeon> value) {
 //        dungeon_variant = std::move(value);
 //      }
 

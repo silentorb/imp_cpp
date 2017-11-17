@@ -1,6 +1,7 @@
 #include "headers.h"
 #include <overworld/schema/Function.h>
 #include <imp_artisan/building.h>
+#include <overworld/schema/professions/Enchantment_Library.h>
 
 using namespace imp_artisan::building;
 using namespace overworld;

@@ -102,8 +102,8 @@ namespace lifetime {
         auto &argument_expression = *arg_it;
         auto &argument = reflect_expression(*argument_expression);
         auto &container = find_member_container(invoke.get_expression());
-        auto variant = container.get_profession().get()->get_dungeon_interface().as_variant();
-        auto &parameter = create_node(variant->get_arguments()[0]->get_node());
+        auto &variant = container.get_profession().get()->get_dungeon_interface();
+        auto &parameter = create_node(variant.get_arguments()[0]->get_node());
 //        auto &parameter = create_node(Overworld_Element(element->get_node()));
         graph.connect(argument, parameter);
       }

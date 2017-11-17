@@ -6,13 +6,13 @@
 namespace overworld {
 
   class Dungeon_Reference : public Profession {
-      Basic_Dungeon &dungeon;
-      Dungeon_Interface_Owner owner;
+      Dungeon &dungeon;
+      Dungeon_Owner owner;
 
   public:
-      explicit Dungeon_Reference(Basic_Dungeon &dungeon) : dungeon(dungeon) {}
+      explicit Dungeon_Reference(Dungeon &dungeon) : dungeon(dungeon) {}
 
-      explicit Dungeon_Reference(Dungeon_Interface_Owner dungeon) :
+      explicit Dungeon_Reference(Dungeon_Owner dungeon) :
         dungeon(*dungeon), owner(std::move(dungeon)) {
         int k = 0;
       }
@@ -32,28 +32,28 @@ namespace overworld {
         return dungeon.get_ownership();
       }
 
-      Basic_Dungeon &get_dungeon_interface() {
+      Dungeon &get_dungeon_interface() {
         return dungeon;
       }
 
-      const Basic_Dungeon &get_dungeon_interface() const{
+      const Dungeon &get_dungeon_interface() const{
         return dungeon;
       }
 
       Dungeon &get_dungeon() {
-        return dungeon.get_original();
+        return dungeon;
       }
 
-      const Basic_Dungeon &get_dungeon() const {
+      const Dungeon &get_dungeon() const {
         return dungeon;
       }
 
       File *get_file() const override {
-        return dungeon.get_original().get_file();
+        return dungeon.get_file();
       }
 
       const std::string get_name() const override {
-        return dungeon.get_original().get_name();
+        return dungeon.get_name();
       }
 
       const std::string get_debug_name() const override {
