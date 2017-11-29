@@ -31,9 +31,9 @@ namespace underworld {
         return name;
       }
 
-      const Profession *get_profession() const override {
-        return profession.get();
-      }
+//      const Profession *get_profession() const override {
+//        return profession.get();
+//      }
 
       virtual bool is_parameter() const {
         return false;

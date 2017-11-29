@@ -181,8 +181,21 @@ namespace imp_mirror {
     return overworld::Expression_Owner(expression);
   }
 
-  overworld::Expression_Owner Mirror::reflect_member(const underworld::Member_Expression &input_member_expression,
+  overworld::Expression_Owner Mirror::reflect_member(const underworld::Member &input_member,
                                                      Scope &scope) {
+    auto name = input_member.get_name();
+    auto member = scope.find_member(name);
+    if (!member)
+      throw Code_Error("Unknown symbol " + name, input_member.get_source_point());
+
+    auto result = new overworld::Member_Expression(*member, input_member.get_source_point());
+//    graph->connect(*result->get_node(), overworld::get_member_node(*member));
+    return overworld::Expression_Owner(result);
+  }
+
+  overworld::Expression_Owner Mirror::reflect_member_expression(
+    const underworld::Member_Expression &input_member_expression,
+    Scope &scope) {
     auto name = input_member_expression.get_name();
     auto member = scope.find_member(name);
     if (!member)
@@ -221,9 +234,13 @@ namespace imp_mirror {
   overworld::Expression_Owner Mirror::reflect_variable_declaration_with_assignment(
     const underworld::Minion_Declaration_And_Assignment &input_declaration, Scope &scope) {
     auto &input_minion = input_declaration.get_minion();
-    auto profession = reflect_profession(input_minion.get_profession(), scope);
+//    auto profession = reflect_member_expression(input_minion, scope);
+    auto member = scope.find_member(input_minion.get_name());
+    if (!member)
+      throw Code_Error("Unknown symbol " + input_minion.get_name(), input_minion.get_source_point());
+
     auto variable = new overworld::Minion(input_minion.get_name(),
-                                          profession,
+                                          member->,
                                           overworld::Parent(scope.get_overworld_scope().get_owner().get_function()),
                                           input_minion.get_source_point());
     scope.get_overworld_scope().add_minion(overworld::Minion_Owner(variable));
@@ -437,7 +454,7 @@ namespace imp_mirror {
                                scope.get_overworld_scope().get_owner());
 
       case underworld::Expression_Type::member:
-        return reflect_member(
+        return reflect_member_expression(
           *dynamic_cast<const underworld::Member_Expression *>(&input_expression), scope);
 
       case underworld::Expression_Type::Operator:
@@ -571,7 +588,11 @@ namespace imp_mirror {
 //        return reflect_dungeon_reference(profession, dungeon_scope);
 //      }
       else if (profession.get_type() == underworld::Profession_Type::token) {
-        return get_possible_generic_dungeon(get_dungeon(*child));
+        auto output_dungeon = get_possible_generic_dungeon(get_dungeon(*child));
+        auto input_dungeon = dynamic_cast<const underworld::Token_Profession *>(&profession);
+        if (input_dungeon && input_dungeon->get_child()) {
+          return reflect_profession_child(*child, *input_dungeon, scope);
+        }
       }
       else if (profession.get_type() == underworld::Profession_Type::variant) {
         Scope dungeon_scope(dungeon.get_scope(), scope);

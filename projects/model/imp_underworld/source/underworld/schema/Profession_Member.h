@@ -7,30 +7,30 @@
 
 namespace underworld {
 
-  class Profession_Member : public Member {
-      Profession_Owner profession;
-
-  public:
-      Profession_Member(std::unique_ptr<Profession> &profession, const source_mapping::Source_Range &source_point) :
-        Member(source_point), profession(std::move(profession)) {
-      }
-
-      virtual ~Profession_Member() {}
-
-      const Profession *get_profession() const override {
-        return profession.get();
-      }
-
-      Profession &get_profession() {
-        return *profession;
-      }
-
-      Type get_type() const override {
-        return Member::Type::profession;
-      }
-
-      const std::string get_name() const override {
-        return profession->get_name();
-      }
-  };
+//  class Profession_Member : public Member {
+//      Profession_Owner profession;
+//
+//  public:
+//      Profession_Member(std::unique_ptr<Profession> &profession, const source_mapping::Source_Range &source_point) :
+//        Member(source_point), profession(std::move(profession)) {
+//      }
+//
+//      virtual ~Profession_Member() {}
+//
+//      const Profession *get_profession() const override {
+//        return profession.get();
+//      }
+//
+//      Profession &get_profession() {
+//        return *profession;
+//      }
+//
+//      Type get_type() const override {
+//        return Member::Type::profession;
+//      }
+//
+//      const std::string get_name() const override {
+//        return profession->get_name();
+//      }
+//  };
 }

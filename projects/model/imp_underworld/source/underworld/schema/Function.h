@@ -20,12 +20,7 @@ namespace underworld {
                Scope &parent) :
         name(name), Member(source) {}
 
-//      Function(const std::string &name, const source_mapping::Source_Range &source,
-//               Scope &parent) :
-//        name(name), Member(source) {}
-
     virtual ~Function() {
-      int k = 0;
     }
       Type get_type() const override {
         return Type::function;
@@ -65,9 +60,9 @@ namespace underworld {
         return signature.get_elements();
       }
 
-      const Profession *get_profession() const override {
-        return signature.get_last().get_profession();
-      }
+//      const Profession *get_profession() const override {
+//        return signature.get_last().get_profession();
+//      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;

@@ -32,9 +32,9 @@ namespace underworld {
 //      throw runtime_error("Dungeon " + name + " does not have a child dungeon named " + dungeon_name + ".");
 //  }
 
-  void Dungeon::throw_already_exists(const std::string &member_name) const {
-    throw std::runtime_error("Dungeon " + name + " already has a member named " + member_name + ".");
-  }
+//  void Dungeon::throw_already_exists(const std::string &member_name) const {
+//    throw std::runtime_error("Dungeon " + name + " already has a member named " + member_name + ".");
+//  }
 
   Dungeon::~Dungeon() {
 

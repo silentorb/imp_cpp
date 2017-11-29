@@ -6,23 +6,24 @@
 
 namespace underworld {
 
-  class Dungeon : public Scope, public virtual Profession {
+  class Dungeon : public Member {
       const std::string name;
-      const source_mapping::Source_Range source_point;
       bool _is_external = false;
       std::vector<Profession_Owner> contracts;
       std::vector<Generic_Parameter> generic_parameters;
-      Enchantment_Array enchantments;
+//      Enchantment_Array enchantments;
+      Scope scope;
 
   protected:
-      void throw_already_exists(const std::string &member_name) const override;
+//      void throw_already_exists(const std::string &member_name) const override;
 
   public:
-      Dungeon(const std::string &name, Scope *parent) :
-        name(name), Scope(parent) {}
+//      Dungeon(const std::string &name, Scope *parent) :
+//        name(name), scope(parent) {}
 
-      Dungeon(const std::string &name, Scope *parent, const source_mapping::Source_Range &source_point) :
-        name(name), Scope(parent), source_point(source_point) {}
+      Dungeon(const std::string &name, Scope *parent,
+              const source_mapping::Source_Range &source_point = source_mapping::Source_Range()) :
+        name(name), scope(parent), Member(source_point) {}
 
       virtual ~Dungeon();
 
@@ -30,17 +31,29 @@ namespace underworld {
         return name;
       }
 
-      Profession_Type get_type() const override {
-        return Profession_Type::dungeon;
+      Type get_type() const override {
+        return Type::dungeon;
       }
 
-      Dungeon &get_dungeon() override {
-        return *this;
+      const Scope &get_scope() const {
+        return scope;
       }
 
-      const source_mapping::Source_Range get_source_point() const override {
-        return source_point;
+      Scope &get_scope() {
+        return scope;
       }
+
+//      Profession_Type get_type() const override {
+//        return Profession_Type::dungeon;
+//      }
+
+//      Dungeon &get_dungeon() {
+//        return *this;
+//      }
+
+//      const source_mapping::Source_Range get_source_point() const {
+//        return source_point;
+//      }
 
       void add_contract(Profession_Owner profession) {
         contracts.push_back(std::move(profession));
@@ -58,13 +71,13 @@ namespace underworld {
         return generic_parameters;
       }
 
-      void add_enchantment(Enchantment_Owner &enchantment) {
-        enchantments.push_back(enchantment);
-      }
-
-      const Enchantment_Array &get_enchantments() const {
-        return enchantments;
-      }
+//      void add_enchantment(Enchantment_Owner &enchantment) {
+//        enchantments.push_back(enchantment);
+//      }
+//
+//      const Enchantment_Array &get_enchantments() const {
+//        return enchantments;
+//      }
   };
 
   using Dungeon_Pointer = std::unique_ptr<Dungeon>;

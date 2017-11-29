@@ -9,7 +9,7 @@ namespace underworld {
   enum class Profession_Type {
       unknown,
       primitive,
-      dungeon,
+//      dungeon,
 //      dungeon_reference,
       Enum,
       function,

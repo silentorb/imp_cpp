@@ -141,7 +141,7 @@ namespace imp_summoning {
   void Summoner::process_enchantments(underworld::Enchantment_Array &enchantments, Context &context) {
     while (input.current().is(lexicon.at_sign)) {
       input.expect_next(lexicon.identifier);
-			auto temp = input.current().get_text();
+      auto temp = input.current().get_text();
       auto profession = process_profession(context);
 //      auto name = input.expect_next(lexicon.identifier).get_text();
 //      input.next();
@@ -258,8 +258,8 @@ namespace imp_summoning {
     input.next();
     auto existing_member = context.get_scope().get_member(identifier.name);
     if (existing_member) {
-      auto &profession = static_cast<Profession_Member *>(existing_member)->get_profession();
-      auto dungeon = dynamic_cast<Dungeon *>(&profession);
+//      auto &profession = static_cast<Profession_Member *>(existing_member)->get_profession();
+      auto dungeon = dynamic_cast<Dungeon *>(existing_member);
       process_dungeon_body(*dungeon, context);
       return *dungeon;
     }
@@ -272,8 +272,8 @@ namespace imp_summoning {
         dungeon->add_enchantment(enchantment);
       }
 
-      auto profession = std::unique_ptr<Profession>(dungeon);
-      context.get_scope().add_profession(std::move(profession), identifier.source_point);
+      auto profession = std::unique_ptr<Dungeon>(dungeon);
+      context.get_scope().add_member(std::move(profession));
       process_dungeon_body(*dungeon, context);
       return *dungeon;
     }

@@ -82,7 +82,10 @@ namespace imp_mirror {
 
       overworld::Expression_Owner reflect_lambda(const underworld::Lambda &input_lambda, Scope &scope);
       overworld::Expression_Owner reflect_literal(const underworld::Literal &input_literal, overworld::Parent parent);
-      overworld::Expression_Owner reflect_member(const underworld::Member_Expression &input_member_expression,
+      overworld::Expression_Owner reflect_member_expression(
+        const underworld::Member_Expression &input_member_expression,
+        Scope &scope);
+      overworld::Expression_Owner reflect_member(const underworld::Member &input_member,
                                                  Scope &scope);
       overworld::Operator_Type reflect_operator(const underworld::Operator &input_operator);
       overworld::Expression_Owner reflect_return_nothing(const underworld::Return &input_return);

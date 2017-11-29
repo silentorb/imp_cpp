@@ -42,7 +42,7 @@ namespace imp_summoning {
   class Root_Context : public Context {
   public:
       Root_Context(underworld::Dungeon &dungeon) :
-        Context(dungeon) {}
+        Context(dungeon.get_scope()) {}
 
       underworld::Member *find_member(const std::string &name) const override {
         return find_member_internal(name);
@@ -57,7 +57,7 @@ namespace imp_summoning {
         Context(scope), parent(parent) {}
 
       Child_Context(const Context &parent, underworld::Dungeon &dungeon) :
-        Context(dungeon), parent(parent) {}
+        Context(dungeon.get_scope()), parent(parent) {}
 
       underworld::Member *find_member(const std::string &name) const override;
   };

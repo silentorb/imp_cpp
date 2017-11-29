@@ -41,14 +41,14 @@ namespace underworld {
     return *portal;
   }
 
-  Profession_Member &Scope::add_profession(unique_ptr<Profession> profession,
-                                           const source_mapping::Source_Range &source) {
-    auto &prof = *profession;
-    auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
-    auto &result = *member;
-    members[prof.get_name()] = std::move(member);
-    return result;
-  }
+//  Profession_Member &Scope::add_profession(unique_ptr<Profession> profession,
+//                                           const source_mapping::Source_Range &source) {
+//    auto &prof = *profession;
+//    auto member = unique_ptr<Profession_Member>(new Profession_Member(profession, source));
+//    auto &result = *member;
+//    members[prof.get_name()] = std::move(member);
+//    return result;
+//  }
 
   Function *Scope::get_function(const std::string &name) const {
     if (members.count(name) == 0)
@@ -61,16 +61,16 @@ namespace underworld {
     return nullptr;
   }
 
-  Profession_Member *Scope::get_profession(const std::string &name) const {
-    if (members.count(name) == 0)
-      return nullptr;
-
-    auto &member = members.at(name);
-    if (member->get_type() == Member::Type::profession)
-      return dynamic_cast<Profession_Member *>(member.get());
-
-    return nullptr;
-  }
+//  Profession_Member *Scope::get_profession(const std::string &name) const {
+//    if (members.count(name) == 0)
+//      return nullptr;
+//
+//    auto &member = members.at(name);
+//    if (member->get_type() == Member::Type::profession)
+//      return dynamic_cast<Profession_Member *>(member.get());
+//
+//    return nullptr;
+//  }
 
   Dungeon &Scope::get_dungeon() {
     return parent->get_dungeon();

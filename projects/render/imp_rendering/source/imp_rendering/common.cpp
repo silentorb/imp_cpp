@@ -400,7 +400,7 @@ namespace imp_rendering {
     auto &function = lambda.get_function();
     auto token = render_block("", function.get_block());
     auto block = token.render("");
-    return "[&] " + render_function_parameters(function, scope)
+    return "[] " + render_function_parameters(function, scope)
            + block;
   }
 
