@@ -21,7 +21,7 @@ namespace underworld {
           dungeon,
           function,
           minion,
-          profession,
+//          profession,
       };
 
       virtual Type get_type() const = 0;

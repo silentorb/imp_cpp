@@ -42,12 +42,13 @@ namespace imp_wrapper {
                               temporary_interface_manager,
                               header_files);
     mirror.reflect_root(project_bundle.get_underworld_root(), project_bundle.get_mirror_scope());
-
-    lifetime::Ownership_Mirror ownership_mirror(project_bundle.get_ownership_graph());
-    ownership_mirror.reflect(project_bundle.get_overworld_root());
   }
 
-  void Global_Bundle::solve(overworld::Graph &graph, lifetime::Graph &ownership_graph) {
+  void Global_Bundle::solve(Project_Bundle &project_bundle) {
+    auto &graph = project_bundle.get_graph();
+    auto &ownership_graph = project_bundle.get_ownership_graph();
+    auto &overworld_root = project_bundle.get_overworld_root();
+
     solving::Profession_Solver solver(graph, overworld_profession_library);
     solver.scan_fresh();
 
@@ -85,6 +86,9 @@ namespace imp_wrapper {
           + solving::get_node_debug_string(conflict.get_connection().get_second()));
       }
     }
+
+    lifetime::Ownership_Mirror ownership_mirror(ownership_graph);
+    ownership_mirror.reflect(overworld_root);
 
     lifetime::Ownership_Solver ownership_solver(ownership_graph);
     solving::log_node_trees(ownership_graph);

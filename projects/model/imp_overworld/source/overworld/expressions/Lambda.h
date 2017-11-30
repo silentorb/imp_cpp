@@ -35,6 +35,10 @@ namespace overworld {
       const Function_With_Block &get_function() const {
         return *function;
       }
+
+      Function_With_Block &get_function() {
+        return *function;
+      }
   };
 
 }

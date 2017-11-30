@@ -39,7 +39,7 @@ namespace imp_wrapper {
       }
       load_files(project.get_source_folder(), wrapper, project_bundle->get_underworld_root());
       wrapper.mirror(temporary_interface_manager, *project_bundle);
-      wrapper.solve(project_bundle->get_graph(), project_bundle->get_ownership_graph());
+      wrapper.solve(*project_bundle);
 
       if (project.get_output_folder() != "") {
         boost::filesystem::create_directories(project.get_output_folder());

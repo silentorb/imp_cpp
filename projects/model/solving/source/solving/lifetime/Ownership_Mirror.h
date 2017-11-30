@@ -7,6 +7,7 @@
 #include <overworld/expressions/Minion_Declaration.h>
 #include <overworld/expressions/Chain.h>
 #include <overworld/expressions/Invoke.h>
+#include <overworld/expressions/Lambda.h>
 #include "Graph.h"
 
 namespace lifetime {
@@ -41,6 +42,7 @@ namespace lifetime {
       void reflect_assignment(overworld::Assignment &assignment);
 //      void reflect_variable_declaration(overworld::Minion_Declaration &variable_declaration);
       Node &reflect_chain(overworld::Chain &chain);
+      Node &reflect_lambda(overworld::Lambda &lambda);
       void reflect_variable_declaration_and_assignment(overworld::Minion_Declaration_And_Assignment
                                                        &declaration);
       Node &reflect_expression(overworld::Expression &expression);

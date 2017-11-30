@@ -72,6 +72,7 @@ namespace lifetime {
 
   Node &Ownership_Mirror::reflect_member(overworld::Member_Expression &member_expression) {
     auto &member = member_expression.get_member();
+    auto type = member.get_type();
     if (member.get_type() == Member_Type::minion)
       return graph.get_or_create_variable_node(member_expression.get_member().get_minion());
 
@@ -109,6 +110,15 @@ namespace lifetime {
       }
       ++arg_it;
     }
+
+    for (auto &argument : invoke.get_arguments()) {
+      reflect_expression(*argument);
+    }
+  }
+
+  Node &Ownership_Mirror::reflect_lambda(overworld::Lambda &lambda) {
+    reflect_function(lambda.get_function());
+    return create_node(Overworld_Element(*lambda.get_node()));
   }
 
   Node &Ownership_Mirror::reflect_expression(Expression &expression) {
@@ -139,11 +149,14 @@ namespace lifetime {
         return create_node(Overworld_Element(*static_cast<Literal &>(expression).get_node()), Lifetime_Ownership::copy);
       }
 
+      case Expression_Type::lambda: {
+        return reflect_lambda(static_cast<Lambda &>(expression));
+      }
+
       case Expression_Type::invoke:
       case Expression_Type::block:
       case Expression_Type::Else:
       case Expression_Type::If:
-      case Expression_Type::lambda:
       case Expression_Type::Operator:
       case Expression_Type::range:
       case Expression_Type::return_nothing:

@@ -47,7 +47,7 @@ namespace imp_wrapper {
       void load_file(const std::string &path, underworld::Dungeon &underworld_root);
       void mirror(imp_mirror::Temporary_Interface_Manager &temporary_interface_manager,
                   Project_Bundle &project_bundle);
-      void solve(overworld::Graph &graph, lifetime::Graph & ownership_graph);
+      void solve(Project_Bundle &project_bundle);
       void render(const std::string &output_path, overworld::Dungeon &overworld_root);
       std::unique_ptr<Project_Bundle> create_project_bundle(const std::string &name);
       overworld::Dungeon *get_realm(const std::string &name);

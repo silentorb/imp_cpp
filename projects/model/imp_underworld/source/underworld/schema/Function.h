@@ -60,9 +60,9 @@ namespace underworld {
         return signature.get_elements();
       }
 
-//      const Profession *get_profession() const override {
-//        return signature.get_last().get_profession();
-//      }
+      const Profession *get_profession() const {
+        return signature.get_last().get_profession();
+      }
   };
 
   using Function_Owner = std::unique_ptr<Function>;

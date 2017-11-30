@@ -63,7 +63,7 @@ void compile(const std::string &input_name) {
   wrapper.load_file(std::string(RESOURCE_PATH) + input_name + '/' + input_name + ".imp",
                     project_bundle->get_underworld_root());
   wrapper.mirror(temporary_interface_manager, *project_bundle);
-  wrapper.solve(project_bundle->get_graph(), project_bundle->get_ownership_graph());
+  wrapper.solve(*project_bundle);
   wrapper.render(full_output_path, project_bundle->get_overworld_root());
   std::ofstream output_stream(output_folder + "/CMakeLists.txt", std::ios_base::binary | std::ios_base::out);
   if (output_stream.is_open()) {
