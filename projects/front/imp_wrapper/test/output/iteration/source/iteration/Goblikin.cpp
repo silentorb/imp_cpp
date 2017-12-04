@@ -8,7 +8,7 @@ namespace iteration {
     auto ingredients = std::vector<std::unique_ptr<Ingredient>>();
     auto tail = std::unique_ptr<Ingredient>(new Ingredient());
     tail->name = "dragon's tail";
-    ingredients.push_back(tail);
+    ingredients.push_back(std::move(tail));
 
     for (auto &i : ingredients) {
       std::cout << i.name;

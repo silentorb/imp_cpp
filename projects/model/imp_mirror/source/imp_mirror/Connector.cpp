@@ -60,10 +60,10 @@ namespace imp_mirror {
       if (second.get_parent().get_type() == Parent_Type::function
           && &first.get_parent().get_function() != &second.get_parent().get_function()
           && first.get_profession().get_type() == Profession_Type::generic_parameter) {
-        auto &member_container = find_member_container(invoke.get_expression());
+        auto member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
-        auto connection = new Variant_To_Argument(member_container.get_node(), second, i);
-        graph->connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
+        auto connection = new Variant_To_Argument(member_container->get_node(), second, i);
+        graph->connect(member_container->get_node(), second, std::unique_ptr<Connection>(connection));
       }
       else {
         auto &parent = first.get_parent();
@@ -77,9 +77,9 @@ namespace imp_mirror {
 
         if (argument.get_type() == Expression_Type::lambda) {
           auto &lambda = static_cast<Lambda &>(argument);
-          auto &member_container = find_member_container(invoke.get_expression());
-          auto connection = new Variant_To_Lambda(member_container.get_node(), second, 0, i);
-          graph->connect(member_container.get_node(), second, std::unique_ptr<Connection>(connection));
+          auto member_container = find_member_container(invoke.get_expression());
+          auto connection = new Variant_To_Lambda(member_container->get_node(), second, 0, i);
+          graph->connect(member_container->get_node(), second, std::unique_ptr<Connection>(connection));
         }
       }
     }

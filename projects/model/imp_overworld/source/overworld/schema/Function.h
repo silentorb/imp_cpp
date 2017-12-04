@@ -32,12 +32,9 @@ namespace overworld {
         signature_reference(new Function_Signature()),
         signature(*static_cast<Function_Signature *>(signature_reference.get())) {}
 
-      Function(Function &original, std::vector<Profession_Reference> &professions) :
+      Function(Function &original) :
         Function(original.get_name(), original.get_element().get_parent(), source_mapping::Source_Range()) {
         this->original = &original;
-        for (auto i = 0; i < generic_parameters.size(); ++i) {
-          arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
-        }
       }
 
       virtual ~Function() {}
@@ -159,8 +156,8 @@ namespace overworld {
                        const source_mapping::Source_Range &source_point) :
         Function(name, dungeon, source_point) {}
 
-      Virtual_Function(Function &original, std::vector<Profession_Reference> &professions) :
-        Function(original, professions) {
+      Virtual_Function(Function &original) :
+        Function(original) {
 
       }
 

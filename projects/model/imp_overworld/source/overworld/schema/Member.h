@@ -33,7 +33,6 @@ namespace overworld {
           Minion *minion;
           Parameter *parameter;
           const Profession *profession;
-//          Profession_Reference *profession_reference;
           Temporary_Member *temporary;
       };
 
@@ -50,9 +49,6 @@ namespace overworld {
 
       Member(const Profession &profession) :
         type(Member_Type::profession), profession(&profession) {}
-
-//      Member(Profession_Reference &profession) :
-//        type(Member_Type::profession_reference), profession_reference(&profession) {}
 
       Member(Function &function) :
         type(Member_Type::function), function(&function) {}
@@ -102,14 +98,6 @@ namespace overworld {
       const Temporary_Member &get_temporary_member() const {
         return *temporary;
       }
-
-//      Profession_Reference &get_profession_reference() {
-//        return *profession_reference;
-//      }
-//
-//      const Profession_Reference &get_profession_reference() const {
-//        return *profession_reference;
-//      }
 
       const Profession &get_profession() const {
         return *profession;

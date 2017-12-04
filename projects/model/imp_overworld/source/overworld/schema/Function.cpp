@@ -50,8 +50,8 @@ namespace overworld {
 
   Function &Function::get_or_create_variant(Dungeon &containing_dungeon) {
     std::vector<Profession_Reference> new_arguments;
-    for (auto &argument : arguments) {
-      auto &profession = argument->get_profession();
+    for (auto &element : signature.get_elements()) {
+      auto &profession = element->get_profession();
       if (profession.get_type() == Profession_Type::generic_parameter) {
         auto generic_parameter = dynamic_cast<Generic_Parameter *>(profession.get());
         auto generic_argument = containing_dungeon.get_generic_argument(*generic_parameter);
@@ -67,8 +67,16 @@ namespace overworld {
         return *existing_function;
     }
 
-    auto new_function = new Virtual_Function(*this, new_arguments);
+    auto new_function = new Virtual_Function(*this);
     variants.push_back(std::unique_ptr<Function>(new_function));
+    auto elements = signature.get_elements().begin();
+    for (auto &profession : new_arguments) {
+      auto &element = *elements++;
+      new_function->get_signature().add_element(Parameter_Owner(
+        new Parameter(element->get_name(), profession, *new_function, element->get_element().get_source_point())
+      ));
+//      arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
+    }
     return *new_function;
   }
 

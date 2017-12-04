@@ -119,8 +119,12 @@ namespace overworld {
                                                         Dungeon &dungeon,
                                                         std::vector<Profession_Reference> &professions) {
 
-    auto variant = new Virtual_Function(function, professions);
+    auto variant = new Virtual_Function(function);
     variant_array.push_back(Function_Owner(variant));
+    throw std::runtime_error("Outdated, needs work handling generic arguments.");
+//    for (auto i = 0; i < generic_parameters.size(); ++i) {
+//      arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
+//    }
     return *variant;
   }
 

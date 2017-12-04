@@ -64,5 +64,5 @@ namespace overworld {
   using Minion_Owner = std::unique_ptr<Minion>;
   using Simple_Minion_Owner = std::unique_ptr<Simple_Minion>;
 
-  overworld::Minion &find_member_container(overworld::Expression &expression);
+  overworld::Minion *find_member_container(overworld::Expression &expression);
 }

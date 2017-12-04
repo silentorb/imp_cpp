@@ -13,7 +13,6 @@ namespace overworld {
   class Invoke : public Common_Expression {
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
-//      std::vector<std::unique_ptr<Argument_Node>> argument_nodes;
 
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
@@ -31,16 +30,15 @@ namespace overworld {
         auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
         auto &member = member_expression.get_member();
         auto &function = member.get_function();
-        if (function.has_generic_arguments()) {
-          auto &member = find_member_container(*expression);
-          return function.get_or_create_variant(member.get_profession()->get_dungeon_interface());
+        auto container = find_member_container(*expression);
+        if (container) {
+          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
+          if (container_dungeon.is_generic()) {
+            return function.get_or_create_variant(container_dungeon);
+          }
         }
         return function;
       }
-
-//      Function_Signature &get_signature() const {
-//        return get_function().get_signature();
-//      }
 
       std::vector<Expression_Owner> &get_arguments() {
         return arguments;
