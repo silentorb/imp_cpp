@@ -31,6 +31,15 @@ namespace overworld {
 
 namespace imp_mirror {
 
+  struct Profession_Reflection {
+      overworld::Profession_Reference profession;
+      overworld::Ownership ownership;
+
+      Profession_Reflection(const overworld::Profession_Reference &profession,
+                            overworld::Ownership ownership = overworld::Ownership::unknown) :
+        profession(profession), ownership(ownership) {}
+  };
+
   class Mirror {
       overworld::Profession_Library &profession_library;
       Element_Map &element_map;
@@ -120,10 +129,9 @@ namespace imp_mirror {
                                                                Scope &scope);
       overworld::Expression_Owner reflect_statement(const underworld::Expression &input_expression,
                                                     Scope &scope);
-      overworld::Profession_Reference reflect_profession(const underworld::Profession *profession,
-                                                         Scope &scope);
-      overworld::Profession_Reference reflect_profession(const underworld::Profession &profession,
-                                                         Scope &scope);
+
+      Profession_Reflection reflect_profession(const underworld::Profession *profession, Scope &scope);
+      Profession_Reflection reflect_profession(const underworld::Profession &profession, Scope &scope);
 
       overworld::Profession_Reference reflect_profession_child(overworld::Member &member,
                                                                const underworld::Profession &profession, Scope &scope);

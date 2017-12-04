@@ -10,7 +10,6 @@
 #include <solving/lifetime/Ownership_Mirror.h>
 #include "Project_Bundle.h"
 
-
 namespace imp_wrapper {
 
   Global_Bundle::Global_Bundle() :
@@ -46,7 +45,6 @@ namespace imp_wrapper {
 
   void Global_Bundle::solve(Project_Bundle &project_bundle) {
     auto &graph = project_bundle.get_graph();
-    auto &ownership_graph = project_bundle.get_ownership_graph();
     auto &overworld_root = project_bundle.get_overworld_root();
 
     solving::Profession_Solver solver(graph, overworld_profession_library);
@@ -87,13 +85,13 @@ namespace imp_wrapper {
       }
     }
 
-    lifetime::Ownership_Mirror ownership_mirror(ownership_graph);
-    ownership_mirror.reflect(overworld_root);
+//    lifetime::Ownership_Mirror ownership_mirror(ownership_graph);
+//    ownership_mirror.reflect(overworld_root);
 
-    lifetime::Ownership_Solver ownership_solver(ownership_graph);
-    solving::log_node_trees(ownership_graph);
+    lifetime::Ownership_Solver ownership_solver(graph);
+    solving::log_node_trees(graph);
     ownership_solver.solve();
-    solving::log_node_trees(ownership_graph);
+    solving::log_node_trees(graph);
 #if DEBUG_SOLVER > 0
     solving::log_nodes(graph);
 #endif

@@ -24,6 +24,10 @@ namespace overworld {
         return node;
       }
 
+      const Node &get_node() const {
+        return node;
+      }
+
       void set_profession(Profession_Reference &profession, Profession_Setter &setter) {
         node.set_profession(profession, setter);
       }

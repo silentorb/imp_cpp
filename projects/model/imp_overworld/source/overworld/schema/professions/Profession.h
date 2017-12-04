@@ -21,7 +21,9 @@ namespace overworld {
   enum class Ownership {
       unknown,
 
-      copyable,
+      anchor,
+      copy,
+      implicit_move,
       move,
       owner,
       reference,
@@ -33,6 +35,14 @@ namespace overworld {
       pointer,
       reference,
       value,
+  };
+
+  struct Ownership_Storage {
+      Ownership ownership;
+      Storage_Type storage;
+
+      Ownership_Storage(Ownership ownership = Ownership::unknown, Storage_Type storage = Storage_Type::unknown) :
+        ownership(ownership), storage(storage) {}
   };
 
   enum class Profession_Type {
@@ -96,32 +106,25 @@ namespace overworld {
   using Profession_Owner = std::unique_ptr<Profession>;
 
   class Profession_Reference : public Optional_Shared_Pointer<Profession> {
-      Ownership ownership;
-      Storage_Type storage;
 
   public:
-      explicit Profession_Reference(Profession_Reference &reference, Ownership ownership,
-                                    Storage_Type storage = Storage_Type::unknown) :
-        Optional_Shared_Pointer(reference.shared_pointer, reference.pointer), ownership(ownership), storage(storage) {
+      Profession_Reference(const Profession_Reference &reference) :
+        Optional_Shared_Pointer(reference.shared_pointer, reference.pointer) {
         get()->get_base();
       }
 
-      explicit Profession_Reference(Profession &pointer, Ownership ownership = Ownership::unknown,
-                                    Storage_Type storage = Storage_Type::unknown) :
-        Optional_Shared_Pointer(pointer), ownership(ownership), storage(storage) {
+      explicit Profession_Reference(Profession &pointer) :
+        Optional_Shared_Pointer(pointer) {
         get()->get_base();
       }
 
-      explicit Profession_Reference(std::shared_ptr<Profession> shared_pointer,
-                                    Ownership ownership = Ownership::unknown,
-                                    Storage_Type storage = Storage_Type::unknown) :
-        Optional_Shared_Pointer(shared_pointer), ownership(ownership), storage(storage) {
+      explicit Profession_Reference(std::shared_ptr<Profession> shared_pointer) :
+        Optional_Shared_Pointer(shared_pointer) {
         get()->get_base();
       }
 
-      explicit Profession_Reference(Profession *shared_pointer, Ownership ownership = Ownership::unknown,
-                                    Storage_Type storage = Storage_Type::unknown) :
-        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)), ownership(ownership), storage(storage) {
+      explicit Profession_Reference(Profession *shared_pointer) :
+        Optional_Shared_Pointer(std::shared_ptr<Profession>(shared_pointer)) {
         get()->get_base();
       }
 
@@ -131,10 +134,6 @@ namespace overworld {
         return get()->get_type();
       }
 
-      void set_ownership(Ownership value) {
-        ownership = value;
-      }
-
       File *get_file() const {
         return get()->get_file();
       }
@@ -142,18 +141,22 @@ namespace overworld {
       const std::string get_name() const {
         return get()->get_name();
       }
-
-      Storage_Type get_storage() const {
-        return storage;
-      }
-
-      void set_storage(Storage_Type value) {
-        storage = value;
-      }
-
-      Ownership get_ownership() const {
-        return ownership;
-      }
+//
+//      void set_ownership(Ownership value) {
+//        ownership = value;
+//      }
+//
+//      Ownership get_ownership() const {
+//        return ownership;
+//      }
+//
+//      Storage_Type get_storage() const {
+//        return storage;
+//      }
+//
+//      void set_storage(Storage_Type value) {
+//        storage = value;
+//      }
 
       Profession_Reference &get_base(Profession_Reference &self) {
         return get()->get_base(self);

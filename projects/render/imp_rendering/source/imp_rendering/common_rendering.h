@@ -18,7 +18,7 @@ namespace imp_rendering {
   const std::string render_function_parameters(const overworld::Function &function, const overworld::Scope &scope);
   const std::string render_function_return_signature(const overworld::Function &function, const overworld::Scope &scope);
   const std::string render_function_declaration(const overworld::Function &function, const overworld::Scope &scope);
-  const std::string render_profession(const overworld::Profession_Reference &profession, const overworld::Scope &scope);
+  const std::string render_profession(const overworld::Node &node, const overworld::Scope &scope);
   const std::string render_profession_owner(const overworld::Profession_Reference &profession, const overworld::Scope &scope);
   const std::string render_separator(const overworld::Expression &expression);
   const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,

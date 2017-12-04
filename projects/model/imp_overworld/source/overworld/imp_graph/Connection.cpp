@@ -25,11 +25,11 @@ namespace overworld {
       auto &dungeon = compound_profession->get_dungeon_interface();
       std::vector<overworld::Profession_Reference> professions;
       auto argument_profession = second.get_profession();
-      argument_profession.set_ownership(dungeon.get_arguments()[0]->get_profession().get_ownership());
+      second.set_ownership(dungeon.get_arguments()[0]->get_node().get_ownership());
       professions.push_back(argument_profession);
       auto new_variant = new Dungeon(dungeon, professions);
       auto dungeon_reference = new Dungeon_Reference(Dungeon_Owner(new_variant));
-      return Profession_Reference(dungeon_reference, dungeon.get_ownership());
+      return Profession_Reference(dungeon_reference);
     }
   }
 

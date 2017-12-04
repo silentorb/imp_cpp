@@ -34,6 +34,8 @@ namespace overworld {
       Profession_Reference original_profession;
       Profession_Reference profession;
       Element &element;
+      Ownership ownership = Ownership::unknown;
+      Storage_Type storage = Storage_Type::unknown;
 
   public:
       Node(Profession_Reference original_profession, Element &element) :
@@ -44,7 +46,7 @@ namespace overworld {
       }
 
       virtual Node_Status _get_status() const {
-        auto &p = const_cast<Profession_Reference&>(profession);
+        auto &p = const_cast<Profession_Reference &>(profession);
         auto &base_profession = p.get_base(p);
         return get_status_using_profession(base_profession);
       }
@@ -101,6 +103,41 @@ namespace overworld {
       }
 
       static const std::string get_advanced_debug_string(const Node &node);
+
+      void set_ownership(Ownership value) {
+        ownership = value;
+      }
+
+      Ownership get_ownership() const {
+        return ownership;
+      }
+
+      Storage_Type get_storage() const {
+        return storage;
+      }
+
+      void set_storage(Storage_Type value) {
+        storage = value;
+      }
+
+      const Ownership_Storage get_ownership_storage() const {
+        return {ownership, storage};
+      }
+//      void set_ownership(Ownership value) {
+//        profession.set_ownership(value);
+//      }
+//
+//      Ownership get_ownership() const {
+//        return profession.get_ownership();
+//      }
+//
+//      Storage_Type get_storage() const {
+//        return profession.get_storage();
+//      }
+//
+//      void set_storage(Storage_Type value) {
+//        profession.set_storage(value);
+//      }
 
   };
 

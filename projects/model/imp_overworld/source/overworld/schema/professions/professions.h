@@ -105,25 +105,25 @@ namespace overworld {
       const std::string get_name() const override;
 
       Ownership get_ownership() const override {
-        return Ownership::copyable;
+        return Ownership::copy;
       }
   };
 
-  enum class Reference_Type {
-      none,
-      owner,
-      pointer,
-      reference,
-  };
+//  enum class Reference_Type {
+//      none,
+//      owner,
+//      pointer,
+//      reference,
+//  };
 
   class Reference : public Profession {
   protected:
       Profession_Reference profession;
-      Reference_Type type;
+      Ownership_Storage info;
 
   public:
-      Reference(Reference_Type type, Profession_Reference &profession) :
-        profession(profession) {}
+      Reference(Ownership_Storage info, Profession_Reference &profession) :
+        info(info), profession(profession) {}
 
       virtual ~Reference() {}
 
@@ -136,7 +136,7 @@ namespace overworld {
       }
 
       Ownership get_ownership() const override {
-        return Ownership::reference;
+        return info.ownership;
       }
 
       const std::string get_name() const override {
@@ -144,8 +144,8 @@ namespace overworld {
       }
 
       const char get_symbol() const {
-        static char symbols[] = { '$', '*', '&'};
-        return symbols[(int)type];
+        static char symbols[] = {'?', '$', '*', '&'};
+        return symbols[(int) info.storage];
       }
 
       const std::string get_debug_name() const override {
@@ -164,9 +164,14 @@ namespace overworld {
         return profession;
       }
 
-      Reference_Type get_reference_type() const {
-        return type;
+      const Ownership_Storage &get_info() const {
+        return info;
       }
+
+      Storage_Type get_storage() const {
+        return info.storage;
+      }
+
   };
 
 //  class Pointer : public Reference {

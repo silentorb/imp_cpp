@@ -20,13 +20,12 @@ namespace solving {
     }
   }
 
-  const std::string render_ownership(const Profession_Reference &profession) {
-    if (profession.get_type() == Profession_Type::unknown
-        || profession.get_type() == Profession_Type::Void)
+  const std::string render_ownership(const Node &node) {
+    if (node.get_profession().get_type() == Profession_Type::Void)
       return "";
 
-    switch (profession.get_ownership()) {
-      case Ownership::copyable:
+    switch (node.get_ownership()) {
+      case Ownership::copy:
         return "+";
 
       case Ownership::reference:
@@ -56,7 +55,7 @@ namespace solving {
 
     result += node.get_debug_string() + render_node_status(node.get_status())
               + ":"
-              + render_ownership(profession)
+              + render_ownership(node)
               + profession.get()->get_debug_name();
 
     if (profession.get_type() == Profession_Type::reference)
@@ -159,7 +158,7 @@ namespace solving {
     std::cout << std::endl;
   }
 
-  bool is_root(lifetime::Node &node) {
+  bool is_root(Node &node) {
     for (auto connection : node.get_connections()) {
       if (&connection->get_second() == &node)
         return false;
@@ -167,32 +166,32 @@ namespace solving {
     return true;
   }
 
-  const std::string render_ownership2(lifetime::Lifetime_Ownership ownership) {
+  const std::string render_ownership2(overworld::Ownership ownership) {
     switch (ownership) {
-      case lifetime::Lifetime_Ownership::unknown:
+      case overworld::Ownership::unknown:
         return "unknown";
 
-      case lifetime::Lifetime_Ownership::anchor:
+      case overworld::Ownership::anchor:
         return "anchor";
 
-      case lifetime::Lifetime_Ownership::copy:
+      case overworld::Ownership::copy:
         return "copy";
 
-      case lifetime::Lifetime_Ownership::move:
+      case overworld::Ownership::move:
         return "move";
 
-      case lifetime::Lifetime_Ownership::implicit_move:
+      case overworld::Ownership::implicit_move:
         return "implicit_move";
 
-      case lifetime::Lifetime_Ownership::reference:
+      case overworld::Ownership::reference:
         return "reference";
     }
 
     throw std::runtime_error("Not supported.");
   }
 
-  const std::string get_node_debug_string2(lifetime::Node &node) {
-    auto &element = node.get_element().get_element();
+  const std::string get_node_debug_string2(Node &node) {
+    auto &element = node.get_element();
     auto &source_point = element.get_source_point().get_start();
 
     std::string result = "";
@@ -201,20 +200,20 @@ namespace solving {
         std::to_string(source_point.get_row()) + ":" +
         std::to_string(source_point.get_column()) + " ";
 
-    result += node.get_element().get_debug_string()
+    result += node.get_debug_string()
               + " | " + render_ownership2(node.get_ownership());
 
-    auto &profession = node.get_element().node->get_profession();
+    auto &profession = node.get_profession();
     if (profession.get_type() == Profession_Type::dungeon) {
       auto &dungeon = profession.get()->get_dungeon_interface();
       if (dungeon.get_arguments().size() > 0) {
-        result += " <" + render_ownership(dungeon.get_arguments()[0]->get_profession()) + ">";
+        result += " <" + render_ownership(dungeon.get_arguments()[0]->get_node()) + ">";
       }
     }
     return result;
   }
 
-  void log_node_recursive(lifetime::Node &node, const std::string &indent = "") {
+  void log_node_recursive(Node &node, const std::string &indent = "") {
     if (indent.size() > 2 * 20)
       throw std::runtime_error("Infinite loop.");
 
@@ -227,13 +226,13 @@ namespace solving {
     }
   }
 
-  void log_node_trees(lifetime::Graph &graph) {
+  void log_node_trees(overworld::Graph &graph) {
     std::cout << std::endl << "Logging ownership:" << std::endl;
 
-    std::vector<lifetime::Node *> nodes;
+    std::vector<Node *> nodes;
     for (auto &node : graph.get_nodes()) {
       if (is_root(*node))
-        insert_node(nodes, node.get());
+        insert_node(nodes, node);
     }
 
     for (auto &node : nodes) {

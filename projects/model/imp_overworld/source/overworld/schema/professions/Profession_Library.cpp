@@ -88,7 +88,7 @@ namespace overworld {
 //    if (previous.get_type() == Profession_Type::reference) {
 //      auto reference = dynamic_cast<Reference *>(previous.get());
       auto base_source = profession.get_base(profession);
-      auto new_profession = Profession_Reference(base_source, previous.get_ownership());
+      auto new_profession = Profession_Reference(base_source);
       node.set_profession(new_profession, setter);
 //    }
 //    else {
