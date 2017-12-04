@@ -24,6 +24,7 @@ namespace overworld {
       Generic_Parameter_Array generic_parameters;
       Enchantment_Container enchantments;
       File *header_file = nullptr;
+      std::vector<std::unique_ptr<Function>> variants;
 
   public:
       Function(const std::string &name, Parent parent, const source_mapping::Source_Range &source_point) :
@@ -45,7 +46,7 @@ namespace overworld {
         return element.get_name();
       }
 
-      bool is_constructor(const Parent & parent) const;
+      bool is_constructor(const Parent &parent) const;
 
       virtual bool is_inline() const {
         return false;
@@ -104,6 +105,7 @@ namespace overworld {
         return generic_parameters;
       }
 
+      bool has_generic_arguments() const;
 //      virtual Scope &get_parent_scope() = 0;
 //      virtual const Scope &get_parent_scope() const = 0;
 
@@ -143,6 +145,8 @@ namespace overworld {
       Common_Element &get_element() {
         return element;
       }
+
+      Function &get_or_create_variant(Dungeon &containing_dungeon);
   };
 
   using Function_Owner = std::unique_ptr<Function>;

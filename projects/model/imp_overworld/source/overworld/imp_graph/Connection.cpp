@@ -17,17 +17,15 @@ namespace overworld {
     if (&node == &get_first()) {
       auto &compound_profession = first.get_profession();
       auto &dungeon = compound_profession->get_dungeon_interface();
-      auto variant = static_cast<Dungeon *>(&dungeon);
-      auto &arguments = variant->get_arguments();
+      auto &arguments = dungeon.get_arguments();
       return arguments[parameter_index]->get_node().get_profession();
     }
     else {
       auto &compound_profession = first.get_profession();
       auto &dungeon = compound_profession->get_dungeon_interface();
-      auto variant = static_cast<Dungeon *>(&dungeon);
       std::vector<overworld::Profession_Reference> professions;
       auto argument_profession = second.get_profession();
-      argument_profession.set_ownership(variant->get_arguments()[0]->get_profession().get_ownership());
+      argument_profession.set_ownership(dungeon.get_arguments()[0]->get_profession().get_ownership());
       professions.push_back(argument_profession);
       auto new_variant = new Dungeon(dungeon, professions);
       auto dungeon_reference = new Dungeon_Reference(Dungeon_Owner(new_variant));

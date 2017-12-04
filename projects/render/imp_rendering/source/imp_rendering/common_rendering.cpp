@@ -1,4 +1,4 @@
-#include "common.h"
+#include "common_rendering.h"
 #include <overworld/schema/Function.h>
 #include <overworld/expressions/Flow_Control.h>
 #include <overworld/expressions/Return.h>
@@ -115,7 +115,8 @@ namespace imp_rendering {
              }), ", ") + ")";
   }
 
-  const std::string render_function_return_signature(const overworld::Function &function, const overworld::Scope &scope) {
+  const std::string
+  render_function_return_signature(const overworld::Function &function, const overworld::Scope &scope) {
     string return_text = function.is_constructor(scope.get_owner())
                          ? ""
                          : render_profession_with_spacing(function.get_signature().get_last().get_profession(),
@@ -566,9 +567,9 @@ namespace imp_rendering {
       return render_profession_owner(profession, scope);
 
     std::string decorator = "";
-    if (profession.get_ownership() == Ownership::pointer)
+    if (profession.get_storage() == Storage_Type::pointer)
       decorator = " *";
-    else if (profession.get_ownership() == Ownership::reference)
+    else if (profession.get_storage() == Storage_Type::reference)
       decorator = " &";
 
     return render_profession_internal(profession, scope) + decorator;

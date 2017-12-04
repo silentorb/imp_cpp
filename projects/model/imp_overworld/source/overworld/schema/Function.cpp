@@ -6,7 +6,7 @@
 
 namespace overworld {
 
-  bool Function::is_constructor(const Parent & parent) const {
+  bool Function::is_constructor(const Parent &parent) const {
     if (parent.get_type() == Parent_Type::dungeon)
       return parent.get_dungeon().get_name() == get_name();
 
@@ -29,7 +29,7 @@ namespace overworld {
       if (return_type.get_type() != Profession_Type::unknown)
         return true;
     }
-    
+
     bool result = false;
 
     exploring::Expression_Explorer explorer([&result](const Expression &expression) {
@@ -38,6 +38,38 @@ namespace overworld {
     });
     explorer.explore_block(block);
     return result;
+  }
+
+  bool Function::has_generic_arguments() const {
+    for (auto &argument : arguments) {
+      if (argument->get_profession()->get_type() == Profession_Type::generic_parameter)
+        return true;
+    }
+    return false;
+  }
+
+  Function &Function::get_or_create_variant(Dungeon &containing_dungeon) {
+    std::vector<Profession_Reference> new_arguments;
+    for (auto &argument : arguments) {
+      auto &profession = argument->get_profession();
+      if (profession.get_type() == Profession_Type::generic_parameter) {
+        auto generic_parameter = dynamic_cast<Generic_Parameter *>(profession.get());
+        auto generic_argument = containing_dungeon.get_generic_argument(*generic_parameter);
+        new_arguments.push_back(generic_argument->get_profession());
+      }
+      else {
+        new_arguments.push_back(profession);
+      }
+    }
+
+    for (auto &existing_function : variants) {
+      if (existing_function->get_signature().matches(new_arguments))
+        return *existing_function;
+    }
+
+    auto new_function = new Virtual_Function(*this, new_arguments);
+    variants.push_back(std::unique_ptr<Function>(new_function));
+    return *new_function;
   }
 
   void Function::finalize(overworld::Profession_Library &profession_library) {

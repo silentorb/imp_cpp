@@ -64,7 +64,7 @@ namespace lifetime {
             return Lifetime_Ownership::move;
 
           case Lifetime_Ownership::reference:
-            return Lifetime_Ownership::unknown;
+            return Lifetime_Ownership::reference;
 
           default:
             throw std::runtime_error("Not supported");
@@ -145,7 +145,8 @@ namespace lifetime {
   overworld::Ownership translate_ownership(Lifetime_Ownership ownership) {
     switch (ownership) {
       case Lifetime_Ownership::unknown:
-        return overworld::Ownership::unknown;
+        throw std::runtime_error("Not supported.");
+//        return overworld::Ownership::unknown;
 
       case Lifetime_Ownership::reference:
         return overworld::Ownership::reference;
@@ -160,7 +161,7 @@ namespace lifetime {
         return overworld::Ownership::owner;
 
       case Lifetime_Ownership::copy:
-        return overworld::Ownership::value;
+        return overworld::Ownership::copyable;
     }
 
     throw std::runtime_error("Not supported.");
@@ -176,15 +177,20 @@ namespace lifetime {
   }
 
   void Ownership_Solver::post_apply() {
+    std::vector<Node*> n;
     for (auto &node: graph.get_nodes()) {
+      n.push_back(node.get());
+      if (node->get_ownership() == lifetime::Lifetime_Ownership::unknown)
+        continue;
+
       auto overworld_ownership = translate_ownership(node->get_ownership());
       auto overworld_node = node->get_element().node;
       auto &profession = overworld_node->get_profession();
-      if (profession.get_ownership() == overworld::Ownership::pointer)
-        continue;
+//      if (profession.get_storage() == overworld::Storage_Type::pointer)
+//        continue;
 
       if (overworld_ownership == overworld::Ownership::owner && is_value(*profession)) {
-        overworld_node->get_profession().set_ownership(overworld::Ownership::value);
+        overworld_node->get_profession().set_ownership(overworld::Ownership::copyable);
       }
       else {
         overworld_node->get_profession().set_ownership(overworld_ownership);

@@ -17,10 +17,7 @@ namespace lifetime {
       case overworld::Ownership::reference:
         return Lifetime_Ownership::reference;
 
-      case overworld::Ownership::pointer:
-        return Lifetime_Ownership::reference;
-
-      case overworld::Ownership::value:
+      case overworld::Ownership::copyable:
         return Lifetime_Ownership::copy;
 
       case overworld::Ownership::move:
@@ -111,8 +108,12 @@ namespace lifetime {
       ++arg_it;
     }
 
+    auto parameters = function.get_signature().get_elements().begin();
     for (auto &argument : invoke.get_arguments()) {
-      reflect_expression(*argument);
+      auto &parameter = *parameters++;
+      auto &parameter_node = graph.get_or_create_variable_node(*parameter);
+      auto &argument_node = reflect_expression(*argument);
+      graph.connect(argument_node, parameter_node);
     }
   }
 

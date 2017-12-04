@@ -8,8 +8,6 @@
 namespace overworld {
 
   class Function_Signature : public Profession {
-//      Common_Element element;
-//      Element_Reference_Node node;
       std::vector<Parameter_Owner> elements;
 
   public:
@@ -98,6 +96,19 @@ namespace overworld {
             return element.get();
         }
         return nullptr;
+      }
+
+      bool matches(const std::vector<Profession_Reference>&professions) {
+        if (professions.size() != elements.size())
+          return false;
+
+        auto it = elements.begin();
+        for (auto &profession : professions) {
+          if (profession.get() == (*it++)->get_profession().get())
+            return false;
+        }
+
+        return true;
       }
   };
 }

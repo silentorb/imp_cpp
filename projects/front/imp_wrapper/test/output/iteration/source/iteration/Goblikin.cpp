@@ -5,7 +5,7 @@
 namespace iteration {
 
   void Goblikin::craft() {
-    auto ingredients = std::vector<Ingredient>();
+    auto ingredients = std::vector<std::unique_ptr<Ingredient>>();
     auto tail = std::unique_ptr<Ingredient>(new Ingredient());
     tail->name = "dragon's tail";
     ingredients.push_back(tail);

@@ -131,8 +131,8 @@ namespace overworld {
         return get()->get_type();
       }
 
-      void set_ownership(Ownership ownership) {
-        Profession_Reference::ownership = ownership;
+      void set_ownership(Ownership value) {
+        ownership = value;
       }
 
       File *get_file() const {

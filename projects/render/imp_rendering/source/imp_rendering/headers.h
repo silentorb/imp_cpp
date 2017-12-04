@@ -2,7 +2,7 @@
 
 #include <imp_artisan/Stroke.h>
 #include <overworld/schema/Dungeon.h>
-#include "common.h"
+#include "common_rendering.h"
 
 namespace imp_rendering {
 

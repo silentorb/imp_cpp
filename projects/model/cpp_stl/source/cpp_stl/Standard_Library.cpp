@@ -58,6 +58,6 @@ namespace cpp_stl {
     string_type->set_file(Profession_Library::get_string_file());
     set_external_name(*string_type, "std::string");
     string_type->get_enchantments().add_enchantment(Enchantment_Library::get_value());
-    string_type->set_default_ownership(overworld::Ownership::value);
+    string_type->set_default_ownership(overworld::Ownership::copyable);
   }
 }

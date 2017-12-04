@@ -26,14 +26,14 @@ namespace solving {
       return "";
 
     switch (profession.get_ownership()) {
-      case Ownership::value:
+      case Ownership::copyable:
         return "+";
 
       case Ownership::reference:
         return "&";
 
-      case Ownership::pointer:
-        return "*";
+      case Ownership::move:
+        return "~";
 
       case Ownership::owner:
         return "$";
@@ -193,25 +193,24 @@ namespace solving {
 
   const std::string get_node_debug_string2(lifetime::Node &node) {
     auto &element = node.get_element().get_element();
-//    auto &profession = node.get_profession();
     auto &source_point = element.get_source_point().get_start();
 
     std::string result = "";
     if (source_point.get_source_file())
-      result += //source_point.get_source_file()->get_short_file_path() + " " +
+      result +=
         std::to_string(source_point.get_row()) + ":" +
         std::to_string(source_point.get_column()) + " ";
 
     result += node.get_element().get_debug_string()
-      + " | " + render_ownership2(node.get_ownership());
-//              + render_node_status(node.get_status())
-//              + ":"
-//              + render_ownership(profession)
-//              + profession.get()->get_debug_name();
+              + " | " + render_ownership2(node.get_ownership());
 
-//    if (profession.get_type() == Profession_Type::reference)
-//      result += dynamic_cast<const Reference *>(profession.get())->is_pointer() ? "*" : "&";
-
+    auto &profession = node.get_element().node->get_profession();
+    if (profession.get_type() == Profession_Type::dungeon) {
+      auto &dungeon = profession.get()->get_dungeon_interface();
+      if (dungeon.get_arguments().size() > 0) {
+        result += " <" + render_ownership(dungeon.get_arguments()[0]->get_profession()) + ">";
+      }
+    }
     return result;
   }
 

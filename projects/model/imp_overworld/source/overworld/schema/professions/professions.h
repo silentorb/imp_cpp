@@ -105,7 +105,7 @@ namespace overworld {
       const std::string get_name() const override;
 
       Ownership get_ownership() const override {
-        return Ownership::value;
+        return Ownership::copyable;
       }
   };
 

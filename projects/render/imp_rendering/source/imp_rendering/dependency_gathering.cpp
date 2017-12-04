@@ -226,7 +226,7 @@ namespace imp_rendering {
           if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-          if (profession.get_ownership() == Ownership::value) {
+          if (profession.get_ownership() == Ownership::copyable) {
             helper.add_full(Member(base_profession));
           }
           else {
@@ -266,7 +266,7 @@ namespace imp_rendering {
           if (profession.get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-          if (profession.get_ownership() == Ownership::value) {
+          if (profession.get_ownership() == Ownership::copyable) {
             helper.add_full(Member(*profession));
           }
           else {

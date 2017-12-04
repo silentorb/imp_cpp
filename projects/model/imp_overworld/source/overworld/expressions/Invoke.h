@@ -30,7 +30,12 @@ namespace overworld {
       Function &get_function() const {
         auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
         auto &member = member_expression.get_member();
-        return member.get_function();
+        auto &function = member.get_function();
+        if (function.has_generic_arguments()) {
+          auto &member = find_member_container(*expression);
+          return function.get_or_create_variant(member.get_profession()->get_dungeon_interface());
+        }
+        return function;
       }
 
 //      Function_Signature &get_signature() const {

@@ -223,13 +223,22 @@ namespace overworld {
         return false;
       }
 
-//      Dungeon &get_original() override {
-//        return *this;
-//      }
-//
-//      const Dungeon &get_original() const override {
-//        return *this;
-//      }
+      int get_generic_parameter_index(Generic_Parameter &parameter) {
+        int index = 0;
+        for (auto &item : generic_parameters) {
+          if (item == &parameter)
+            return index;
+
+          ++index;
+        }
+
+        return -1;
+      }
+
+      Generic_Argument *get_generic_argument(Generic_Parameter &generic_parameter) {
+        auto index = get_generic_parameter_index(generic_parameter);
+        return get_arguments()[index].get();
+      }
   };
 
   Function &create_variant_function(Dungeon &owning_dungeon, Function &original_function);
