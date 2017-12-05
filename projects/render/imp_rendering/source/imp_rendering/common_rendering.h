@@ -21,7 +21,7 @@ namespace imp_rendering {
   const std::string render_profession(const overworld::Node &node, const overworld::Scope &scope);
   const std::string render_profession_owner(const overworld::Profession_Reference &profession, const overworld::Scope &scope);
   const std::string render_separator(const overworld::Expression &expression);
-  const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
+  const std::string render_cast(const overworld::Node &target, const overworld::Node &source,
                                 const std::string &value);
 //  const std::string render_profession_as_owner_reference(const overworld::Profession &profession);
 

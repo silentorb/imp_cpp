@@ -203,7 +203,7 @@ namespace imp_rendering {
       void process_function_declaration(const Function &function) {
         for (auto &parameter: function.get_signature().get_elements()) {
           auto &profession = parameter->get_profession();
-          if (parameter->get_node().get_ownership() == Ownership::owner) {
+          if (parameter->get_node().get_ownership() == Ownership::anchor) {
             helper.add_full(standard_library.get_unique_pointer());
           }
           helper.add_partial(Member(*profession));
@@ -223,10 +223,14 @@ namespace imp_rendering {
           auto &profession = member.get_profession();
           auto &base_profession = profession.get_base();
 //        helper.add_full(profession);
-          if (profession.get_ownership() == Ownership::owner) {
+          auto ownership = member.get_type() == Member_Type::profession
+                           ? Ownership::unknown
+                           : get_member_node(member).get_ownership();
+
+          if (ownership == Ownership::anchor) {
             helper.add_full(standard_library.get_unique_pointer());
           }
-          if (profession.get_ownership() == Ownership::copy) {
+          if (ownership == Ownership::copy) {
             helper.add_full(Member(base_profession));
           }
           else {
@@ -263,7 +267,7 @@ namespace imp_rendering {
 
         for (auto &minion: dungeon.get_minions()) {
           auto &profession = minion->get_profession();
-          if (minion->get_node().get_ownership() == Ownership::owner) {
+          if (minion->get_node().get_ownership() == Ownership::anchor) {
             helper.add_full(standard_library.get_unique_pointer());
           }
           if (minion->get_node().get_ownership() == Ownership::copy) {

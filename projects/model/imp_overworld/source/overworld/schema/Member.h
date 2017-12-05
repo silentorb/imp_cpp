@@ -114,6 +114,10 @@ namespace overworld {
 
   Node &get_member_node(Member &member);
 
+  inline const Node &get_member_node(const Member &member) {
+    return get_member_node(const_cast<Member &>(member));
+  };
+
   Profession_Reference &get_member_profession_reference(Member &member);
   Profession_Reference get_member_profession_reference2(Member &member);
 

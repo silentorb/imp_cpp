@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Graph.h"
-
 namespace lifetime {
 
   template<typename Interface, typename Node>

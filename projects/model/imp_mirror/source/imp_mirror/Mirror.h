@@ -33,11 +33,11 @@ namespace imp_mirror {
 
   struct Profession_Reflection {
       overworld::Profession_Reference profession;
-      overworld::Ownership ownership;
+      overworld::Ownership_Storage attributes;
 
       Profession_Reflection(const overworld::Profession_Reference &profession,
-                            overworld::Ownership ownership = overworld::Ownership::unknown) :
-        profession(profession), ownership(ownership) {}
+                            overworld::Ownership_Storage attributes = {}) :
+        profession(profession), attributes(attributes) {}
   };
 
   class Mirror {

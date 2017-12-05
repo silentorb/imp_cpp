@@ -120,8 +120,13 @@ namespace overworld {
         storage = value;
       }
 
-      const Ownership_Storage get_ownership_storage() const {
+      const Ownership_Storage get_attributes() const {
         return {ownership, storage};
+      }
+
+      void set_attributes(const Ownership_Storage &info) {
+        ownership = info.ownership;
+        storage = info.storage;
       }
 //      void set_ownership(Ownership value) {
 //        profession.set_ownership(value);

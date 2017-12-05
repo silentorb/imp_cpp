@@ -1,7 +1,6 @@
 #pragma once
 
 #include <overworld/schema/Dungeon.h>
-#include <solving/lifetime/Graph.h>
 
 namespace imp_wrapper {
 

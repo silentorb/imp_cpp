@@ -23,7 +23,8 @@ namespace overworld {
       Generic_Argument_Array arguments;
       Dungeon *original = nullptr;
       File *header_file = nullptr;
-      Ownership default_ownership = Ownership::unknown;
+//      Ownership default_ownership = Ownership::;
+      Storage_Type default_storage = Storage_Type::pointer;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession_Reference> contracts;
       std::vector<std::unique_ptr<Generic_Parameter>> owned_generic_parameters;
@@ -38,13 +39,13 @@ namespace overworld {
       Dungeon(const std::string &name, Scope &parent) :
         Dungeon(name, parent, source_mapping::Source_Range()) {}
 
-      Dungeon(Dungeon &original, std::vector<Profession_Reference> &professions) :
+      Dungeon(Dungeon &original) :
         Dungeon(original.get_name(), *original.get_scope().get_parent_scope(), source_mapping::Source_Range()) {
         this->original = &original;
         generic_parameters = original.get_generic_parameters();
-        for (auto i = 0; i < generic_parameters.size(); ++i) {
-          arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
-        }
+//        for (auto i = 0; i < generic_parameters.size(); ++i) {
+//          arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
+//        }
       }
 
       explicit Dungeon(const std::string &name);
@@ -52,6 +53,15 @@ namespace overworld {
       Dungeon(const Dungeon &) = delete;
 
       virtual ~Dungeon() {}
+
+      Generic_Argument &add_generic_argument(const Profession_Reference &profession, const Ownership_Storage &info) {
+        auto index = arguments.size();
+        auto argument = new Generic_Argument(*generic_parameters[index], profession);
+        arguments.push_back(Generic_Argument_Owner(argument));
+        argument->get_node().set_ownership(info.ownership);
+        argument->get_node().set_storage(info.storage);
+        return *argument;
+      }
 
       const std::string get_name() const {
         return name;
@@ -89,9 +99,21 @@ namespace overworld {
         header_file = &value;
       }
 
-      Ownership get_ownership() const {
-        return default_ownership;
+      Storage_Type get_default_storage() const {
+        return default_storage;
       }
+
+      void set_default_storage(Storage_Type default_storage) {
+        Dungeon::default_storage = default_storage;
+      }
+
+//      Ownership get_ownership() const {
+//        return default_ownership;
+//      }
+//
+//      void set_default_ownership(Ownership value) {
+//        this->default_ownership = value;
+//      }
 
       Scope &get_scope() {
         return scope;
@@ -148,10 +170,6 @@ namespace overworld {
       bool is_external() const;
 
       Dungeon &add_dungeon(std::unique_ptr<Dungeon> dungeon);
-
-      void set_default_ownership(Ownership value) {
-        this->default_ownership = value;
-      }
 
       Dungeon *get_base_dungeon() {
         return base_dungeon;

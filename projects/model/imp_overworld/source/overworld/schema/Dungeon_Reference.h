@@ -28,10 +28,6 @@ namespace overworld {
         return Profession_Type::dungeon;
       }
 
-      Ownership get_ownership() const override {
-        return dungeon.get_ownership();
-      }
-
       Dungeon &get_dungeon_interface() {
         return dungeon;
       }

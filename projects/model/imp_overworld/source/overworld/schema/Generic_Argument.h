@@ -10,7 +10,7 @@ namespace overworld {
       Node node;
 
   public:
-      Generic_Argument(Generic_Parameter &parameter, Profession_Reference &profession) :
+      Generic_Argument(Generic_Parameter &parameter, const Profession_Reference &profession) :
         element(Element_Type::other, profession.get_name() + " (Generic Argument)",
                 parameter.get_node().get_element().get_parent(),
                 parameter.get_element().get_source_point()),

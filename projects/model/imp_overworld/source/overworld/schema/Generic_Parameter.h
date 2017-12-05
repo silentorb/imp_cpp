@@ -90,10 +90,6 @@ namespace overworld {
         return Profession_Type::generic_parameter;
       }
 
-      Ownership get_ownership() const override {
-        return Ownership::unknown;
-      }
-
       Generic_Parameter_Element &get_element() {
         return element;
       }

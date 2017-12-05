@@ -34,10 +34,6 @@ namespace overworld {
         return nullptr;
       }
 
-      Ownership get_ownership() const override {
-        return Ownership::unknown;
-      }
-
       const std::string get_name() const override {
         return "Function Signature";
       }

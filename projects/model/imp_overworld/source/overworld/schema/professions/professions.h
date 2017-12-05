@@ -28,10 +28,6 @@ namespace overworld {
       const std::string get_name() const override {
         return "?";
       }
-
-      Ownership get_ownership() const override {
-        return Ownership::unknown;
-      }
   };
 
   class Void : public Profession {
@@ -55,11 +51,6 @@ namespace overworld {
       const std::string get_name() const override {
         return "void";
       }
-
-      Ownership get_ownership() const override {
-        return Ownership::unknown;
-      }
-
   };
 
   enum class Primitive_Type {
@@ -103,10 +94,6 @@ namespace overworld {
       }
 
       const std::string get_name() const override;
-
-      Ownership get_ownership() const override {
-        return Ownership::copy;
-      }
   };
 
 //  enum class Reference_Type {
@@ -135,7 +122,7 @@ namespace overworld {
         return nullptr;
       }
 
-      Ownership get_ownership() const override {
+      Ownership get_ownership() const {
         return info.ownership;
       }
 

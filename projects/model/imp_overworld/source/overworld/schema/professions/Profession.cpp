@@ -1,6 +1,7 @@
 #include <overworld/schema/Dungeon_Reference.h>
 #include <overworld/schema/Dungeon.h>
 #include "Profession.h"
+#include "professions.h"
 
 namespace overworld {
 
@@ -35,4 +36,21 @@ namespace overworld {
            ? &get_dungeon_interface()
            : nullptr;
   }
+
+//  Ownership get_profession_default_ownership(Profession &profession) {
+//    switch (profession.get_type()) {
+//
+//      case Profession_Type::dungeon:
+//        return profession.get_dungeon_interface().get_ownership();
+//
+//      case Profession_Type ::primitive:
+//        return Ownership::copy;
+//
+//      case Profession_Type ::reference:
+//        return static_cast<Reference&>(profession).get_ownership();
+//
+//      default:
+//        return Ownership::unknown;
+//    }
+//  }
 }

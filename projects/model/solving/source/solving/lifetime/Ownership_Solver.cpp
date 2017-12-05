@@ -73,7 +73,9 @@ namespace lifetime {
 
       Progress try_push(Node &first, Node &second, Connection &connection, Direction not_used) {
         if (second.get_ownership() != overworld::Ownership::unknown)
-          throw std::runtime_error("Should not be setting ownership of a known node.");
+          return 0;
+
+//          throw std::runtime_error("Should not be setting ownership of a known node.");
 
         auto is_forward = &connection.get_first() == &first;
         auto ownership = first.get_ownership();
@@ -166,15 +168,6 @@ namespace lifetime {
 //
 //    throw std::runtime_error("Not supported.");
 //  }
-
-  bool is_value(Profession &profession) {
-    if (profession.get_type() == Profession_Type::dungeon) {
-      auto &dungeon = profession.get_dungeon_interface();
-      return dungeon.has_enchantment(Enchantment_Library::get_value());
-    }
-
-    return false;
-  }
 
 //  void Ownership_Solver::post_apply() {
 //    std::vector<Node*> n;

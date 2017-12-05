@@ -89,8 +89,10 @@ namespace imp_wrapper {
 //    ownership_mirror.reflect(overworld_root);
 
     lifetime::Ownership_Solver ownership_solver(graph);
+    std::cout << std::endl << "Logging initial ownership:" << std::endl;
     solving::log_node_trees(graph);
     ownership_solver.solve();
+    std::cout << std::endl << "Logging final ownership:" << std::endl;
     solving::log_node_trees(graph);
 #if DEBUG_SOLVER > 0
     solving::log_nodes(graph);

@@ -21,6 +21,10 @@ const std::string load_file(const std::string &file_path) {
 }
 
 void _compare(const std::string &first_file, const std::string &second_file) {
+#ifdef DISABLE_DIFF
+  return;
+#endif
+
   auto first = load_file(first_file);
   auto second = load_file(second_file);
   if (first == second) {

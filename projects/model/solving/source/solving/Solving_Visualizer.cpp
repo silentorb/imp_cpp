@@ -1,6 +1,5 @@
 #include "Solving_Visualizer.h"
 #include <iostream>
-#include <solving/lifetime/Graph.h>
 
 using namespace overworld;
 
@@ -34,7 +33,7 @@ namespace solving {
       case Ownership::move:
         return "~";
 
-      case Ownership::owner:
+      case Ownership::anchor:
         return "$";
 
       default:
@@ -227,8 +226,6 @@ namespace solving {
   }
 
   void log_node_trees(overworld::Graph &graph) {
-    std::cout << std::endl << "Logging ownership:" << std::endl;
-
     std::vector<Node *> nodes;
     for (auto &node : graph.get_nodes()) {
       if (is_root(*node))

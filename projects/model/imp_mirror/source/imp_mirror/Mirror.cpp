@@ -98,7 +98,7 @@ namespace imp_mirror {
   }
 
   void Mirror::apply_node_assignment(overworld::Node &target, overworld::Node &value) {
-    connect(target, value);
+    connect(value, target);
 
     // Optimization to reduce the amount of graph solving later on
     // since so often variables types are defined by assigning them an instantiation.
@@ -120,7 +120,7 @@ namespace imp_mirror {
     auto value = reflect_expression(*input_assignment.get_value(), scope);
 
     apply_node_assignment(*last.get_node(), *value->get_node());
-    connect(*last.get_node(), *value->get_node());
+    connect(*value->get_node(), *last.get_node());
     return overworld::Expression_Owner(new overworld::Assignment(target, operator_type, value));
   }
 
@@ -220,7 +220,7 @@ namespace imp_mirror {
     auto expression = reflect_expression(input_return.get_value(), scope);
     auto &first = scope.get_overworld_scope().get_owner().get_function()
       .get_signature().get_last().get_node();
-    connect(first, *expression->get_node());
+    connect(*expression->get_node(), first);
     return overworld::Expression_Owner(
       new overworld::Return_With_Value(std::move(expression)));
   }
@@ -308,26 +308,35 @@ namespace imp_mirror {
 
   using Prepared_Profession_Tuple = std::tuple<overworld::Profession_Reference, overworld::Dungeon *>;
 
-  Prepared_Profession_Tuple prepare_profession(overworld::Profession_Reference &initial_profession) {
-    if (initial_profession.get_type() == overworld::Profession_Type::dungeon) {
-      auto dungeon_reference = dynamic_cast<overworld::Dungeon_Reference *>(initial_profession.get());
-      auto &dungeon = dungeon_reference->get_dungeon();
-      for (auto &parameter: dungeon.get_generic_parameters()) {
-        if (parameter->get_type() == overworld::Profession_Type::generic_parameter) {
-          std::vector<overworld::Profession_Reference> professions;
-          professions.push_back(overworld::Profession_Library::get_unknown());
-          auto variant = new overworld::Dungeon(dungeon, professions);
-          auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(variant));
-          return Prepared_Profession_Tuple(
-            overworld::Profession_Reference(dungeon_reference2),
-            variant
-          );
-        }
-      }
+//  Prepared_Profession_Tuple prepare_profession(overworld::Profession_Reference &initial_profession) {
+//    if (initial_profession.get_type() == overworld::Profession_Type::dungeon) {
+//      auto dungeon_reference = dynamic_cast<overworld::Dungeon_Reference *>(initial_profession.get());
+//      auto &dungeon = dungeon_reference->get_dungeon();
+//      for (auto &parameter: dungeon.get_generic_parameters()) {
+//        if (parameter->get_type() == overworld::Profession_Type::generic_parameter) {
+//          std::vector<overworld::Profession_Reference> professions;
+//          professions.push_back(overworld::Profession_Library::get_unknown());
+//          auto variant = new overworld::Dungeon(dungeon, professions);
+//          auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(variant));
+//          return Prepared_Profession_Tuple(
+//            overworld::Profession_Reference(dungeon_reference2),
+//            variant
+//          );
+//        }
+//      }
+//    }
+
+//    return Prepared_Profession_Tuple(
+//      initial_profession, nullptr);
+//  }
+
+  bool is_value(overworld::Profession &profession) {
+    if (profession.get_type() == overworld::Profession_Type::dungeon) {
+      auto &dungeon = profession.get_dungeon_interface();
+      return dungeon.has_enchantment(overworld::Enchantment_Library::get_value());
     }
 
-    return Prepared_Profession_Tuple(
-      initial_profession, nullptr);
+    return false;
   }
 
   overworld::Expression_Owner Mirror::reflect_instantiation(const underworld::Instantiation &instantiation,
@@ -335,10 +344,6 @@ namespace imp_mirror {
     auto &input_profession_expression = instantiation.get_profession_expression();
     auto reflection = reflect_profession(input_profession_expression, scope);
     auto &output_profession = reflection.profession;
-//    auto profession_tuple = prepare_profession(prof->get_last().get_profession());
-
-//    auto &output_profession = std::get<0>(profession_tuple);
-//    auto variant = std::get<1>(profession_tuple);
 
     if (output_profession.get_type() == overworld::Profession_Type::unknown)
       throw Code_Error("Could not instantiate type " + output_profession.get_name(), instantiation.get_source_point());
@@ -348,13 +353,14 @@ namespace imp_mirror {
                                                              scope.get_overworld_scope().get_owner(),
                                                              instantiation.get_source_point());
     overworld::Expression_Owner result(output_instantiation);
-//    if (variant) {
-////      output_instantiation->set_dungeon_variant(variant);
-//    }
-//    else {
-//
-////      connect(*output_instantiation->get_node(), output_profession.get_node());
-//    }
+
+    auto &attributes = reflection.attributes;
+    output_instantiation->get_node()->set_storage(attributes.storage);
+    auto ownership = attributes.storage == overworld::Storage_Type::value || is_value(*reflection.profession)
+                     ? overworld::Ownership::copy
+                     : overworld::Ownership::implicit_move;
+
+    output_instantiation->get_node()->set_ownership(ownership);
 
     for (auto &pair : source_arguments) {
       auto name = pair.first;
@@ -364,7 +370,7 @@ namespace imp_mirror {
 
       auto &minion = input_member->get_minion();
       auto value = reflect_expression(*pair.second, scope);
-      connect(minion.get_node(), *value->get_node());
+      connect(*value->get_node(), minion.get_node());
       output_instantiation->add_expression(minion, std::move(value));
     }
 
@@ -567,13 +573,13 @@ namespace imp_mirror {
     auto &member = reflect_dungeon_member(input_variant.get_original(), scope);
     auto &original = member.get_dungeon();
     auto &input_arguments = input_variant.get_arguments();
-    std::vector<overworld::Profession_Reference> professions;
+
+    auto output_variant = new overworld::Dungeon(original);
+    auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(output_variant));
     for (auto &input_argument : input_arguments) {
       auto reflection = reflect_profession(*input_argument, scope);
-      professions.push_back(reflection.profession);
+      output_variant->add_generic_argument(reflection.profession, reflection.attributes);
     }
-    auto output_variant = new overworld::Dungeon(original, professions);
-    auto dungeon_reference2 = new overworld::Dungeon_Reference(overworld::Dungeon_Owner(output_variant));
     return overworld::Profession_Reference(dungeon_reference2);
   }
 
@@ -691,7 +697,7 @@ namespace imp_mirror {
         return overworld::Ownership::reference;
 
       case underworld::Decorator_Type::owner:
-        return overworld::Ownership::owner;
+        return overworld::Ownership::anchor;
 
 //      case underworld::Decorator_Type::pointer:
 //        return overworld::Ownership::pointer;
@@ -704,10 +710,11 @@ namespace imp_mirror {
   Profession_Reflection Mirror::reflect_profession(const underworld::Profession &profession, Scope &scope) {
     switch (profession.get_type()) {
       case underworld::Profession_Type::primitive:
-        return reflect_primitive(cast<underworld::Primitive>(profession));
+        return {reflect_primitive(cast<underworld::Primitive>(profession)), overworld::Ownership::copy};
 
       case underworld::Profession_Type::token: {
-        return reflect_dungeon_reference(profession, scope);
+        auto result = reflect_dungeon_reference(profession, scope);
+        return {result, result->get_dungeon_interface().get_default_storage()};
       }
 
 //      case underworld::Profession_Type::token: {
@@ -856,7 +863,7 @@ namespace imp_mirror {
                             input_minion.get_source_point())
     );
 
-    minion->get_node().set_ownership(reflection.ownership);
+    minion->get_node().set_attributes(reflection.attributes);
     return minion;
   }
 

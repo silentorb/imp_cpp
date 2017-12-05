@@ -72,10 +72,6 @@ namespace overworld {
         return "Temporary_Interface";
       }
 
-      Ownership get_ownership() const override {
-        return Ownership::unknown;
-      }
-
       Expression_Owner create_temporary_member(Member_Expression &previous_expression,
                                                const std::string &child_name,
                                                const source_mapping::Source_Range source_point,

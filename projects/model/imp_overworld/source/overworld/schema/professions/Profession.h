@@ -25,7 +25,6 @@ namespace overworld {
       copy,
       implicit_move,
       move,
-      owner,
       reference,
   };
 
@@ -41,8 +40,14 @@ namespace overworld {
       Ownership ownership;
       Storage_Type storage;
 
-      Ownership_Storage(Ownership ownership = Ownership::unknown, Storage_Type storage = Storage_Type::unknown) :
+      Ownership_Storage() :
+        ownership(Ownership::unknown), storage(Storage_Type::unknown) {}
+
+      Ownership_Storage(Ownership ownership, Storage_Type storage = Storage_Type::unknown) :
         ownership(ownership), storage(storage) {}
+
+      Ownership_Storage(Storage_Type storage) :
+        storage(storage) {}
   };
 
   enum class Profession_Type {
@@ -77,9 +82,9 @@ namespace overworld {
 
 //      virtual Node &get_node() = 0;
 
-      virtual Ownership get_ownership() const {
-        return Ownership::unknown;
-      }
+//      virtual Ownership get_ownership() const {
+//        return Ownership::unknown;
+//      }
 
       virtual Profession_Reference &get_base(Profession_Reference &self) {
         return self;
@@ -102,6 +107,8 @@ namespace overworld {
 
       Dungeon *as_variant();
   };
+
+  Ownership get_profession_default_ownership(Profession &profession);
 
   using Profession_Owner = std::unique_ptr<Profession>;
 

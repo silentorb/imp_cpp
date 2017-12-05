@@ -38,7 +38,7 @@ namespace imp_rendering {
   };
 
   Ownership_Storage get_reference_type(const Node &node) {
-    return node.get_ownership_storage();
+    return node.get_attributes();
   }
 
   Ownership_Storage get_reference_type(const Profession_Reference &profession) {
@@ -59,7 +59,7 @@ namespace imp_rendering {
 
   const std::string render_cast(const Ownership_Storage &target, const Ownership_Storage &source,
                                 const std::string &text) {
-    if (target.ownership == Ownership::owner)
+    if (target.ownership == Ownership::anchor)
       return "std::move(" + text + ")";
 
     if (target.storage == Storage_Type::reference && source.storage == Storage_Type::pointer)
@@ -315,7 +315,7 @@ namespace imp_rendering {
     auto core = render_profession_internal(profession, scope) + "("
                 + render_dictionary(instantiation.get_dictionary(), scope) + ")";
 
-    if (instantiation.get_node()->get_ownership() == Ownership::owner) {
+    if (instantiation.get_node()->get_ownership() == Ownership::anchor) {
       return render_profession_owner(profession, scope) + "(new " + core + ")";
     }
 
@@ -336,8 +336,8 @@ namespace imp_rendering {
 
     return render_expression(target, scope) + ' '
            + render_operator(declaration.get_operator()) + ' '
-           + render_cast(*target.get_node()->get_profession(),
-                         *value.get_node()->get_profession(),
+           + render_cast(*target.get_node(),
+                         *value.get_node(),
                          render_expression(value, scope))
            + ";";
   }
@@ -373,7 +373,7 @@ namespace imp_rendering {
 
     auto &profession = expression.get_profession();
     switch (expression.get_node()->get_ownership()) {
-      case Ownership::owner:
+      case Ownership::anchor:
         return "->";
 
       default:
@@ -381,13 +381,14 @@ namespace imp_rendering {
     }
   }
 
-  const std::string render_cast(const overworld::Profession &target, const overworld::Profession &source,
+  const std::string render_cast(const overworld::Node &target, const overworld::Node &source,
                                 const std::string &value) {
-    if (target.get_type() == Profession_Type::reference && source.get_type() == Profession_Type::reference) {
+    if (target.get_profession().get_type() == Profession_Type::reference
+        && source.get_profession().get_type() == Profession_Type::reference) {
       auto &target_reference = dynamic_cast<const Reference &>(target);
       auto &source_reference = dynamic_cast<const Reference &>(source);
       if (target_reference.get_storage() == Storage_Type::pointer) {
-        if (source_reference.get_ownership() == Ownership::owner || source_reference.get_ownership() == Ownership::anchor) {
+        if (source_reference.get_ownership() == Ownership::anchor) {
           return value + ".get()";
         }
         else if (source_reference.get_storage() != Storage_Type::pointer) {
@@ -564,7 +565,7 @@ namespace imp_rendering {
   }
 
   const std::string render_profession(const Node &node, const Scope &scope) {
-    if (node.get_ownership() == Ownership::owner)
+    if (node.get_ownership() == Ownership::anchor)
       return render_profession_owner(node.get_profession(), scope);
 
     std::string decorator = "";
