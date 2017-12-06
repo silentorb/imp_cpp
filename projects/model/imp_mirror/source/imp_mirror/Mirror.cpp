@@ -697,7 +697,7 @@ namespace imp_mirror {
         return overworld::Ownership::reference;
 
       case underworld::Decorator_Type::owner:
-        return overworld::Ownership::anchor;
+        return overworld::Ownership::owner;
 
 //      case underworld::Decorator_Type::pointer:
 //        return overworld::Ownership::pointer;
@@ -717,11 +717,6 @@ namespace imp_mirror {
         return {result, result->get_dungeon_interface().get_default_storage()};
       }
 
-//      case underworld::Profession_Type::token: {
-//        auto &token = cast<underworld::Token_Profession>(profession);
-//        return reflect_dungeon_usage(token, scope);
-//      }
-
       case underworld::Profession_Type::unknown:
         return profession_library.get_unknown();
 
@@ -731,7 +726,6 @@ namespace imp_mirror {
         auto output_child_profession = reflect_profession(input_child_profession, scope);
         auto type = map_reference_decorator(decorator.get_decorator_type());
         return {output_child_profession.profession, type};
-//        return overworld::Profession_Reference(new overworld::Reference(type, output_child_profession));
       }
 
       case underworld::Profession_Type::function: {

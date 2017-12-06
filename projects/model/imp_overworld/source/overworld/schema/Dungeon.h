@@ -41,6 +41,9 @@ namespace overworld {
 
       Dungeon(Dungeon &original) :
         Dungeon(original.get_name(), *original.get_scope().get_parent_scope(), source_mapping::Source_Range()) {
+        if (original.get_original())
+          throw std::runtime_error("Not yet supported.");
+
         this->original = &original;
         generic_parameters = original.get_generic_parameters();
 //        for (auto i = 0; i < generic_parameters.size(); ++i) {

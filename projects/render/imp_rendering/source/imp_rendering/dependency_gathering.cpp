@@ -203,7 +203,7 @@ namespace imp_rendering {
       void process_function_declaration(const Function &function) {
         for (auto &parameter: function.get_signature().get_elements()) {
           auto &profession = parameter->get_profession();
-          if (parameter->get_node().get_ownership() == Ownership::anchor) {
+          if (parameter->get_node().get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
           helper.add_partial(Member(*profession));
@@ -227,7 +227,7 @@ namespace imp_rendering {
                            ? Ownership::unknown
                            : get_member_node(member).get_ownership();
 
-          if (ownership == Ownership::anchor) {
+          if (ownership == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
           if (ownership == Ownership::copy) {
@@ -267,7 +267,7 @@ namespace imp_rendering {
 
         for (auto &minion: dungeon.get_minions()) {
           auto &profession = minion->get_profession();
-          if (minion->get_node().get_ownership() == Ownership::anchor) {
+          if (minion->get_node().get_ownership() == Ownership::owner) {
             helper.add_full(standard_library.get_unique_pointer());
           }
           if (minion->get_node().get_ownership() == Ownership::copy) {

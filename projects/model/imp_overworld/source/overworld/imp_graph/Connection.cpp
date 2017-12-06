@@ -22,12 +22,11 @@ namespace overworld {
     }
     else {
       auto &compound_profession = first.get_profession();
-      auto &dungeon = compound_profession->get_dungeon_interface();
+      auto &initial_dungeon = compound_profession->get_dungeon_interface();
       auto argument_profession = second.get_profession();
-      second.set_ownership(dungeon.get_arguments()[0]->get_node().get_ownership());
-//      professions.push_back(argument_profession);
-      auto new_variant = new Dungeon(dungeon);
-      new_variant->add_generic_argument(argument_profession, {});
+      second.set_ownership(initial_dungeon.get_arguments()[0]->get_node().get_ownership());
+      auto new_variant = new Dungeon(*initial_dungeon.get_original());
+      new_variant->add_generic_argument(argument_profession, second.get_attributes());
       auto dungeon_reference = new Dungeon_Reference(Dungeon_Owner(new_variant));
       return Profession_Reference(dungeon_reference);
     }

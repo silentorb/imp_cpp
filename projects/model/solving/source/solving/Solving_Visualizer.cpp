@@ -33,7 +33,7 @@ namespace solving {
       case Ownership::move:
         return "~";
 
-      case Ownership::anchor:
+      case Ownership::owner:
         return "$";
 
       default:
@@ -170,7 +170,7 @@ namespace solving {
       case overworld::Ownership::unknown:
         return "unknown";
 
-      case overworld::Ownership::anchor:
+      case overworld::Ownership::owner:
         return "anchor";
 
       case overworld::Ownership::copy:

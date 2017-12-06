@@ -12,7 +12,7 @@ namespace overworld {
     scope(&parent, Parent(*this)),
     name(name),
     self(new Dungeon_Reference(*this))
-//        node(element, this, nullptr)
+
   {}
 
   Dungeon::Dungeon(const std::string &name) :

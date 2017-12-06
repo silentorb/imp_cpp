@@ -9,8 +9,13 @@ namespace overworld {
   class Literal : public Common_Node_Expression {
 
   public:
-      Literal(Parent parent, Profession_Reference profession, const source_mapping::Source_Range &source_range) :
-        Common_Node_Expression(parent, profession, source_range) {}
+      Literal(Parent parent, const Profession_Reference &profession, const source_mapping::Source_Range &source_range) :
+        Common_Node_Expression(parent, profession, source_range) {
+        get_node()->set_attributes({
+                                     Storage_Type::value,
+                                     Ownership::copy,
+                                   });
+      }
 
       Expression_Type get_type() const override {
         return Expression_Type::literal;

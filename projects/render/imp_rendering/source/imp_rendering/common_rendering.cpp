@@ -59,7 +59,7 @@ namespace imp_rendering {
 
   const std::string render_cast(const Ownership_Storage &target, const Ownership_Storage &source,
                                 const std::string &text) {
-    if (target.ownership == Ownership::anchor)
+    if (target.ownership == Ownership::owner)
       return "std::move(" + text + ")";
 
     if (target.storage == Storage_Type::reference && source.storage == Storage_Type::pointer)
@@ -315,7 +315,8 @@ namespace imp_rendering {
     auto core = render_profession_internal(profession, scope) + "("
                 + render_dictionary(instantiation.get_dictionary(), scope) + ")";
 
-    if (instantiation.get_node()->get_ownership() == Ownership::anchor) {
+    auto ownership =instantiation.get_node()->get_ownership();
+    if (ownership == Ownership::owner || ownership == Ownership::implicit_move) {
       return render_profession_owner(profession, scope) + "(new " + core + ")";
     }
 
@@ -373,7 +374,7 @@ namespace imp_rendering {
 
     auto &profession = expression.get_profession();
     switch (expression.get_node()->get_ownership()) {
-      case Ownership::anchor:
+      case Ownership::owner:
         return "->";
 
       default:
@@ -388,7 +389,7 @@ namespace imp_rendering {
       auto &target_reference = dynamic_cast<const Reference &>(target);
       auto &source_reference = dynamic_cast<const Reference &>(source);
       if (target_reference.get_storage() == Storage_Type::pointer) {
-        if (source_reference.get_ownership() == Ownership::anchor) {
+        if (source_reference.get_ownership() == Ownership::owner) {
           return value + ".get()";
         }
         else if (source_reference.get_storage() != Storage_Type::pointer) {
@@ -565,7 +566,7 @@ namespace imp_rendering {
   }
 
   const std::string render_profession(const Node &node, const Scope &scope) {
-    if (node.get_ownership() == Ownership::anchor)
+    if (node.get_ownership() == Ownership::owner)
       return render_profession_owner(node.get_profession(), scope);
 
     std::string decorator = "";

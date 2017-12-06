@@ -21,7 +21,7 @@ namespace overworld {
   enum class Ownership {
       unknown,
 
-      anchor,
+      owner,
       copy,
       implicit_move,
       move,
@@ -46,8 +46,8 @@ namespace overworld {
       Ownership_Storage(Ownership ownership, Storage_Type storage = Storage_Type::unknown) :
         ownership(ownership), storage(storage) {}
 
-      Ownership_Storage(Storage_Type storage) :
-        storage(storage) {}
+      Ownership_Storage(Storage_Type storage, Ownership ownership = Ownership::unknown) :
+        storage(storage), ownership(ownership) {}
   };
 
   enum class Profession_Type {

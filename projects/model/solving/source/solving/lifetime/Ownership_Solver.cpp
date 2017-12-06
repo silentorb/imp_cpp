@@ -32,7 +32,7 @@ namespace lifetime {
       overworld::Ownership get_forward_ownership(overworld::Ownership ownership) {
         switch (ownership) {
 
-          case overworld::Ownership::anchor:
+          case overworld::Ownership::owner:
             return overworld::Ownership::reference;
 
           case overworld::Ownership::copy:
@@ -40,7 +40,7 @@ namespace lifetime {
 
           case overworld::Ownership::move:
           case overworld::Ownership::implicit_move:
-            return overworld::Ownership::anchor;
+            return overworld::Ownership::owner;
 
           case overworld::Ownership::reference:
             return overworld::Ownership::reference;
@@ -53,7 +53,7 @@ namespace lifetime {
       overworld::Ownership get_backwards_ownership(overworld::Ownership ownership) {
         switch (ownership) {
 
-          case overworld::Ownership::anchor:
+          case overworld::Ownership::owner:
             return overworld::Ownership::move;
 
           case overworld::Ownership::copy:
@@ -143,53 +143,6 @@ namespace lifetime {
 //      }
 //    }
   }
-//
-//  overworld::Ownership translate_ownership(overworld::Ownership ownership) {
-//    switch (ownership) {
-//      case overworld::Ownership::unknown:
-//        throw std::runtime_error("Not supported.");
-////        return overworld::Ownership::unknown;
-//
-//      case overworld::Ownership::reference:
-//        return overworld::Ownership::reference;
-//
-//      case overworld::Ownership::anchor:
-//        return overworld::Ownership::owner;
-//
-//      case overworld::Ownership::move:
-//        return overworld::Ownership::move;
-//
-//      case overworld::Ownership::implicit_move:
-//        return overworld::Ownership::owner;
-//
-//      case overworld::Ownership::copy:
-//        return overworld::Ownership::copyable;
-//    }
-//
-//    throw std::runtime_error("Not supported.");
-//  }
-
-//  void Ownership_Solver::post_apply() {
-//    std::vector<Node*> n;
-//    for (auto &node: graph.get_nodes()) {
-//      n.push_back(node);
-//      if (node->get_ownership() == overworld::Ownership::unknown)
-//        continue;
-//
-//      auto overworld_ownership = translate_ownership(node->get_ownership());
-//      auto overworld_node = node->get_element().node;
-//      auto &profession = overworld_node->get_profession();
-////      if (profession.get_storage() == overworld::Storage_Type::pointer)
-////        continue;
-//
-//      if (overworld_ownership == overworld::Ownership::owner && is_value(*profession)) {
-//        overworld_node->get_profession().set_ownership(overworld::Ownership::copy);
-//      }
-//      else {
-//        overworld_node->get_profession().set_ownership(overworld_ownership);
-//      }
-//    }
-//  }
 
   void Ownership_Solver::solve() {
     determine_types(graph);
