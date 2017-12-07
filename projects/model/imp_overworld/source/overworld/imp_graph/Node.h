@@ -23,9 +23,12 @@ namespace overworld {
 
   Node_Status get_status_using_profession(const Profession_Reference &profession);
 
+  using Node_Change_Delegate = std::function<void(Node &)>;
+
   class Profession_Setter {
   public:
       virtual void set_profession(Node &node, Profession_Reference &profession) = 0;
+      virtual void set_changed(Node &node) = 0;
   };
 
   class Node : public graphing::Node<Node, Connection> {
@@ -36,6 +39,7 @@ namespace overworld {
       Element &element;
       Ownership ownership = Ownership::unknown;
       Storage_Type storage = Storage_Type::unknown;
+      Node_Change_Delegate on_changed;
 
   public:
       Node(Profession_Reference original_profession, Element &element) :
@@ -71,16 +75,20 @@ namespace overworld {
         return element.get_parent();
       }
 
-//      void set_status(Node_Status value) {
-//        status = value;
-//      }
-
       bool is_changed() const {
         return changed;
       }
 
       void set_changed(bool changed) {
         Node::changed = changed;
+      }
+
+//      const Node_Change_Delegate &get_on_changed() const {
+//        return on_changed;
+//      }
+
+      void set_on_changed(const Node_Change_Delegate &value) {
+        on_changed = value;
       }
 
       virtual std::string get_debug_string() const;
@@ -100,6 +108,8 @@ namespace overworld {
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         profession = value;
         status = _get_status();
+        if (on_changed)
+          on_changed(*this, value);
       }
 
       static const std::string get_advanced_debug_string(const Node &node);
@@ -128,22 +138,6 @@ namespace overworld {
         ownership = info.ownership;
         storage = info.storage;
       }
-//      void set_ownership(Ownership value) {
-//        profession.set_ownership(value);
-//      }
-//
-//      Ownership get_ownership() const {
-//        return profession.get_ownership();
-//      }
-//
-//      Storage_Type get_storage() const {
-//        return profession.get_storage();
-//      }
-//
-//      void set_storage(Storage_Type value) {
-//        profession.set_storage(value);
-//      }
-
   };
 
   class Empty_Profession_Setter : public overworld::Profession_Setter {
@@ -151,39 +145,6 @@ namespace overworld {
       static Empty_Profession_Setter &get_instance();
       void set_profession(overworld::Node &node, overworld::Profession_Reference &profession) override;
   };
-
-//  class Element_Reference_Node : public Node {
-//  protected:
-//      Element &element;
-//
-//  public:
-//      Element_Reference_Node(Element &element, Dungeon_Interface *dungeon,
-//                             Function *function) :
-//        Node(element.get_profession(), dungeon, function), element(element) {}
-//
-//      Node_Status get_status() const override;
-//
-//      Element &get_element() override {
-//        return element;
-//      }
-//
-//      const Element &get_element() const override {
-//        return element;
-//      }
-//
-//  };
-
-//  class Element_Owner_Node : public Node {
-//  protected:
-//      Element_Owner element;
-//
-//  public:
-//      Element_Owner_Node(Element_Owner element, Dungeon_Interface *dungeon,
-//                         Function *function) :
-//        Node(element->get_profession(), dungeon, function),
-//        element(std::move((element))) {}
-//
-//  };
 
   class Node_Copy : public Node {
       Node &original;

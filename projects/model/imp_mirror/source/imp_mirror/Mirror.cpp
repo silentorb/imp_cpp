@@ -288,7 +288,18 @@ namespace imp_mirror {
     auto invoke = new overworld::Invoke(output_expression, arguments,
                                         function_call.get_source_point());
     auto result = overworld::Expression_Owner(invoke);
+//    auto parameters = invoke->get_function().get_signature().get_elements().begin();
 
+//    for (auto &source_argument : invoke->get_arguments()) {
+//      auto &parameter = *parameters++;
+//      if (parameter->has_enchantment(overworld::Enchantment_Library::get_container_assignment())) {
+//        auto container = overworld::find_member_container(invoke->get_expression());
+//        auto &variant = container->get_profession().get()->get_dungeon_interface();
+////        auto &parameter = create_node(variant.get_arguments()[0]->get_node());
+////        auto &parameter = create_node(Overworld_Element(element->get_node()));
+//        connect(argument, parameter);
+//      }
+//    }
     connector.connect_parameters_and_arguments(*invoke, source_arguments, scope);
 
     return result;

@@ -23,7 +23,6 @@ namespace overworld {
       Generic_Argument_Array arguments;
       Dungeon *original = nullptr;
       File *header_file = nullptr;
-//      Ownership default_ownership = Ownership::;
       Storage_Type default_storage = Storage_Type::pointer;
       Dungeon *base_dungeon = nullptr;
       std::vector<Profession_Reference> contracts;
@@ -57,14 +56,7 @@ namespace overworld {
 
       virtual ~Dungeon() {}
 
-      Generic_Argument &add_generic_argument(const Profession_Reference &profession, const Ownership_Storage &info) {
-        auto index = arguments.size();
-        auto argument = new Generic_Argument(*generic_parameters[index], profession);
-        arguments.push_back(Generic_Argument_Owner(argument));
-        argument->get_node().set_ownership(info.ownership);
-        argument->get_node().set_storage(info.storage);
-        return *argument;
-      }
+      Generic_Argument &add_generic_argument(const Profession_Reference &profession, const Ownership_Storage &info);
 
       const std::string get_name() const {
         return name;
@@ -206,9 +198,6 @@ namespace overworld {
       std::vector<Profession_Reference> *get_contracts() {
         return &contracts;
       }
-
-      Function &create_function(const std::string &name, Profession &profession,
-                                const source_mapping::Source_Range &source_point = source_mapping::Source_Range());
 
       Minion &get_minion(const std::string &name);
       Member &get_member(const std::string &name);

@@ -102,7 +102,7 @@ namespace overworld {
         return generic_parameters;
       }
 
-      bool has_generic_arguments() const;
+//      bool has_generic_arguments() const;
 //      virtual Scope &get_parent_scope() = 0;
 //      virtual const Scope &get_parent_scope() const = 0;
 
@@ -143,7 +143,10 @@ namespace overworld {
         return element;
       }
 
-      Function &get_or_create_variant(Dungeon &containing_dungeon);
+      std::vector<Profession_Reference> get_variant_arguments(Dungeon &containing_dungeon);
+
+      Function &get_or_create_variant(Dungeon &containing_dungeon, Graph &graph);
+      Function &get_variant(Dungeon &containing_dungeon);
   };
 
   using Function_Owner = std::unique_ptr<Function>;

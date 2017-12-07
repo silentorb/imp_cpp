@@ -11,9 +11,9 @@ namespace imp_mirror {
       overworld::Graph *graph;
       overworld::Profession_Library &profession_library;
 
-      overworld::Function_Signature &get_function_signature(overworld::Expression &expression,
-                                                            std::vector<overworld::Expression_Owner> &arguments,
-                                                            Scope &scope);
+//      overworld::Function_Signature &get_function_signature(overworld::Expression &expression,
+//                                                            std::vector<overworld::Expression_Owner> &arguments,
+//                                                            Scope &scope);
 
   public:
       Connector(overworld::Graph *graph, overworld::Profession_Library &profession_library) :

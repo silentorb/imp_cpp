@@ -62,7 +62,9 @@ namespace overworld {
 //        throw std::runtime_error("Not implemented");
       }
 
-      virtual ~Generic_Parameter() override = default;
+      virtual ~Generic_Parameter() {
+       int k = 0;
+      }
 
       Generic_Parameter(const Generic_Parameter &) = delete;
 

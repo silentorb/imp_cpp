@@ -40,15 +40,25 @@ namespace overworld {
     return result;
   }
 
-  bool Function::has_generic_arguments() const {
-    for (auto &argument : arguments) {
-      if (argument->get_profession()->get_type() == Profession_Type::generic_parameter)
-        return true;
+//  bool Function::has_generic_arguments() const {
+//    for (auto &argument : arguments) {
+//      if (argument->get_profession()->get_type() == Profession_Type::generic_parameter)
+//        return true;
+//    }
+//    return false;
+//  }
+
+  Function &Function::get_variant(Dungeon &containing_dungeon) {
+    auto new_arguments = get_variant_arguments(containing_dungeon);
+    for (auto &existing_function : variants) {
+      if (existing_function->get_signature().matches(new_arguments))
+        return *existing_function;
     }
-    return false;
+
+    throw std::runtime_error("Not supported.");
   }
 
-  Function &Function::get_or_create_variant(Dungeon &containing_dungeon) {
+  std::vector<Profession_Reference> Function::get_variant_arguments(Dungeon &containing_dungeon) {
     std::vector<Profession_Reference> new_arguments;
     for (auto &element : signature.get_elements()) {
       auto &profession = element->get_profession();
@@ -61,6 +71,11 @@ namespace overworld {
         new_arguments.push_back(profession);
       }
     }
+    return new_arguments;
+  }
+
+  Function &Function::get_or_create_variant(Dungeon &containing_dungeon, Graph &graph) {
+    auto new_arguments = get_variant_arguments(containing_dungeon);
 
     for (auto &existing_function : variants) {
       if (existing_function->get_signature().matches(new_arguments))
@@ -69,49 +84,27 @@ namespace overworld {
 
     auto new_function = new Virtual_Function(*this);
     variants.push_back(std::unique_ptr<Function>(new_function));
-    auto elements = signature.get_elements().begin();
+    auto generic_arguments = containing_dungeon.get_arguments().begin();
+    auto original_parameters = signature.get_elements().begin();
+    int i = 0;
     for (auto &profession : new_arguments) {
-      auto &element = *elements++;
-      new_function->get_signature().add_element(Parameter_Owner(
-        new Parameter(element->get_name(), profession, *new_function, element->get_element().get_source_point())
-      ));
-//      arguments.push_back(Generic_Argument_Owner(new Generic_Argument(*generic_parameters[i], professions[i])));
+      auto &generic_argument = *generic_arguments++;
+      auto &original_parameter = *original_parameters++;
+      auto new_parameter = new Parameter(original_parameter->get_name(), profession, *new_function,
+                                         original_parameter->get_element().get_source_point());
+      new_function->get_signature().add_element(Parameter_Owner(new_parameter));
+      if (original_parameter->get_profession().get_type() == Profession_Type::generic_parameter) {
+//        auto connection = new Variant_To_Argument(member_container->get_node(), second, i);
+//        graph.connect(member_container->get_node(), second, std::unique_ptr<Connection>(connection));
+        graph.connect(new_parameter->get_node(), generic_argument->get_node());
+      }
+      ++i;
     }
     return *new_function;
   }
 
   void Function::finalize(overworld::Profession_Library &profession_library) {
     set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
-//    if (!returns_a_value()) {
-//      set_profession(profession_library.get_void(), Empty_Profession_Setter::get_instance());
-////      node.set_status(Node_Status::resolved);
-//    }
-//    else {
-//      set_profession(profession_library.get_unknown(), Empty_Profession_Setter::get_instance());
-//    }
   }
-
-/*
-  overworld::Temporary_Interface &Function_With_Block::get_or_create_interface(Parameter &parameter) {
-    if (!temporary_interface_manager) {
-      temporary_interface_manager = std::make_unique<Temporary_Interface_Manager>();
-    }
-    else {
-      for (auto &entry : temporary_interface_manager->get_entries()) {
-        if (&entry.get_parameter() == &parameter)
-          return *entry.get_interface();
-      }
-    }
-
-    auto dungeon = new Temporary_Interface();
-    temporary_interface_manager->add(parameter, dungeon);
-    return *dungeon;
-  }
-*/
-//  Minion &Function::create_parameter(const std::string &name, Profession &profession) {
-//    auto &minion = scope.create_minion(name, profession);
-//    add_parameter(minion);
-//    return minion;
-//  }
 
 }

@@ -14,6 +14,12 @@ namespace overworld {
       Expression_Owner expression;
       std::vector<Expression_Owner> arguments;
 
+      Function &_get_function() const {
+        auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
+        auto &member = member_expression.get_member();
+        return member.get_function();
+      }
+
   public:
       Invoke(Expression_Owner &expression, std::vector<Expression_Owner> &arguments,
              const source_mapping::Source_Range &source_range) :
@@ -27,14 +33,24 @@ namespace overworld {
       }
 
       Function &get_function() const {
-        auto &member_expression = *dynamic_cast<Member_Expression *>(&expression->get_last());
-        auto &member = member_expression.get_member();
-        auto &function = member.get_function();
+        auto &function = _get_function();
         auto container = find_member_container(*expression);
         if (container) {
           auto &container_dungeon = container->get_profession()->get_dungeon_interface();
           if (container_dungeon.is_generic()) {
-            return function.get_or_create_variant(container_dungeon);
+            return function.get_variant(container_dungeon);
+          }
+        }
+        return function;
+      }
+
+      Function &get_function(Graph &graph) const {
+        auto &function = _get_function();
+        auto container = find_member_container(*expression);
+        if (container) {
+          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
+          if (container_dungeon.is_generic()) {
+            return function.get_or_create_variant(container_dungeon, graph);
           }
         }
         return function;

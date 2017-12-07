@@ -11,9 +11,7 @@ namespace overworld {
 //        element(Element_Type::other, name, *this, source_point),
     scope(&parent, Parent(*this)),
     name(name),
-    self(new Dungeon_Reference(*this))
-
-  {}
+    self(new Dungeon_Reference(*this)) {}
 
   Dungeon::Dungeon(const std::string &name) :
     scope(nullptr, Parent(*this)),
@@ -114,7 +112,6 @@ namespace overworld {
     throw std::runtime_error("Could not find member: " + name);
   }
 
-
   const std::string Dungeon::format_debug_name() const {
     if (generic_parameters.empty())
       return get_name();
@@ -134,12 +131,14 @@ namespace overworld {
     return result;
   }
 
-//  Function &create_variant_function(Dungeon &owning_dungeon, Function &original_function) {
-//
-//    for (auto & parameter: owning_dungeon.get_generic_parameters()) {
-//
-//    }
-//
-//    auto new_function = new Virtual_Function(original_function, )
-//  }
+  Generic_Argument &Dungeon::add_generic_argument(const Profession_Reference &profession,
+                                                  const Ownership_Storage &info) {
+    auto index = arguments.size();
+    auto argument = new Generic_Argument(*generic_parameters[index], profession);
+    arguments.push_back(Generic_Argument_Owner(argument));
+    argument->get_node().set_ownership(info.ownership);
+    argument->get_node().set_storage(info.storage);
+    return *argument;
+  }
+
 }
