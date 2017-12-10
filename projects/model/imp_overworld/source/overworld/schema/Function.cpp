@@ -96,7 +96,9 @@ namespace overworld {
       if (original_parameter->get_profession().get_type() == Profession_Type::generic_parameter) {
 //        auto connection = new Variant_To_Argument(member_container->get_node(), second, i);
 //        graph.connect(member_container->get_node(), second, std::unique_ptr<Connection>(connection));
-        graph.connect(new_parameter->get_node(), generic_argument->get_node());
+
+//        graph.connect(new_parameter->get_node(), generic_argument->get_node());
+        new_parameter->set_generic_argument(generic_argument.get());
       }
       ++i;
     }

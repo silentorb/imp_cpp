@@ -18,9 +18,9 @@ namespace overworld {
                 parameter.get_element().get_source_point()),
         parameter(parameter),
         node(profession, element) {
-        node.set_on_changed([this](Node &) {
-          this->on_node_changed();
-        });
+//        node.set_on_changed([this](Node &) {
+//          this->on_node_changed();
+//        });
       }
 
       Common_Element &get_element() {

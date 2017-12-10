@@ -411,9 +411,8 @@ namespace imp_mirror {
         if (previous_expression.get_type() == overworld::Expression_Type::member) {
           auto previous_member_expression = dynamic_cast<overworld::Member_Expression *>(&previous_expression);
           auto interface = new overworld::Temporary_Interface();
-//          auto interface = std::make_shared<overworld::Temporary_Interface>();
-          auto pointer = std::shared_ptr<overworld::Profession>(interface);
-          auto parent_profession = overworld::Profession_Reference(std::move(pointer));
+          temporary_interface_manager.add_interface(std::unique_ptr<overworld::Temporary_Interface>(interface));
+          auto parent_profession = overworld::Profession_Reference(*interface);
           auto child_member = interface->create_temporary_member(*previous_member_expression,
                                                                  member_expression.get_name(),
                                                                  member_expression.get_source_point(),

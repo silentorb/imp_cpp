@@ -59,7 +59,7 @@ namespace imp_mirror {
       auto &second = *argument.get_node();
       if (second.get_parent().get_type() == Parent_Type::function
           && &first.get_parent().get_function() != &second.get_parent().get_function()
-          && first.get_profession().get_type() == Profession_Type::generic_parameter) {
+          && parameter.get_generic_argument()) {
         auto member_container = find_member_container(invoke.get_expression());
         auto &source_argument = *source_arguments[i];
         auto connection = new Variant_To_Argument(member_container->get_node(), second, i);

@@ -100,7 +100,9 @@ namespace overworld {
 
         auto it = elements.begin();
         for (auto &profession : professions) {
-          if (profession.get() == (*it++)->get_profession().get())
+          auto &other = (*it++);
+          auto other_profession = other->get_profession().get();
+          if (profession.get() != other_profession)
             return false;
         }
 

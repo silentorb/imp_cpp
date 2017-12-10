@@ -34,25 +34,25 @@ namespace overworld {
 
       Function &get_function() const {
         auto &function = _get_function();
-        auto container = find_member_container(*expression);
-        if (container) {
-          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
-          if (container_dungeon.is_generic()) {
-            return function.get_variant(container_dungeon);
-          }
-        }
+//        auto container = find_member_container(*expression);
+//        if (container) {
+//          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
+//          if (container_dungeon.is_generic()) {
+//            return function.get_variant(container_dungeon);
+//          }
+//        }
         return function;
       }
 
       Function &get_function(Graph &graph) const {
         auto &function = _get_function();
-        auto container = find_member_container(*expression);
-        if (container) {
-          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
-          if (container_dungeon.is_generic()) {
-            return function.get_or_create_variant(container_dungeon, graph);
-          }
-        }
+//        auto container = find_member_container(*expression);
+//        if (container) {
+//          auto &container_dungeon = container->get_profession()->get_dungeon_interface();
+//          if (container_dungeon.is_generic()) {
+//            return function.get_or_create_variant(container_dungeon, graph);
+//          }
+//        }
         return function;
       }
 

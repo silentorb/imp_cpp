@@ -1,7 +1,6 @@
 #include <overworld/schema/professions/Profession.h>
 #include <overworld/schema/Dungeon.h>
 #include <overworld/schema/Dungeon.h>
-#include <overworld/schema/Dungeon_Variant.h>
 #include <overworld/schema/professions/Enchantment_Library.h>
 #include "Ownership_Solver.h"
 #include "../Generic_Solver.h"

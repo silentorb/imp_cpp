@@ -23,12 +23,12 @@ namespace overworld {
 
   Node_Status get_status_using_profession(const Profession_Reference &profession);
 
-  using Node_Change_Delegate = std::function<void(Node &)>;
+//  using Node_Change_Delegate = std::function<void(Node &)>;
 
   class Profession_Setter {
   public:
       virtual void set_profession(Node &node, Profession_Reference &profession) = 0;
-      virtual void set_changed(Node &node) = 0;
+//      virtual void set_changed(Node &node) = 0;
   };
 
   class Node : public graphing::Node<Node, Connection> {
@@ -39,7 +39,7 @@ namespace overworld {
       Element &element;
       Ownership ownership = Ownership::unknown;
       Storage_Type storage = Storage_Type::unknown;
-      Node_Change_Delegate on_changed;
+//      Node_Change_Delegate on_changed;
 
   public:
       Node(Profession_Reference original_profession, Element &element) :
@@ -57,7 +57,9 @@ namespace overworld {
 
       Node(const Node &) = delete;
 
-      virtual ~Node() {}
+      virtual ~Node() {
+		  int k = 0;
+	  }
 
       Element &get_element() {
         return element;
@@ -87,9 +89,9 @@ namespace overworld {
 //        return on_changed;
 //      }
 
-      void set_on_changed(const Node_Change_Delegate &value) {
-        on_changed = value;
-      }
+//      void set_on_changed(const Node_Change_Delegate &value) {
+//        on_changed = value;
+//      }
 
       virtual std::string get_debug_string() const;
 
@@ -108,8 +110,8 @@ namespace overworld {
       void set_profession(Profession_Reference &value, Profession_Setter &setter) {
         profession = value;
         status = _get_status();
-        if (on_changed)
-          on_changed(*this, value);
+//        if (on_changed)
+//          on_changed(*this, value);
       }
 
       static const std::string get_advanced_debug_string(const Node &node);
