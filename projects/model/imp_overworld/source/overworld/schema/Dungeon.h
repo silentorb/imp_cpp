@@ -38,7 +38,7 @@ namespace overworld {
       Dungeon(const std::string &name, Scope &parent) :
         Dungeon(name, parent, source_mapping::Source_Range()) {}
 
-      Dungeon(Dungeon &original) :
+      Dungeon(Dungeon &original, bool not_used) :
         Dungeon(original.get_name(), *original.get_scope().get_parent_scope(), source_mapping::Source_Range()) {
         if (original.get_original())
           throw std::runtime_error("Not yet supported.");

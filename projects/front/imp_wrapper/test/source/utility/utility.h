@@ -21,9 +21,6 @@ const std::string load_file(const std::string &file_path) {
 }
 
 void _compare(const std::string &first_file, const std::string &second_file) {
-#ifdef DISABLE_DIFF
-  return;
-#endif
 
   auto first = load_file(first_file);
   auto second = load_file(second_file);
@@ -31,7 +28,9 @@ void _compare(const std::string &first_file, const std::string &second_file) {
     EXPECT_EQ(first, second);
   }
   else {
-    auto arguments = " /x /s " + second_file + " " + first_file;
+#if DISABLE_DIFF
+#else
+        auto arguments = " /x /s " + second_file + " " + first_file;
     auto command = "\"" + std::string(DIFF_VIEWER_PATH) + "\"" + arguments;
     std::cout << std::endl << command << std::endl;
     STARTUPINFO info = {sizeof(info)};
@@ -39,6 +38,7 @@ void _compare(const std::string &first_file, const std::string &second_file) {
     if (CreateProcess(nullptr, const_cast<char *>(command.c_str()), nullptr, nullptr, true, 0, nullptr, nullptr, &info,
                       &processInfo)) {
     }
+#endif
     EXPECT_EQ(first, second);
   }
 }

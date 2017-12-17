@@ -192,7 +192,7 @@ namespace overworld {
                                                                    Dungeon &dungeon,
                                                                    std::vector<Profession_Reference> &professions) {
 //    throw std::runtime_error("Outdated.");
-    auto variant = new Dungeon(dungeon);
+    auto variant = new Dungeon(dungeon, true);
     auto dungeon_reference = new Dungeon_Reference(std::move(Dungeon_Owner(variant)));
     for (auto &profession : professions) {
       variant->add_generic_argument(profession, {});
