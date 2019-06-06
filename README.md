@@ -14,6 +14,10 @@ Welcome to the Underworld!  Imp is an object-oriented programming language that 
 
 "simple is simplified simplified, and imp is simplified simple"
 
+or
+
+"simple is simpler than simplified, and imp is simpler than simple"
+
 Imp is a humble language, which means:
 
 * Imp exists to serve C++ (and the Overlord), not the other way around.
